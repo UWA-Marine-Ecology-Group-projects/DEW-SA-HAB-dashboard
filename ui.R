@@ -46,114 +46,49 @@ page_navbar(
       
       
       layout_columns(
-        col_widths = c(7, 5),
+        
+        col_widths = c(6, 6),
+        
         card(
-                      card_header("Reporting Regions (click to explore)"),
-                      card_body(leafletOutput("map", height = 500))
+          card_header("Reporting Regions (click to explore)"),
+          card_body(leafletOutput("map", height = 500))
         ),
+        
         div(
-          uiOutput("selected_region_badge"),
-          card(                  card_header("Summary"),
-                                 card_body(htmlOutput("summary_text"))),
-          card(                card(
-            card_header("Diversity"),
-            card_body(plotOutput("divplot", height = 250))
-          ),
+          
+          uiOutput("region_title"),
+          # uiOutput("selected_region_badge"),
+          
           card(
-            card_header("Abundance"),
-            card_body(plotOutput("abplot", height = 250))
-          ),
+            card_header("Overall Impact"),
+            plotOutput("overallplot", height = 200)),
+
+          
           card(
-            card_header("Habitat"),
-            card_body(plotOutput("habplot", height = 250))
-          ))
+            card_header("Indicators"),
+            plotOutput("combinedplot", 
+                       height = 200)
+            # card(
+            #   card_header("Diversity"),
+            #   card_body(plotOutput("divplot", height = 250))
+            # ),
+            # card(
+            #   card_header("Abundance"),
+            #   card_body(plotOutput("abplot", height = 250))
+            # ),
+            # card(
+            #   card_header("Habitat"),
+            #   card_body(plotOutput("habplot", height = 250))
+            # )
+            ),
+          
+          
+          card(card_header("Summary"),
+               card_body(htmlOutput("summary_text")))
         )
       )
       
-      # # Main content
-      # div(
-      #   class = "container-fluid",
-      #   # Map row
-      #   div(class = "row",
-      #       div(class = "col-md-12",
-      #           card(
-      #             card_header("Reporting Regions (click to explore)"),
-      #             card_body(leafletOutput("map", height = 500))
-      #           )
-      #       )
-      #   ),
-      #   # Detail row
-      #   
-      #   #,
-      #   uiOutput("selected_region_badge"),
-      #   
-      #   div(class = "row g-3 mt-3",
-      #       div(class = "col-lg-6",
-      #           card(
-                  # card_header("Summary"),
-                  # card_body(htmlOutput("summary_text"))
-      #           )
-      #       ),
-      #       div(class = "col-lg-6",
-                # card(
-                #   card_header("Diversity"),
-                #   card_body(plotOutput("divplot", height = 250))
-                # ),
-                # card(
-                #   card_header("Abundance"),
-                #   card_body(plotOutput("abplot", height = 250))
-                # ),
-                # card(
-                #   card_header("Habitat"),
-                #   card_body(plotOutput("habplot", height = 250))
-                # )
-      #       )
-      #   )
-      # ))
-      
-      # # --- Main content (two columns) ---
-      # div(
-      #   class = "container-fluid",
-      #   
-      #   # Two-column row: map (left), details (right)
-      #   div(class = "row g-3",
-      #       
-      #       # LEFT: Map column
-      #       div(class = "col-xl-7 col-lg-7",
-      #           card(
-      #             card_header("Reporting Regions (click to explore)"),
-      #             card_body(leafletOutput("map", height = 600))
-      #           )
-      #       ),
-      #       
-      #       # RIGHT: Details column (badge + summary + 3 plots)
-      #       div(class = "col-xl-5 col-lg-5",
-      #           # Badge (kept outside a card so it feels like a status chip)
-      #           uiOutput("selected_region_badge"),
-      #           
-      #           # Summary
-      #           card(
-      #             card_header("Summary"),
-      #             card_body(htmlOutput("summary_text"))
-      #           ),
-      #           
-      #           # Plots (stacked cards)
-      #           card(
-      #             card_header("Diversity"),
-      #             card_body(plotOutput("divplot", height = 250))
-      #           ),
-      #           card(
-      #             card_header("Abundance"),
-      #             card_body(plotOutput("abplot", height = 250))
-      #           ),
-      #           card(
-      #             card_header("Habitat"),
-      #             card_body(plotOutput("habplot", height = 250))
-      #           )
-      #       )
-      #   )
-      # )
-  )),
+    )),
   
   nav_spacer(),
   

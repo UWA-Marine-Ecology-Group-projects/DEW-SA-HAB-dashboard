@@ -3,7 +3,7 @@
 base_map <- function(max_zoom = 11, current_zoom = 6) {
   leaflet() |>
     addTiles(options = tileOptions(minZoom = 4, max_zoom)) |>
-    setView(lng = 135.3, lat = -35.1, current_zoom) |>
+    setView(lng = 137.618521, lat = -34.25, current_zoom) |>
     addMapPane("polys",  zIndex = 410) |>
     addMapPane("points", zIndex = 420) |>
     # Use regular polygons for static layers:
@@ -22,7 +22,7 @@ base_map <- function(max_zoom = 11, current_zoom = 6) {
       popup = ~ZoneName,
       options = pathOptions(pane = "polys"), group = "Australian Marine Parks"
     ) %>%
-
+    
     # Legends
     addLegend(
       pal = state.pal,
@@ -116,7 +116,7 @@ server <- function(input, output, session) {
   # Leaflet map
   output$map <- renderLeaflet({
     
-    base_map() |>
+    base_map(current_zoom = 8) |>
       
       hideGroup("State Marine Parks") |>
       hideGroup("Australian Marine Parks") |>
@@ -164,6 +164,16 @@ server <- function(input, output, session) {
     )
   })
   
+  # Selected region title ----
+  output$region_title <- renderUI({
+    req(selected_region())
+    reg <- selected_region()
+    
+    tags$div(
+      tags$h3(reg)
+    )
+  })
+  
   # ---- Summary text ----
   output$summary_text <- renderUI({
     req(selected_region())
@@ -171,14 +181,110 @@ server <- function(input, output, session) {
     txt <- hab_data$summaries |>
       filter(region == reg) |>
       pull(summary) #|> 
-      #{ if (length(.) == 0) "No summary available for this region yet." else .[1] }
+    #{ if (length(.) == 0) "No summary available for this region yet." else .[1] }
     
     # Use markdown::markdownToHTML or commonmark::markdown_html for rendering
     HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
-  })
+})
+  
+  # # Pointer plots----
+  # output$divplot <- renderPlot({ 
+  #   req(selected_region())
+  #   
+  #   reg <- selected_region()
+  #   
+  #   txt <- hab_data$scores |>
+  #     filter(region == reg) |>
+  #     pull(diversity)
+  #   
+  #   half_donut_with_dial(
+  #     segments = segs,
+  #     values   = vals,
+  #     colors   = cols,
+  #     mode     = "absolute",
+  #     status   = txt,     # or "Good", "Med", etc.
+  #     r_inner  = 0.5,
+  #     r_outer  = 1,
+  #     show_segment_labels = FALSE,
+  #     show_tier_labels    = TRUE
+  #   )
+  #   
+  #   })
+  # 
+  # output$abplot <- renderPlot({ 
+  #   req(selected_region())
+  #   
+  #   reg <- selected_region()
+  #   
+  #   txt <- hab_data$scores |>
+  #     filter(region == reg) |>
+  #     pull(abundance)
+  #   
+  #   half_donut_with_dial(
+  #     segments = segs,
+  #     values   = vals,
+  #     colors   = cols,
+  #     mode     = "absolute",
+  #     status   = txt,     # or "Good", "Med", etc.
+  #     r_inner  = 0.5,
+  #     r_outer  = 1,
+  #     show_segment_labels = FALSE,
+  #     show_tier_labels    = TRUE
+  #   )
+  #   
+  # })
+  # 
+  # output$habplot <- renderPlot({ 
+  #   req(selected_region())
+  #   
+  #   reg <- selected_region()
+  #   
+  #   txt <- hab_data$scores |>
+  #     filter(region == reg) |>
+  #     pull(habitat)
+  #   
+  #   half_donut_with_dial(
+  #     segments = segs,
+  #     values   = vals,
+  #     colors   = cols,
+  #     mode     = "absolute",
+  #     status   = txt,     # or "Good", "Med", etc.
+  #     r_inner  = 0.5,
+  #     r_outer  = 1,
+  #     show_segment_labels = FALSE,
+  #     show_tier_labels    = TRUE
+  #   )
+  #   
+  # })
+  
   
   # Pointer plots----
-  output$divplot <- renderPlot({ 
+  # Pointer plots----
+  output$overallplot <- renderPlot({ 
+    req(selected_region())
+    
+    reg <- selected_region()
+    
+    txt <- hab_data$scores |>
+      filter(region == reg) |>
+      pull(overall)
+    
+    overall <- half_donut_with_dial(
+      segments = segs,
+      values   = vals,
+      colors   = cols,
+      mode     = "absolute",
+      status   = txt,     # or "Good", "Med", etc.
+      r_inner  = 0.5,
+      r_outer  = 1,
+      show_segment_labels = FALSE,
+      show_tier_labels    = TRUE
+    )
+    
+    overall
+  })
+  
+  output$combinedplot <- renderPlot({ 
     req(selected_region())
     
     reg <- selected_region()
@@ -187,7 +293,7 @@ server <- function(input, output, session) {
       filter(region == reg) |>
       pull(diversity)
     
-    half_donut_with_dial(
+    diversity <- half_donut_with_dial(
       segments = segs,
       values   = vals,
       colors   = cols,
@@ -197,20 +303,15 @@ server <- function(input, output, session) {
       r_outer  = 1,
       show_segment_labels = FALSE,
       show_tier_labels    = TRUE
-    )
-    
-    })
-  
-  output$abplot <- renderPlot({ 
-    req(selected_region())
-    
-    reg <- selected_region()
+    )+
+      ggtitle("Diversity") +
+      theme(plot.title = element_text(hjust = 0.5))
     
     txt <- hab_data$scores |>
       filter(region == reg) |>
       pull(abundance)
     
-    half_donut_with_dial(
+    abundance <- half_donut_with_dial(
       segments = segs,
       values   = vals,
       colors   = cols,
@@ -220,20 +321,15 @@ server <- function(input, output, session) {
       r_outer  = 1,
       show_segment_labels = FALSE,
       show_tier_labels    = TRUE
-    )
-    
-  })
-  
-  output$habplot <- renderPlot({ 
-    req(selected_region())
-    
-    reg <- selected_region()
+    )+
+      ggtitle("Abundance") +
+      theme(plot.title = element_text(hjust = 0.5))
     
     txt <- hab_data$scores |>
       filter(region == reg) |>
       pull(habitat)
     
-    half_donut_with_dial(
+    habitat <- half_donut_with_dial(
       segments = segs,
       values   = vals,
       colors   = cols,
@@ -243,9 +339,18 @@ server <- function(input, output, session) {
       r_outer  = 1,
       show_segment_labels = FALSE,
       show_tier_labels    = TRUE
-    )
+    )+
+      ggtitle("Habitat") +
+      theme(plot.title = element_text(hjust = 0.5))
     
+    final_plot <- diversity + abundance + habitat + plot_layout(ncol = 3)
+    
+    final_plot
   })
+  
+  
+  
+  
   
   # # Base maps (shared scaffolding) ----
   # output$map_deployments <- renderLeaflet(base_map())
@@ -655,5 +760,5 @@ server <- function(input, output, session) {
   # )
   # # })
   
-
-}
+  
+  }

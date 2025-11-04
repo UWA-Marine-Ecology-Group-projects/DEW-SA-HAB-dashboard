@@ -21,6 +21,7 @@ library(rmapshaper)
 library(shinycssloaders)
 library(htmltools)
 library(ggforce)
+library(patchwork)
 
 source("R/helpers.R")          # defines filter_by_park(), ensure_sf_ll(), base_map(), etc.
 source("R/mod_park_summary.R") # defines mod_park_summary_ui/server (contains session$onFlushed INSIDE)
@@ -135,14 +136,16 @@ cols <- c(
   "Very Good" = "#3b9243"    # dark green
 )
 
-# half_donut_with_dial(
-#   segments = segs,
-#   values   = vals,
-#   colors   = cols,
-#   mode     = "absolute",
-#   status   = "Very Poor",     # or "Good", "Med", etc.
-#   r_inner  = 0.5,
-#   r_outer  = 1,
-#   show_segment_labels = FALSE,
-#   show_tier_labels    = TRUE
-# )
+half_donut_with_dial(
+  segments = segs,
+  values   = vals,
+  colors   = cols,
+  mode     = "absolute",
+  status   = "Very Poor",     # or "Good", "Med", etc.
+  r_inner  = 0.5,
+  r_outer  = 1,
+  show_segment_labels = FALSE,
+  show_tier_labels    = TRUE
+) +
+  ggtitle("Centered Title") +
+  theme(plot.title = element_text(hjust = 0.5))
