@@ -71,8 +71,8 @@ half_donut_with_dial <- function(
   # tier labels: High (seg 1), Med (avg seg 2 & 3), Low (seg 4)
   if (show_tier_labels) {
     tier_r <- r_outer * 1.12  # <-- closer to rim (was 1.25)
-    tier_theta <- c(mids[1], mean(mids[2:3]), mids[4])
-    tier_lab <- c("High", "Med", "Low")
+    tier_theta <- c(mids[1], mids[2], mids[3], mids[4])
+    tier_lab <- c("Very\nPoor", "Poor", "Good", "Very\nGood")
     tier_df <- data.frame(
       x = sin(tier_theta) * tier_r,
       y = pmax(cos(tier_theta) * tier_r, 0.01),

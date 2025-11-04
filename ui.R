@@ -34,6 +34,26 @@ page_navbar(
   "))
   ),
   
+  tags$head(tags$style(HTML("
+  /* Make the LEFT map column sticky (frozen), right column scrolls */
+  @media (min-width: 992px) {
+    .col-xl-6:first-child, 
+    .col-lg-6:first-child {
+      position: sticky;
+      top: calc(var(--bslib-navbar-height, 56px) + 12px);
+      height: calc(100vh - var(--bslib-navbar-height, 56px) - 24px);
+      overflow: hidden; /* prevent double scrollbars */
+    }
+
+    /* Allow the right column to scroll normally */
+    .col-xl-6:last-child, 
+    .col-lg-6:last-child {
+      overflow-y: auto;
+      max-height: calc(100vh - var(--bslib-navbar-height, 56px) - 24px);
+    }
+  }
+"))),
+  
   nav_panel(
     "State Summary",
     
@@ -57,34 +77,37 @@ page_navbar(
         div(
           
           uiOutput("region_title"),
-          # uiOutput("selected_region_badge"),
           
-          card(
-            card_header("Overall Impact"),
-            plotOutput("overallplot", height = 200)),
-
+          layout_columns(
+            
+            col_widths = c(6, 6),
+            
+            card(
+              card_header("Overall Impact"),
+              plotOutput("overallplot", height = 200)),
+            
+            card(card_header("Summary"),
+                 card_body(htmlOutput("summary_text")))),
+          
           
           card(
             card_header("Indicators"),
             plotOutput("combinedplot", 
                        height = 200)
-            # card(
-            #   card_header("Diversity"),
-            #   card_body(plotOutput("divplot", height = 250))
-            # ),
-            # card(
-            #   card_header("Abundance"),
-            #   card_body(plotOutput("abplot", height = 250))
-            # ),
-            # card(
-            #   card_header("Habitat"),
-            #   card_body(plotOutput("habplot", height = 250))
-            # )
-            ),
+          ),
+          
+          card(min_height = 200),
+          card(min_height = 200),
+          card(min_height = 200),
+          card(min_height = 200),
+          card(min_height = 200),
+          card(min_height = 200),
+          card(min_height = 200),
+          card(min_height = 200),
+          card(min_height = 200),
+          card(min_height = 200)
           
           
-          card(card_header("Summary"),
-               card_body(htmlOutput("summary_text")))
         )
       )
       
