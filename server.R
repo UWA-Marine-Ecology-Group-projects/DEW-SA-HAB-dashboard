@@ -107,6 +107,12 @@ server <- function(input, output, session) {
     left_join(hab_data$scores, by = "region") %>% 
     glimpse()
   
+  
+  # Default selected region (first available)
+  selected_region <- reactiveVal({
+    (regions_joined$region[!is.na(regions_joined$region)])[1]
+  })
+  
   # Leaflet map
   output$map <- renderLeaflet({
     
@@ -122,7 +128,7 @@ server <- function(input, output, session) {
         color = "#444444",
         weight = 1,
         fillOpacity = 0.7,
-        fillColor = ~pal_factor(regions_joined$overall),
+        fillColor = ~hab_data$pal_factor(regions_joined$overall),
         highlightOptions = highlightOptions(color = "black", weight = 2, bringToFront = TRUE)
       ) |>
       addLegend("bottomright",
@@ -130,6 +136,115 @@ server <- function(input, output, session) {
                 colors = unname(hab_data$pal_vals[hab_data$ordered_levels]),
                 labels = c("Very Poor", "Poor","Good","Very Good"),
                 opacity = 0.8)
+  })
+  
+  # Click handler
+  observeEvent(input$map_shape_click, {
+    click <- input$map_shape_click
+    if (!is.null(click$id)) {
+      selected_region(click$id)
+    }
+  })
+  
+  # Selected region badge
+  output$selected_region_badge <- renderUI({
+    req(selected_region())
+    reg <- selected_region()
+    ov <- hab_data$scores |> 
+      filter(region == reg) |> 
+      pull(overall) |> 
+      as.character()
+    
+    badge_col <- hab_data$pal_vals[[ov %||% "low"]]
+    
+    tags$div(
+      style = sprintf("padding:8px 12px;border-radius:8px;background:%s;color:white;display:inline-block;", badge_col),
+      tags$b(reg),
+      if (!is.na(ov)) tags$span(sprintf(" — %s", tools::toTitleCase(ov)))
+    )
+  })
+  
+  # ---- Summary text ----
+  output$summary_text <- renderUI({
+    req(selected_region())
+    reg <- selected_region()
+    txt <- hab_data$summaries |>
+      filter(region == reg) |>
+      pull(summary) #|> 
+      #{ if (length(.) == 0) "No summary available for this region yet." else .[1] }
+    
+    # Use markdown::markdownToHTML or commonmark::markdown_html for rendering
+    HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
+  })
+  
+  # Pointer plots----
+  output$divplot <- renderPlot({ 
+    req(selected_region())
+    
+    reg <- selected_region()
+    
+    txt <- hab_data$scores |>
+      filter(region == reg) |>
+      pull(diversity)
+    
+    half_donut_with_dial(
+      segments = segs,
+      values   = vals,
+      colors   = cols,
+      mode     = "absolute",
+      status   = txt,     # or "Good", "Med", etc.
+      r_inner  = 0.5,
+      r_outer  = 1,
+      show_segment_labels = FALSE,
+      show_tier_labels    = TRUE
+    )
+    
+    })
+  
+  output$abplot <- renderPlot({ 
+    req(selected_region())
+    
+    reg <- selected_region()
+    
+    txt <- hab_data$scores |>
+      filter(region == reg) |>
+      pull(abundance)
+    
+    half_donut_with_dial(
+      segments = segs,
+      values   = vals,
+      colors   = cols,
+      mode     = "absolute",
+      status   = txt,     # or "Good", "Med", etc.
+      r_inner  = 0.5,
+      r_outer  = 1,
+      show_segment_labels = FALSE,
+      show_tier_labels    = TRUE
+    )
+    
+  })
+  
+  output$habplot <- renderPlot({ 
+    req(selected_region())
+    
+    reg <- selected_region()
+    
+    txt <- hab_data$scores |>
+      filter(region == reg) |>
+      pull(habitat)
+    
+    half_donut_with_dial(
+      segments = segs,
+      values   = vals,
+      colors   = cols,
+      mode     = "absolute",
+      status   = txt,     # or "Good", "Med", etc.
+      r_inner  = 0.5,
+      r_outer  = 1,
+      show_segment_labels = FALSE,
+      show_tier_labels    = TRUE
+    )
+    
   })
   
   # # Base maps (shared scaffolding) ----

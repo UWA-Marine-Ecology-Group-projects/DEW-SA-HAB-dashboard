@@ -19,9 +19,12 @@ library(tidytext)
 library(leaflet.extras2)
 library(rmapshaper)
 library(shinycssloaders)
+library(htmltools)
+library(ggforce)
 
 source("R/helpers.R")          # defines filter_by_park(), ensure_sf_ll(), base_map(), etc.
 source("R/mod_park_summary.R") # defines mod_park_summary_ui/server (contains session$onFlushed INSIDE)
+source("R/half_donut_with_dial.R")
 
 # Load data
 load("app_data/values.Rdata")
@@ -92,3 +95,54 @@ css = HTML("
     overflow: visible !important;
   }
 ")
+
+# plot_dummy_time <- function(region) {
+#   df <- data.frame(day = 1:30, value = cumsum(rnorm(30, 0.1, 0.4)))
+#   ggplot(df, aes(day, value)) +
+#     geom_line() +
+#     labs(title = paste("Time series —", region), x = "Day", y = "Index") +
+#     theme_minimal(base_size = 12)
+# }
+# 
+# plot_dummy_comp <- function(region) {
+#   df <- data.frame(group = c("Inshore", "Mid-shelf", "Offshore"),
+#                    score = runif(3, 0.3, 0.9))
+#   ggplot(df, aes(group, score)) +
+#     geom_col() +
+#     coord_cartesian(ylim = c(0, 1)) +
+#     labs(title = paste("Habitat condition —", region), x = NULL, y = "Score") +
+#     theme_minimal(base_size = 12)
+# }
+# 
+# plot_dummy_rank <- function(region) {
+#   df <- data.frame(cat = c("Fish", "Seagrass", "Reef", "Mangrove"),
+#                    risk = sample(1:4, 4, replace = TRUE))
+#   ggplot(df, aes(reorder(cat, risk), risk)) +
+#     geom_point(size = 3) +
+#     coord_flip() +
+#     scale_y_continuous(breaks = 1:4, labels = c("Low","Low-mid","Mid-high","High")) +
+#     labs(title = paste("Pressure ranking —", region), x = NULL, y = "Risk") +
+#     theme_minimal(base_size = 12)
+# }
+
+# ---- Example ----
+segs <- c("Very Poor", "Poor", "Good", "Very Good")
+vals <- c(1, 1, 1, 1)
+cols <- c(
+  "Very Poor" = "#E74C3C",   # red
+  "Poor"      = "#febf26",   # orange
+  "Good"      = "#9fcc3b",   # light green
+  "Very Good" = "#3b9243"    # dark green
+)
+
+# half_donut_with_dial(
+#   segments = segs,
+#   values   = vals,
+#   colors   = cols,
+#   mode     = "absolute",
+#   status   = "Very Poor",     # or "Good", "Med", etc.
+#   r_inner  = 0.5,
+#   r_outer  = 1,
+#   show_segment_labels = FALSE,
+#   show_tier_labels    = TRUE
+# )
