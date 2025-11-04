@@ -78,8 +78,12 @@ half_donut_with_dial <- function(
       y = pmax(cos(tier_theta) * tier_r, 0.01),
       lab = tier_lab
     )
-    p <- p + geom_text(data = tier_df, aes(x = x, y = y, label = lab),
-                       fontface = "bold", size = 5)
+    p <- p + geom_text(data = tier_df, 
+                       aes(x = x, 
+                           y = y, 
+                           label = lab),
+                       # fontface = "bold", 
+                       size = 5)
   }
   
   # dial (needle)

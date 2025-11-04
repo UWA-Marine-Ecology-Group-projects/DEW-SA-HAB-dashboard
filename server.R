@@ -113,10 +113,104 @@ server <- function(input, output, session) {
     (regions_joined$region[!is.na(regions_joined$region)])[1]
   })
   
+  # Value boxes ----
+  
+  number_bruv_deployments <- reactive({
+    hab_dataframes$hab_number_bruv_deployments %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  output$number_bruv_deployments <- renderText({
+    scales::label_comma()(number_bruv_deployments())
+  })
+  
+  number_rls_deployments <- reactive({
+    hab_dataframes$hab_number_rls_deployments %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  output$number_rls_deployments <- renderText({
+    scales::label_comma()(number_rls_deployments())
+  })
+  
+  fish_counted <- reactive({
+    hab_dataframes$hab_number_of_fish %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  output$fish_counted <- renderText({
+    scales::label_comma()(fish_counted())
+  })
+  
+  fish_species <- reactive({
+    hab_dataframes$hab_number_of_fish_species %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  output$fish_species <- renderText({
+    scales::label_comma()(fish_species())
+  })
+  
+  non_fish_species <- reactive({
+    hab_dataframes$hab_number_of_nonfish_species %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  output$non_fish_species <- renderText({
+    scales::label_comma()(non_fish_species())
+  })
+  
+  min_year <- reactive({
+    hab_dataframes$hab_min_year %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  max_year <- reactive({
+    hab_dataframes$hab_max_year %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  output$years <- renderText({
+   paste0(min_year(), " - ", max_year()) 
+  })
+  
+  min_depth <- reactive({
+    hab_dataframes$hab_min_depth %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  max_depth <- reactive({
+    hab_dataframes$hab_max_depth %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  output$depths <- renderText({
+    paste0(scales::label_comma()(min_depth()), " - ", scales::label_comma()(max_depth()), " m") 
+  })
+  
+  mean_depth <- reactive({
+    hab_dataframes$hab_mean_depth %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+  })
+  
+  output$mean_depth <- renderText({
+    paste0(scales::label_comma()(mean_depth()), " m") 
+  })
+  
   # Leaflet map
   output$map <- renderLeaflet({
     
-    base_map(current_zoom = 8) |>
+    base_map(current_zoom = 7) |>
       
       hideGroup("State Marine Parks") |>
       hideGroup("Australian Marine Parks") |>
@@ -146,6 +240,29 @@ server <- function(input, output, session) {
     }
   })
   
+  # --- Highlight clicked region with white border ---
+  observe({
+    req(selected_region())
+    
+    # Grab the currently selected region polygon
+    region_selected <- regions_joined |> 
+      filter(region == selected_region())
+    
+    # Update map: remove previous highlight, then draw a new one
+    leafletProxy("map") |>
+      clearGroup("highlight") |>
+      addPolygons(
+        data = region_selected,
+        color = "white",        # solid white border
+        weight = 6,             # thickness of outline
+        fillColor = "white",    # same white fill to make it pop
+        fillOpacity = 0.2,      # slightly opaque (use 1 for fully opaque)
+        opacity = 0.75,            # full border opacity
+        group = "highlight"#,
+        # options = pathOptions(pane = "highlight")
+      )
+  })
+  
   # Selected region badge
   output$selected_region_badge <- renderUI({
     req(selected_region())
@@ -170,7 +287,7 @@ server <- function(input, output, session) {
     reg <- selected_region()
     
     tags$div(
-      tags$h3(reg)
+      tags$h3(paste("Summary:", reg))
     )
   })
   
@@ -207,7 +324,7 @@ server <- function(input, output, session) {
       r_outer  = 1,
       show_segment_labels = FALSE,
       show_tier_labels    = TRUE
-    )
+    ) 
     
     overall
   })
@@ -233,7 +350,7 @@ server <- function(input, output, session) {
       show_tier_labels    = TRUE
     )+
       ggtitle("Diversity") +
-      theme(plot.title = element_text(hjust = 0.5))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
     txt <- hab_data$scores |>
       filter(region == reg) |>
@@ -251,7 +368,7 @@ server <- function(input, output, session) {
       show_tier_labels    = TRUE
     )+
       ggtitle("Abundance") +
-      theme(plot.title = element_text(hjust = 0.5))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
     txt <- hab_data$scores |>
       filter(region == reg) |>
@@ -269,424 +386,71 @@ server <- function(input, output, session) {
       show_tier_labels    = TRUE
     )+
       ggtitle("Habitat") +
-      theme(plot.title = element_text(hjust = 0.5))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
     final_plot <- diversity + abundance + habitat + plot_layout(ncol = 3)
     
     final_plot
   })
   
+  deployments <- reactive({
+    deployments <- hab_dataframes$hab_combined_metadata %>%
+      dplyr::filter(region %in% selected_region()) 
+    
+    # Extract coordinates
+    coords <- st_coordinates(deployments)
+    
+    # Convert coordinates to a data frame or tibble
+    coords_df <- as.data.frame(coords)
+    
+    # Rename columns for clarity (optional)
+    colnames(coords_df) <- c("longitude_dd", "latitude_dd")
+    
+    # Bind the new coordinate columns to the original sf object
+    deployments <- bind_cols(deployments, coords_df)
+  })
   
+  min_lat <- reactive({min(deployments()$latitude_dd, na.rm = TRUE)})
+  min_lon <- reactive({min(deployments()$longitude_dd, na.rm = TRUE)})
+  max_lat <- reactive({max(deployments()$latitude_dd, na.rm = TRUE)})
+  max_lon <- reactive({max(deployments()$longitude_dd, na.rm = TRUE)})
   
-  
-  
-  # # Base maps (shared scaffolding) ----
-  # output$map_deployments <- renderLeaflet(base_map())
-  # output$map_surveys     <- renderLeaflet(base_map())
-  # output$map_combined     <- renderLeaflet(base_map(current_zoom = 7))
-  # output$species_map     <- renderLeaflet(base_map())
-  # output$species_map_rls     <- renderLeaflet(base_map())
-  # output$assemblage_map  <- renderLeaflet(base_map())
-  # output$assemblage_map_rls  <- renderLeaflet(base_map())
-  # 
-  # # ---- deployments map (primary points) -------------------------------------
-  # observe({
-  #   all_points <- dataframes$deployment_locations
-  #   
-  #   dc <- depth_cols_and_pal(all_points$depth_m)
-  #   
-  #   update_points_with_numeric_legend(
-  #     map_id       = "map_deployments",
-  #     data         = all_points,
-  #     fill_cols    = dc$cols,
-  #     legend_pal   = dc$pal,
-  #     legend_values= all_points$depth_m,
-  #     legend_title = "Depth (m)"
-  #   )
-  # })
-  # 
-  # # ---- surveys map (RLS points) ---------------------------------------------
-  # observe({
-  #   all_points_rls <- dataframes$deployment_locations_rls
-  #   
-  #   dc <- depth_cols_and_pal(all_points_rls$depth_m)
-  #   
-  #   update_points_with_numeric_legend(
-  #     map_id       = "map_surveys",
-  #     data         = all_points_rls,
-  #     fill_cols    = dc$cols,
-  #     legend_pal   = dc$pal,
-  #     legend_values= all_points_rls$depth_m,
-  #     legend_title = "Depth (m)"
-  #   )
-  # })
-  # 
-  # # ---- deployments combined (bruv and rls points) -------------------------------------
-  # observe({
-  #   all_points <- bind_rows(dataframes$deployment_locations #%>% mutate(method = "stereo-BRUVs")
-  #                           , 
-  #                           dataframes$deployment_locations_rls #%>% mutate(method = "UVC")
-  #                           )
-  #   # method → colour mapping
-  #   method_cols <- c("stereo-BRUVs" = "#f89f00", "UVC" = "#0c3978")
-  #   
-  #   leafletProxy("map_combined", data = all_points) |>
-  #     clearGroup("Sampling locations") |>
-  #     leafgl::addGlPoints(
-  #       data = all_points,
-  #       fillColor = method_cols[all_points$method],  # lookup
-  #       weight = 1,
-  #       popup = all_points$popup,
-  #       group = "Sampling locations",
-  #       pane = "points"
-  #     ) |>
-  #     addLegend(
-  #       "topright",
-  #       colors = unname(method_cols),
-  #       labels = names(method_cols),
-  #       title = "Survey method",
-  #       opacity = 1,
-  #       group = "Sampling locations",
-  #       layerId = "methodLegend"
-  #     )
-  # })
-  # 
-  # # ---- species bubble map ----------------------------------------------------
-  # # Map canvas is rendered above via base_map(); here we add bubbles & legend.
-  # observe({
-  #   req(input$species_select)
-  #   
-  #   data <- dataframes$bubble_data %>%
-  #     dplyr::filter(display_name %in% input$species_select) %>%
-  #     dplyr::full_join(dataframes$deployment_locations) %>%   # keep your original join semantics
-  #     tidyr::replace_na(list(count = 0))
-  #   
-  #   max_ab <- ifelse(nrow(data) > 0, max(data$count, na.rm = TRUE), 1)
-  #   
-  #   overzero  <- dplyr::filter(data, count > 0) %>% sf::st_as_sf()
-  #   equalzero <- data %>% dplyr::filter(count == 0) %>% sf::st_as_sf()
-  #   
-  #   map <- leafletProxy("species_map") %>%
-  #     clearGroup("Sampling locations") %>%
-  #     add_bubble_legend(max_val = max_ab, title = "Abundance", layerId = "bubbleLegendSpecies")
-  #   
-  #   if (nrow(overzero)) {
-  #     overzero$radius <- 10 + (overzero$count / max_ab) * 50
-  #     
-  #     map <- map %>%
-  #       leafgl::addGlPoints(
-  #         data = overzero,
-  #         fillColor = "#f89f00",
-  #         fillOpacity = 1,
-  #         weight = 1,
-  #         radius = overzero$radius,
-  #         popup = as.character(overzero$count),
-  #         group = "Sampling locations",
-  #         pane = "points"
-  #       )
-  #   }
-  #   
-  #   if (nrow(equalzero)) {
-  #     map <- map %>%
-  #       leafgl::addGlPoints(
-  #         data = equalzero,
-  #         fillColor = "white",
-  #         fillOpacity = 0.5,
-  #         weight = 1,
-  #         radius = 10,
-  #         popup = as.character(equalzero$count),
-  #         group = "Sampling locations",
-  #         pane = "points"
-  #       )
-  #   }
-  # })
-  # 
-  # # ---- species bubble map RLS ----------------------------------------------------
-  # # Map canvas is rendered above via base_map(); here we add bubbles & legend.
-  # observe({
-  #   req(input$species_select)
-  #   
-  #   data <- dataframes$bubble_data_rls %>%
-  #     dplyr::filter(display_name %in% input$species_select) %>%
-  #     dplyr::full_join(dataframes$deployment_locations_rls) %>%   # keep your original join semantics
-  #     tidyr::replace_na(list(count = 0))
-  #   
-  #   max_ab <- ifelse(nrow(data) > 0, max(data$count, na.rm = TRUE), 1)
-  #   
-  #   overzero  <- dplyr::filter(data, count > 0) %>% sf::st_as_sf()
-  #   equalzero <- data %>% dplyr::filter(count == 0) %>% sf::st_as_sf()
-  #   
-  #   map <- leafletProxy("species_map_rls") %>%
-  #     clearGroup("Sampling locations") %>%
-  #     add_bubble_legend(max_val = max_ab, 
-  #                       title = "Abundance", 
-  #                       layerId = "bubbleLegendSpecies",
-  #                       methodcol = "#0c3978")
-  #   
-  #   if (nrow(overzero)) {
-  #     overzero$radius <- 10 + (overzero$count / max_ab) * 50
-  #     
-  #     map <- map %>%
-  #       leafgl::addGlPoints(
-  #         data = overzero,
-  #         fillColor = "#0c3978",
-  #         fillOpacity = 1,
-  #         weight = 1,
-  #         radius = overzero$radius,
-  #         popup = as.character(overzero$count),
-  #         group = "Sampling locations",
-  #         pane = "points"
-  #       )
-  #   }
-  #   
-  #   if (nrow(equalzero)) {
-  #     map <- map %>%
-  #       leafgl::addGlPoints(
-  #         data = equalzero,
-  #         fillColor = "white",
-  #         fillOpacity = 0.5,
-  #         weight = 1,
-  #         radius = 10,
-  #         popup = as.character(equalzero$count),
-  #         group = "Sampling locations",
-  #         pane = "points"
-  #       )
-  #   }
-  # })
-  # 
-  # # sync after rendering
-  # observe({
-  #   leafletProxy("species_map") %>%
-  #     leaflet.extras2::addLeafletsync(c("species_map", "species_map_rls"))
-  # })
-  # 
-  # # ---- assemblage bubble map -------------------------------------------------
-  # observe({
-  #   req(input$assemblage)
-  #   
-  #   assemblage_metric <- input$assemblage |>
-  #     tolower() |>
-  #     stringr::str_replace_all(" ", "_")
-  #   
-  #   data <- dataframes$metric_bubble_data %>%
-  #     dplyr::filter(metric %in% assemblage_metric)
-  #   
-  #   max_ab <- ifelse(nrow(data) > 0, max(data$value, na.rm = TRUE), 1)
-  #   
-  #   overzero <- dplyr::filter(data, value > 0) %>%
-  #     sf::st_as_sf(coords = c("longitude_dd", "latitude_dd"))
-  #   
-  #   equalzero <- dplyr::filter(data, value == 0) %>%
-  #     sf::st_as_sf(coords = c("longitude_dd", "latitude_dd"))
-  #   
-  #   map <- leafletProxy("assemblage_map") %>%
-  #     clearGroup("Sampling locations") %>%
-  #     add_bubble_legend(max_val = max_ab, title = input$assemblage) 
-  # 
-  #   if (nrow(overzero)) {
-  #     overzero$radius <- 10 + (overzero$value / max_ab) * 50
-  #     
-  #     map <- map %>%
-  #       leafgl::addGlPoints(
-  #         data = overzero,
-  #         fillColor = "#f89f00",
-  #         fillOpacity = 1,
-  #         weight = 1,
-  #         radius = overzero$radius,
-  #         popup = as.character(overzero$value),
-  #         group = "Sampling locations",
-  #         pane = "points"
-  #       )
-  #   }
-  # 
-  #   if (nrow(equalzero)) {
-  #     map %>%
-  #       addCircleMarkers(
-  #         data = equalzero,
-  #         fillColor = "white",
-  #         color = "black",
-  #         fillOpacity = 1,
-  #         weight = 1,
-  #         radius = 5,
-  #         popup = as.character(equalzero$value),
-  #         group = "Sampling locations"
-  #       )
-  #   }
-  # })
-  # 
-  # # ---- assemblage bubble map RLS -------------------------------------------------
-  # observe({
-  #   req(input$assemblage)
-  #   
-  #   assemblage_metric <- input$assemblage |>
-  #     tolower() |>
-  #     stringr::str_replace_all(" ", "_")
-  #   
-  #   data <- dataframes$metric_bubble_data_rls %>%
-  #     dplyr::filter(metric %in% assemblage_metric)
-  #   
-  #   max_ab <- ifelse(nrow(data) > 0, max(data$value, na.rm = TRUE), 1)
-  #   
-  #   overzero <- dplyr::filter(data, value > 0) %>%
-  #     sf::st_as_sf(coords = c("longitude_dd", "latitude_dd"))
-  #   
-  #   equalzero <- dplyr::filter(data, value == 0) %>%
-  #     sf::st_as_sf(coords = c("longitude_dd", "latitude_dd"))
-  #   
-  #   map <- leafletProxy("assemblage_map_rls") %>%
-  #     clearGroup("Sampling locations") %>%
-  #     add_bubble_legend(max_val = max_ab, title = input$assemblage, methodcol = "#0c3978")
-  #   
-  #   if (nrow(overzero)) {
-  #     overzero$radius <- 10 + (overzero$value / max_ab) * 50
-  #     
-  #     map <- map %>%
-  #       leafgl::addGlPoints(
-  #         data = overzero,
-  #         fillColor = "#0c3978",
-  #         fillOpacity = 1,
-  #         weight = 1,
-  #         radius = overzero$radius,
-  #         popup = as.character(overzero$value),
-  #         group = "Sampling locations",
-  #         pane = "points"
-  #       )
-  #   }
-  #   
-  #   if (nrow(equalzero)) {
-  #     map %>%
-  #       addCircleMarkers(
-  #         data = equalzero,
-  #         fillColor = "white",
-  #         color = "black",
-  #         fillOpacity = 1,
-  #         weight = 1,
-  #         radius = 5,
-  #         popup = as.character(equalzero$value),
-  #         group = "Sampling locations"
-  #       )
-  #   }
-  # })
-  # 
-  # # sync after rendering
-  # observe({
-  #   leafletProxy("assemblage_map") %>%
-  #     leaflet.extras2::addLeafletsync(c("assemblage_map", "assemblage_map_rls"))
-  # })
-  # # 
-  # # # after renderLeaflet() for both maps:
-  # # session$onFlushed(function() {
-  # #   leafletProxy("assemblage_map") %>%
-  # #     leaflet.extras2::addLeafletsync(c("assemblage_map_rls"))
-  # #   leafletProxy("assemblage_map_rls") %>%
-  # #     leaflet.extras2::addLeafletsync(c("assemblage_map"))
-  # # }, once = TRUE)
-  # 
-  # # ---- plots (kept as-is) ----------------------------------------------------
-  # output$top_species_plot <- renderPlot({
-  #   data <- dataframes$top_species_combined %>%  # both methods
-  #     tidyr::extract(
-  #       display_name, into = c("sci", "common"),
-  #       regex = "^(.*?)\\s*\\((.*?)\\)$", remove = FALSE
-  #     ) %>%
-  #     dplyr::mutate(
-  #       label = paste0("<i>", sci, "</i><span> (", common, ")</span>")
-  #     )
-  #   
-  #   ggplot2::ggplot(data, aes(
-  #     x = reorder_within(label, total_number, method),
-  #     y = total_number,
-  #     fill = method
-  #   )) +
-  #     geom_bar(stat = "identity", 
-  #              # fill = "#0c3978", 
-  #              col = "black") +
-  #     coord_flip() +
-  #     xlab("Species") +
-  #     ylab("Overall abundance") +
-  #     scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  #     scale_x_reordered() +
-  #     ggplot_theme +
-  #     scale_fill_manual(values = c("stereo-BRUVs" = "#f89f00", "UVC" = "#0c3978")) +
-  #     theme(axis.text.y = ggtext::element_markdown(size = 12)) +
-  #     facet_wrap(vars(method), scales = "free")
-  # })
-  # 
-  # output$iframe <- renderUI({
-  #   dat <- dataframes$foa_codes[display_name %in% c(input$species_select)] %>%
-  #     dplyr::distinct(url) %>%
-  #     dplyr::pull("url")
-  #   
-  #   tags$iframe(
-  #     src = paste0(dat),
-  #     style = "width: 100%; height: 100vh; border: none;",
-  #     onload = "resizeIframe(this)"
-  #   )
-  # })
-  # 
-  # output$length_histogram <- renderPlot({
-  #   length <- dataframes$length_with_jurisdiction %>%
-  #     dplyr::filter(display_name %in% input$species_length)
-  #   
-  #   ggplot(length, aes(x = length_mm, fill = method)) +
-  #     geom_histogram(binwidth = input$binwidth, #fill = "#0c3978", 
-  #                    color = "black") +
-  #     facet_grid(status ~ jurisdiction, scales = "free_y") +
-  #     scale_fill_manual(values = c("stereo-BRUVs" = "#f89f00", "UVC" = "#0c3978")) +
-  #     ggplot_theme +
-  #     labs(
-  #       x = "Length (mm)",
-  #       y = "Frequency"
-  #     )
-  # })
-  # 
-  # # Length histogram ----
-  # output$length_histogram_density <- renderPlot({
-  #   length <- dataframes$length_with_jurisdiction %>%
-  #     dplyr::filter(display_name %in% input$species_length)
-  #   
-  #   ggplot(length, aes(x = length_mm, fill = status)) +
-  #     geom_histogram(aes(y = ..density.., fill = method), binwidth = input$binwidth, #fill = "#0c3978",
-  #                    color = "black", position = "identity") +
-  #     facet_grid(status ~ jurisdiction, scales = "free_y") +
-  #     labs(x = "Length (mm)", y = "Proportion (Density)") +
-  #     scale_fill_manual(values = c("stereo-BRUVs" = "#f89f00", "UVC" = "#0c3978")) +
-  #     ggplot_theme
-  # })
-  # 
-  # # simple plots ----
-  # output$depth_hist          <- renderPlot({ plots$depth_hist })
-  # output$date_hist           <- renderPlot({ plots$date_hist })
-  # output$depth_hist_rls      <- renderPlot({ plots$depth_hist_rls })
-  # output$date_hist_rls       <- renderPlot({ plots$date_hist_rls })
-  # output$date_hist_combined  <- renderPlot({ plots$date_hist_combined })
-  # output$depth_hist_combined <- renderPlot({ plots$depth_hist_combined })
-  # 
-  # 
-  # # same vector of parks as UI
-  # # parks <- sort(unique(dataframes$deployment_locations$location))
-  # 
-  # # lapply(parks, function(pk) {
-  # #   mod_park_summary_server(
-  # #     id = paste0("park_", gsub("[^A-Za-z0-9]+", "_", pk)),
-  # #     park_name = pk,
-  # #     dataframes = dataframes,
-  # #     values = values,
-  # #     plots = plots
-  # #   )
-  # # })
-  # # 
-  # # ONE instance of the module, driven by the sidebar selector
-  # 
-  # # lapply(parks, function(pk) {
-  # mod_park_summary_server(
-  #   id = "one_park",
-  #   park_r = reactive(input$park_select),
-  #   dataframes = dataframes,
-  #   values = values,
-  #   plots = plots
-  # )
-  # # })
-  
-  
+  output$surveyeffort <- renderLeaflet({
+    method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
+    pts <- ensure_sf_ll(hab_dataframes$hab_combined_metadata) %>%
+      dplyr::filter(region %in% selected_region())
+    
+    m <- base_map(current_zoom = 7) %>%
+      fitBounds(min_lon(), min_lat(), max_lon(), max_lat())
+    
+    # add points (no curly block after a pipe)
+    if (has_leafgl()) {
+      m <- leafgl::addGlPoints(
+        m, 
+        data = pts, 
+        fillColor = method_cols[pts$method], 
+        weight = 1, 
+        popup = pts$popup, 
+        group = "Sampling locations", pane = "points"
+      )
+    } else {
+      m <- addCircleMarkers(
+        m, data = pts, radius = 6, fillColor = "#f89f00", fillOpacity = 1,
+        weight = 1, color = "black", popup = pts$popup,
+        group = "Sampling locations", options = pathOptions(pane = "points")
+      )
+    }
+    
+    addLegend(m,
+              "topright",
+              colors = unname(method_cols),
+              labels = names(method_cols),
+              title = "Survey method",
+              opacity = 1,
+              group = "Sampling locations",
+              layerId = "methodLegend"
+    ) %>%
+      hideGroup("Australian Marine Parks")
+    })
+
   }

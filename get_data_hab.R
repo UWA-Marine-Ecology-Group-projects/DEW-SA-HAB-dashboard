@@ -17,6 +17,7 @@ SCORES_SHEET <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0ganthA
 
 # ---- Data loaders ----
 scores <-  read_sheet(SCORES_SHEET) 
+2
 
 summaries <- read_sheet(SCORES_SHEET, "summary_text") 
 
