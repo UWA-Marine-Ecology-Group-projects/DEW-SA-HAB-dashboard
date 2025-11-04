@@ -27,6 +27,7 @@ source("R/mod_park_summary.R") # defines mod_park_summary_ui/server (contains se
 load("app_data/values.Rdata")
 load("app_data/dataframes.Rdata")
 load("app_data/plots.Rdata")
+load("app_data/hab_data.Rdata")
 
 # Suppose the park names live in dataframes$parks$park (adjust as needed)
 all_deployments <- bind_rows(dataframes$deployment_locations, dataframes$deployment_locations_rls) %>% 
