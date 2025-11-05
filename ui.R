@@ -1,6 +1,6 @@
 ui <- page_navbar(
   title = div(
-    "Harmful Algal Bloom Dashboard (DRAFT)",
+    "Algal bloom data portal",
     favicon = "www/favicon.ico",
     style = "display:flex; gap:10px; align-items:center; padding-right:15px; font-weight:bold;"
   ),
@@ -63,12 +63,22 @@ ui <- page_navbar(
     "))
   ),
   
+  tags$head(
+    tags$style(HTML("
+    .pp-wrap { display:flex; justify-content:space-between; gap:2rem; margin-top:.25rem; }
+    .pp-col  { text-align:center; flex:1; }
+    .pp-lab  { font-size:1.00rem; opacity:0.85; display:block; }
+    .pp-val  { font-size:1.25rem; font-weight:700; margin-top:.25rem; display:block; }
+    .pp-title-center .value-box-title { text-align:center; width:100%; }
+  "))
+  ),
+  
   nav_panel(
     "State Summary",
     
     layout_sidebar(
       sidebar = sidebar(
-        width = "50%",
+        width = "45%",
         h4("Reporting Regions (click to explore)"),
           leafletOutput("map", height = "68vh"),
         # ),
@@ -107,45 +117,53 @@ ui <- page_navbar(
             # ValueBoxes ----
             layout_column_wrap(
               width = 1/2,
-              value_box(
-                title = "BRUV Deployments", value = textOutput("number_bruv_deployments"),
-                theme_color = "secondary",
-                showcase = icon("ship", class = "fa-xl")
+              
+              twoValueBoxUI(
+                id = "number_bruv_deployments",
+                title = "BRUVS deployments",
+                icon = icon("ship", class = "fa-xl")
               ),
-              value_box(
-                title = "UVC Surveys", value = textOutput("number_rls_deployments"),
-                theme_color = "secondary",
-                showcase = icon("ship", class = "fa-xl")
+              
+              twoValueBoxUI(
+                id = "number_rls_deployments",
+                title = "Dive surveys",
+                icon = icon("ship", class = "fa-xl")
               ),
-              value_box(
-                title = "Fish Counted", value = textOutput("fish_counted"),
-                theme_color = "secondary",
-                showcase = icon("fish-fins", class = "fa-xl")
+              
+              twoValueBoxUI(
+                id = "fish_counted",
+                title = "Fish counted",
+                icon = icon("fish-fins", class = "fa-xl")
               ),
-              value_box(
-                title = "Fish Species", value = textOutput("fish_species"),
-                theme_color = "secondary",
-                showcase = icon("fish-fins", class = "fa-xl")
+              
+              twoValueBoxUI(
+                id = "fish_species",
+                title = "Fish species",
+                icon = icon("fish-fins", class = "fa-xl")
               ),
-              value_box(
-                title = "Other species", value = textOutput("non_fish_species"),
-                theme_color = "secondary",
-                showcase = icon("shrimp", class = "fa-xl")
+              
+              twoValueBoxUI(
+                id = "non_fish_species",
+                title = "Other species",
+                icon = icon("shrimp", class = "fa-xl")
               ),
-              value_box(
-                title = "Years Included", value = textOutput("years"),
-                theme_color = "secondary",
-                showcase = icon("calendar", class = "fa-xl")
+              
+              twoValueBoxUI(
+                id = "years",
+                title = "Years surveyed",
+                icon = icon("calendar", class = "fa-xl")
               ),
-              value_box(
-                title = "Depths Surveyed", value = textOutput("depths"),
-                theme_color = "secondary",
-                showcase = icon("arrow-down-up-across-line", class = "fa-xl")
+              
+              twoValueBoxUI(
+                id = "depths",
+                title = "Depths surveyed",
+                icon = icon("arrow-down-up-across-line", class = "fa-xl")
               ),
-              value_box(
-                title = "Average Depth", value = textOutput("mean_depth"),
-                theme_color = "secondary",
-                showcase = icon("wave-square", class = "fa-xl")
+              
+              twoValueBoxUI(
+                id = "mean_depth",
+                title = "Average depth",
+                icon = icon("wave-square", class = "fa-xl")
               )
           ),
             

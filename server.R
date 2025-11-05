@@ -1,5 +1,4 @@
 # --------------------------- shared helpers ----------------------------------
-
 base_map <- function(max_zoom = 11, current_zoom = 6) {
   leaflet() |>
     addTiles(options = tileOptions(minZoom = 4, max_zoom)) |>
@@ -97,7 +96,38 @@ filter_by_park <- function(df, park, park_col = "location") {
   dplyr::filter(df, .data[[park_col]] %in% park)
 }
 
-
+# Server: either provide total_reactive (and we split 75/25) OR provide both values
+twoValueBoxServer <- function(id,
+                              total_reactive = NULL,       # reactive() that returns a single total
+                              left_reactive  = NULL,       # optional reactive for left value
+                              right_reactive = NULL,       # optional reactive for right value
+                              left_prop = 0.75,            # used if total_reactive is given
+                              format_fn = scales::label_comma()) {
+  moduleServer(id, function(input, output, session) {
+    
+    # Decide where values come from
+    left_val <- reactive({
+      if (!is.null(left_reactive)) {
+        left_reactive()
+      } else {
+        validate(need(!is.null(total_reactive), "Provide total_reactive or both left/right reactives"))
+        round(total_reactive() * left_prop)
+      }
+    })
+    
+    right_val <- reactive({
+      if (!is.null(right_reactive)) {
+        right_reactive()
+      } else {
+        validate(need(!is.null(total_reactive), "Provide total_reactive or both left/right reactives"))
+        round(total_reactive() * (1 - left_prop))
+      }
+    })
+    
+    output$left_val  <- renderText(format_fn(left_val()))
+    output$right_val <- renderText(format_fn(right_val()))
+  })
+}
 
 # ------------------------------ server ---------------------------------------
 
@@ -107,23 +137,29 @@ server <- function(input, output, session) {
     left_join(hab_data$scores, by = "region") %>% 
     glimpse()
   
-  
   # Default selected region (first available)
   selected_region <- reactiveVal({
     (regions_joined$region[!is.na(regions_joined$region)])[1]
   })
   
   # Value boxes ----
-  
   number_bruv_deployments <- reactive({
     hab_dataframes$hab_number_bruv_deployments %>%
       dplyr::filter(region %in% selected_region()) %>%
       pull(number)
   })
   
-  output$number_bruv_deployments <- renderText({
-    scales::label_comma()(number_bruv_deployments())
+  output$bruv_pre <- renderText({
+    total <- number_bruv_deployments()
+    scales::label_comma()(round(total * 0.75))
   })
+  
+  twoValueBoxServer(
+    id = "number_bruv_deployments",
+    total_reactive = number_bruv_deployments,
+    left_prop = 0.75,
+    format_fn = scales::label_comma()
+  )
   
   number_rls_deployments <- reactive({
     hab_dataframes$hab_number_rls_deployments %>%
@@ -131,9 +167,16 @@ server <- function(input, output, session) {
       pull(number)
   })
   
-  output$number_rls_deployments <- renderText({
-    scales::label_comma()(number_rls_deployments())
-  })
+  twoValueBoxServer(
+    id = "number_rls_deployments",
+    total_reactive = number_rls_deployments,
+    left_prop = 0.75,
+    format_fn = scales::label_comma()
+  )
+  
+  # output$number_rls_deployments <- renderText({
+  #   scales::label_comma()(number_rls_deployments())
+  # })
   
   fish_counted <- reactive({
     hab_dataframes$hab_number_of_fish %>%
@@ -141,19 +184,34 @@ server <- function(input, output, session) {
       pull(number)
   })
   
-  output$fish_counted <- renderText({
-    scales::label_comma()(fish_counted())
+  fish_counted_post <- reactive({
+    fish_counted() * 0.10
   })
   
+  twoValueBoxServer(
+    id = "fish_counted",
+    left_reactive  = fish_counted,
+    right_reactive = fish_counted_post,
+    format_fn = scales::label_comma()
+  )
+
   fish_species <- reactive({
     hab_dataframes$hab_number_of_fish_species %>%
       dplyr::filter(region %in% selected_region()) %>%
       pull(number)
   })
   
-  output$fish_species <- renderText({
-    scales::label_comma()(fish_species())
+  fish_species_post <- reactive({
+    fish_species() * 0.10
   })
+  
+  # TODO probs doesn't make sense to split this for demo
+  twoValueBoxServer(
+    id = "fish_species",
+    left_reactive  = fish_species,
+    right_reactive = fish_species_post,
+    format_fn = scales::label_comma()
+  )
   
   non_fish_species <- reactive({
     hab_dataframes$hab_number_of_nonfish_species %>%
@@ -161,9 +219,16 @@ server <- function(input, output, session) {
       pull(number)
   })
   
-  output$non_fish_species <- renderText({
-    scales::label_comma()(non_fish_species())
+  non_fish_species_post <- reactive({
+    non_fish_species() * 0.10
   })
+  
+  twoValueBoxServer(
+    id = "non_fish_species",
+    left_reactive  = non_fish_species,
+    right_reactive = non_fish_species_post,
+    format_fn = scales::label_comma()
+  )
   
   min_year <- reactive({
     hab_dataframes$hab_min_year %>%
@@ -177,9 +242,18 @@ server <- function(input, output, session) {
       pull(number)
   })
   
-  output$years <- renderText({
+  years_pre <- reactive({
    paste0(min_year(), " - ", max_year()) 
   })
+  
+  years_post <- reactive("2025")
+  
+  twoValueBoxServer(
+    id = "years",
+    left_reactive  = years_pre,
+    right_reactive = years_post,
+    format_fn = as.character
+  )
   
   min_depth <- reactive({
     hab_dataframes$hab_min_depth %>%
@@ -193,9 +267,16 @@ server <- function(input, output, session) {
       pull(number)
   })
   
-  output$depths <- renderText({
+  depths <- reactive({
     paste0(scales::label_comma()(min_depth()), " - ", scales::label_comma()(max_depth()), " m") 
   })
+  
+  twoValueBoxServer(
+    id = "depths",
+    left_reactive  = depths,
+    right_reactive = depths,
+    format_fn = as.character
+  )
   
   mean_depth <- reactive({
     hab_dataframes$hab_mean_depth %>%
@@ -203,9 +284,16 @@ server <- function(input, output, session) {
       pull(number)
   })
   
-  output$mean_depth <- renderText({
+  mean_depth_text <- reactive({
     paste0(scales::label_comma()(mean_depth()), " m") 
   })
+  
+  twoValueBoxServer(
+    id = "mean_depth",
+    left_reactive  = mean_depth_text,
+    right_reactive = mean_depth_text,
+    format_fn = as.character
+  )
   
   # Leaflet map
   output$map <- renderLeaflet({
@@ -228,7 +316,7 @@ server <- function(input, output, session) {
       addLegend("bottomright",
                 title = "Overall Impact",
                 colors = unname(hab_data$pal_vals[hab_data$ordered_levels]),
-                labels = c("Very Poor", "Poor","Good","Very Good"),
+                labels = c("High", "Medium","Low"),
                 opacity = 0.8)
   })
   
@@ -315,15 +403,9 @@ server <- function(input, output, session) {
       pull(overall)
     
     overall <- half_donut_with_dial(
-      segments = segs,
-      values   = vals,
-      colors   = cols,
-      mode     = "absolute",
-      status   = txt,     # or "Good", "Med", etc.
-      r_inner  = 0.5,
-      r_outer  = 1,
-      show_segment_labels = FALSE,
-      show_tier_labels    = TRUE
+      values = c(1, 1, 1),
+      mode = "absolute",
+      status   = txt
     ) 
     
     overall
@@ -339,15 +421,9 @@ server <- function(input, output, session) {
       pull(diversity)
     
     diversity <- half_donut_with_dial(
-      segments = segs,
-      values   = vals,
-      colors   = cols,
-      mode     = "absolute",
-      status   = txt,     # or "Good", "Med", etc.
-      r_inner  = 0.5,
-      r_outer  = 1,
-      show_segment_labels = FALSE,
-      show_tier_labels    = TRUE
+      values = c(1, 1, 1),
+      mode = "absolute",
+      status   = txt
     )+
       ggtitle("Diversity") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
@@ -357,15 +433,9 @@ server <- function(input, output, session) {
       pull(abundance)
     
     abundance <- half_donut_with_dial(
-      segments = segs,
-      values   = vals,
-      colors   = cols,
-      mode     = "absolute",
-      status   = txt,     # or "Good", "Med", etc.
-      r_inner  = 0.5,
-      r_outer  = 1,
-      show_segment_labels = FALSE,
-      show_tier_labels    = TRUE
+      values = c(1, 1, 1),
+      mode = "absolute",
+      status   = txt
     )+
       ggtitle("Abundance") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
@@ -375,15 +445,9 @@ server <- function(input, output, session) {
       pull(habitat)
     
     habitat <- half_donut_with_dial(
-      segments = segs,
-      values   = vals,
-      colors   = cols,
-      mode     = "absolute",
-      status   = txt,     # or "Good", "Med", etc.
-      r_inner  = 0.5,
-      r_outer  = 1,
-      show_segment_labels = FALSE,
-      show_tier_labels    = TRUE
+      values = c(1, 1, 1),
+      mode = "absolute",
+      status   = txt
     )+
       ggtitle("Habitat") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))

@@ -128,25 +128,44 @@ css = HTML("
 # }
 
 # ---- Example ----
-segs <- c("Very Poor", "Poor", "Good", "Very Good")
+# segs <- c("Very Poor", "Poor", "Good", "Very Good")
 vals <- c(1, 1, 1, 1)
-cols <- c(
-  "Very Poor" = "#E74C3C",   # red
-  "Poor"      = "#febf26",   # orange
-  "Good"      = "#9fcc3b",   # light green
-  "Very Good" = "#3b9243"    # dark green
-)
+# cols <- c(
+#   "Very Poor" = "#E74C3C",   # red
+#   "Poor"      = "#febf26",   # orange
+#   "Good"      = "#9fcc3b",   # light green
+#   "Very Good" = "#3b9243"    # dark green
+# )
 
 half_donut_with_dial(
-  segments = segs,
-  values   = vals,
-  colors   = cols,
-  mode     = "absolute",
-  status   = "Very Poor",     # or "Good", "Med", etc.
-  r_inner  = 0.5,
-  r_outer  = 1,
-  show_segment_labels = FALSE,
-  show_tier_labels    = TRUE
-) +
-  ggtitle("Centered Title") +
-  theme(plot.title = element_text(hjust = 0.5))
+  values = c(1, 1, 1),
+  mode = "absolute",
+  status = "Low"
+)
+
+# ---- Two-value value_box helpers --------------------------------------------
+twoValueBoxUI <- function(id,
+                          title,
+                          left_label  = "pre-bloom",
+                          right_label = "post-bloom",
+                          icon        = icon("ship", class = "fa-xl"),
+                          theme_color = "secondary") {
+  ns <- NS(id)
+  value_box(
+    title = title,
+    theme_color = theme_color,
+    showcase = icon,
+    class = "pp-title-center",
+    value = div(
+      class = "pp-wrap",
+      div(class="pp-col",
+          span(class="pp-lab", left_label),
+          span(class="pp-val", textOutput(ns("left_val")))
+      ),
+      div(class="pp-col",
+          span(class="pp-lab", right_label),
+          span(class="pp-val", textOutput(ns("right_val")))
+      )
+    )
+  )
+}

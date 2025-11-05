@@ -27,11 +27,12 @@ shp <- st_read("data/spatial/Reporting_regions_30102025.shp", quiet = TRUE) %>%
 shp <- st_transform(shp, 4326)
 
 # ---- Color mapping ----
-ordered_levels <- c("Very Poor", "Poor", "Good", "Very Good")
-pal_vals <- c(  "Very Poor" = "#E74C3C",   # red
-                "Poor"      = "#febf26",   # orange
-                "Good"      = "#9fcc3b",   # light green
-                "Very Good" = "#3b9243" )   # dark green)
+ordered_levels <- c("High", "Medium", "Low")
+
+pal_vals <- c(  "High" = "#E74C3C",   # red
+                "Medium"      = "#febf26",   # orange
+                "Low" = "#3b9243" )   # dark green)
+
 pal_factor <- colorFactor(palette = pal_vals, domain = ordered_levels, ordered = TRUE)
 
 
