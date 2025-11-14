@@ -35,6 +35,12 @@ pal_vals <- c(  "High" = "#E74C3C",   # red
 
 pal_factor <- colorFactor(palette = pal_vals, domain = ordered_levels, ordered = TRUE)
 
+# Replace with your sheet URL or ID
+survey_plan <- googlesheets4::read_sheet(
+  "https://docs.google.com/spreadsheets/d/1QxTP_s58cbhLYB4GIuS39wK1c3QfBu8TGbUhV9rD3FY/edit?gid=1319001580#gid=1319001580",
+  sheet = "reporting_region_summary"   # or "Sheet1" etc.
+)
+
 
 # Combined data
 hab_data <- structure(
@@ -44,7 +50,8 @@ hab_data <- structure(
     shp = shp,
     pal_vals = pal_vals,
     pal_factor = pal_factor,
-    ordered_levels = ordered_levels
+    ordered_levels = ordered_levels,
+    survey_plan = survey_plan
   ),
   class = "data"
 )

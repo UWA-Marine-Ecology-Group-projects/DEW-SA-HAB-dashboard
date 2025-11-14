@@ -176,6 +176,94 @@ ui <- page_navbar(
     )
   ),
   
+  nav_panel(
+    "Explore Indicators & Metrics",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = "350px",
+        selectizeInput(
+          "em_region",
+          "Choose a region",
+          choices = NULL, multiple = FALSE,
+          options = list(placeholder = "Choose a region...")
+        ),
+        # (checkboxGroupInput removed)
+        helpText("Each tab shows pre/post boxplots. Use region filter to switch.")
+      ),
+      
+      
+      # Survey progress boxes (sites, BRUVS, ROV, %)
+      uiOutput("survey_value_boxes"),
+      
+      
+      
+      div(
+        class = "container-fluid",
+        card(
+          card_header("Summary table showing percentage change compared to pre-bloom levels  (dummy data)"),
+          tableOutput("em_change_table")
+        ),
+        
+        layout_columns(
+          col_widths = c(6, 6),
+        card(
+          card_header("10 most common species pre-bloom (dummy data)"),
+          plotOutput("em_common_pre", height = 400)
+        ),
+        card(
+          card_header("10 most common species post-bloom (dummy data)"),
+          plotOutput("em_common_post", height = 400)
+        )),
+        br(),
+        uiOutput("em_tabset")   # tabset stays, now below the table
+      )
+    )
+  ),
+  
+  nav_panel(
+    "Explore a Marine Park",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = "350px",
+        selectizeInput(
+          "mp_park",
+          "Choose a marine park",
+          choices = NULL, multiple = FALSE,
+          options = list(placeholder = "Choose a marine park...")
+        ),
+        helpText("Explore indicators, common species and survey progress for a selected marine park.")
+      ),
+      
+      # Park-level survey progress boxes
+      uiOutput("mp_survey_value_boxes"),
+      
+      div(
+        class = "container-fluid",
+        
+        card(
+          card_header("Summary table showing percentage change compared to pre-bloom levels (dummy data)"),
+          tableOutput("mp_change_table")
+        ),
+        
+        layout_columns(
+          col_widths = c(6, 6),
+          card(
+            card_header("10 most common species pre-bloom (dummy data)"),
+            plotOutput("mp_common_pre", height = 400)
+          ),
+          card(
+            card_header("10 most common species post-bloom (dummy data)"),
+            plotOutput("mp_common_post", height = 400)
+          )
+        ),
+        
+        br(),
+        uiOutput("mp_tabset")   # tabset for park-level metrics
+      )
+    )
+  ),
+  
+  
   nav_spacer(),
   
   nav_item(

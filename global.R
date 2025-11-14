@@ -22,6 +22,7 @@ library(shinycssloaders)
 library(htmltools)
 library(ggforce)
 library(patchwork)
+library(googlesheets4)
 
 source("R/helpers.R")          # defines filter_by_park(), ensure_sf_ll(), base_map(), etc.
 source("R/mod_park_summary.R") # defines mod_park_summary_ui/server (contains session$onFlushed INSIDE)
@@ -38,7 +39,8 @@ load("app_data/hab_dataframes.Rdata")
 all_deployments <- bind_rows(dataframes$deployment_locations, dataframes$deployment_locations_rls) %>% 
   distinct(location)
 
-parks <- sort(unique(all_deployments$location))  # or your parks df
+# parks <- sort(unique(all_deployments$location))  # or your parks df
+parks <- c("Encounter", "Sir Joseph Banks Group", "Southern Spencer Gulf", "Eastern Spencer Gulf", "Upper Gulf St Vincent", "Upper Spencer Gulf", "Lower Yorke Peninsula", "Franklin Harbor")
 
 # Spatial files for maps ----
 commonwealth.mp <- readRDS("app_data/spatial/commonwealth.mp.RDS") %>%
@@ -169,3 +171,490 @@ twoValueBoxUI <- function(id,
     )
   )
 }
+
+# ---- GLOBAL ADDITIONS (put near other helpers) ----
+
+metric_defs <- c(
+  richness      = "Species richness",
+  site_attached = "Number of site attached fish species",
+  sharks_rays   = "Number of shark and ray species",
+  large_fish    = "Count large fish (>200 mm)",
+  cti           = "Community temperature index",
+  func_groups   = "Abundance by functional group",
+  trophic       = "Abundance by trophic level"
+)
+
+metric_y_lab <- list(
+  richness      = "No. species",
+  site_attached = "No. species",
+  sharks_rays   = "No. species",
+  large_fish    = "No. individuals",
+  func_groups   = "No. individuals",
+  cti           = "Index (°C)",
+  trophic       = "Index"
+)
+
+# shared colours for pre/post everywhere
+metric_period_cols <- c(
+  "pre-bloom"  = "#0c3978",  # same blue
+  "post-bloom" = "#f89f00"   # same orange
+)
+
+metric_groups <- function(metric_id) {
+  switch(metric_id,
+         func_groups = c("Carnivore", "Herbivore", "Omnivore")#,
+         # trophic     = c("Low TL", "Mid TL", "High TL"),
+         # c("Inshore", "Mid-shelf", "Offshore")
+  )
+}
+
+
+# Deterministic dummy data for pre/post per region+metric+Inside/Outside
+dummy_metric_data <- function(metric_id, region, n = 120) {
+  stopifnot(metric_id %in% names(metric_defs))
+  set.seed(sum(utf8ToInt(paste(metric_id, region))))  # stable per metric/region
+  
+  base_mean <- switch(metric_id,
+                      richness      = 60,
+                      site_attached = 40,
+                      sharks_rays   = 10,
+                      large_fish    = 50,
+                      func_groups   = 300,
+                      cti           = 18.5,
+                      trophic       = 3.1
+  )
+  base_sd <- switch(metric_id,
+                    richness      = 10,
+                    site_attached = 10,
+                    sharks_rays   = 5,
+                    large_fish    = 20,
+                    func_groups   = 90,
+                    cti           = 0.6,
+                    trophic       = 0.25
+  )
+  shift <- switch(metric_id,
+                  richness      = -6,
+                  site_attached = -12,
+                  sharks_rays   = -5,
+                  large_fish    = -5,
+                  func_groups   = -45,
+                  cti           = +0.4,
+                  trophic       = +0.15
+  )
+  
+  # small offset so Outside is a bit lower on average
+  zone_offset <- c("Inside" = 0, "Outside" = -5)
+  
+  make_zone_df <- function(z) {
+    pre  <- rnorm(n, mean = base_mean + zone_offset[[z]], sd = base_sd)
+    post <- rnorm(n, mean = base_mean + shift + zone_offset[[z]], sd = base_sd)
+    
+    df <- tibble::tibble(
+      region = region,
+      metric = metric_id,
+      zone   = z,
+      period = factor(rep(c("pre-bloom", "post-bloom"), each = n),
+                      levels = c("pre-bloom", "post-bloom")),
+      value  = c(pre, post)
+    )
+    
+    # 👉 functional groups, not trophic
+    if (metric_id == "func_groups") {
+      func_groups_vec <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore")
+      df$group <- sample(func_groups_vec, size = nrow(df), replace = TRUE)
+    }
+    
+    df
+  }
+  
+  dplyr::bind_rows(
+    make_zone_df("Inside"),
+    make_zone_df("Outside")
+  )
+}
+
+
+# ---- Dummy % change table for HAB impacts -----------------------------------
+
+# Metrics to match the screenshot
+hab_metrics <- c(
+  "Species Richness",
+  "Number of site attached fish species",
+  "Number of shark and ray species",
+  "Count large fish (>200 mm)",
+  "Count and size of indicator species",
+  "Carnivore abundance",
+  "Herbivore abundance",
+  "Omnivore abundance"
+)
+
+# All regions available in the HAB data
+hab_regions <- sort(unique(hab_data$scores$region))
+
+# Deterministic dummy % change data for each region x metric
+set.seed(2025)
+hab_metric_change <- tidyr::expand_grid(
+  region = hab_regions,
+  metric = hab_metrics
+) |>
+  dplyr::mutate(
+    # negative = decline, positive = increase
+    inside_change  = round(runif(dplyr::n(), -70, -10)), # -70% … -10%
+    outside_change = round(runif(dplyr::n(), -70, -10)),
+  ) |>
+  dplyr::mutate(
+    overall_change = round((inside_change + outside_change) / 2)
+  )
+
+# ==== DUMMY COMMON-SPECIES DATA FOR EACH REGION =============================
+
+# All HAB regions (10)
+hab_regions <- sort(unique(hab_data$scores$region))
+
+# Paste the species list as a single string (omit the "genus_species" header)
+species_text <- "
+Acanthaluteres brownii
+Acanthaluteres spilomelanurus
+Acanthaluteres vittiger
+Achoerodus gouldii
+Anoplocapros amygdaloides
+Anoplocapros lenticularis
+Aplodactylus arctidens
+Aptychotrema vincentiana
+Aracana aurita
+Aracana ornata
+Arripis georgianus
+Arripis truttaceus
+Asymbolus vincenti
+Atherinidae spp
+Austrolabrus maculatus
+Bathytoshia brevicaudata
+Bodianus frenchii
+Brachaluteres jacksonianus
+Caesioperca lepidoptera
+Caesioperca rasor
+Callorhinchus milii
+Carcharhinus brachyurus
+Carcharodon carcharias
+Centroberyx gerrardi
+Centroberyx lineatus
+Chelmonops curiosus
+Chirodactylus spectabilis
+Chironemus georgianus
+Chironemus maculosus
+Chrysophrys auratus
+Coris auricularis
+Dactylophora nigricans
+Dinolestes lewini
+Diodon nicthemerus
+Dotalabrus aurantiacus
+Enoplosus armatus
+Eubalichthys bucephalus
+Eubalichthys cyanoura
+Eubalichthys gunnii
+Eubalichthys mosaicus
+Eupetrichthys angustipes
+Furgaleus macki
+Galeorhinus galeus
+Genypterus tigerinus
+Girella zebra
+Gobiesocidae spp
+Gobiidae spp
+Gymnapistes marmoratus
+Gymnothorax prasinus
+Haletta semifasciata
+Helcogramma decurrens
+Heterodontus portusjacksoni
+Heteroscarus acroptilus
+Hippocampus spp
+Hyperlophus vittatus
+Hypoplectrodes nigroruber
+Hyporhamphus melanochir
+Iso rhothophilus
+Kyphosus sydneyanus
+Latropiscis purpurissatus
+Leptoichthys fistularius
+Lotella rhacina
+Meuschenia australis
+Meuschenia flavolineata
+Meuschenia freycineti
+Meuschenia galii
+Meuschenia hippocrepis
+Meuschenia scaber
+Meuschenia venusta
+Monacanthidae juvenile
+Mustelus antarcticus
+Myliobatis tenuicaudatus
+Neatypus obliquus
+Nelusetta ayraud
+Nemadactylus macropterus
+Nemadactylus valenciennesi
+Neoodax balteatus
+Neosebastes bougainvillii
+Neosebastes pandus
+Neosebastes scorpaenoides
+Notolabrus fucicola
+Notolabrus parilus
+Notolabrus tetricus
+Olisthops cyanomelas
+Omegophora armilla
+Omegophora cyanopunctata
+Ophthalmolepis lineolatus
+Oplegnathus woodwardi
+Othos dentex
+Parapercis haackei
+Parapercis ramsayi
+Paraplesiops meleagris
+Parascyllium ferrugineum
+Parascyllium variolatum
+Parequula melbournensis
+Parma victoriae
+Pelates octolineatus
+Pempheris klunzingeri
+Pempheris multiradiata
+Pentaceropsis recurvirostris
+Phyllopteryx taeniolatus
+Pictilabrus laticlavius
+Platycephalus aurimaculatus
+Platycephalus bassensis
+Platycephalus grandispinis
+Platycephalus speculator
+Pseudocaranx spp
+Pseudogoniistius nigripes
+Pseudolabrus rubicundus
+Pseudophycis bachus
+Pseudophycis barbata
+Pseudorhombus arsius
+Scobinichthys granulatus
+Scomber australasicus
+Scorpis aequipinnis
+Scorpis georgiana
+Scorpis lineolata
+Seriola hippos
+Seriola lalandi
+Sillaginodes punctatus
+Sillago spp
+Siphamia cephalotes
+Siphonognathus attenuatus
+Siphonognathus beddomei
+Siphonognathus caninis
+Siphonognathus tanyourus
+Sphyraena forsteri
+Sphyraena novaehollandiae
+Sphyrna zygaena
+Spiniraja whitleyi
+Squalus megalops
+Sutorectus tentaculatus
+Syngnathidae spp
+Tetractenos glaber
+Thamnaconus degeni
+Thyrsites atun
+Tilodon sexfasciatus
+Torquigener pleurogramma
+Trachichthys australis
+Trachinops noarlungae
+Trachurus declivis
+Trachurus novaezelandiae
+Trygonoptera mucosa
+Trygonorrhina dumerilii
+Upeneichthys vlamingii
+Urolophus gigas
+Urolophus spp
+Vincentia conspersa
+Coscinasterias muricata
+Diogenidae spp
+Jasus edwardsii
+Leptomithrax gaimardii
+Melicertus latisulcatus
+Naxia aurita
+Nectocarcinus integrifrons
+Neophoca cinerea
+Macroctopus maorum
+Octopodidae spp
+Ovalipes australiensis
+Ozius truncatus
+Pectinidae spp
+Phalacrocorax spp
+Plagusia chabrus
+Portunus armatus
+Pycnogonidae spp
+Sagaminopteron ornatum
+Sepia apama
+Sepioteuthis australis
+Tursiops spp
+"
+
+hab_species <- scan(text = species_text, what = character(), sep = "\n", quiet = TRUE)
+
+# drop any accidental blanks / "Nil Nil" if present
+hab_species <- hab_species[nchar(hab_species) > 0 & hab_species != "Nil Nil"]
+
+length(hab_species)  # just to sanity check
+
+set.seed(4242)
+
+# Pick a set of species that tend to be common everywhere
+global_common_species <- sample(hab_species, 15)
+
+# Base lambda per region x species (bigger for globally common spp)
+base_abund <- tidyr::expand_grid(
+  region  = hab_regions,
+  species = hab_species
+) |>
+  dplyr::mutate(
+    base_lambda = ifelse(
+      species %in% global_common_species,
+      runif(dplyr::n(), 30, 80),  # common spp
+      runif(dplyr::n(), 2, 20)    # rarer spp
+    )
+  )
+
+# Pre-bloom counts
+pre_counts <- base_abund |>
+  dplyr::transmute(
+    region,
+    species,
+    period = "Pre-bloom",
+    count  = rpois(dplyr::n(), lambda = base_lambda)
+  )
+
+# Post-bloom counts (generally lower; region-specific severity)
+severity_by_region <- runif(length(hab_regions), 0.25, 0.75)  # 25–75% of pre
+names(severity_by_region) <- hab_regions
+
+post_counts <- base_abund |>
+  dplyr::mutate(
+    lambda_post = base_lambda * severity_by_region[region]
+  ) |>
+  dplyr::transmute(
+    region,
+    species,
+    period = "Post-bloom",
+    count  = pmax(0L, rpois(dplyr::n(), lambda = lambda_post))
+  )
+
+# Final long table used for plotting
+hab_species_counts <- dplyr::bind_rows(pre_counts, post_counts)
+
+# Columns: region, species, period ("Pre-bloom"/"Post-bloom"), count
+
+
+
+# # Replace with your sheet URL or ID
+# survey_plan <- googlesheets4::read_sheet(
+#   "https://docs.google.com/spreadsheets/d/1QxTP_s58cbhLYB4GIuS39wK1c3QfBu8TGbUhV9rD3FY/edit?gid=1319001580#gid=1319001580",
+#   sheet = "reporting_region_summary"   # or "Sheet1" etc.
+# )
+
+# Helper: map % complete -> value_box colour
+completion_theme <- function(p) {
+  if (is.na(p)) {
+    "secondary"
+  } else if (p < 50) {
+    "danger"   # red
+  } else if (p < 100) {
+    "warning"  # yellow
+  } else {
+    "green"  # green
+  }
+}
+
+# ==== MARINE PARK DUMMY DATA =================================================
+
+marine_parks <- parks   # just an alias for clarity
+
+## --- Survey / effort plan per marine park -----------------------------------
+
+set.seed(3001)
+
+mp_survey_plan <- tibble::tibble(
+  park = marine_parks,
+  methods = sample(
+    c("BRUVS", "BRUVS, ROV"),
+    length(marine_parks),
+    replace = TRUE,
+    prob = c(0.7, 0.3)
+  ),
+  planned_number_sites = sample(seq(6, 40, by = 2),
+                                length(marine_parks),
+                                replace = TRUE)
+) |>
+  dplyr::mutate(
+    planned_number_drops = planned_number_sites *
+      sample(c(3L, 4L, 5L), dplyr::n(), replace = TRUE),
+    planned_number_transects = dplyr::if_else(
+      grepl("ROV", methods),
+      sample(seq(10, 40, by = 2), dplyr::n(), replace = TRUE),
+      0L
+    ),
+    prop_done_sites = runif(dplyr::n(), 0, 1),
+    complete_number_sites = round(planned_number_sites * prop_done_sites),
+    complete_number_drops = round(planned_number_drops *
+                                    runif(dplyr::n(), 0, 1)),
+    complete_number_transects = dplyr::if_else(
+      planned_number_transects > 0,
+      round(planned_number_transects * runif(dplyr::n(), 0, 1)),
+      0L
+    ),
+    percent_sites_completed = round(
+      100 * complete_number_sites / pmax(planned_number_sites, 1),
+      1
+    )
+  )
+
+## --- % change by metric (Inside / Outside / Overall) ------------------------
+
+mp_metric_change <- tidyr::expand_grid(
+  park   = marine_parks,
+  metric = hab_metrics    # reuse the same metric labels as HAB summary
+) |>
+  dplyr::mutate(
+    inside_change  = round(runif(dplyr::n(), -70, -10)),
+    outside_change = round(runif(dplyr::n(), -70, -10))
+  ) |>
+  dplyr::mutate(
+    overall_change = round((inside_change + outside_change) / 2)
+  )
+
+## --- Common species per park (pre/post) -------------------------------------
+
+# Reuse the species list you already defined: hab_species, global_common_species
+
+mp_base_abund <- tidyr::expand_grid(
+  park    = marine_parks,
+  species = hab_species
+) |>
+  dplyr::mutate(
+    base_lambda = ifelse(
+      species %in% global_common_species,
+      runif(dplyr::n(), 30, 80),
+      runif(dplyr::n(), 2, 20)
+    )
+  )
+
+# Pre-bloom counts
+pre_mp <- mp_base_abund |>
+  dplyr::transmute(
+    park,
+    species,
+    period = "Pre-bloom",
+    count  = rpois(dplyr::n(), lambda = base_lambda)
+  )
+
+# Post-bloom counts with park-specific severity
+severity_by_park <- runif(length(marine_parks), 0.25, 0.75)
+names(severity_by_park) <- marine_parks
+
+post_mp <- mp_base_abund |>
+  dplyr::mutate(
+    lambda_post = base_lambda * severity_by_park[park]
+  ) |>
+  dplyr::transmute(
+    park,
+    species,
+    period = "Post-bloom",
+    count  = pmax(0L, rpois(dplyr::n(), lambda = lambda_post))
+  )
+
+mp_species_counts <- dplyr::bind_rows(pre_mp, post_mp)
+# cols: park, species, period, count
