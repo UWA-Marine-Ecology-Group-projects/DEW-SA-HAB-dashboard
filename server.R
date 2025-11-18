@@ -134,7 +134,7 @@ twoValueBoxServer <- function(id,
 
 server <- function(input, output, session) {
   
-  regions_joined <- hab_data$shp |>
+  regions_joined <- hab_data$regions_shp |>
     left_join(hab_data$scores, by = "region") %>% 
     glimpse()
   
@@ -391,7 +391,7 @@ server <- function(input, output, session) {
   output$summary_text <- renderUI({
     req(selected_region())
     reg <- selected_region()
-    txt <- hab_data$summaries |>
+    txt <- hab_data$regions_summaries |>
       filter(region == reg) |>
       pull(summary) #|> 
     #{ if (length(.) == 0) "No summary available for this region yet." else .[1] }

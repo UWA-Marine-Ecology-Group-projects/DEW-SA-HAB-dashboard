@@ -99,9 +99,7 @@ ui <- page_navbar(
           div(class = "col-12", 
               uiOutput("region_title"),
               uiOutput("survey_value_boxes")),
-          
-          
-          
+
           layout_columns(
             col_widths = c(6, 6),
             card(
