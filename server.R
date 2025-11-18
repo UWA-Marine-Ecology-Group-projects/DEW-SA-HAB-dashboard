@@ -38,12 +38,13 @@ base_map <- function(max_zoom = 11, current_zoom = 6) {
       title = "Australian Marine Park Zones",
       position = "bottomleft",
       group = "Australian Marine Parks"
-    ) |>
-    addLayersControl(
-      overlayGroups = c("Australian Marine Parks", "State Marine Parks", "Sampling locations"),
-      options = layersControlOptions(collapsed = FALSE),
-      position = "topright"
-    )
+    ) #|>
+    # addLayersControl(
+    #   overlayGroups = c("Australian Marine Parks", "State Marine Parks"#, "Sampling locations"
+    #                     ),
+    #   options = layersControlOptions(collapsed = FALSE),
+    #   position = "topright"
+    # )
 }
 
 # viridis colours for depth using full domain for consistent legend
@@ -311,13 +312,20 @@ server <- function(input, output, session) {
         weight = 1,
         fillOpacity = 0.7,
         fillColor = ~hab_data$pal_factor(regions_joined$overall),
+        group = "Impact regions",
         highlightOptions = highlightOptions(color = "black", weight = 2, bringToFront = TRUE)
       ) |>
       addLegend("bottomright",
                 title = "Overall Impact",
                 colors = unname(hab_data$pal_vals[hab_data$ordered_levels]),
                 labels = c("High", "Medium","Low"),
-                opacity = 0.8)
+                opacity = 0.8,
+                group = "Impact regions") |>
+  addLayersControl(
+    overlayGroups = c("Australian Marine Parks", "State Marine Parks", "Impact regions"),
+    options = layersControlOptions(collapsed = FALSE),
+    position = "topright"
+  )
   })
   
   # Click handler
@@ -827,9 +835,9 @@ server <- function(input, output, session) {
   
   # 1) Filter to selected region
   survey_region <- reactive({
-    req(input$em_region)
+    req(selected_region())
     df <- hab_data$survey_plan %>%
-      dplyr::filter(reporting_region == input$em_region)
+      dplyr::filter(reporting_region == selected_region())
     df[1, ]
   })
   

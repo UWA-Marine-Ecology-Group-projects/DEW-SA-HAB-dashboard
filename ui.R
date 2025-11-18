@@ -90,10 +90,17 @@ ui <- page_navbar(
       # ---- MAIN (scrolls) ----
       div(
         class = "container-fluid",
+        
+        # Survey progress boxes (sites, BRUVS, ROV, %)
+
         div(
           class = "row g-3",
           
-          div(class = "col-12", uiOutput("region_title")),
+          div(class = "col-12", 
+              uiOutput("region_title"),
+              uiOutput("survey_value_boxes")),
+          
+          
           
           layout_columns(
             col_widths = c(6, 6),
@@ -190,12 +197,6 @@ ui <- page_navbar(
         # (checkboxGroupInput removed)
         helpText("Each tab shows pre/post boxplots. Use region filter to switch.")
       ),
-      
-      
-      # Survey progress boxes (sites, BRUVS, ROV, %)
-      uiOutput("survey_value_boxes"),
-      
-      
       
       div(
         class = "container-fluid",

@@ -151,12 +151,14 @@ twoValueBoxUI <- function(id,
                           left_label  = "pre-bloom",
                           right_label = "post-bloom",
                           icon        = icon("ship", class = "fa-xl"),
-                          theme_color = "secondary") {
+                          theme_color = "secondary",
+                          height = 200) {
   ns <- NS(id)
   value_box(
     title = title,
     theme_color = theme_color,
     showcase = icon,
+    height = height,
     class = "pp-title-center",
     value = div(
       class = "pp-wrap",
@@ -567,40 +569,39 @@ marine_parks <- parks   # just an alias for clarity
 
 set.seed(3001)
 
-mp_survey_plan <- tibble::tibble(
-  park = marine_parks,
-  methods = sample(
-    c("BRUVS", "BRUVS, ROV"),
-    length(marine_parks),
-    replace = TRUE,
-    prob = c(0.7, 0.3)
-  ),
-  planned_number_sites = sample(seq(6, 40, by = 2),
-                                length(marine_parks),
-                                replace = TRUE)
-) |>
-  dplyr::mutate(
-    planned_number_drops = planned_number_sites *
-      sample(c(3L, 4L, 5L), dplyr::n(), replace = TRUE),
-    planned_number_transects = dplyr::if_else(
-      grepl("ROV", methods),
-      sample(seq(10, 40, by = 2), dplyr::n(), replace = TRUE),
-      0L
-    ),
-    prop_done_sites = runif(dplyr::n(), 0, 1),
-    complete_number_sites = round(planned_number_sites * prop_done_sites),
-    complete_number_drops = round(planned_number_drops *
-                                    runif(dplyr::n(), 0, 1)),
-    complete_number_transects = dplyr::if_else(
-      planned_number_transects > 0,
-      round(planned_number_transects * runif(dplyr::n(), 0, 1)),
-      0L
-    ),
-    percent_sites_completed = round(
-      100 * complete_number_sites / pmax(planned_number_sites, 1),
-      1
-    )
-  )
+# mp_survey_plan <- tibble::tibble(
+#   park = marine_parks,
+#   methods = sample(
+#     c("BRUVS", "BRUVS, ROV"),
+#     replace = TRUE,
+#     prob = c(0.7, 0.3)
+#   ),
+#   planned_number_sites = sample(seq(6, 40, by = 2),
+#                                 length(marine_parks),
+#                                 replace = TRUE)
+# ) |>
+#   dplyr::mutate(
+#     planned_number_drops = planned_number_sites *
+#       sample(c(3L, 4L, 5L), dplyr::n(), replace = TRUE),
+#     planned_number_transects = dplyr::if_else(
+#       grepl("ROV", methods),
+#       sample(seq(10, 40, by = 2), dplyr::n(), replace = TRUE),
+#       0L
+#     ),
+#     prop_done_sites = runif(dplyr::n(), 0, 1),
+#     complete_number_sites = round(planned_number_sites * prop_done_sites),
+#     complete_number_drops = round(planned_number_drops *
+#                                     runif(dplyr::n(), 0, 1)),
+#     complete_number_transects = dplyr::if_else(
+#       planned_number_transects > 0,
+#       round(planned_number_transects * runif(dplyr::n(), 0, 1)),
+#       0L
+#     ),
+#     percent_sites_completed = round(
+#       100 * complete_number_sites / pmax(planned_number_sites, 1),
+#       1
+#     )
+#   )
 
 ## --- % change by metric (Inside / Outside / Overall) ------------------------
 
