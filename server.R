@@ -114,7 +114,7 @@ twoValueBoxServer <- function(id,
         "<span style='color: rgba(194,194,194,0.6); 
                       font-size: 0.85rem; 
                       font-style: italic;'>
-           No data available yet
+           Surveys incomplete
          </span>"
       } else {
         format_fn(x)
@@ -130,7 +130,7 @@ twoValueBoxServer <- function(id,
         "<span style='color: rgba(194,194,194,0.6); 
                       font-size: 0.85rem; 
                       font-style: italic;'>
-           No data available yet
+           Surveys incomplete
          </span>"
       } else {
         format_fn(x)
@@ -160,7 +160,7 @@ safe_pull <- function(expr) {
 server <- function(input, output, session) {
   
   regions_joined <- hab_data$regions_shp |>
-    left_join(hab_data$scores, by = "region") %>% 
+    left_join(hab_data$regions_summaries, by = "region") %>% 
     glimpse()
   
   # Default selected region (first available)
@@ -518,7 +518,7 @@ server <- function(input, output, session) {
   output$selected_region_badge <- renderUI({
     req(selected_region())
     reg <- selected_region()
-    ov <- hab_data$scores |> 
+    ov <- hab_data$regions_summaries |> 
       filter(region == reg) |> 
       pull(overall) |> 
       as.character()
@@ -561,9 +561,9 @@ server <- function(input, output, session) {
     
     reg <- selected_region()
     
-    txt <- hab_data$scores |>
+    txt <- hab_data$overall_impact |>
       filter(region == reg) |>
-      pull(overall)
+      pull(overall_impact)
     
     overall <- half_donut_with_dial(
       values = c(1, 1, 1),
@@ -572,6 +572,8 @@ server <- function(input, output, session) {
     ) 
     
     overall
+    
+    # TODO I think I need someway to say no pointer due to surveys not being completed
   })
   
   output$combinedplot <- renderPlot({ 
@@ -580,10 +582,10 @@ server <- function(input, output, session) {
     reg <- selected_region()
     
     # Species Richness
-    
-    txt <- hab_data$scores |>
+    txt <- hab_data$impact_data |>
       filter(region == reg) |>
-      pull(species_richness)
+      filter(impact_metric == "species_richness") |>
+      pull(impact)
     
     p1 <- half_donut_with_dial(
       values = c(1, 1, 1),
@@ -595,9 +597,10 @@ server <- function(input, output, session) {
     
     # Shark and Ray Abundance
     
-    txt <- hab_data$scores |>
+    txt <- hab_data$impact_data |>
       filter(region == reg) |>
-      pull(shark_and_ray_abundance)
+      filter(impact_metric == "shark_ray_abundance") |>
+      pull(impact)
     
     p2 <- half_donut_with_dial(
       values = c(1, 1, 1),
@@ -609,9 +612,10 @@ server <- function(input, output, session) {
     
     # Site attached/reef associated species abundance
     
-    txt <- hab_data$scores |>
+    txt <- hab_data$impact_data |>
       filter(region == reg) |>
-      pull(site_attached_and_reef_associated_species_abundance)
+      filter(impact_metric == "reef_associated_abundance") |>
+      pull(impact)
     
     p3 <- half_donut_with_dial(
       values = c(1, 1, 1),
@@ -624,9 +628,10 @@ server <- function(input, output, session) {
     
     # Fish greater than 200 mm abundance
     
-    txt <- hab_data$scores |>
+    txt <- hab_data$impact_data |>
       filter(region == reg) |>
-      pull(fish_greater_than_200mm_abundance)
+      filter(impact_metric == "fish_200_abundance") |>
+      pull(impact)
     
     p4 <- half_donut_with_dial(
       values = c(1, 1, 1),
@@ -636,8 +641,6 @@ server <- function(input, output, session) {
       labs(title = str_wrap("Fish greater than 200 mm abundance", width = 20)) +
       # ggtitle("Fish greater than 200 mm abundance") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-    
-    
     
     final_plot <- p1 + p2 + p3 + p4 + plot_layout(ncol = 4)
     
@@ -1035,13 +1038,12 @@ server <- function(input, output, session) {
   # 5) Unified layout for all boxes
   # ---- Single layout for all progress value boxes --------------------------
   output$survey_value_boxes <- renderUI({
-    df <- survey_region()
+    df  <- survey_region()
     pct <- df$percent_sites_completed
     vb_col <- completion_theme(pct)
     
     has_rov_val <- has_rov()
     
-    # Define the 3 “always” boxes
     sites_box <- twoValueBoxUI(
       id          = "sites_progress",
       title       = "Sites",
@@ -1069,7 +1071,7 @@ server <- function(input, output, session) {
     )
     
     if (has_rov_val) {
-      # 4 boxes: 3 + ROV (each 1/4 of the row)
+      # 4 boxes → 2 per row (width = 1/2)
       rov_box <- twoValueBoxUI(
         id          = "rov_progress",
         title       = "ROV transects",
@@ -1079,8 +1081,8 @@ server <- function(input, output, session) {
         theme_color = "secondary"
       )
       
-      layout_columns(
-        col_widths = c(3, 3, 3, 3),
+      layout_column_wrap(
+        width = 1/2,
         sites_box,
         bruvs_box,
         rov_box,
@@ -1088,9 +1090,9 @@ server <- function(input, output, session) {
       )
       
     } else {
-      # 3 boxes, each 1/3 of the row – no wrapping
-      layout_columns(
-        col_widths = c(4, 4, 4),
+      # 3 boxes → 3 on one row (width = 1/3)
+      layout_column_wrap(
+        width = 1/3,
         sites_box,
         bruvs_box,
         pct_box

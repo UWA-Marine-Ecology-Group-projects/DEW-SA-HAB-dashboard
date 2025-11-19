@@ -148,7 +148,7 @@ twoValueBoxUI <- function(id,
                           right_label = "Bloom",
                           icon        = icon("ship", class = "fa-xl"),
                           theme_color = "secondary",
-                          height = 200) {
+                          height = 125) {
   ns <- NS(id)
   value_box(
     title = title,
@@ -287,7 +287,7 @@ hab_metrics <- c(
 )
 
 # All regions available in the HAB data
-hab_regions <- sort(unique(hab_data$scores$region))
+hab_regions <- sort(unique(hab_data$regions_summaries$region))
 
 # Deterministic dummy % change data for each region x metric
 set.seed(2025)
@@ -307,7 +307,7 @@ hab_metric_change <- tidyr::expand_grid(
 # ==== DUMMY COMMON-SPECIES DATA FOR EACH REGION =============================
 
 # All HAB regions (10)
-hab_regions <- sort(unique(hab_data$scores$region))
+hab_regions <- sort(unique(hab_data$regions_summaries$region))
 
 # Paste the species list as a single string (omit the "genus_species" header)
 species_text <- "
