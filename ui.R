@@ -137,7 +137,7 @@ ui <- page_navbar(
               
               twoValueBoxUI(
                 id = "fish_counted",
-                title = "Fish counted",
+                title = "Total number of fish counted",
                 icon = icon("fish-fins", class = "fa-xl")
               ),
               

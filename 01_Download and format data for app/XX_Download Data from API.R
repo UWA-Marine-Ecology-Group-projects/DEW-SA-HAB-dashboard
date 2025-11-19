@@ -31,182 +31,19 @@ campaign_list <- c("2015-16_SA_MPA_UpperGSV_StereoBRUVS",
                    "202111-202205_SA Commonwealth Marine Park Monitoring_StereoBRUVS")
 
 
-## Load in data again to save time ----
-metadata <- readRDS("data/raw/metadata.RDS") %>% filter(campaignid %in% c(campaign_list))
-count <- readRDS("data/raw/count.RDS") %>% left_join(metadata %>% select(sample_url, campaignid)) %>% filter(campaignid %in% c(campaign_list))
-length <- readRDS("data/raw/length.RDS") %>% left_join(metadata %>% select(sample_url, campaignid)) %>% filter(campaignid %in% c(campaign_list))
-benthos <- readRDS("data/raw/benthos_summarised.RDS") %>% filter(campaignid %in% c(campaign_list))
-relief <- readRDS("data/raw/relief_summarised.RDS") %>% filter(campaignid %in% c(campaign_list))
-
-species_list <- ga_api_species_list(token = token)
-
-fish_species <- species_list %>%
-  dplyr::filter(class_value %in% c("Actinopterygii", "Elasmobranchii", "Myxini"))
-
-unique(species_list$class_value)
-
-# Fix locations in the metadata ----
-metadata_sf <- metadata %>%
-  st_as_sf(coords = c("longitude_dd", "latitude_dd"), crs = 4326)
-
-metadata_sf <- st_transform(metadata_sf, st_crs(state.mp))
-metadata_locs <- st_join(metadata_sf, state.mp %>% st_cast("POLYGON")) %>%
-  dplyr::mutate(location = resname) %>%
-  glimpse()
-
-unique(metadata_locs$location)
-
-rls_metadata_sf <- rls_metadata %>%
-  st_as_sf(coords = c("longitude_dd", "latitude_dd"), crs = 4326)
-
-rls_metadata_sf <- st_transform(rls_metadata_sf, st_crs(state.mp))
-rls_metadata_locs <- st_join(rls_metadata_sf, state.mp %>% st_cast("POLYGON")) %>%
-  dplyr::mutate(location = resname) %>%
-  glimpse()
-
-unique(rls_metadata_locs$location)
-
-# Get HAB regions ----
-hab_regions <- read_sf("data/spatial/Reporting_regions_30102025.shp") %>%
-  dplyr::rename(region = RegionName) %>%
-  glimpse()
-
-hab_regions <- st_transform(hab_regions, st_crs(state.mp))
-
-rls_metadata_with_regions <- st_join(rls_metadata_locs, hab_regions) %>%
-  glimpse()
-
-metadata_with_regions <- st_join(metadata_locs, hab_regions) %>%
-  glimpse()
-
-combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
-                               metadata_with_regions %>% dplyr::mutate(method = "BRUVs")) %>%
-  select(sample_url, survey_id, date_time, survey_date, location, region, geometry, depth_m, method)
-
-names(combined_metadata) %>% sort()
-
-# # Create metrics for dashboard ----
-# # Number of deployments ----
-# number_of_deployments <- nrow(metadata)
-# number_of_deployments
-# 
-# number_of_deployments_rls <- nrow(rls_metadata)
-
-# HAB -----
-
-hab_number_bruv_deployments <- metadata_with_regions %>%
-  dplyr::group_by(region) %>%
-  dplyr::summarise(number = n()) %>%
-  ungroup() %>%
-  sf::st_drop_geometry() %>%
-  dplyr::filter(!is.na(region))
-
-hab_number_rls_deployments <- rls_metadata_with_regions %>%
-  dplyr::group_by(region) %>%
-  dplyr::summarise(number = n()) %>%
-  ungroup() %>%
-  sf::st_drop_geometry() %>%
-  dplyr::filter(!is.na(region))
+# ## Load in data again to save time ----
+# metadata <- readRDS("data/raw/metadata.RDS") %>% filter(campaignid %in% c(campaign_list))
+# count <- readRDS("data/raw/count.RDS") %>% left_join(metadata %>% select(sample_url, campaignid)) %>% filter(campaignid %in% c(campaign_list))
+# length <- readRDS("data/raw/length.RDS") %>% left_join(metadata %>% select(sample_url, campaignid)) %>% filter(campaignid %in% c(campaign_list))
+# benthos <- readRDS("data/raw/benthos_summarised.RDS") %>% filter(campaignid %in% c(campaign_list))
+# relief <- readRDS("data/raw/relief_summarised.RDS") %>% filter(campaignid %in% c(campaign_list))
 
 
-# Number of fish -----
-bruv_count_regions <- count %>%
-  left_join(metadata_with_regions) %>%
-  dplyr::select(sample_url, family, genus, species, region, count)
 
-rls_count_regions <- rls_count %>%
-  left_join(rls_metadata_with_regions) %>%
-  dplyr::select(survey_id, family, genus, species, region, count)# %>%
-# dplyr::rename(sample_url = survey_id)
 
-combined_count <- bind_rows(bruv_count_regions, rls_count_regions)
 
-hab_number_of_fish <- combined_count %>%
-  semi_join(fish_species) %>%
-  dplyr::group_by(region) %>%
-  summarise(number = sum(count)) %>%
-  ungroup() %>%
-  dplyr::filter(!is.na(region))
 
-# Number of fish species ----
-hab_number_of_fish_species <- combined_count %>%
-  semi_join(fish_species) %>%
-  dplyr::group_by(region) %>%
-  dplyr::summarise(number = n_distinct(paste(family, genus, species, sep = "_"))) %>%
-  dplyr::filter(!is.na(region))
 
-# Number of non-fish species ----
-hab_number_of_nonfish_species <- combined_count %>%
-  anti_join(fish_species) %>%
-  dplyr::group_by(region) %>%
-  dplyr::summarise(number = n_distinct(paste(family, genus, species, sep = "_"))) %>%
-  dplyr::filter(!is.na(region))
-
-# # Number of length measurements -----
-# number_of_measurements <- length %>%
-#   semi_join(fish_species) %>%
-#   dplyr::filter(!is.na(length_mm)) %>%
-#   summarise(number_of_measurements = sum(count)) %>%
-#   pull()
-# 
-# number_of_measurements
-# 
-# number_of_measurements_rls <- rls_length %>%
-#   semi_join(fish_species) %>%
-#   dplyr::filter(!is.na(length_mm)) %>%
-#   summarise(number_of_measurements = sum(count)) %>%
-#   pull()
-# 
-# number_of_measurements_rls
-
-# Depths surveyed ----
-hab_min_depth <- combined_metadata %>%
-  sf::st_drop_geometry() %>%
-  filter(!depth_m == 0) %>%
-  dplyr::group_by(region) %>%
-  summarise(number = min(depth_m)) %>%
-  dplyr::filter(!is.na(region))
-
-hab_max_depth <- combined_metadata %>%
-  sf::st_drop_geometry() %>%
-  filter(!depth_m == 0) %>%
-  dplyr::group_by(region) %>%
-  summarise(number = max(depth_m)) %>%
-  dplyr::filter(!is.na(region))
-
-# Average depth ----
-hab_mean_depth <- combined_metadata %>%
-  sf::st_drop_geometry() %>%
-  filter(!depth_m == 0) %>%
-  dplyr::group_by(region) %>%
-  summarise(number = mean(depth_m)) %>%
-  dplyr::filter(!is.na(region))
-
-# Years sampled ----
-year_dat <- combined_metadata %>% 
-  dplyr::mutate(date_time = if_else(is.na(date_time), as.character(survey_date), as.character(date_time))) %>%
-  dplyr::mutate(year = str_sub(date_time, 1, 4))%>%
-  sf::st_drop_geometry()  %>%
-  dplyr::filter(!is.na(region))
-
-unique(year_dat$year)
-
-hab_min_year <- year_dat %>%
-  group_by(region) %>%
-  dplyr::summarise(number = min(year))
-
-hab_max_year <- year_dat %>%
-  group_by(region) %>%
-  dplyr::summarise(number = max(year))
-
-# # Deployments with benthos ----
-# deployments_benthos <- benthos %>%
-#   distinct(sample_url) %>%
-#   nrow(.)
-# 
-# deployments_relief <- relief %>%
-#   distinct(sample_url) %>%
-#   nrow(.)
 
 # Dataframes for plotting -----
 simple_metadata <- metadata %>%
@@ -670,20 +507,4 @@ rls_simple_metadata <- rls_metadata %>%
 # save(plots, file = here::here("app_data/plots.Rdata"))
 # 
 
-hab_dataframes <- structure(
-  list(
-    hab_max_depth = hab_max_depth,
-    hab_max_year = hab_max_year,
-    hab_mean_depth = hab_mean_depth,
-    hab_min_depth = hab_min_depth,
-    hab_min_year = hab_min_year,
-    hab_number_bruv_deployments = hab_number_bruv_deployments,
-    hab_number_of_fish = hab_number_of_fish,
-    hab_number_of_fish_species = hab_number_of_fish_species,
-    hab_number_of_nonfish_species = hab_number_of_nonfish_species,
-    hab_number_rls_deployments = hab_number_rls_deployments,
-    hab_combined_metadata = combined_metadata
-  )
-)
 
-save(hab_dataframes, file = here::here("app_data/hab_dataframes.Rdata"))

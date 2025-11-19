@@ -7,7 +7,7 @@ base_map <- function(max_zoom = 11, current_zoom = 6) {
     addMapPane("points", zIndex = 420) |>
     # Use regular polygons for static layers:
     addPolygons(
-      data = state.mp,                # or state.mp_s if you simplified
+      data = state_mp, 
       color = "black", weight = 1,
       fillColor = ~state.pal(zone), fillOpacity = 0.8,
       group = "State Marine Parks",
@@ -15,7 +15,7 @@ base_map <- function(max_zoom = 11, current_zoom = 6) {
       options = pathOptions(pane = "polys")
     ) |>
     addPolygons(
-      data = commonwealth.mp,         # or common.mp_s if simplified
+      data = commonwealth.mp,
       color = "black", weight = 1,
       fillColor = ~commonwealth.pal(zone), fillOpacity = 0.8,
       popup = ~ZoneName,
@@ -25,7 +25,7 @@ base_map <- function(max_zoom = 11, current_zoom = 6) {
     # Legends
     addLegend(
       pal = state.pal,
-      values = state.mp$zone,
+      values = state_mp$zone,
       opacity = 1,
       title = "State Zones",
       position = "bottomleft",
@@ -39,12 +39,12 @@ base_map <- function(max_zoom = 11, current_zoom = 6) {
       position = "bottomleft",
       group = "Australian Marine Parks"
     ) #|>
-    # addLayersControl(
-    #   overlayGroups = c("Australian Marine Parks", "State Marine Parks"#, "Sampling locations"
-    #                     ),
-    #   options = layersControlOptions(collapsed = FALSE),
-    #   position = "topright"
-    # )
+  # addLayersControl(
+  #   overlayGroups = c("Australian Marine Parks", "State Marine Parks"#, "Sampling locations"
+  #                     ),
+  #   options = layersControlOptions(collapsed = FALSE),
+  #   position = "topright"
+  # )
 }
 
 # viridis colours for depth using full domain for consistent legend
@@ -97,36 +97,61 @@ filter_by_park <- function(df, park, park_col = "location") {
   dplyr::filter(df, .data[[park_col]] %in% park)
 }
 
-# Server: either provide total_reactive (and we split 75/25) OR provide both values
 twoValueBoxServer <- function(id,
-                              total_reactive = NULL,       # reactive() that returns a single total
-                              left_reactive  = NULL,       # optional reactive for left value
-                              right_reactive = NULL,       # optional reactive for right value
-                              left_prop = 0.75,            # used if total_reactive is given
+                              left_reactive,
+                              right_reactive,
                               format_fn = scales::label_comma()) {
+  
   moduleServer(id, function(input, output, session) {
     
-    # Decide where values come from
-    left_val <- reactive({
-      if (!is.null(left_reactive)) {
-        left_reactive()
+    left_val  <- reactive(left_reactive())
+    right_val <- reactive(right_reactive())
+    
+    output$left_val <- renderUI({
+      x <- left_val()
+      
+      html <- if (length(x) == 0 || is.null(x) || all(is.na(x))) {
+        "<span style='color: rgba(194,194,194,0.6); 
+                      font-size: 0.85rem; 
+                      font-style: italic;'>
+           No data available yet
+         </span>"
       } else {
-        validate(need(!is.null(total_reactive), "Provide total_reactive or both left/right reactives"))
-        round(total_reactive() * left_prop)
+        format_fn(x)
       }
+      
+      HTML(html)
     })
     
-    right_val <- reactive({
-      if (!is.null(right_reactive)) {
-        right_reactive()
+    output$right_val <- renderUI({
+      x <- right_val()
+      
+      html <- if (length(x) == 0 || is.null(x) || all(is.na(x))) {
+        "<span style='color: rgba(194,194,194,0.6); 
+                      font-size: 0.85rem; 
+                      font-style: italic;'>
+           No data available yet
+         </span>"
       } else {
-        validate(need(!is.null(total_reactive), "Provide total_reactive or both left/right reactives"))
-        round(total_reactive() * (1 - left_prop))
+        format_fn(x)
       }
+      
+      HTML(html)
     })
-    
-    output$left_val  <- renderText(format_fn(left_val()))
-    output$right_val <- renderText(format_fn(right_val()))
+  })
+}
+
+
+
+
+safe_pull <- function(expr) {
+  reactive({
+    val <- expr()
+    if (length(val) == 0 || is.null(val) || all(is.na(val))) {
+      NA_real_   # <- return numeric NA, not a string
+    } else {
+      val
+    }
   })
 }
 
@@ -144,110 +169,185 @@ server <- function(input, output, session) {
   })
   
   # Value boxes ----
-  number_bruv_deployments <- reactive({
-    hab_dataframes$hab_number_bruv_deployments %>%
-      dplyr::filter(region %in% selected_region()) %>%
-      pull(number)
+  # Number of BRUV Deployments ----
+  number_bruv_deployments_pre <- reactive({
+    x <- hab_data$hab_number_bruv_deployments %>%
+      dplyr::filter(period == "Pre-bloom",
+                    region %in% selected_region()) %>%
+      dplyr::pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
-  output$bruv_pre <- renderText({
-    total <- number_bruv_deployments()
-    scales::label_comma()(round(total * 0.75))
+  number_bruv_deployments_post <- reactive({
+    x <- hab_data$hab_number_bruv_deployments %>%
+      dplyr::filter(period == "Bloom",
+                    region %in% selected_region()) %>%
+      dplyr::pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
   twoValueBoxServer(
     id = "number_bruv_deployments",
-    total_reactive = number_bruv_deployments,
-    left_prop = 0.75,
+    left_reactive  = number_bruv_deployments_pre,
+    right_reactive = number_bruv_deployments_post,
     format_fn = scales::label_comma()
   )
   
-  number_rls_deployments <- reactive({
-    hab_dataframes$hab_number_rls_deployments %>%
+  # Number of UVC surveys ----
+  number_rls_deployments_pre <- safe_pull(function() {
+    x <- hab_data$hab_number_rls_deployments %>%
+      dplyr::filter(period %in% "Pre-bloom") %>%
       dplyr::filter(region %in% selected_region()) %>%
       pull(number)
+    if (length(x) == 0) NA_real_ else x
+  })
+  
+  number_rls_deployments_post <- safe_pull(function() {
+    x <- hab_data$hab_number_rls_deployments %>%
+      dplyr::filter(period %in% "Bloom") %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
   twoValueBoxServer(
     id = "number_rls_deployments",
-    total_reactive = number_rls_deployments,
-    left_prop = 0.75,
+    left_reactive  = number_rls_deployments_pre,
+    right_reactive = number_rls_deployments_post,
     format_fn = scales::label_comma()
   )
   
-  # output$number_rls_deployments <- renderText({
-  #   scales::label_comma()(number_rls_deployments())
-  # })
-  
-  fish_counted <- reactive({
-    hab_dataframes$hab_number_of_fish %>%
+  # Number of fish counted ----
+  fish_counted_pre <- safe_pull(function() {
+    x <- hab_data$hab_number_of_fish %>%
+      dplyr::filter(period %in% "Pre-bloom") %>%
       dplyr::filter(region %in% selected_region()) %>%
       pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
-  fish_counted_post <- reactive({
-    fish_counted() * 0.10
+  fish_counted_post <- safe_pull(function() {
+    x <- hab_data$hab_number_of_fish %>%
+      dplyr::filter(period %in% "Bloom") %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
   twoValueBoxServer(
     id = "fish_counted",
-    left_reactive  = fish_counted,
+    left_reactive  = fish_counted_pre,
     right_reactive = fish_counted_post,
     format_fn = scales::label_comma()
   )
-
-  fish_species <- reactive({
-    hab_dataframes$hab_number_of_fish_species %>%
+  
+  # Number of fish species ----
+  fish_species_pre <- safe_pull(function() {
+    x <- hab_data$hab_number_of_fish_species %>%
+      dplyr::filter(period %in% "Pre-bloom") %>%
       dplyr::filter(region %in% selected_region()) %>%
       pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
-  fish_species_post <- reactive({
-    fish_species() * 0.10
+  fish_species_post <- safe_pull(function() {
+    x <- hab_data$hab_number_of_fish_species %>%
+      dplyr::filter(period %in% "Bloom") %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
   # TODO probs doesn't make sense to split this for demo
   twoValueBoxServer(
     id = "fish_species",
-    left_reactive  = fish_species,
+    left_reactive  = fish_species_pre,
     right_reactive = fish_species_post,
     format_fn = scales::label_comma()
   )
   
-  non_fish_species <- reactive({
-    hab_dataframes$hab_number_of_nonfish_species %>%
+  # Number of other species ----
+  non_fish_species_pre <- safe_pull(function() {
+    x <- hab_data$hab_number_of_nonfish_species %>%
+      dplyr::filter(period %in% "Pre-bloom") %>%
       dplyr::filter(region %in% selected_region()) %>%
       pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
-  non_fish_species_post <- reactive({
-    non_fish_species() * 0.10
+  non_fish_species_post <- safe_pull(function() {
+    x <- hab_data$hab_number_of_nonfish_species %>%
+      dplyr::filter(period %in% "Bloom") %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      pull(number)
+    if (length(x) == 0) NA_real_ else x
   })
   
   twoValueBoxServer(
     id = "non_fish_species",
-    left_reactive  = non_fish_species,
+    left_reactive  = non_fish_species_pre,
     right_reactive = non_fish_species_post,
     format_fn = scales::label_comma()
   )
   
-  min_year <- reactive({
-    hab_dataframes$hab_min_year %>%
+  # Years surveyed----
+  min_year_pre <- reactive({
+    hab_data$hab_min_year %>%
       dplyr::filter(region %in% selected_region()) %>%
+      dplyr::filter(period %in% "Pre-bloom") %>%
       pull(number)
   })
   
-  max_year <- reactive({
-    hab_dataframes$hab_max_year %>%
+  max_year_pre <- reactive({
+    hab_data$hab_max_year %>%
       dplyr::filter(region %in% selected_region()) %>%
+      dplyr::filter(period %in% "Pre-bloom") %>%
       pull(number)
   })
   
   years_pre <- reactive({
-   paste0(min_year(), " - ", max_year()) 
+    paste0(min_year_pre(), " - ", max_year_pre()) 
   })
   
-  years_post <- reactive("2025")
+  min_year_post <- reactive({
+    hab_data$hab_min_year %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      dplyr::filter(period %in% "Bloom") %>%
+      pull(number)
+  })
+  
+  max_year_post <- reactive({
+    hab_data$hab_max_year %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      dplyr::filter(period %in% "Bloom") %>%
+      pull(number)
+  })
+  
+  years_post <- reactive({
+    min_year <- min_year_post()
+    max_year <- max_year_post()
+    
+    # If no data, bail out early with NA (character)
+    if (length(min_year) == 0 || length(max_year) == 0 ||
+        all(is.na(min_year)) || all(is.na(max_year))) {
+      return(NA_character_)
+    }
+    
+    # Coerce once
+    min_year_num <- as.numeric(min_year)
+    max_year_num <- as.numeric(max_year)
+    
+    # Safety: if still NA after coercion, treat as no data
+    if (is.na(min_year_num) || is.na(max_year_num)) {
+      return(NA_character_)
+    }
+    
+    if (min_year_num == max_year_num) {
+      as.character(min_year_num)
+    } else {
+      paste0(min_year_num, " - ", max_year_num)
+    }
+  })
   
   twoValueBoxServer(
     id = "years",
@@ -256,43 +356,98 @@ server <- function(input, output, session) {
     format_fn = as.character
   )
   
-  min_depth <- reactive({
-    hab_dataframes$hab_min_depth %>%
+  # Depth ranges ----
+  min_depth_pre <- reactive({
+    hab_data$hab_min_depth %>%
       dplyr::filter(region %in% selected_region()) %>%
+      dplyr::filter(period %in% "Pre-bloom") %>%
       pull(number)
   })
   
-  max_depth <- reactive({
-    hab_dataframes$hab_max_depth %>%
+  max_depth_pre <- reactive({
+    hab_data$hab_max_depth %>%
       dplyr::filter(region %in% selected_region()) %>%
+      dplyr::filter(period %in% "Pre-bloom") %>%
       pull(number)
   })
   
-  depths <- reactive({
-    paste0(scales::label_comma()(min_depth()), " - ", scales::label_comma()(max_depth()), " m") 
+  depth_pre <- reactive({
+    paste0(min_depth_pre(), " - ", max_depth_pre(), " m") 
+  })
+  
+  min_depth_post <- reactive({
+    hab_data$hab_min_depth %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      dplyr::filter(period %in% "Bloom") %>%
+      pull(number)
+  })
+  
+  max_depth_post <- reactive({
+    hab_data$hab_max_depth %>%
+      dplyr::filter(region %in% selected_region()) %>%
+      dplyr::filter(period %in% "Bloom") %>%
+      pull(number)
+  })
+  
+  depth_post <- reactive({
+    min_depth <- min_depth_post()
+    max_depth <- max_depth_post()
+    
+    # If no data, bail out early with NA (character)
+    if (length(min_depth) == 0 || length(max_depth) == 0 ||
+        all(is.na(min_depth)) || all(is.na(max_depth))) {
+      return(NA_character_)
+    }
+    
+    # Coerce once
+    min_depth_num <- as.numeric(min_depth)
+    max_depth_num <- as.numeric(max_depth)
+    
+    # Safety: if still NA after coercion, treat as no data
+    if (is.na(min_depth_num) || is.na(max_depth_num)) {
+      return(NA_character_)
+    }
+    
+    if (min_depth_num == max_depth_num) {
+      paste0(as.character(min_depth_num), " m")
+    } else {
+      paste0(min_depth_num, " - ", max_depth_num, " m")
+    }
   })
   
   twoValueBoxServer(
     id = "depths",
-    left_reactive  = depths,
-    right_reactive = depths,
+    left_reactive  = depth_pre,
+    right_reactive = depth_post,
     format_fn = as.character
   )
-  
-  mean_depth <- reactive({
-    hab_dataframes$hab_mean_depth %>%
-      dplyr::filter(region %in% selected_region()) %>%
+  # 
+  # depths <- reactive({
+  #   paste0(scales::label_comma()(min_depth()), " - ", scales::label_comma()(max_depth()), " m") 
+  # })
+  # Average Depth  ----
+  mean_depth_pre <- reactive({
+    x <- hab_data$hab_mean_depth %>%
+      dplyr::filter(period == "Pre-bloom",
+                    region %in% selected_region()) %>%
       pull(number)
+    
+    if (length(x) == 0) NA_real_ else paste0(scales::label_comma()(x), " m") 
   })
   
-  mean_depth_text <- reactive({
-    paste0(scales::label_comma()(mean_depth()), " m") 
+  mean_depth_post <- reactive({
+    x <- hab_data$hab_mean_depth %>%
+      dplyr::filter(period == "Bloom",
+                    region %in% selected_region()) %>%
+      pull(number)
+    
+    if (length(x) == 0) NA_real_ else paste0(scales::label_comma()(x), " m") 
   })
   
   twoValueBoxServer(
     id = "mean_depth",
-    left_reactive  = mean_depth_text,
-    right_reactive = mean_depth_text,
+    left_reactive  = mean_depth_pre,
+    right_reactive = mean_depth_post,
     format_fn = as.character
   )
   
@@ -321,11 +476,11 @@ server <- function(input, output, session) {
                 labels = c("High", "Medium","Low"),
                 opacity = 0.8,
                 group = "Impact regions") |>
-  addLayersControl(
-    overlayGroups = c("Australian Marine Parks", "State Marine Parks", "Impact regions"),
-    options = layersControlOptions(collapsed = FALSE),
-    position = "topright"
-  )
+      addLayersControl(
+        overlayGroups = c("Australian Marine Parks", "State Marine Parks", "Impact regions"),
+        options = layersControlOptions(collapsed = FALSE),
+        position = "topright"
+      )
   })
   
   # Click handler
@@ -490,7 +645,7 @@ server <- function(input, output, session) {
   })
   
   deployments <- reactive({
-    deployments <- hab_dataframes$hab_combined_metadata %>%
+    deployments <- hab_data$hab_combined_metadata %>%
       dplyr::filter(region %in% selected_region()) 
     
     # Extract coordinates
@@ -513,7 +668,7 @@ server <- function(input, output, session) {
   
   output$surveyeffort <- renderLeaflet({
     method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
-    pts <- ensure_sf_ll(hab_dataframes$hab_combined_metadata) %>%
+    pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
       dplyr::filter(region %in% selected_region())
     
     m <- base_map(current_zoom = 7) %>%
@@ -547,7 +702,7 @@ server <- function(input, output, session) {
               layerId = "methodLegend"
     ) %>%
       hideGroup("Australian Marine Parks")
-    })
+  })
   
   
   
@@ -567,7 +722,7 @@ server <- function(input, output, session) {
   # Build a tabbed card with one tab per metric
   output$em_tabset <- renderUI({
     req(input$em_region)
-
+    
     bslib::navset_card_tab(
       !!!lapply(names(metric_defs), function(id) {
         bslib::nav(
@@ -576,15 +731,15 @@ server <- function(input, output, session) {
           
           layout_columns(
             col_widths = c(6, 6),
-          withSpinner(
-            plotOutput(paste0("em_plot_", id, "_main"), height = 400),
-            type = 6
-          ),
-          # Optional: a second plot per metric (grouped/detail)
-          withSpinner(
-            plotOutput(paste0("em_plot_", id, "_detail"), height = 400),
-            type = 6
-          ))
+            withSpinner(
+              plotOutput(paste0("em_plot_", id, "_main"), height = 400),
+              type = 6
+            ),
+            # Optional: a second plot per metric (grouped/detail)
+            withSpinner(
+              plotOutput(paste0("em_plot_", id, "_detail"), height = 400),
+              type = 6
+            ))
         )
       })
     )
@@ -625,10 +780,10 @@ server <- function(input, output, session) {
             legend.position   = "bottom",
             plot.subtitle     = element_text(margin = margin(b = 6)),
             panel.grid.minor  = element_blank()
-            )
-            
+          )
+        
         p
-       
+        
       }) |>
         bindCache(input$em_region, id) |>
         bindEvent(input$em_region)
@@ -778,7 +933,7 @@ server <- function(input, output, session) {
   
   # Helper: top 5 by a given period, but plot both periods for context
   make_top10_plot <- function(region_name, focal_period = c("Pre-bloom", "Post-bloom"),
-                             title_lab = "Common species") {
+                              title_lab = "Common species") {
     
     focal_period <- match.arg(focal_period)
     
@@ -820,15 +975,15 @@ server <- function(input, output, session) {
   output$em_common_pre <- renderPlot({
     req(input$em_region)
     make_top10_plot(input$em_region,
-                   focal_period = "Pre-bloom",
-                   title_lab = "10 most common species pre-bloom")
+                    focal_period = "Pre-bloom",
+                    title_lab = "10 most common species pre-bloom")
   })
   
   output$em_common_post <- renderPlot({
     req(input$em_region)
     make_top10_plot(input$em_region,
-                   focal_period = "Post-bloom",
-                   title_lab = "10 most common species post-bloom")
+                    focal_period = "Post-bloom",
+                    title_lab = "10 most common species post-bloom")
   })
   
   # ---- Survey progress: filtered to selected reporting region --------------

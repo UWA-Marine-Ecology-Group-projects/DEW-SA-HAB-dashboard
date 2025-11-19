@@ -33,7 +33,6 @@ load("app_data/values.Rdata")
 load("app_data/dataframes.Rdata")
 load("app_data/plots.Rdata")
 load("app_data/hab_data.Rdata")
-load("app_data/hab_dataframes.Rdata")
 
 # Suppose the park names live in dataframes$parks$park (adjust as needed)
 all_deployments <- bind_rows(dataframes$deployment_locations, dataframes$deployment_locations_rls) %>% 
@@ -51,12 +50,9 @@ commonwealth.mp <- readRDS("app_data/spatial/commonwealth.mp.RDS") %>%
                                "Western Eyre",
                                "Western Kangaroo Island"))
 
-# unique(commonwealth.mp$NetName)
-# state.mp <- readRDS("app_data/spatial/state.mp.RDS")
+state_mp <- readRDS("app_data/spatial/sa_state_mp.RDS")
 
-state.mp <- readRDS("app_data/spatial/sa.state.mp.RDS")
-
-# state.mp  <- rmapshaper::ms_simplify(state.mp, keep = 0.5, keep_shapes = TRUE)
+# state_mp  <- rmapshaper::ms_simplify(state_mp, keep = 0.5, keep_shapes = TRUE)
 # commonwealth.mp <- rmapshaper::ms_simplify(commonwealth.mp, keep = 0.5, keep_shapes = TRUE)
 
 # Pallettes for maps ----
@@ -64,7 +60,7 @@ state.pal <- colorFactor(c("#f18080", # Restricted Access Zone (RAZ)
                            "#69a802", # Sanctuary Zone (SZ)
                            "#799CD2", # Habitat Protection (HPZ)
                            "#BED4EE" # General Managed Use Zone (GMUZ)
-), state.mp$zone)
+), state_mp$zone)
 
 # unique(state.mp$zone_type)
 
@@ -148,8 +144,8 @@ half_donut_with_dial(
 # ---- Two-value value_box helpers --------------------------------------------
 twoValueBoxUI <- function(id,
                           title,
-                          left_label  = "pre-bloom",
-                          right_label = "post-bloom",
+                          left_label  = "Pre-bloom",
+                          right_label = "Bloom",
                           icon        = icon("ship", class = "fa-xl"),
                           theme_color = "secondary",
                           height = 200) {
@@ -164,11 +160,11 @@ twoValueBoxUI <- function(id,
       class = "pp-wrap",
       div(class="pp-col",
           span(class="pp-lab", left_label),
-          span(class="pp-val", textOutput(ns("left_val")))
+          span(class="pp-val", uiOutput(ns("left_val")))
       ),
       div(class="pp-col",
           span(class="pp-lab", right_label),
-          span(class="pp-val", textOutput(ns("right_val")))
+          span(class="pp-val", uiOutput(ns("right_val")))
       )
     )
   )
