@@ -74,7 +74,7 @@ ui <- page_navbar(
   ),
   
   nav_panel(
-    "State Summary",
+    "Overview",
     
     layout_sidebar(
       sidebar = sidebar(
@@ -115,7 +115,7 @@ ui <- page_navbar(
           div(
             class = "col-12",
             card(
-              card_header("Indicators"),
+              card_header("Impact Indicators"),
               plotOutput("combinedplot", height = 220)
             ),
 
@@ -182,7 +182,7 @@ ui <- page_navbar(
   ),
   
   nav_panel(
-    "Explore Indicators & Metrics",
+    "Region Summary",
     layout_sidebar(
       sidebar = sidebar(
         width = "350px",
@@ -220,7 +220,7 @@ ui <- page_navbar(
   ),
   
   nav_panel(
-    "Explore a Marine Park",
+    "Location Summary",
     layout_sidebar(
       sidebar = sidebar(
         width = "350px",

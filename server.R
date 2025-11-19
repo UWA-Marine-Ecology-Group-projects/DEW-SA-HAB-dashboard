@@ -161,6 +161,7 @@ server <- function(input, output, session) {
   
   regions_joined <- hab_data$regions_shp |>
     left_join(hab_data$regions_summaries, by = "region") %>% 
+    left_join(hab_data$overall_impact) %>%
     glimpse()
   
   # Default selected region (first available)
@@ -466,14 +467,14 @@ server <- function(input, output, session) {
         color = "#444444",
         weight = 1,
         fillOpacity = 0.7,
-        fillColor = ~hab_data$pal_factor(regions_joined$overall),
+        fillColor = ~hab_data$pal_factor(regions_joined$overall_impact),
         group = "Impact regions",
         highlightOptions = highlightOptions(color = "black", weight = 2, bringToFront = TRUE)
       ) |>
       addLegend("bottomright",
                 title = "Overall Impact",
-                colors = unname(hab_data$pal_vals[hab_data$ordered_levels]),
-                labels = c("High", "Medium","Low"),
+                colors = c(unname(hab_data$pal_vals[hab_data$ordered_levels]), "grey"),
+                labels = c("High", "Medium","Low", "Surveys incomplete"),
                 opacity = 0.8,
                 group = "Impact regions") |>
       addLayersControl(

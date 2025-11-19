@@ -11,7 +11,8 @@ half_donut_with_dial <- function(
   stopifnot(length(segments) == 3L, length(values) == 3L)
   
   # colours: High = red, Medium = yellow, Low = green
-  tier_colors <- c("Low" = "#43A047", "Medium" = "#FDD835", "High" = "#E53935")
+  # tier_colors <- c("Low" = "#43A047", "Medium" = "#FDD835", "High" = "#E53935")
+  tier_colors <- c("Low" = "#3B7EA1", "Medium" = "#F2C94C", "High" = "#EB5757")
   
   # shares for half-donut
   shares <- switch(mode,

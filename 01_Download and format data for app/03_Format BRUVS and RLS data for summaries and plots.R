@@ -88,9 +88,13 @@ saveRDS(sa_state_mp, "app_data/spatial/sa_state_mp.RDS") # TODO put this in a sh
 # TODO move this to global instead of here, is very quick to load
 ordered_levels <- c("High", "Medium", "Low")
 
-pal_vals <- c(  "High" = "#E74C3C",   # red
-                "Medium"      = "#febf26",   # orange
-                "Low" = "#3b9243" )   # dark green)
+# pal_vals <- c(  "High" = "#E74C3C",   # red
+#                 "Medium"      = "#febf26",   # orange
+#                 "Low" = "#3b9243" )   # dark green)
+
+pal_vals <- c(  "High" = "#EB5757",   # red
+                "Medium"      = "#F2C94C",   # orange
+                "Low" = "#3B7EA1" )   # dark green)
 
 pal_factor <- colorFactor(palette = pal_vals, domain = ordered_levels, ordered = TRUE)
 
@@ -310,7 +314,7 @@ hab_max_year <- year_dat %>%
 # TODO does this need to be an average per sample?
 region_top_species <- combined_count %>%
   dplyr::filter(method %in% "BRUVs") %>%
-  dplyr::group_by(region, period, family, genus, species) %>%
+  dplyr::group_by(region, period, family, genus, species, genus_species) %>%
   dplyr::summarise(total_number = sum(count)) %>%
   dplyr::ungroup() %>%
   dplyr::left_join(dew_species %>% select(genus_species, common_name)) %>%
@@ -324,7 +328,7 @@ region_top_species <- combined_count %>%
 
 region_top_species_average <- combined_count %>%
   dplyr::filter(method %in% "BRUVs") %>%
-  dplyr::group_by(region, period, family, genus, species)%>%
+  dplyr::group_by(region, period, family, genus, species, genus_species)%>%
   dplyr::summarise(average = mean(count)) %>%
   dplyr::ungroup() %>%
   dplyr::left_join(dew_species %>% select(genus_species, common_name)) %>%
