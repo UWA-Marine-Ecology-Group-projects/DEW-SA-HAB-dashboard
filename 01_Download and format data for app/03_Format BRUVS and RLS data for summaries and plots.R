@@ -53,7 +53,7 @@ temp_scores_sheet <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0g
 # 2
 
 regions_summaries <- read_sheet(temp_scores_sheet, "summary_text") 
-
+2
 # Shapefiles ----
 # Reporting regions -----
 regions_shp <- st_read("data/spatial/Reporting_regions_30102025.shp", quiet = TRUE) %>%
@@ -111,8 +111,6 @@ fish_species <- species_list %>%
 
 dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
 
-2
-
 # TODO brooke to check species names in here e.g. spp, and spelling
 
 # Read in BRUV and RLS data ----
@@ -134,23 +132,6 @@ rls_count <- readRDS("data/raw/sa_count_rls.RDS")
 
 bruv_length <- readRDS("data/raw/sa_length_bruv.RDS")
 rls_length <- readRDS("data/raw/sa_length_rls.RDS")
-
-# combined length ----
-bruv_length_regions_post <- bruv_length %>%
-  left_join(bruv_metadata_with_regions) %>%
-  dplyr::select(campaignid, sample, family, genus, species, region, count, length) %>%
-  dplyr::filter(campaignid %in% c("202110-202205_SA_MarineParkMonitoring_StereoBRUVS", "2015-16_SA_MPA_UpperGSV_StereoBRUVS")) %>%
-  dplyr::mutate(campaignid = "Fake campaigns") %>%
-  dplyr::mutate(date = "2026-01-01") %>%
-  dplyr::mutate(method = "BRUVs") %>%
-  dplyr::mutate(period = "Bloom")
-
-combined_length <- bruv_length %>%
-  left_join(bruv_metadata_with_regions) %>%
-  dplyr::select(campaignid, sample, family, genus, species, region, count, length, date) %>%
-  dplyr::mutate(method = "BRUVs") %>%
-  dplyr::mutate(period = "Pre-bloom") %>%
-  bind_rows(., bruv_length_regions_post)
 
 # Start to format data ----
 # Fix sanctuary locations in the BRUV metadata ----
@@ -198,6 +179,23 @@ combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(metho
   dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom"))
 
 unique(combined_metadata$period)
+
+# combined length ----
+bruv_length_regions_post <- bruv_length %>%
+  left_join(bruv_metadata_with_regions) %>%
+  dplyr::select(campaignid, sample, family, genus, species, region, count, length) %>%
+  dplyr::filter(campaignid %in% c("202110-202205_SA_MarineParkMonitoring_StereoBRUVS", "2015-16_SA_MPA_UpperGSV_StereoBRUVS")) %>%
+  dplyr::mutate(campaignid = "Fake campaigns") %>%
+  dplyr::mutate(date = "2026-01-01") %>%
+  dplyr::mutate(method = "BRUVs") %>%
+  dplyr::mutate(period = "Bloom")
+
+combined_length <- bruv_length %>%
+  left_join(bruv_metadata_with_regions) %>%
+  dplyr::select(campaignid, sample, family, genus, species, region, count, length, date) %>%
+  dplyr::mutate(method = "BRUVs") %>%
+  dplyr::mutate(period = "Pre-bloom") %>%
+  bind_rows(., bruv_length_regions_post)
 
 # Create metrics for dashboard ----
 # Number of deploymnets by region ----
@@ -324,7 +322,8 @@ region_top_species <- combined_count %>%
   dplyr::mutate(display_name = paste0(genus, " ", species, " (", common_name, ")")) %>%
   dplyr::group_by(region, period) %>%
   dplyr::slice_max(order_by = total_number, n = 20) %>%
-  dplyr::select(region, period, display_name, total_number) 
+  dplyr::select(region, period, display_name, total_number)  %>%
+  ungroup()
 
 region_top_species_average <- combined_count %>%
   dplyr::filter(method %in% "BRUVs") %>%
@@ -338,7 +337,10 @@ region_top_species_average <- combined_count %>%
   dplyr::mutate(display_name = paste0(genus, " ", species, " (", common_name, ")")) %>%
   dplyr::group_by(region, period) %>%
   dplyr::slice_max(order_by = average, n = 20) %>%
-  dplyr::select(region, period, display_name, average) 
+  dplyr::select(region, period, display_name, average) %>%
+  ungroup() %>%
+  tidyr::complete(nesting(region, display_name), period) %>%
+  replace_na(list(average = 0))
 
 # Species Richness ----
 # TODO this will need to include a full join to account for drops that don't see any fish

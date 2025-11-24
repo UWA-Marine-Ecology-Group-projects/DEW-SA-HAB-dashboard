@@ -13,7 +13,6 @@ library(data.table)
 library(dplyr)
 library(tidyr)
 library(lubridate)
-library(ggtext)
 library(tidytext)
 # library(leafsync)
 library(leaflet.extras2)
@@ -23,6 +22,8 @@ library(htmltools)
 library(ggforce)
 library(patchwork)
 library(googlesheets4)
+library(rmarkdown)
+library(ggtext)
 
 source("R/helpers.R")          # defines filter_by_park(), ensure_sf_ll(), base_map(), etc.
 source("R/mod_park_summary.R") # defines mod_park_summary_ui/server (contains session$onFlushed INSIDE)
@@ -309,7 +310,7 @@ hab_metric_change <- tidyr::expand_grid(
 # All HAB regions (10)
 hab_regions <- sort(unique(hab_data$regions_summaries$region))
 
-# Paste the species list as a single string (omit the "genus_species" header)
+# # Paste the species list as a single string (omit the "genus_species" header)
 species_text <- "
 Acanthaluteres brownii
 Acanthaluteres spilomelanurus
@@ -487,56 +488,54 @@ hab_species <- scan(text = species_text, what = character(), sep = "\n", quiet =
 # drop any accidental blanks / "Nil Nil" if present
 hab_species <- hab_species[nchar(hab_species) > 0 & hab_species != "Nil Nil"]
 
-length(hab_species)  # just to sanity check
+# length(hab_species)  # just to sanity check
 
 set.seed(4242)
 
 # Pick a set of species that tend to be common everywhere
 global_common_species <- sample(hab_species, 15)
 
-# Base lambda per region x species (bigger for globally common spp)
-base_abund <- tidyr::expand_grid(
-  region  = hab_regions,
-  species = hab_species
-) |>
-  dplyr::mutate(
-    base_lambda = ifelse(
-      species %in% global_common_species,
-      runif(dplyr::n(), 30, 80),  # common spp
-      runif(dplyr::n(), 2, 20)    # rarer spp
-    )
-  )
+# # Base lambda per region x species (bigger for globally common spp)
+# base_abund <- tidyr::expand_grid(
+#   region  = hab_regions,
+#   species = hab_species
+# ) |>
+#   dplyr::mutate(
+#     base_lambda = ifelse(
+#       species %in% global_common_species,
+#       runif(dplyr::n(), 30, 80),  # common spp
+#       runif(dplyr::n(), 2, 20)    # rarer spp
+#     )
+#   )
 
-# Pre-bloom counts
-pre_counts <- base_abund |>
-  dplyr::transmute(
-    region,
-    species,
-    period = "Pre-bloom",
-    count  = rpois(dplyr::n(), lambda = base_lambda)
-  )
+# # Pre-bloom counts
+# pre_counts <- base_abund |>
+#   dplyr::transmute(
+#     region,
+#     species,
+#     period = "Pre-bloom",
+#     count  = rpois(dplyr::n(), lambda = base_lambda)
+#   )
 
-# Post-bloom counts (generally lower; region-specific severity)
-severity_by_region <- runif(length(hab_regions), 0.25, 0.75)  # 25–75% of pre
-names(severity_by_region) <- hab_regions
-
-post_counts <- base_abund |>
-  dplyr::mutate(
-    lambda_post = base_lambda * severity_by_region[region]
-  ) |>
-  dplyr::transmute(
-    region,
-    species,
-    period = "Post-bloom",
-    count  = pmax(0L, rpois(dplyr::n(), lambda = lambda_post))
-  )
-
-# Final long table used for plotting
-hab_species_counts <- dplyr::bind_rows(pre_counts, post_counts)
+# # Post-bloom counts (generally lower; region-specific severity)
+# severity_by_region <- runif(length(hab_regions), 0.25, 0.75)  # 25–75% of pre
+# names(severity_by_region) <- hab_regions
+# 
+# post_counts <- base_abund |>
+#   dplyr::mutate(
+#     lambda_post = base_lambda * severity_by_region[region]
+#   ) |>
+#   dplyr::transmute(
+#     region,
+#     species,
+#     period = "Post-bloom",
+#     count  = pmax(0L, rpois(dplyr::n(), lambda = lambda_post))
+#   )
+# 
+# # Final long table used for plotting
+# hab_species_counts <- dplyr::bind_rows(pre_counts, post_counts)
 
 # Columns: region, species, period ("Pre-bloom"/"Post-bloom"), count
-
-
 
 # # Replace with your sheet URL or ID
 # survey_plan <- googlesheets4::read_sheet(

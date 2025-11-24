@@ -539,7 +539,7 @@ server <- function(input, output, session) {
     reg <- selected_region()
     
     tags$div(
-      tags$h3(paste("Summary:", reg))
+      tags$h3(paste("Algal bloom impacts on nearshore marine biodiversity monitoring progress:", reg))
     )
   })
   
@@ -934,60 +934,82 @@ server <- function(input, output, session) {
   )
   
   # ---- Common species plots (top 5) ----------------------------------------
-  
-  # Helper: top 5 by a given period, but plot both periods for context
-  make_top10_plot <- function(region_name, focal_period = c("Pre-bloom", "Post-bloom"),
-                              title_lab = "Common species") {
+  make_top10_plot <- function(region_name, 
+                              focal_period = c("Pre-bloom", "Bloom"),
+                              title_lab = "Common species",
+                              number_species) {
     
     focal_period <- match.arg(focal_period)
     
-    df <- hab_species_counts |>
+    df <- hab_data$region_top_species_average |>
       dplyr::filter(region == region_name)
     
-    # Identify top 5 species *within the focal period only*
+    # Identify top N species *within the focal period only*
     top_species <- df |>
       dplyr::filter(period == focal_period) |>
-      dplyr::slice_max(order_by = count, n = 10, with_ties = FALSE) |>
-      dplyr::pull(species)
+      dplyr::slice_max(order_by = average, n = number_species, with_ties = FALSE) |>
+      dplyr::pull(display_name)
     
     # Only those species, but showing both pre/post
+    # Only those species, but showing both pre/post
     plot_df <- df |>
-      dplyr::filter(species %in% top_species)
-    
-    # Reorder species by focal period counts only
-    order_df <- plot_df |>
-      dplyr::filter(period == focal_period) |>
-      dplyr::arrange(count)
-    
-    plot_df$species <- factor(plot_df$species, levels = order_df$species)
-    
-    ggplot(plot_df, aes(x = count, y = species, fill = period)) +
-      geom_col(position = "dodge") +
-      labs(
-        x = "Count",
-        y = NULL#,
-        #title = title_lab
-      ) +
-      scale_fill_manual(values = c("Pre-bloom" = "#0c3978", "Post-bloom" = "#f89f00")) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position = "bottom"#,
-        #plot.title = element_text(hjust = 0.5, face = "bold")
+      dplyr::filter(display_name %in% top_species) |>
+      tidyr::extract(display_name, into = c("sci", "common"),
+                     regex = "^(.*?)\\s*\\((.*?)\\)$", remove = FALSE) |>
+      dplyr::mutate(
+        label = paste0("*", sci, "*<br>(", common, ")")
       )
+    
+    # 1. Period order: focal period FIRST in dodge (nearest axis)
+    plot_df$period <- factor(
+      plot_df$period,
+      levels = c(focal_period, setdiff(c("Pre-bloom","Bloom"), focal_period))
+    )
+    
+    # 2. Species order: descending average for focal period (biggest at top)
+    species_order <- plot_df |>
+      dplyr::filter(period == focal_period) |>
+      dplyr::arrange((average)) |>
+      dplyr::pull(label)
+    
+    plot_df$label <- factor(plot_df$label, levels = species_order)
+    
+    # 3. Arrange rows so dodge respects period order
+    plot_df <- plot_df |>
+      dplyr::arrange(label, period)
+    
+    ggplot(plot_df, aes(x = average, y = label, fill = period)) +
+      geom_col(position = position_dodge2(reverse = TRUE, preserve = "single")) +
+      labs(
+        x = "Average abundance per BRUV",
+        y = NULL,
+        title = title_lab
+      ) +
+      scale_fill_manual(values = c("Pre-bloom" = "#0c3978", "Bloom" = "#f89f00")) +
+      scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
+      theme_classic() +
+      theme(
+        legend.position = "bottom",
+        axis.text.y = ggtext::element_markdown(size = 12)
+      )
+    
   }
+  
   
   output$em_common_pre <- renderPlot({
     req(input$em_region)
     make_top10_plot(input$em_region,
                     focal_period = "Pre-bloom",
-                    title_lab = "10 most common species pre-bloom")
+                    title_lab = "Most common species pre-bloom",
+                    number_species = input$numberspecies)
   })
   
   output$em_common_post <- renderPlot({
     req(input$em_region)
     make_top10_plot(input$em_region,
-                    focal_period = "Post-bloom",
-                    title_lab = "10 most common species post-bloom")
+                    focal_period = "Bloom",
+                    title_lab = "Most common species post-bloom",
+                    number_species = input$numberspecies)
   })
   
   # ---- Survey progress: filtered to selected reporting region --------------
@@ -1064,7 +1086,7 @@ server <- function(input, output, session) {
     )
     
     pct_box <- value_box(
-      title       = "Sites completed",
+      title       = "Locations completed",
       value       = sprintf("%.1f%%", pct),
       subtitle    = df$methods[[1]],
       theme_color = vb_col,
@@ -1258,7 +1280,8 @@ server <- function(input, output, session) {
   )
   
   make_top10_plot_mp <- function(park_name,
-                                 focal_period = c("Pre-bloom", "Post-bloom")) {
+                                 focal_period = c("Pre-bloom", "Bloom"),
+                                 number_species) {
     
     focal_period <- match.arg(focal_period)
     
@@ -1267,23 +1290,24 @@ server <- function(input, output, session) {
     
     top_species <- df |>
       dplyr::filter(period == focal_period) |>
-      dplyr::slice_max(order_by = count, n = 10, with_ties = FALSE) |>
+      dplyr::slice_max(order_by = average, n = number_species, with_ties = FALSE) |>
       dplyr::pull(species)
     
     plot_df <- df |>
-      dplyr::filter(species %in% top_species)
+      dplyr::filter(display_name %in% top_species)
     
     order_df <- plot_df |>
       dplyr::filter(period == focal_period) |>
-      dplyr::arrange(count)
+      dplyr::arrange(average)
     
-    plot_df$species <- factor(plot_df$species, levels = order_df$species)
+    plot_df$display_name <- factor(plot_df$display_name, levels = order_df$display_name)
     
-    ggplot(plot_df, aes(x = count, y = species, fill = period)) +
+    ggplot(plot_df, aes(x = average, y = display_name), fill = period) +
+      scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
       geom_col(position = "dodge") +
       labs(x = "Count", y = NULL) +
       scale_fill_manual(values = c("Pre-bloom" = "#0c3978",
-                                   "Post-bloom" = "#f89f00")) +
+                                   "Bloom" = "#f89f00")) +
       theme_minimal(base_size = 16) +
       theme(
         legend.position = "bottom"
@@ -1292,12 +1316,12 @@ server <- function(input, output, session) {
   
   output$mp_common_pre <- renderPlot({
     req(input$mp_park)
-    make_top10_plot_mp(input$mp_park, focal_period = "Pre-bloom")
+    make_top10_plot_mp(input$mp_park, focal_period = "Pre-bloom", number_species = input$numberspeciespark)
   })
   
   output$mp_common_post <- renderPlot({
     req(input$mp_park)
-    make_top10_plot_mp(input$mp_park, focal_period = "Post-bloom")
+    make_top10_plot_mp(input$mp_park, focal_period = "Bloom", number_species = input$numberspeciespark)
   })
   
   # ---- Survey progress for marine parks ------------------------------------

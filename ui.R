@@ -192,6 +192,13 @@ ui <- page_navbar(
           choices = NULL, multiple = FALSE,
           options = list(placeholder = "Choose a region...")
         ),
+        numericInput( 
+          "numberspecies", 
+          "Choose number of species to plot", 
+          value = 10, 
+          min = 1, 
+          max = 20 
+        ),
         # (checkboxGroupInput removed)
         helpText("Each tab shows pre/post boxplots. Use region filter to switch.")
       ),
@@ -206,12 +213,12 @@ ui <- page_navbar(
         layout_columns(
           col_widths = c(6, 6),
         card(
-          card_header("10 most common species pre-bloom (dummy data)"),
-          plotOutput("em_common_pre", height = 400)
+          card_header("Most common species pre-bloom"),
+          plotOutput("em_common_pre", height = 500)
         ),
         card(
-          card_header("10 most common species post-bloom (dummy data)"),
-          plotOutput("em_common_post", height = 400)
+          card_header("Most common species post-bloom"),
+          plotOutput("em_common_post", height = 500)
         )),
         br(),
         uiOutput("em_tabset")   # tabset stays, now below the table
