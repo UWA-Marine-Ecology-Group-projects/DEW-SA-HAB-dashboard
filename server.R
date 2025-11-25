@@ -717,6 +717,18 @@ server <- function(input, output, session) {
   })
   
   # Pointer plots----
+  
+  no_data_plot <- function(title = NULL) {
+    ggplot() +
+      annotate("text", x = 0.5, y = 0.5,
+               label = "Data not available",
+               size = 5, fontface = "italic", colour = "black") +
+      theme_void() +
+      labs(title = title) +
+      theme(
+        plot.title = element_text(hjust = 0.5, face = "bold")
+      )
+  }
   # Pointer plots: overall + 5 indicators in one figure ------------------------
   output$impact_gauges <- renderPlot({
     req(selected_region())
@@ -731,25 +743,37 @@ server <- function(input, output, session) {
     # ---- Overall impact ----
     overall_status <- hab_data$overall_impact |>
       dplyr::filter(region == reg) |>
-      dplyr::pull(overall_impact)
+      dplyr::pull(overall_impact) %>% 
+      glimpse()
     
-    p0 <- half_donut_with_dial(
-      values = c(1, 1, 1),
-      mode   = "absolute",
-      status = overall_status
-    ) +
-      ggtitle("Overall impact") +
-      theme(
-        plot.title = element_text(hjust = 0.5, face = "bold"),
-        plot.margin = margin(2, 2, 2, 2)
-      )
+    p0 <- if (overall_status == "Surveys incomplete") {
+      no_data_plot("Overall impact")
+    } else {
+      half_donut_with_dial(
+        values = c(1, 1, 1),
+        mode   = "absolute",
+        status = overall_status
+      ) +
+        ggtitle("Overall impact") +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold.italic", size = 16),
+          plot.margin = margin(2, 2, 2, 2)
+        )
+    }
     
     # ---- Individual indicators ----
     get_metric_plot <- function(metric_id, title_lab, wrap_width = 22) {
+      
       txt <- hab_data$impact_data |>
         dplyr::filter(region == reg, impact_metric == metric_id) |>
         dplyr::pull(impact)
       
+      # ---- If no data, return the “no data” plot ----
+      if (txt == "Surveys incomplete") {
+        return(no_data_plot(stringr::str_wrap(title_lab, wrap_width)))
+      }
+      
+      # ---- Otherwise return the gauge ----
       half_donut_with_dial(
         values = c(1, 1, 1),
         mode   = "absolute",
@@ -757,10 +781,11 @@ server <- function(input, output, session) {
       ) +
         labs(title = stringr::str_wrap(title_lab, width = wrap_width)) +
         theme(
-          plot.title = element_text(hjust = 0.5, face = "bold", size = 9),
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
           plot.margin = margin(2, 2, 2, 2)
         )
     }
+    
     
     p1 <- get_metric_plot("species_richness",        "Species richness")
     p2 <- get_metric_plot("total_abundance",         "Total abundance")
