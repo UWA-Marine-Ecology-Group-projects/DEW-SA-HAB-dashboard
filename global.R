@@ -97,6 +97,17 @@ css = HTML("
   }
 ")
 
+# ---- data for the table ----
+indicator_tbl <- tribble(
+  ~Indicator,                          ~Description,
+  "Species richness",                  "Number of species recorded",
+  "Total abundance",                   "Count of individuals",
+  "Shark and ray richness",            "Number of shark and ray species",
+  "Reef associated species richness",  "Number of reef associated fish species",
+  "Fish greater than 200mm abundance", "Count of individuals >200mm long",
+  "Overall impact",                    "Average of the above five indicators"
+)
+
 # plot_dummy_time <- function(region) {
 #   df <- data.frame(day = 1:30, value = cumsum(rnorm(30, 0.1, 0.4)))
 #   ggplot(df, aes(day, value)) +

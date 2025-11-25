@@ -370,9 +370,37 @@ species_richness_impacts <- species_richness %>%
   )) %>%
   mutate(impact_metric = "species_richness")
 
-# Shark and Ray abundance ----
+# Total abundance ----
+# TODO this will need to include a full join to account for drops that don't see any fish
+# TODO double check if this is meant to be only fish!
+total_abundance <- combined_count %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::group_by(region, period, sample) %>%
+  dplyr::summarise(total_abundance_sample = sum(count), .groups = "drop") %>%
+  ungroup() %>%
+  dplyr::filter(!is.na(region)) %>%
+  dplyr::group_by(region, period) %>%
+  dplyr::summarise(average_abundance = mean(total_abundance_sample)) %>%
+  ungroup()
+
+# Calculate Impacts for Total Abundance ----
+total_abundance_impacts <- total_abundance %>%
+  tidyr::complete(region, period) %>%
+  tidyr::pivot_wider(names_from = period, values_from = average_abundance) %>%
+  clean_names() %>%
+  dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
+  dplyr::mutate(impact = case_when(
+    percentage > 80 ~ "Low",
+    percentage > 50 & percentage < 80 ~ "Medium",
+    percentage < 50 ~ "High",
+    .default = "Surveys incomplete"
+  )) %>%
+  mutate(impact_metric = "total_abundance")
+
+# Shark and Ray richness ----
 # This needs to include zeros, to show where no species were observed
-shark_ray_abundance <- combined_count %>%
+shark_ray_richness <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::left_join(species_list) %>%
@@ -380,16 +408,17 @@ shark_ray_abundance <- combined_count %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
   tidyr::replace_na(list(count = 0)) %>%
   dplyr::group_by(region, period, sample) %>%
-  dplyr::summarise(abundance_per_sample = sum(count)) %>%
+  dplyr::distinct(family, genus, species) %>%
+  dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
   dplyr::group_by(region, period) %>%
-  dplyr::summarise(average_abundance = mean(abundance_per_sample))%>%
+  dplyr::summarise(average_richness = mean(n_species_sample))%>%
   dplyr::filter(!is.na(region)) %>%
   ungroup()
 
-shark_ray_abundance_impacts <- shark_ray_abundance %>%
+shark_ray_richness_impacts <- shark_ray_richness %>%
   tidyr::complete(region, period) %>%
-  tidyr::pivot_wider(names_from = period, values_from = average_abundance) %>%
+  tidyr::pivot_wider(names_from = period, values_from = average_richness) %>%
   clean_names() %>%
   dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
   dplyr::mutate(impact = case_when(
@@ -398,10 +427,10 @@ shark_ray_abundance_impacts <- shark_ray_abundance %>%
     percentage < 50 ~ "High",
     .default = "Surveys incomplete"
   )) %>%
-  mutate(impact_metric = "shark_ray_abundance")
+  mutate(impact_metric = "shark_ray_richness")
 
-# Reef associated abundance ----
-reef_associated_abundance <- combined_count %>%
+# Reef associated richness ----
+reef_associated_richness <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::left_join(dew_species) %>%
@@ -409,16 +438,17 @@ reef_associated_abundance <- combined_count %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
   tidyr::replace_na(list(count = 0)) %>%
   dplyr::group_by(region, period, sample) %>%
-  dplyr::summarise(abundance_per_sample = sum(count)) %>%
+  dplyr::distinct(family, genus, species) %>%
+  dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
   dplyr::group_by(region, period) %>%
-  dplyr::summarise(average_abundance = mean(abundance_per_sample))%>%
+  dplyr::summarise(average_richness = mean(n_species_sample))%>%
   dplyr::filter(!is.na(region)) %>%
   ungroup()
 
-reef_associated_abundance_impacts <- reef_associated_abundance %>%
+reef_associated_richness_impacts <- reef_associated_richness %>%
   tidyr::complete(region, period) %>%
-  tidyr::pivot_wider(names_from = period, values_from = average_abundance) %>%
+  tidyr::pivot_wider(names_from = period, values_from = average_richness) %>%
   clean_names() %>%
   dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
   dplyr::mutate(impact = case_when(
@@ -427,7 +457,7 @@ reef_associated_abundance_impacts <- reef_associated_abundance %>%
     percentage < 50 ~ "High",
     .default = "Surveys incomplete"
   )) %>%
-  mutate(impact_metric = "reef_associated_abundance")
+  mutate(impact_metric = "reef_associated_richness")
 
 # Fish greater than 200 mm abundance ----
 fish_200_abundance <- combined_length %>%
@@ -459,8 +489,9 @@ fish_200_abundance_impacts <- fish_200_abundance %>%
   
 
 impact_data <- bind_rows(species_richness_impacts, 
-                         shark_ray_abundance_impacts,
-                         reef_associated_abundance_impacts,
+                         total_abundance_impacts,
+                         shark_ray_richness_impacts,
+                         reef_associated_richness_impacts,
                          fish_200_abundance_impacts)
 
 overall_impact <- impact_data %>%

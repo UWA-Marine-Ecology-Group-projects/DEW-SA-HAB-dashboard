@@ -161,8 +161,7 @@ server <- function(input, output, session) {
   
   regions_joined <- hab_data$regions_shp |>
     left_join(hab_data$regions_summaries, by = "region") %>% 
-    left_join(hab_data$overall_impact) %>%
-    glimpse()
+    left_join(hab_data$overall_impact)
   
   # Default selected region (first available)
   selected_region <- reactiveVal({
@@ -453,36 +452,132 @@ server <- function(input, output, session) {
   )
   
   # Leaflet map
+  # output$map <- renderLeaflet({
+  #   
+  #   method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
+  #   pts <- ensure_sf_ll(hab_data$hab_combined_metadata) 
+  #   
+  #   m <- base_map(current_zoom = 7)
+  #   
+  #   # if (has_leafgl()) {
+  #     m <- leafgl::addGlPoints(
+  #       m,
+  #       data = pts,
+  #       fillColor = method_cols[pts$method],
+  #       weight = 1,
+  #       popup = pts$popup,
+  #       group = "Sampling locations", pane = "points"
+  #     )
+  #   # }
+  #   
+  #   m <- addLegend(m,
+  #             "topright",
+  #             colors = unname(method_cols),
+  #             labels = names(method_cols),
+  #             title = "Survey method",
+  #             opacity = 1,
+  #             group = "Sampling locations",
+  #             layerId = "methodLegend"
+  #   ) %>%
+  #     hideGroup("Australian Marine Parks") %>%
+  #     hideGroup("Australian Marine Parks") |>
+  #     
+  #     addPolygons(
+  #       data = regions_joined,
+  #       layerId = ~region,
+  #       label = ~region,
+  #       color = "#444444",
+  #       weight = 1,
+  #       fillOpacity = 0.7,
+  #       fillColor = ~hab_data$pal_factor(regions_joined$overall_impact),
+  #       group = "Impact regions",
+  #       highlightOptions = highlightOptions(color = "black", weight = 2, bringToFront = TRUE)
+  #     ) |>
+  #     addLegend("bottomright",
+  #               title = "Overall Impact",
+  #               colors = c(unname(hab_data$pal_vals[hab_data$ordered_levels]), "grey"),
+  #               labels = c("High", "Medium","Low", "Surveys incomplete"),
+  #               opacity = 0.8,
+  #               group = "Impact regions") |>
+  #     addLayersControl(
+  #       overlayGroups = c("Australian Marine Parks", "State Marine Parks", "Impact regions"),
+  #       options = layersControlOptions(collapsed = FALSE),
+  #       position = "topright"
+  #     )
+  #   
+  # 
+  # })
+  
   output$map <- renderLeaflet({
     
-    base_map(current_zoom = 7) |>
+    method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
+    pts <- ensure_sf_ll(hab_data$hab_combined_metadata)
+    
+    m <- base_map(current_zoom = 7) |>
+      # define panes with explicit stacking
+      addMapPane("points",    zIndex = 411) |>
+      addMapPane("regions",   zIndex = 412) |>
+      addMapPane("highlight", zIndex = 415) %>%
       
-      hideGroup("State Marine Parks") |>
-      hideGroup("Australian Marine Parks") |>
+      leafgl::addGlPoints(
+      data = pts,
+      fillColor = method_cols[pts$method],
+      weight = 1,
+      popup = pts$popup,
+      group = "Sampling locations",
+      pane  = "points"
+    ) %>%
       
+      # polygons ABOVE points
       addPolygons(
         data = regions_joined,
         layerId = ~region,
-        label = ~region,
-        color = "#444444",
-        weight = 1,
-        fillOpacity = 0.7,
+        label   = ~region,
+        color = ~hab_data$pal_factor(regions_joined$overall_impact),#"#444444",
+        weight = 5,
+        opacity = 1,
+        fillOpacity = 0, #0.7
         fillColor = ~hab_data$pal_factor(regions_joined$overall_impact),
         group = "Impact regions",
-        highlightOptions = highlightOptions(color = "black", weight = 2, bringToFront = TRUE)
+        options = pathOptions(pane = "highlight"),
+        highlightOptions = highlightOptions(
+          color = "white",
+          weight = 6,
+          bringToFront = TRUE
+        )
       ) |>
-      addLegend("bottomright",
-                title = "Overall Impact",
-                colors = c(unname(hab_data$pal_vals[hab_data$ordered_levels]), "grey"),
-                labels = c("High", "Medium","Low", "Surveys incomplete"),
-                opacity = 0.8,
-                group = "Impact regions") |>
+      
+      addLegend(
+        "bottomright",
+        title  = "Overall Impact",
+        colors = c(unname(hab_data$pal_vals[hab_data$ordered_levels]), "grey"),
+        labels = c("High", "Medium","Low", "Surveys incomplete"),
+        opacity = 0.8,
+        group   = "Impact regions"
+      ) |>
+      
       addLayersControl(
-        overlayGroups = c("Australian Marine Parks", "State Marine Parks", "Impact regions"),
+        overlayGroups = c("Australian Marine Parks", "State Marine Parks", "Impact regions", "Sampling locations"),
         options = layersControlOptions(collapsed = FALSE),
         position = "topright"
-      )
+      ) %>%
+      
+      hideGroup("Australian Marine Parks") |>
+      
+      addLegend(
+        "topright",
+        colors = unname(method_cols),
+        labels = names(method_cols),
+        title = "Survey method",
+        opacity = 1,
+        group = "Sampling locations",
+        layerId = "methodLegend"
+      ) 
+      
+    
+    m
   })
+  
   
   # Click handler
   observeEvent(input$map_shape_click, {
@@ -493,27 +588,48 @@ server <- function(input, output, session) {
   })
   
   # --- Highlight clicked region with white border ---
+  # observe({
+  #   req(selected_region())
+  #   
+  #   # Grab the currently selected region polygon
+  #   region_selected <- regions_joined |> 
+  #     filter(region == selected_region())
+  #   
+  #   # Update map: remove previous highlight, then draw a new one
+  #   leafletProxy("map") |>
+  #     clearGroup("highlight") |>
+  #     addPolygons(
+  #       data = region_selected,
+  #       color = "white",        # solid white border
+  #       weight = 6,             # thickness of outline
+  #       fillColor = "white",    # same white fill to make it pop
+  #       fillOpacity = 0.2,      # slightly opaque (use 1 for fully opaque)
+  #       opacity = 0.75,            # full border opacity
+  #       group = "highlight"#,
+  #       # options = pathOptions(pane = "highlight")
+  #     )
+  # })
+  
   observe({
     req(selected_region())
     
-    # Grab the currently selected region polygon
-    region_selected <- regions_joined |> 
-      filter(region == selected_region())
+    region_selected <- regions_joined |>
+      dplyr::filter(region == selected_region())
     
-    # Update map: remove previous highlight, then draw a new one
     leafletProxy("map") |>
       clearGroup("highlight") |>
       addPolygons(
         data = region_selected,
-        color = "white",        # solid white border
-        weight = 6,             # thickness of outline
-        fillColor = "white",    # same white fill to make it pop
-        fillOpacity = 0.2,      # slightly opaque (use 1 for fully opaque)
-        opacity = 0.75,            # full border opacity
-        group = "highlight"#,
-        # options = pathOptions(pane = "highlight")
+        color = "white",
+        weight = 6,
+        fillColor = "white",
+        fillOpacity = 0.2,
+        opacity = 0.75,
+        group = "highlight",
+        options = pathOptions(pane = "highlight")
       )
   })
+  
   
   # Selected region badge
   output$selected_region_badge <- renderUI({
@@ -556,97 +672,214 @@ server <- function(input, output, session) {
     HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
 })
   
-  # Pointer plots----
-  output$overallplot <- renderPlot({ 
-    req(selected_region())
+  # Indiactor table
+  output$indicator_table <- renderUI({
     
-    reg <- selected_region()
+    # text for the single big cell
+    threshold_html <- HTML(paste(
+      "Low = ≥80% of the pre-bloom value",
+      "Medium = 50–80% of the pre-bloom value",
+      "High = 0–50% of the pre-bloom value",
+      sep = "<br>"
+    ))
     
-    txt <- hab_data$overall_impact |>
-      filter(region == reg) |>
-      pull(overall_impact)
-    
-    overall <- half_donut_with_dial(
-      values = c(1, 1, 1),
-      mode = "absolute",
-      status   = txt
-    ) 
-    
-    overall
-    
-    # TODO I think I need someway to say no pointer due to surveys not being completed
+    tags$table(
+      class = "table table-sm",  # uses bootstrap styling
+      # header
+      tags$thead(
+        tags$tr(
+          tags$th("Indicator"),
+          tags$th("Description"),
+          tags$th("Impact thresholds")
+        )
+      ),
+      # body
+      tags$tbody(
+        # first row: also contains the big thresholds cell
+        tags$tr(
+          tags$td(indicator_tbl$Indicator[1]),
+          tags$td(indicator_tbl$Description[1]),
+          tags$td(
+            rowspan = nrow(indicator_tbl),    # merge down all rows
+            style   = "vertical-align:top; white-space:normal;",
+            threshold_html
+          )
+        ),
+        # remaining rows: just Indicator + Description
+        lapply(2:nrow(indicator_tbl), function(i) {
+          tags$tr(
+            tags$td(indicator_tbl$Indicator[i]),
+            tags$td(indicator_tbl$Description[i])
+          )
+        })
+      )
+    )
   })
   
-  output$combinedplot <- renderPlot({ 
+  # Pointer plots----
+  # Pointer plots: overall + 5 indicators in one figure ------------------------
+  output$impact_gauges <- renderPlot({
     req(selected_region())
-    
     reg <- selected_region()
     
-    # Species Richness
-    txt <- hab_data$impact_data |>
-      filter(region == reg) |>
-      filter(impact_metric == "species_richness") |>
-      pull(impact)
+    # helper to pull status safely
+    status_or_na <- function(df) {
+      x <- df %>% pull(impact)
+      if (length(x) == 0) NA_character_ else x
+    }
     
-    p1 <- half_donut_with_dial(
+    # ---- Overall impact ----
+    overall_status <- hab_data$overall_impact |>
+      dplyr::filter(region == reg) |>
+      dplyr::pull(overall_impact)
+    
+    p0 <- half_donut_with_dial(
       values = c(1, 1, 1),
-      mode = "absolute",
-      status   = txt
-    )+
-      ggtitle("Species richness") +
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      mode   = "absolute",
+      status = overall_status
+    ) +
+      ggtitle("Overall impact") +
+      theme(
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        plot.margin = margin(2, 2, 2, 2)
+      )
     
-    # Shark and Ray Abundance
+    # ---- Individual indicators ----
+    get_metric_plot <- function(metric_id, title_lab, wrap_width = 22) {
+      txt <- hab_data$impact_data |>
+        dplyr::filter(region == reg, impact_metric == metric_id) |>
+        dplyr::pull(impact)
+      
+      half_donut_with_dial(
+        values = c(1, 1, 1),
+        mode   = "absolute",
+        status = txt
+      ) +
+        labs(title = stringr::str_wrap(title_lab, width = wrap_width)) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 9),
+          plot.margin = margin(2, 2, 2, 2)
+        )
+    }
     
-    txt <- hab_data$impact_data |>
-      filter(region == reg) |>
-      filter(impact_metric == "shark_ray_abundance") |>
-      pull(impact)
+    p1 <- get_metric_plot("species_richness",        "Species richness")
+    p2 <- get_metric_plot("total_abundance",         "Total abundance")
+    p3 <- get_metric_plot("shark_ray_richness",      "Shark and ray richness")
+    p4 <- get_metric_plot("reef_associated_richness","Reef associated species richness")
+    p5 <- get_metric_plot("fish_200_abundance",      "Fish > 200 mm abundance")
     
-    p2 <- half_donut_with_dial(
-      values = c(1, 1, 1),
-      mode = "absolute",
-      status   = txt
-    )+
-      ggtitle("Shark and ray abundance") +
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-    
-    # Site attached/reef associated species abundance
-    
-    txt <- hab_data$impact_data |>
-      filter(region == reg) |>
-      filter(impact_metric == "reef_associated_abundance") |>
-      pull(impact)
-    
-    p3 <- half_donut_with_dial(
-      values = c(1, 1, 1),
-      mode = "absolute",
-      status   = txt
-    )+
-      labs(title = str_wrap("Site attached/reef associated species abundance", width = 20)) +
-      # ggtitle("Site attached/reef associated species abundance") +
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-    
-    # Fish greater than 200 mm abundance
-    
-    txt <- hab_data$impact_data |>
-      filter(region == reg) |>
-      filter(impact_metric == "fish_200_abundance") |>
-      pull(impact)
-    
-    p4 <- half_donut_with_dial(
-      values = c(1, 1, 1),
-      mode = "absolute",
-      status   = txt
-    )+
-      labs(title = str_wrap("Fish greater than 200 mm abundance", width = 20)) +
-      # ggtitle("Fish greater than 200 mm abundance") +
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-    
-    final_plot <- p1 + p2 + p3 + p4 + plot_layout(ncol = 4)
+    # 2x3 grid: overall + 5 indicators
+    final_plot <- (p0 | p1 | p2) /
+      (p3 | p4 | p5)
     
     final_plot
   })
+  
+  # output$overallplot <- renderPlot({ 
+  #   req(selected_region())
+  #   
+  #   reg <- selected_region()
+  #   
+  #   txt <- hab_data$overall_impact |>
+  #     filter(region == reg) |>
+  #     pull(overall_impact)
+  #   
+  #   overall <- half_donut_with_dial(
+  #     values = c(1, 1, 1),
+  #     mode = "absolute",
+  #     status   = txt
+  #   ) 
+  #   
+  #   overall
+  #   
+  #   # TODO I think I need someway to say no pointer due to surveys not being completed
+  # })
+  # 
+  # output$combinedplot <- renderPlot({ 
+  #   req(selected_region())
+  #   
+  #   reg <- selected_region()
+  #   
+  #   # Species Richness
+  #   txt <- hab_data$impact_data |>
+  #     filter(region == reg) |>
+  #     filter(impact_metric == "species_richness") |>
+  #     pull(impact)
+  #   
+  #   p1 <- half_donut_with_dial(
+  #     values = c(1, 1, 1),
+  #     mode = "absolute",
+  #     status   = txt
+  #   )+
+  #     ggtitle("Species richness") +
+  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  #   
+  #   # Total Abundance
+  #   txt <- hab_data$impact_data |>
+  #     filter(region == reg) |>
+  #     filter(impact_metric == "total_abundance") |>
+  #     pull(impact)
+  # 
+  #   p2 <- half_donut_with_dial(
+  #     values = c(1, 1, 1),
+  #     mode = "absolute",
+  #     status   = txt
+  #   )+
+  #     ggtitle("Total abundance") +
+  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  #   
+  #   # Shark and Ray Richness
+  #   txt <- hab_data$impact_data |>
+  #     filter(region == reg) |>
+  #     filter(impact_metric == "shark_ray_richness") |>
+  #     pull(impact)
+  #   
+  #   p3 <- half_donut_with_dial(
+  #     values = c(1, 1, 1),
+  #     mode = "absolute",
+  #     status   = txt
+  #   )+
+  #     ggtitle("Shark and ray richness") +
+  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  #   
+  #   # Site attached/reef associated species abundance
+  #   txt <- hab_data$impact_data |>
+  #     filter(region == reg) |>
+  #     filter(impact_metric == "reef_associated_richness") |>
+  #     pull(impact)
+  #   
+  #   p4 <- half_donut_with_dial(
+  #     values = c(1, 1, 1),
+  #     mode = "absolute",
+  #     status   = txt
+  #   )+
+  #     labs(title = str_wrap("Reef associated species richness", width = 20)) +
+  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  #   
+  #   # Fish greater than 200 mm abundance
+  #   
+  #   txt <- hab_data$impact_data |>
+  #     filter(region == reg) |>
+  #     filter(impact_metric == "fish_200_abundance") |>
+  #     pull(impact)
+  #   
+  #   p5 <- half_donut_with_dial(
+  #     values = c(1, 1, 1),
+  #     mode = "absolute",
+  #     status   = txt
+  #   )+
+  #     labs(title = str_wrap("Fish greater than 200 mm abundance", width = 20)) +
+  #     # ggtitle("Fish greater than 200 mm abundance") +
+  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  #   
+  #   final_plot <- p1 + 
+  #     p2 +
+  #     p3 + 
+  #     p4 +
+  #     p5 + plot_layout(ncol = 4)
+  #   
+  #   final_plot
+  # })
   
   deployments <- reactive({
     deployments <- hab_data$hab_combined_metadata %>%

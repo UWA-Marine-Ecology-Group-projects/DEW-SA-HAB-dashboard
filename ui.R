@@ -100,11 +100,23 @@ ui <- page_navbar(
               uiOutput("region_title"),
               uiOutput("survey_value_boxes")),
 
+          # layout_columns(
+          #   col_widths = c(6, 6),
+          #   card(
+          #     card_header("Overall Impact"),
+          #     plotOutput("overallplot", height = 200)
+          #   ),
+          #   card(
+          #     card_header("Summary"),
+          #     card_body(htmlOutput("summary_text"))
+          #   )
+          # ),
+          
           layout_columns(
-            col_widths = c(6, 6),
+            col_widths = c(8, 4),   # tweak to taste: 4/8, 6/6, etc.
             card(
-              card_header("Overall Impact"),
-              plotOutput("overallplot", height = 200)
+              card_header("Impact overview"),
+              plotOutput("impact_gauges", height = 350)#,
             ),
             card(
               card_header("Summary"),
@@ -114,67 +126,75 @@ ui <- page_navbar(
           
           div(
             class = "col-12",
-            card(
-              card_header("Impact Indicators"),
-              plotOutput("combinedplot", height = 220)
-            ),
-
-            # ValueBoxes ----
-            layout_column_wrap(
-              width = 1/2,
-              
-              twoValueBoxUI(
-                id = "number_bruv_deployments",
-                title = "BRUVS deployments",
-                icon = icon("ship", class = "fa-xl")
-              ),
-              
-              twoValueBoxUI(
-                id = "number_rls_deployments",
-                title = "Dive surveys",
-                icon = icon("ship", class = "fa-xl")
-              ),
-              
-              twoValueBoxUI(
-                id = "fish_counted",
-                title = "Total number of fish counted",
-                icon = icon("fish-fins", class = "fa-xl")
-              ),
-              
-              twoValueBoxUI(
-                id = "fish_species",
-                title = "Fish species",
-                icon = icon("fish-fins", class = "fa-xl")
-              ),
-              
-              twoValueBoxUI(
-                id = "non_fish_species",
-                title = "Other species",
-                icon = icon("shrimp", class = "fa-xl")
-              ),
-              
-              twoValueBoxUI(
-                id = "years",
-                title = "Years surveyed",
-                icon = icon("calendar", class = "fa-xl")
-              ),
-              
-              twoValueBoxUI(
-                id = "depths",
-                title = "Depths surveyed",
-                icon = icon("arrow-down-up-across-line", class = "fa-xl")
-              ),
-              
-              twoValueBoxUI(
-                id = "mean_depth",
-                title = "Average depth",
-                icon = icon("wave-square", class = "fa-xl")
-              )
-          ),
+            # card(
+            #   card_header("Impact Indicators"),
+            #   plotOutput("combinedplot", height = 220)
+            # ),
             
-          card(min_height = 600,
-               card_header("Survey Effort"),
-               leafletOutput("surveyeffort"))
+            card(
+              card_header("Fish indicators and impact thresholds"),
+              tableOutput("indicator_table")#,
+            ),
+            
+            # h3("Fish indicators and impact thresholds"),
+            # tableOutput("indicator_table")
+
+          #   # ValueBoxes ----
+          #   layout_column_wrap(
+          #     width = 1/2,
+          #     
+          #     twoValueBoxUI(
+          #       id = "number_bruv_deployments",
+          #       title = "BRUVS deployments",
+          #       icon = icon("ship", class = "fa-xl")
+          #     ),
+          #     
+          #     twoValueBoxUI(
+          #       id = "number_rls_deployments",
+          #       title = "Dive surveys",
+          #       icon = icon("ship", class = "fa-xl")
+          #     ),
+          #     
+          #     twoValueBoxUI(
+          #       id = "fish_counted",
+          #       title = "Total number of fish counted",
+          #       icon = icon("fish-fins", class = "fa-xl")
+          #     ),
+          #     
+          #     twoValueBoxUI(
+          #       id = "fish_species",
+          #       title = "Fish species",
+          #       icon = icon("fish-fins", class = "fa-xl")
+          #     ),
+          #     
+          #     twoValueBoxUI(
+          #       id = "non_fish_species",
+          #       title = "Other species",
+          #       icon = icon("shrimp", class = "fa-xl")
+          #     ),
+          #     
+          #     twoValueBoxUI(
+          #       id = "years",
+          #       title = "Years surveyed",
+          #       icon = icon("calendar", class = "fa-xl")
+          #     ),
+          #     
+          #     twoValueBoxUI(
+          #       id = "depths",
+          #       title = "Depths surveyed",
+          #       icon = icon("arrow-down-up-across-line", class = "fa-xl")
+          #     ),
+          #     
+          #     twoValueBoxUI(
+          #       id = "mean_depth",
+          #       title = "Average depth",
+          #       icon = icon("wave-square", class = "fa-xl")
+          #     )
+          # ),
+          #   
+          # card(min_height = 600,
+          #      card_header("Survey Effort"),
+          #      leafletOutput("surveyeffort"))
           )
         )
       )
