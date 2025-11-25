@@ -289,13 +289,10 @@ dummy_metric_data <- function(metric_id, region, n = 120) {
 # Metrics to match the screenshot
 hab_metrics <- c(
   "Species Richness",
-  "Number of site attached fish species",
-  "Number of shark and ray species",
-  "Count large fish (>200 mm)",
-  "Count and size of indicator species",
-  "Carnivore abundance",
-  "Herbivore abundance",
-  "Omnivore abundance"
+  "Total abundance",
+  "Shark and ray richness",
+  "Reef associated species richness",
+  "Fish greater than 200mm abundance"
 )
 
 # All regions available in the HAB data
@@ -303,6 +300,8 @@ hab_regions <- sort(unique(hab_data$regions_summaries$region))
 
 # Deterministic dummy % change data for each region x metric
 set.seed(2025)
+
+
 hab_metric_change <- tidyr::expand_grid(
   region = hab_regions,
   metric = hab_metrics
@@ -316,11 +315,23 @@ hab_metric_change <- tidyr::expand_grid(
     overall_change = round((inside_change + outside_change) / 2)
   )
 
+hab_metric_change <- hab_data$impact_data %>%
+  mutate(
+    percentage = (bloom / pre_bloom) * 100,
+    percentage_change = (bloom - pre_bloom) / pre_bloom * 100
+  ) %>%
+  dplyr::mutate(percentage_change = if_else(is.na(percentage_change), "Surveys incomplete", as.character(percentage_change))) %>%
+  dplyr::mutate(impact_metric = case_when(
+    impact_metric %in% "species_richness" ~ "Species richness",
+    impact_metric %in% "total_abundance" ~ "Total abundance",
+    impact_metric %in% "shark_ray_richness" ~ "Shark and ray richness",
+    impact_metric %in% "reef_associated_richness" ~ "Reef associated species richness",
+    impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance"
+  ))
+
+# unique(hab_metric_change$impact_metric)
+
 # ==== DUMMY COMMON-SPECIES DATA FOR EACH REGION =============================
-
-# All HAB regions (10)
-hab_regions <- sort(unique(hab_data$regions_summaries$region))
-
 # # Paste the species list as a single string (omit the "genus_species" header)
 species_text <- "
 Acanthaluteres brownii

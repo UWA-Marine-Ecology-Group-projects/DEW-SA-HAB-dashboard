@@ -141,7 +141,41 @@ twoValueBoxServer <- function(id,
   })
 }
 
+no_data_plot <- function(title = NULL) {
+  ggplot() +
+    annotate("text", x = 0.5, y = 0.5,
+             label = "Data not available",
+             size = 5, fontface = "italic", colour = "black") +
+    theme_void() +
+    labs(title = title) +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold")
+    )
+}
 
+get_metric_plot <- function(metric_id, title_lab, wrap_width = 22, chosen_region) {
+  
+  txt <- hab_data$impact_data |>
+    dplyr::filter(region == chosen_region, impact_metric == metric_id) |>
+    dplyr::pull(impact)
+  
+  # ---- If no data, return the “no data” plot ----
+  if (txt == "Surveys incomplete") {
+    return(no_data_plot(stringr::str_wrap(title_lab, wrap_width)))
+  }
+  
+  # ---- Otherwise return the gauge ----
+  half_donut_with_dial(
+    values = c(1, 1, 1),
+    mode   = "absolute",
+    status = txt
+  ) +
+    labs(title = stringr::str_wrap(title_lab, width = wrap_width)) +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+      plot.margin = margin(2, 2, 2, 2)
+    )
+}
 
 
 safe_pull <- function(expr) {
@@ -154,6 +188,45 @@ safe_pull <- function(expr) {
     }
   })
 }
+
+make_impact_gauges <- function(region_name) {
+  
+  # ---- Overall impact ----
+  overall_status <- hab_data$overall_impact |>
+    dplyr::filter(region == region_name) |>
+    dplyr::pull(overall_impact)
+  
+  p0 <- if (identical(overall_status, "Surveys incomplete") ||
+            length(overall_status) == 0 ||
+            is.na(overall_status)) {
+    
+    no_data_plot("Overall impact")
+    
+  } else {
+    half_donut_with_dial(
+      values = c(1, 1, 1),
+      mode   = "absolute",
+      status = overall_status
+    ) +
+      ggtitle("Overall impact") +
+      theme(
+        plot.title = element_text(hjust = 0.5, face = "bold.italic", size = 16),
+        plot.margin = margin(2, 2, 2, 2)
+      )
+  }
+  
+  # ---- Individual indicator plots ----
+  p1 <- get_metric_plot("species_richness",         "Species richness",                 chosen_region = region_name)
+  p2 <- get_metric_plot("total_abundance",          "Total abundance",                  chosen_region = region_name)
+  p3 <- get_metric_plot("shark_ray_richness",       "Shark and ray richness",           chosen_region = region_name)
+  p4 <- get_metric_plot("reef_associated_richness", "Reef associated species richness", chosen_region = region_name)
+  p5 <- get_metric_plot("fish_200_abundance",       "Fish > 200 mm abundance",          chosen_region = region_name)
+  
+  # Final layout
+  (p0 | p1 | p2) /
+    (p3 | p4 | p5)
+}
+
 
 # ------------------------------ server ---------------------------------------
 
@@ -451,63 +524,6 @@ server <- function(input, output, session) {
     format_fn = as.character
   )
   
-  # Leaflet map
-  # output$map <- renderLeaflet({
-  #   
-  #   method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
-  #   pts <- ensure_sf_ll(hab_data$hab_combined_metadata) 
-  #   
-  #   m <- base_map(current_zoom = 7)
-  #   
-  #   # if (has_leafgl()) {
-  #     m <- leafgl::addGlPoints(
-  #       m,
-  #       data = pts,
-  #       fillColor = method_cols[pts$method],
-  #       weight = 1,
-  #       popup = pts$popup,
-  #       group = "Sampling locations", pane = "points"
-  #     )
-  #   # }
-  #   
-  #   m <- addLegend(m,
-  #             "topright",
-  #             colors = unname(method_cols),
-  #             labels = names(method_cols),
-  #             title = "Survey method",
-  #             opacity = 1,
-  #             group = "Sampling locations",
-  #             layerId = "methodLegend"
-  #   ) %>%
-  #     hideGroup("Australian Marine Parks") %>%
-  #     hideGroup("Australian Marine Parks") |>
-  #     
-  #     addPolygons(
-  #       data = regions_joined,
-  #       layerId = ~region,
-  #       label = ~region,
-  #       color = "#444444",
-  #       weight = 1,
-  #       fillOpacity = 0.7,
-  #       fillColor = ~hab_data$pal_factor(regions_joined$overall_impact),
-  #       group = "Impact regions",
-  #       highlightOptions = highlightOptions(color = "black", weight = 2, bringToFront = TRUE)
-  #     ) |>
-  #     addLegend("bottomright",
-  #               title = "Overall Impact",
-  #               colors = c(unname(hab_data$pal_vals[hab_data$ordered_levels]), "grey"),
-  #               labels = c("High", "Medium","Low", "Surveys incomplete"),
-  #               opacity = 0.8,
-  #               group = "Impact regions") |>
-  #     addLayersControl(
-  #       overlayGroups = c("Australian Marine Parks", "State Marine Parks", "Impact regions"),
-  #       options = layersControlOptions(collapsed = FALSE),
-  #       position = "topright"
-  #     )
-  #   
-  # 
-  # })
-  
   output$map <- renderLeaflet({
     
     method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
@@ -586,30 +602,7 @@ server <- function(input, output, session) {
       selected_region(click$id)
     }
   })
-  
-  # --- Highlight clicked region with white border ---
-  # observe({
-  #   req(selected_region())
-  #   
-  #   # Grab the currently selected region polygon
-  #   region_selected <- regions_joined |> 
-  #     filter(region == selected_region())
-  #   
-  #   # Update map: remove previous highlight, then draw a new one
-  #   leafletProxy("map") |>
-  #     clearGroup("highlight") |>
-  #     addPolygons(
-  #       data = region_selected,
-  #       color = "white",        # solid white border
-  #       weight = 6,             # thickness of outline
-  #       fillColor = "white",    # same white fill to make it pop
-  #       fillOpacity = 0.2,      # slightly opaque (use 1 for fully opaque)
-  #       opacity = 0.75,            # full border opacity
-  #       group = "highlight"#,
-  #       # options = pathOptions(pane = "highlight")
-  #     )
-  # })
-  
+
   observe({
     req(selected_region())
     
@@ -629,7 +622,6 @@ server <- function(input, output, session) {
         options = pathOptions(pane = "highlight")
       )
   })
-  
   
   # Selected region badge
   output$selected_region_badge <- renderUI({
@@ -717,198 +709,21 @@ server <- function(input, output, session) {
   })
   
   # Pointer plots----
-  
-  no_data_plot <- function(title = NULL) {
-    ggplot() +
-      annotate("text", x = 0.5, y = 0.5,
-               label = "Data not available",
-               size = 5, fontface = "italic", colour = "black") +
-      theme_void() +
-      labs(title = title) +
-      theme(
-        plot.title = element_text(hjust = 0.5, face = "bold")
-      )
-  }
   # Pointer plots: overall + 5 indicators in one figure ------------------------
   output$impact_gauges <- renderPlot({
     req(selected_region())
-    reg <- selected_region()
-    
-    # helper to pull status safely
-    status_or_na <- function(df) {
-      x <- df %>% pull(impact)
-      if (length(x) == 0) NA_character_ else x
-    }
-    
-    # ---- Overall impact ----
-    overall_status <- hab_data$overall_impact |>
-      dplyr::filter(region == reg) |>
-      dplyr::pull(overall_impact) %>% 
-      glimpse()
-    
-    p0 <- if (overall_status == "Surveys incomplete") {
-      no_data_plot("Overall impact")
-    } else {
-      half_donut_with_dial(
-        values = c(1, 1, 1),
-        mode   = "absolute",
-        status = overall_status
-      ) +
-        ggtitle("Overall impact") +
-        theme(
-          plot.title = element_text(hjust = 0.5, face = "bold.italic", size = 16),
-          plot.margin = margin(2, 2, 2, 2)
-        )
-    }
-    
-    # ---- Individual indicators ----
-    get_metric_plot <- function(metric_id, title_lab, wrap_width = 22) {
-      
-      txt <- hab_data$impact_data |>
-        dplyr::filter(region == reg, impact_metric == metric_id) |>
-        dplyr::pull(impact)
-      
-      # ---- If no data, return the “no data” plot ----
-      if (txt == "Surveys incomplete") {
-        return(no_data_plot(stringr::str_wrap(title_lab, wrap_width)))
-      }
-      
-      # ---- Otherwise return the gauge ----
-      half_donut_with_dial(
-        values = c(1, 1, 1),
-        mode   = "absolute",
-        status = txt
-      ) +
-        labs(title = stringr::str_wrap(title_lab, width = wrap_width)) +
-        theme(
-          plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
-          plot.margin = margin(2, 2, 2, 2)
-        )
-    }
-    
-    
-    p1 <- get_metric_plot("species_richness",        "Species richness")
-    p2 <- get_metric_plot("total_abundance",         "Total abundance")
-    p3 <- get_metric_plot("shark_ray_richness",      "Shark and ray richness")
-    p4 <- get_metric_plot("reef_associated_richness","Reef associated species richness")
-    p5 <- get_metric_plot("fish_200_abundance",      "Fish > 200 mm abundance")
-    
-    # 2x3 grid: overall + 5 indicators
-    final_plot <- (p0 | p1 | p2) /
-      (p3 | p4 | p5)
-    
-    final_plot
+    make_impact_gauges(selected_region())
   })
   
-  # output$overallplot <- renderPlot({ 
-  #   req(selected_region())
-  #   
-  #   reg <- selected_region()
-  #   
-  #   txt <- hab_data$overall_impact |>
-  #     filter(region == reg) |>
-  #     pull(overall_impact)
-  #   
-  #   overall <- half_donut_with_dial(
-  #     values = c(1, 1, 1),
-  #     mode = "absolute",
-  #     status   = txt
-  #   ) 
-  #   
-  #   overall
-  #   
-  #   # TODO I think I need someway to say no pointer due to surveys not being completed
-  # })
-  # 
-  # output$combinedplot <- renderPlot({ 
-  #   req(selected_region())
-  #   
-  #   reg <- selected_region()
-  #   
-  #   # Species Richness
-  #   txt <- hab_data$impact_data |>
-  #     filter(region == reg) |>
-  #     filter(impact_metric == "species_richness") |>
-  #     pull(impact)
-  #   
-  #   p1 <- half_donut_with_dial(
-  #     values = c(1, 1, 1),
-  #     mode = "absolute",
-  #     status   = txt
-  #   )+
-  #     ggtitle("Species richness") +
-  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-  #   
-  #   # Total Abundance
-  #   txt <- hab_data$impact_data |>
-  #     filter(region == reg) |>
-  #     filter(impact_metric == "total_abundance") |>
-  #     pull(impact)
-  # 
-  #   p2 <- half_donut_with_dial(
-  #     values = c(1, 1, 1),
-  #     mode = "absolute",
-  #     status   = txt
-  #   )+
-  #     ggtitle("Total abundance") +
-  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-  #   
-  #   # Shark and Ray Richness
-  #   txt <- hab_data$impact_data |>
-  #     filter(region == reg) |>
-  #     filter(impact_metric == "shark_ray_richness") |>
-  #     pull(impact)
-  #   
-  #   p3 <- half_donut_with_dial(
-  #     values = c(1, 1, 1),
-  #     mode = "absolute",
-  #     status   = txt
-  #   )+
-  #     ggtitle("Shark and ray richness") +
-  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-  #   
-  #   # Site attached/reef associated species abundance
-  #   txt <- hab_data$impact_data |>
-  #     filter(region == reg) |>
-  #     filter(impact_metric == "reef_associated_richness") |>
-  #     pull(impact)
-  #   
-  #   p4 <- half_donut_with_dial(
-  #     values = c(1, 1, 1),
-  #     mode = "absolute",
-  #     status   = txt
-  #   )+
-  #     labs(title = str_wrap("Reef associated species richness", width = 20)) +
-  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-  #   
-  #   # Fish greater than 200 mm abundance
-  #   
-  #   txt <- hab_data$impact_data |>
-  #     filter(region == reg) |>
-  #     filter(impact_metric == "fish_200_abundance") |>
-  #     pull(impact)
-  #   
-  #   p5 <- half_donut_with_dial(
-  #     values = c(1, 1, 1),
-  #     mode = "absolute",
-  #     status   = txt
-  #   )+
-  #     labs(title = str_wrap("Fish greater than 200 mm abundance", width = 20)) +
-  #     # ggtitle("Fish greater than 200 mm abundance") +
-  #     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-  #   
-  #   final_plot <- p1 + 
-  #     p2 +
-  #     p3 + 
-  #     p4 +
-  #     p5 + plot_layout(ncol = 4)
-  #   
-  #   final_plot
-  # })
+  
+  output$impact_gauges_region <- renderPlot({
+    req(input$em_region)
+    make_impact_gauges(input$em_region)
+  })
   
   deployments <- reactive({
     deployments <- hab_data$hab_combined_metadata %>%
-      dplyr::filter(region %in% selected_region()) 
+      dplyr::filter(region %in% input$em_region) 
     
     # Extract coordinates
     coords <- st_coordinates(deployments)
@@ -930,8 +745,9 @@ server <- function(input, output, session) {
   
   output$surveyeffort <- renderLeaflet({
     method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
+    
     pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
-      dplyr::filter(region %in% selected_region())
+      dplyr::filter(region %in% input$em_region)
     
     m <- base_map(current_zoom = 7) %>%
       fitBounds(min_lon(), min_lat(), max_lon(), max_lat())
@@ -1156,40 +972,63 @@ server <- function(input, output, session) {
   # })
   # 
   # ---- HAB % change summary table (per region) ------------------------------
-  
   output$em_change_table <- renderTable({
     req(input$em_region)
     
     df <- hab_metric_change |>
       dplyr::filter(region == input$em_region) |>
       dplyr::select(
-        Metric = metric,
-        Inside  = inside_change,
-        Outside = outside_change,
-        Overall = overall_change
+        Metric = impact_metric,
+        Change = percentage_change   # <- your character column
       )
     
-    # helper to format % with up/down arrows
-    fmt_cell <- function(x) {
+    vals <- df$Change
+    
+    # 1. Detect “Surveys incomplete”
+    is_incomplete <- !is.na(vals) & grepl("Surveys incomplete", vals, ignore.case = TRUE)
+    
+    # 2. Try to parse numbers
+    num <- suppressWarnings(as.numeric(vals))
+    has_num <- !is.na(num) & !is_incomplete
+    
+    # 3. Arrows: up for ≥0, down for <0
+    arrows <- ifelse(num < 0, "&#8595;", "&#8593;")
+    
+    # 4. Colour rules (num is % change)
+    colours <- ifelse(
+      num <= -50,                    # 50–100% decrease
+      "#EB5757",
       ifelse(
-        is.na(x),
-        "",
-        sprintf("%s %s%%",
-                ifelse(x < 0, "&#8595;", "&#8593;"),
-                scales::number(abs(x), accuracy = 1))
+        num > -50 & num <= -20,      # 20–50% decrease
+        "#F2C94C",
+        "#3B7EA1"                    # 0–20% decrease OR any increase
       )
-    }
+    )
+    
+    # 5. Build formatted column
+    out <- rep("", length(vals))
+    
+    # Numeric values
+    out[has_num] <- sprintf(
+      "<span style='color:%s'>%s %s%%</span>",
+      colours[has_num],
+      arrows[has_num],
+      scales::number(abs(num[has_num]), accuracy = 1)
+    )
+    
+    # Surveys incomplete
+    out[is_incomplete] <- "<span style='color:#000000'><em>Surveys incomplete</em></span>"
     
     data.frame(
       Metric  = df$Metric,
-      Inside  = fmt_cell(df$Inside),
-      Outside = fmt_cell(df$Outside),
-      Overall = fmt_cell(df$Overall),
-      check.names = FALSE
+      Change = out,
+      check.names = FALSE,
+      stringsAsFactors = FALSE
     )
   },
-  sanitize.text.function = function(x) x  # allow HTML arrows
+  sanitize.text.function = function(x) x   # allow HTML and colours
   )
+  
   
   # ---- Common species plots (top 5) ----------------------------------------
   make_top10_plot <- function(region_name, 
