@@ -185,31 +185,34 @@ twoValueBoxUI <- function(id,
 }
 
 # ---- GLOBAL ADDITIONS (put near other helpers) ----
-
 metric_defs <- c(
   richness      = "Species richness",
-  site_attached = "Number of site attached fish species",
-  sharks_rays   = "Number of shark and ray species",
-  large_fish    = "Count large fish (>200 mm)",
-  cti           = "Community temperature index",
-  func_groups   = "Abundance by functional group",
+  total_abundance = "Total abundance",
+  
+  sharks_rays   = "Shark and ray species richness",
+  reef_associated_richness = "Reef associated fish species richness",
+ 
+  large_fish    = "Count of large fish (>200 mm)",
+  # cti           = "Community temperature index",
+  # func_groups   = "Abundance by functional group",
   trophic       = "Abundance by trophic level"
 )
 
 metric_y_lab <- list(
   richness      = "No. species",
-  site_attached = "No. species",
-  sharks_rays   = "No. species",
+  total_abundance = "No. individuals",
+  
+  sharks_rays = "No. species",
+  reef_associated_richness   = "No. species",
+  
   large_fish    = "No. individuals",
-  func_groups   = "No. individuals",
-  cti           = "Index (°C)",
-  trophic       = "Index"
+  trophic       = "No. individuals"
 )
 
 # shared colours for pre/post everywhere
 metric_period_cols <- c(
-  "pre-bloom"  = "#0c3978",  # same blue
-  "post-bloom" = "#f89f00"   # same orange
+  "Pre-bloom"  = "#0c3978",  # same blue
+  "Bloom" = "#f89f00"   # same orange
 )
 
 metric_groups <- function(metric_id) {

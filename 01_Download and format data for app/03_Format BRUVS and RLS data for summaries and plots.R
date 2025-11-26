@@ -349,23 +349,30 @@ region_top_species_average <- combined_count %>%
   tidyr::replace_na(list(average = 0, se = 0))
 
 # Species Richness ----
-# TODO this will need to include a full join to account for drops that don't see any fish
-species_richness <- combined_count %>%
+species_richness_samples <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::group_by(region, period, sample) %>%
   dplyr::distinct(family, genus, species) %>%
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
-  dplyr::filter(!is.na(region)) %>%
+  dplyr::filter(!is.na(region))
+
+# TODO this will need to include a full join to account for drops that don't see any fish
+species_richness_summary <- species_richness_samples %>%
   dplyr::group_by(region, period) %>%
-  dplyr::summarise(average_richness = mean(n_species_sample)) %>%
-  ungroup()
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(n_species_sample))),
+    .groups = "drop"
+  )
 
 # Calculate Impacts for Species Richness ----
-species_richness_impacts <- species_richness %>%
+species_richness_impacts <- species_richness_summary %>%
+  dplyr::select(-se) %>%
   tidyr::complete(region, period) %>%
-  tidyr::pivot_wider(names_from = period, values_from = average_richness) %>%
+  tidyr::pivot_wider(names_from = period, values_from = mean) %>%
   clean_names() %>%
   dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
   dplyr::mutate(impact = case_when(
@@ -551,7 +558,11 @@ hab_data <- structure(
     region_top_species = region_top_species,
     region_top_species_average = region_top_species_average,
     impact_data = impact_data,
-    overall_impact = overall_impact
+    overall_impact = overall_impact,
+    
+    # Tabset plots
+    species_richness_samples = species_richness_samples,
+    species_richness_summary = species_richness_summary
   ), class = "data")
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))

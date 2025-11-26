@@ -227,6 +227,69 @@ make_impact_gauges <- function(region_name) {
     (p3 | p4 | p5)
 }
 
+metric_tab_body_ui <- function(id) {
+  switch(
+    id,
+    
+    # ---- 2-plot layout ----------------------------------------
+    richness = {
+      layout_columns(
+        col_widths = c(6, 6),
+        withSpinner(
+          plotOutput("em_plot_richness_main", height = 400),
+          type = 6
+        ),
+        withSpinner(
+          plotOutput("em_plot_richness_detail", height = 400),
+          type = 6
+        )
+      )
+    },
+    
+    # ---- 1-plot layout ----------------------------------------
+    total_abundance = {
+      withSpinner(
+        plotOutput("em_plot_total_abundance_main", height = 400),
+        type = 6
+      )
+    },
+    
+    # ---- example 3-plot layout --------------------------------
+    trophic = {
+      layout_columns(
+        col_widths = c(4, 4, 4),
+        withSpinner(
+          plotOutput("em_plot_trophic_main", height = 350),
+          type = 6
+        ),
+        withSpinner(
+          plotOutput("em_plot_trophic_detail", height = 350),
+          type = 6
+        ),
+        withSpinner(
+          plotOutput("em_plot_trophic_extra", height = 350),
+          type = 6
+        )
+      )
+    },
+    
+    # ---- default: same as your old 2-plot layout --------------
+    {
+      layout_columns(
+        col_widths = c(6, 6),
+        withSpinner(
+          plotOutput(paste0("em_plot_", id, "_main"), height = 400),
+          type = 6
+        ),
+        withSpinner(
+          plotOutput(paste0("em_plot_", id, "_detail"), height = 400),
+          type = 6
+        )
+      )
+    }
+  )
+}
+
 
 # ------------------------------ server ---------------------------------------
 
@@ -805,116 +868,131 @@ server <- function(input, output, session) {
       !!!lapply(names(metric_defs), function(id) {
         bslib::nav(
           title = metric_defs[[id]],
-          # Primary pre/post boxplot
-          
-          layout_columns(
-            col_widths = c(6, 6),
-            withSpinner(
-              plotOutput(paste0("em_plot_", id, "_main"), height = 400),
-              type = 6
-            ),
-            # Optional: a second plot per metric (grouped/detail)
-            withSpinner(
-              plotOutput(paste0("em_plot_", id, "_detail"), height = 400),
-              type = 6
-            ))
+          metric_tab_body_ui(id)   # <- custom per metric
         )
       })
     )
   })
   
-  # Renderers for each metric (lazy: only active tab draws)
-  lapply(names(metric_defs), function(metric_id) {
-    local({
-      id <- metric_id
-      
-      # ---- Plot 1: overall pre/post with jittered points --------------------
-      output[[paste0("em_plot_", id, "_main")]] <- renderPlot({
-        req(input$em_region)
-        df <- dummy_metric_data(id, input$em_region, n = 120)
-        
-        p <- ggplot(df, aes(x = period, y = value, fill = period)) +
-          geom_boxplot(
-            width = 0.6,
-            outlier.shape = NA,
-            alpha = 0.85,
-            colour = "black"
-          ) +
-          geom_jitter(
-            aes(colour = period),
-            width = 0.15,
-            alpha = 0.35,
-            size = 1.2
-          ) +
-          scale_fill_manual(values = metric_period_cols) +
-          scale_color_manual(values = metric_period_cols) +
-          labs(
-            x = NULL,
-            y = metric_y_lab[[id]] %||% "Value",
-            subtitle = input$em_region
-          ) +
-          theme_minimal(base_size = 13) +
-          theme(
-            legend.position   = "bottom",
-            plot.subtitle     = element_text(margin = margin(b = 6)),
-            panel.grid.minor  = element_blank()
-          )
-        
-        p
-        
-      }) |>
-        bindCache(input$em_region, id) |>
-        bindEvent(input$em_region)
-      
-      # ---- Plot 2: Inside vs Outside, still pre/post on x -------------------
-      output[[paste0("em_plot_", id, "_detail")]] <- renderPlot({
-        req(input$em_region)
-        df <- dummy_metric_data(id, input$em_region, n = 120)
-        
-        p <- ggplot(df, aes(x = period, y = value, fill = period)) +
-          geom_boxplot(
-            width = 0.6,
-            outlier.shape = NA,
-            alpha = 0.85,
-            colour = "black"
-          ) +
-          geom_jitter(
-            aes(colour = period),
-            width = 0.15,
-            alpha = 0.35,
-            size = 1.2
-          ) +
-          scale_fill_manual(values = metric_period_cols) +
-          scale_color_manual(values = metric_period_cols) +
-          facet_wrap(~ zone) +
-          labs(
-            x = NULL,
-            y = metric_y_lab[[id]] %||% "Value",
-            subtitle = paste(input$em_region, "— Inside vs Outside")
-          ) +
-          theme_minimal(base_size = 13) +
-          theme(
-            legend.position   = "bottom",
-            plot.subtitle     = element_text(margin = margin(b = 6)),
-            panel.grid.minor  = element_blank()
-          )
-        
-        if (id == "func_groups") {
-          # rows = functional group (Carnivore / Herbivore / Omnivore),
-          # cols = Inside / Outside
-          p <- p + facet_grid(group ~ zone)
-        } else {
-          p <- p + facet_wrap(~ zone)
-        }
-        
-        p
-        
-      }) |>
-        bindCache(input$em_region, id) |>
-        bindEvent(input$em_region)
-    })
-  })
+  # helper if you still like dummy_metric_data()
+  get_metric_data <- function(metric_id, region, n = 120) {
+    dummy_metric_data(metric_id, region, n = n)
+  }
   
+  # ---------- RICHNESS: main boxplot --------------------
+  output$em_plot_richness_main <- renderPlot({
+    req(input$em_region)
+    df <- hab_data$species_richness_samples %>%
+      dplyr::filter(region == input$em_region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    mean_se <- hab_data$species_richness_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      # boxplot (median + IQR + whiskers)
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      # raw points
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      # mean ± SE
+      geom_pointrange(
+        data = mean_se,
+        aes(
+          x    = period,
+          y    = mean,
+          ymin = mean - se,
+          ymax = mean + se
+        ),
+        inherit.aes = FALSE,
+        colour = "black",
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["richness"]],
+        subtitle = input$em_region
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+       legend.position  = "none",
+       panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  # ---------- RICHNESS: detail plot ---------------------
+  output$em_plot_richness_detail <- renderPlot({
+    req(input$em_region)
+    
+    df <- hab_data$species_richness_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      # mean bar
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      # # mean ± SE
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["richness"]],
+        subtitle = paste(input$em_region, ": Average species richness per sample")
+      ) +
+      # facet_wrap(~ zone) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",        # both bars already coloured by period
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  # ---------- TOTAL ABUNDANCE: only one plot ------------
+  output$em_plot_total_abundance_main <- renderPlot({
+    req(input$em_region)
+    df <- get_metric_data("total_abundance", input$em_region)
+    
+    # totally different plot if you like:
+    ggplot(df, aes(x = period, y = value, fill = period)) +
+      geom_violin(alpha = 0.5, trim = FALSE) +
+      geom_boxplot(width = 0.2, outlier.shape = NA) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["total_abundance"]],
+        subtitle = input$em_region
+      ) +
+      theme_minimal(base_size = 13)
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  # …and so on for trophic, sharks_rays, etc.
   
   # ---- HAB % change summary table (per region) ------------------------------
   output$em_change_table <- renderTable({
@@ -1497,11 +1575,11 @@ server <- function(input, output, session) {
         .groups       = "drop"
       ) |>
       dplyr::ungroup() %>%
-      dplyr::filter(region %in% input$em_region) %>%
-      glimpse()
+      dplyr::filter(region %in% input$em_region) #%>%
+      #glimpse()
   })
 
-  # 4. Nicely formatted text for the selected region ----
+  # 2. Nicely formatted text for the selected region ----
   output$years_for_region <- renderText({
     req(input$em_region)
 
@@ -1510,8 +1588,6 @@ server <- function(input, output, session) {
       dplyr::pull(years_sampled)
     
     yrs
-
-    # paste0("Years sampled in ", input$em_region, ": ", yrs)
   })
   
   }
