@@ -135,6 +135,13 @@ ui <- page_navbar(
           choices = NULL, multiple = FALSE,
           options = list(placeholder = "Choose a region...")
         ),
+        
+        h6("Years sampled:"),
+        textOutput("years_for_region"),
+        
+        
+        br(),
+        
         numericInput( 
           "numberspecies", 
           "Choose number of species to plot", 
@@ -179,48 +186,59 @@ ui <- page_navbar(
     )
   ),
   
-  nav_panel(
-    "Location Summary",
-    layout_sidebar(
-      sidebar = sidebar(
-        width = "350px",
-        selectizeInput(
-          "mp_park",
-          "Choose a marine park",
-          choices = NULL, multiple = FALSE,
-          options = list(placeholder = "Choose a marine park...")
-        ),
-        helpText("Explore indicators, common species and survey progress for a selected marine park.")
-      ),
-      
-      # Park-level survey progress boxes
-      uiOutput("mp_survey_value_boxes"),
-      
-      div(
-        class = "container-fluid",
-        
-        card(
-          card_header("Summary table showing percentage change compared to pre-bloom levels (dummy data)"),
-          tableOutput("mp_change_table")
-        ),
-        
-        layout_columns(
-          col_widths = c(6, 6),
-          card(
-            card_header("10 most common species pre-bloom (dummy data)"),
-            plotOutput("mp_common_pre", height = 400)
-          ),
-          card(
-            card_header("10 most common species post-bloom (dummy data)"),
-            plotOutput("mp_common_post", height = 400)
-          )
-        ),
-        
-        br(),
-        uiOutput("mp_tabset")   # tabset for park-level metrics
-      )
-    )
-  ),
+  # nav_panel(
+  #   "Location Summary",
+  #   layout_sidebar(
+  #     sidebar = sidebar(
+  #       width = "350px",
+  #       selectizeInput(
+  #         "location",
+  #         "Choose a location",
+  #         choices = NULL, multiple = FALSE,
+  #         options = list(placeholder = "Choose a location...")
+  #       ),
+  #       # helpText("Explore indicators, common species and survey progress for a selected marine park.")
+  #     ),
+  #     
+  #     # Park-level survey progress boxes
+  #     uiOutput("loation_survey_value_boxes"),
+  #     
+  #     
+  #     div(
+  #       class = "container-fluid",
+  #       layout_columns(
+  #         col_widths = c(7, 5),
+  #         card(min_height = 600,
+  #              card_header("Survey Effort"),
+  #              leafletOutput("locationsurveyeffort")),
+  #         
+  #         div(
+  #           card(
+  #             card_header("Location impact overview"),
+  #             plotOutput("location_impact_gauges_region", height = 350)#,
+  #           ),
+  #           card(
+  #             card_header("Percentage change compared to pre-bloom levels"),
+  #             tableOutput("location_change_table")
+  #           ))),
+  # 
+  #       layout_columns(
+  #         col_widths = c(6, 6),
+  #         card(
+  #           card_header("Most common species pre-bloom"),
+  #           plotOutput("location_common_pre", height = 400)
+  #         ),
+  #         card(
+  #           card_header("Most common species post-bloom"),
+  #           plotOutput("location_common_post", height = 400)
+  #         )
+  #       ),
+  #       
+  #       br(),
+  #       uiOutput("location_tabset")   # tabset for park-level metrics
+  #     )
+  #   )
+  # ),
   
   
   nav_spacer(),

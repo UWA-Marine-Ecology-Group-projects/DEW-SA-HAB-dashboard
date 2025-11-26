@@ -122,6 +122,8 @@ bruv_metadata <- readRDS("data/raw/sa_metadata_bruv.RDS") %>%
   dplyr::mutate(sample = as.character(sample)) %>%
   dplyr::glimpse()
 
+unique(bruv_metadata$location) %>% sort()
+
 rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
   dplyr::rename(date = survey_date, sample = survey_id) %>%
   dplyr::mutate(sample = as.character(sample)) %>%
@@ -244,7 +246,7 @@ combined_count <- bind_rows(bruv_count_regions_pre, bruv_count_regions_post, rls
 hab_number_of_fish <- combined_count %>%
   semi_join(fish_species) %>%
   dplyr::group_by(region, period) %>%
-  summarise(number = sum(count)) %>%
+  dplyr::summarise(number = sum(count)) %>%
   ungroup() %>%
   dplyr::filter(!is.na(region))
 
@@ -269,7 +271,7 @@ hab_min_depth <- combined_metadata %>%
   sf::st_drop_geometry() %>%
   filter(!depth_m == 0) %>%
   dplyr::group_by(region, period) %>%
-  summarise(number = min(depth_m)) %>%
+  dplyr::summarise(number = min(depth_m)) %>%
   dplyr::filter(!is.na(region)) %>% 
   glimpse()
 
@@ -277,7 +279,7 @@ hab_max_depth <- combined_metadata %>%
   sf::st_drop_geometry() %>%
   filter(!depth_m == 0) %>%
   dplyr::group_by(region, period) %>%
-  summarise(number = max(depth_m)) %>%
+  dplyr::summarise(number = max(depth_m)) %>%
   dplyr::filter(!is.na(region)) %>% 
   glimpse()
 
@@ -286,7 +288,7 @@ hab_mean_depth <- combined_metadata %>%
   sf::st_drop_geometry() %>%
   filter(!depth_m == 0) %>%
   dplyr::group_by(region, period) %>%
-  summarise(number = mean(depth_m)) %>%
+  dplyr::summarise(number = mean(depth_m)) %>%
   dplyr::filter(!is.na(region)) %>%
   glimpse()
 
@@ -327,20 +329,24 @@ region_top_species <- combined_count %>%
 
 region_top_species_average <- combined_count %>%
   dplyr::filter(method %in% "BRUVs") %>%
-  dplyr::group_by(region, period, family, genus, species, genus_species)%>%
-  dplyr::summarise(average = mean(count)) %>%
+  dplyr::group_by(region, period, family, genus, species, genus_species) %>%
+  dplyr::summarise(
+    average = mean(count, na.rm = TRUE),
+    se = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count)))
+  ) %>%
   dplyr::ungroup() %>%
-  dplyr::left_join(dew_species %>% select(genus_species, common_name)) %>%
+  dplyr::left_join(dew_species %>% dplyr::select(genus_species, common_name)) %>%
   dplyr::left_join(species_list) %>%
-  dplyr::select(family, genus, species, common_name, australian_common_name, average, region, period) %>%
-  dplyr::mutate(common_name = if_else(is.na(common_name), australian_common_name, common_name)) %>%
+  dplyr::select(family, genus, species, common_name, australian_common_name,
+                average, se, region, period) %>%
+  dplyr::mutate(common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name)) %>%
   dplyr::mutate(display_name = paste0(genus, " ", species, " (", common_name, ")")) %>%
   dplyr::group_by(region, period) %>%
   dplyr::slice_max(order_by = average, n = 20) %>%
-  dplyr::select(region, period, display_name, average) %>%
-  ungroup() %>%
-  tidyr::complete(nesting(region, display_name), period) %>%
-  replace_na(list(average = 0))
+  dplyr::select(region, period, display_name, average, se) %>%
+  dplyr::ungroup() %>%
+  tidyr::complete(tidyr::nesting(region, display_name), period) %>%
+  tidyr::replace_na(list(average = 0, se = 0))
 
 # Species Richness ----
 # TODO this will need to include a full join to account for drops that don't see any fish
@@ -533,6 +539,7 @@ hab_data <- structure(
     hab_mean_depth = hab_mean_depth,
     hab_min_depth = hab_min_depth,
     hab_min_year = hab_min_year,
+    year_dat = year_dat,
     hab_number_bruv_deployments = hab_number_bruv_deployments,
     hab_number_of_fish = hab_number_of_fish,
     hab_number_of_fish_species = hab_number_of_fish_species,

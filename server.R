@@ -916,61 +916,6 @@ server <- function(input, output, session) {
   })
   
   
-  # 
-  # # Renderers for each metric (lazy: only active tab draws)
-  # lapply(names(metric_defs), function(metric_id) {
-  #   local({
-  #     id <- metric_id
-  #     
-  #     # Main pre/post boxplot
-  #     output[[paste0("em_plot_", id, "_main")]] <- renderPlot({
-  #       req(input$em_region)
-  #       df <- dummy_metric_data(id, input$em_region, n = 120)
-  #       
-  #       ggplot(df, aes(x = period, y = value)) +
-  #         geom_boxplot(width = 0.6, outlier.alpha = 0.25) +
-  #         labs(
-  #           x = NULL,
-  #           y = metric_y_lab[[id]] %||% "Value",
-  #           subtitle = input$em_region
-  #         ) +
-  #         theme_minimal(base_size = 13) +
-  #         theme(
-  #           plot.subtitle = element_text(margin = margin(b = 6)),
-  #           panel.grid.minor = element_blank()
-  #         )
-  #     }) |>
-  #       bindCache(input$em_region, id) |>
-  #       bindEvent(input$em_region)
-  #     
-  #     # Detail plot: grouped boxplot by metric-specific strata
-  #     output[[paste0("em_plot_", id, "_detail")]] <- renderPlot({
-  #       req(input$em_region)
-  #       df <- dummy_metric_data(id, input$em_region, n = 120)
-  #       # add a grouping factor appropriate for the metric
-  #       groups <- metric_groups(id)
-  #       set.seed(1L)
-  #       df$group <- factor(sample(groups, size = nrow(df), replace = TRUE), levels = groups)
-  #       
-  #       ggplot(df, aes(x = group, y = value, fill = period)) +
-  #         geom_boxplot(position = position_dodge(width = 0.75), width = 0.65, outlier.alpha = 0.15) +
-  #         labs(
-  #           x = NULL,
-  #           y = metric_y_lab[[id]] %||% "Value",
-  #           subtitle = paste(input$em_region, "— by", if (id == "func_groups") "functional group" else "stratum")
-  #         ) +
-  #         theme_minimal(base_size = 13) +
-  #         theme(
-  #           legend.position = "top",
-  #           plot.subtitle   = element_text(margin = margin(b = 6)),
-  #           panel.grid.minor = element_blank()
-  #         )
-  #     }) |>
-  #       bindCache(input$em_region, id) |>
-  #       bindEvent(input$em_region)
-  #   })
-  # })
-  # 
   # ---- HAB % change summary table (per region) ------------------------------
   output$em_change_table <- renderTable({
     req(input$em_region)
@@ -1028,9 +973,7 @@ server <- function(input, output, session) {
   },
   sanitize.text.function = function(x) x   # allow HTML and colours
   )
-  
-  
-  # ---- Common species plots (top 5) ----------------------------------------
+
   make_top10_plot <- function(region_name, 
                               focal_period = c("Pre-bloom", "Bloom"),
                               title_lab = "Common species",
@@ -1047,7 +990,6 @@ server <- function(input, output, session) {
       dplyr::slice_max(order_by = average, n = number_species, with_ties = FALSE) |>
       dplyr::pull(display_name)
     
-    # Only those species, but showing both pre/post
     # Only those species, but showing both pre/post
     plot_df <- df |>
       dplyr::filter(display_name %in% top_species) |>
@@ -1066,7 +1008,7 @@ server <- function(input, output, session) {
     # 2. Species order: descending average for focal period (biggest at top)
     species_order <- plot_df |>
       dplyr::filter(period == focal_period) |>
-      dplyr::arrange((average)) |>
+      dplyr::arrange(average) |>
       dplyr::pull(label)
     
     plot_df$label <- factor(plot_df$label, levels = species_order)
@@ -1075,8 +1017,24 @@ server <- function(input, output, session) {
     plot_df <- plot_df |>
       dplyr::arrange(label, period)
     
-    ggplot(plot_df, aes(x = average, y = label, fill = period)) +
-      geom_col(position = position_dodge2(reverse = TRUE, preserve = "single")) +
+    # Use a shared dodge for bars + error bars
+    # dodge <- position_dodge2(reverse = TRUE, preserve = "single")
+    dodge <- position_dodge(width = 0.8)
+    
+    ggplot(
+      plot_df,
+      aes(x = average,
+          y = label,
+          fill = period,
+          group = period)     # <-- add group here
+    ) +
+      geom_col(position = dodge) +
+      geom_errorbarh(
+        aes(xmin = average - se,
+            xmax = average + se),
+        position = dodge,
+        height = 0.3
+      ) +
       labs(
         x = "Average abundance per BRUV",
         y = NULL,
@@ -1089,9 +1047,7 @@ server <- function(input, output, session) {
         legend.position = "bottom",
         axis.text.y = ggtext::element_markdown(size = 12)
       )
-    
   }
-  
   
   output$em_common_pre <- renderPlot({
     req(input$em_region)
@@ -1529,5 +1485,33 @@ server <- function(input, output, session) {
     }
   })
   
+  # 1. Summarise years by region ----
+  years_by_region <- reactive({
+    hab_data$year_dat |>
+      dplyr::filter(method %in% "BRUVs") %>%
+      dplyr::distinct(region, year) |>
+      dplyr::group_by(region) |>
+      dplyr::summarise(
+        n_years       = dplyr::n(),
+        years_sampled = paste(sort(unique(year)), collapse = ", "),
+        .groups       = "drop"
+      ) |>
+      dplyr::ungroup() %>%
+      dplyr::filter(region %in% input$em_region) %>%
+      glimpse()
+  })
+
+  # 4. Nicely formatted text for the selected region ----
+  output$years_for_region <- renderText({
+    req(input$em_region)
+
+    yrs <- years_by_region() |>
+      dplyr::filter(region == input$em_region) |>
+      dplyr::pull(years_sampled)
+    
+    yrs
+
+    # paste0("Years sampled in ", input$em_region, ": ", yrs)
+  })
   
   }

@@ -72,6 +72,8 @@ metadata <- ga.list.files("_Metadata.csv") %>% # list all files ending in "_Meta
 
 unique(metadata$project) %>% sort() # 61 projects
 unique(metadata$campaignid)  %>% sort() # 114 campaigns 
+unique(metadata$location)
+
 
 write.csv(metadata, "data/raw/sa_metadata_bruv.csv", row.names = FALSE)
 saveRDS(metadata, "data/raw/sa_metadata_bruv.RDS")
@@ -80,8 +82,8 @@ saveRDS(metadata, "data/raw/sa_metadata_bruv.RDS")
 # Combine all points files into one ----
 points <- ga.list.files("_Points.txt") %>% 
   purrr::map_df(~ga.read.files_txt(.)) %>%
-  #dplyr::select(project, campaignid, sample, family, genus, species, number, stage, frame) %>%
- # dplyr::mutate(number = as.numeric(number)) %>%
+  dplyr::select(project, campaignid, sample, family, genus, species, number, stage, frame) %>%
+ dplyr::mutate(number = as.numeric(number)) %>%
   glimpse()
 
 names(points)
@@ -89,10 +91,10 @@ names(points)
 # If there are points then turn the next chunk 
 
 # # Turn points into MaxN
-# points_maxn <- points %>%
-#   dplyr::group_by(project, campaignid, sample, family, genus, species, frame) %>% # TODO have removed stage, but will need to go back and fix this for the campaigns that have MaxN'd by stage
-#   dplyr::summarise(count = sum(number)) %>%
-#   dplyr::slice(which.max(count))
+points_maxn <- points %>%
+  dplyr::group_by(project, campaignid, sample, family, genus, species, frame) %>% # TODO have removed stage, but will need to go back and fix this for the campaigns that have MaxN'd by stage
+  dplyr::summarise(count = sum(number)) %>%
+  dplyr::slice(which.max(count))
 
 # Read in count data ----
 counts <- ga.list.files("_Count.csv") %>% 
@@ -106,10 +108,7 @@ counts_single <- counts %>%
   dplyr::group_by(project, campaignid, sample, family, genus, species) %>%
   dplyr::slice(which.max(count))
 
-# count <- bind_rows(points_maxn, counts_single)
-
-# temp fix - I think SA haven't done any EventMeasure uploads.
-count <- counts_single
+count <- bind_rows(points_maxn, counts_single)
 
 # Test which metadata files do not have a match in count
 missing_metadata <- anti_join(count, metadata) # TODO chase these up with Sasha if they are being used
@@ -129,7 +128,7 @@ gen_length <- ga.list.files("_Length.csv") %>%
   purrr::map_df(~ga.read.files_csv(.)) %>%
   dplyr::select(project, campaignid, sample, family, genus, species, count, length)
 
-# em_length <- ga.list.files("_Lengths.txt") %>% 
+# em_length <- ga.list.files("_Lengths.txt") %>%
 #   purrr::map_df(~ga.read.files_txt(.)) %>%
 #   dplyr::rename(count = number) %>%
 #   dplyr::select(project, campaignid, sample, family, genus, species, count, length, range, precision, rms)
@@ -150,3 +149,4 @@ gen_length <- ga.list.files("_Length.csv") %>%
 ## Save length files ----
 write.csv(gen_length, "data/raw/sa_length_bruv.csv", row.names = FALSE)
 saveRDS(gen_length, "data/raw/sa_length_bruv.RDS")
+
