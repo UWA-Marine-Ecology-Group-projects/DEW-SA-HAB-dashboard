@@ -289,6 +289,20 @@ metric_tab_body_ui <- function(id) {
       )
     },
     
+    large_fish = {
+      layout_columns(
+        col_widths = c(6, 6),
+        withSpinner(
+          plotOutput("em_plot_large_fish_main", height = 400),
+          type = 6
+        ),
+        withSpinner(
+          plotOutput("em_plot_large_fish_detail", height = 400),
+          type = 6
+        )
+      )
+    },
+    
     # ---- example 3-plot layout --------------------------------
     trophic = {
       layout_columns(
@@ -1277,6 +1291,94 @@ server <- function(input, output, session) {
       theme_minimal(base_size = 16) +
       theme(
         legend.position  = "none",        # both bars already coloured by period
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  # ---------- Large fish: two plots ------------
+  output$em_plot_large_fish_main <- renderPlot({
+    req(input$em_region)
+    
+    # Filter for this region
+    df <- hab_data$fish_200_abundance_samples %>%
+      dplyr::filter(region == input$em_region)
+    
+    mean_se <- hab_data$fish_200_abundance_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    # Order periods
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      geom_pointrange(
+        data = mean_se,
+        aes(x = period, y = mean,
+            ymin = mean - se, ymax = mean + se),
+        inherit.aes = FALSE,
+        colour = "black",
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["large_fish"]],
+        subtitle = input$em_region
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  output$em_plot_large_fish_detail <- renderPlot({
+    req(input$em_region)
+    
+    df <- hab_data$fish_200_abundance_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    # Order periods
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df,
+           aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["large_fish"]],
+        subtitle = paste(input$em_region, "— Average total abundance per sample")
+      ) +
+      # facet_wrap(~ zone) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
         panel.grid.minor = element_blank()
       )
   }) |>

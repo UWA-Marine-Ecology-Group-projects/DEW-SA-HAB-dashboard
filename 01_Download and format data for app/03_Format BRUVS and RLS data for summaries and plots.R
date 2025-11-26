@@ -497,23 +497,31 @@ reef_associated_richness_impacts <- reef_associated_richness_summary %>%
   mutate(impact_metric = "reef_associated_richness")
 
 # Fish greater than 200 mm abundance ----
-fish_200_abundance <- combined_length %>%
+
+fish_200_abundance_samples <- combined_length %>%
   dplyr::mutate(count = as.numeric(count), length = as.numeric(length)) %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(length > 200) %>%
   dplyr::group_by(region, period, sample) %>%
-  dplyr::summarise(abundance_per_sample = sum(count)) %>%
+  dplyr::summarise(total_abundance_sample = sum(count)) %>%
   ungroup() %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
-  tidyr::replace_na(list(abundance_per_sample = 0)) %>%
+  tidyr::replace_na(list(total_abundance_sample = 0)) 
+
+fish_200_abundance_summary <- fish_200_abundance_samples %>%
   dplyr::group_by(region, period) %>%
-  dplyr::summarise(average_abundance = mean(abundance_per_sample))%>%
-  dplyr::filter(!is.na(region)) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(total_abundance_sample))),
+    .groups = "drop"
+  ) %>%
   ungroup()
 
-fish_200_abundance_impacts <- fish_200_abundance %>%
+fish_200_abundance_impacts <- fish_200_abundance_summary %>%
+  dplyr::select(-se) %>%
   tidyr::complete(region, period) %>%
-  tidyr::pivot_wider(names_from = period, values_from = average_abundance) %>%
+  tidyr::pivot_wider(names_from = period, values_from = mean) %>%
   clean_names() %>%
   dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
   dplyr::mutate(impact = case_when(
@@ -595,7 +603,10 @@ hab_data <- structure(
     shark_ray_richness_summary = shark_ray_richness_summary,
     
     reef_associated_richness_samples = reef_associated_richness_samples,
-    reef_associated_richness_summary = reef_associated_richness_summary
+    reef_associated_richness_summary = reef_associated_richness_summary,
+    
+    fish_200_abundance_samples = fish_200_abundance_samples,
+    fish_200_abundance_summary = fish_200_abundance_summary
   ), class = "data")
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))
