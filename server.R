@@ -248,9 +248,16 @@ metric_tab_body_ui <- function(id) {
     
     # ---- 1-plot layout ----------------------------------------
     total_abundance = {
-      withSpinner(
-        plotOutput("em_plot_total_abundance_main", height = 400),
-        type = 6
+      layout_columns(
+        col_widths = c(6, 6),
+        withSpinner(
+          plotOutput("em_plot_total_abundance_main", height = 400),
+          type = 6
+        ),
+        withSpinner(
+          plotOutput("em_plot_total_abundance_detail", height = 400),
+          type = 6
+        )
       )
     },
     
@@ -599,13 +606,13 @@ server <- function(input, output, session) {
       addMapPane("highlight", zIndex = 415) %>%
       
       leafgl::addGlPoints(
-      data = pts,
-      fillColor = method_cols[pts$method],
-      weight = 1,
-      popup = pts$popup,
-      group = "Sampling locations",
-      pane  = "points"
-    ) %>%
+        data = pts,
+        fillColor = method_cols[pts$method],
+        weight = 1,
+        popup = pts$popup,
+        group = "Sampling locations",
+        pane  = "points"
+      ) %>%
       
       # polygons ABOVE points
       addPolygons(
@@ -652,7 +659,7 @@ server <- function(input, output, session) {
         group = "Sampling locations",
         layerId = "methodLegend"
       ) 
-      
+    
     
     m
   })
@@ -665,7 +672,7 @@ server <- function(input, output, session) {
       selected_region(click$id)
     }
   })
-
+  
   observe({
     req(selected_region())
     
@@ -927,8 +934,8 @@ server <- function(input, output, session) {
       ) +
       theme_minimal(base_size = 16) +
       theme(
-       legend.position  = "none",
-       panel.grid.minor = element_blank()
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
       )
   }) |>
     bindCache(input$em_region) |>
@@ -972,22 +979,90 @@ server <- function(input, output, session) {
     bindCache(input$em_region) |>
     bindEvent(input$em_region)
   
-  # ---------- TOTAL ABUNDANCE: only one plot ------------
+  # ---------- TOTAL ABUNDANCE: two plots ------------
   output$em_plot_total_abundance_main <- renderPlot({
     req(input$em_region)
-    df <- get_metric_data("total_abundance", input$em_region)
     
-    # totally different plot if you like:
-    ggplot(df, aes(x = period, y = value, fill = period)) +
-      geom_violin(alpha = 0.5, trim = FALSE) +
-      geom_boxplot(width = 0.2, outlier.shape = NA) +
+    # Filter for this region
+    df <- hab_data$total_abundance_samples %>%
+      dplyr::filter(region == input$em_region)
+    
+    mean_se <- hab_data$total_abundance_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    # Order periods
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      geom_pointrange(
+        data = mean_se,
+        aes(x = period, y = mean,
+            ymin = mean - se, ymax = mean + se),
+        inherit.aes = FALSE,
+        colour = "black",
+        linewidth = 0.6
+      ) +
       scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
       labs(
         x = NULL,
         y = metric_y_lab[["total_abundance"]],
         subtitle = input$em_region
       ) +
-      theme_minimal(base_size = 13)
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  output$em_plot_total_abundance_detail <- renderPlot({
+    req(input$em_region)
+    
+    df <- hab_data$total_abundance_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    # Order periods
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df,
+           aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["total_abundance"]],
+        subtitle = paste(input$em_region, "— Average total abundance per sample")
+      ) +
+      # facet_wrap(~ zone) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
   }) |>
     bindCache(input$em_region) |>
     bindEvent(input$em_region)
@@ -1051,7 +1126,7 @@ server <- function(input, output, session) {
   },
   sanitize.text.function = function(x) x   # allow HTML and colours
   )
-
+  
   make_top10_plot <- function(region_name, 
                               focal_period = c("Pre-bloom", "Bloom"),
                               title_lab = "Common species",
@@ -1576,13 +1651,13 @@ server <- function(input, output, session) {
       ) |>
       dplyr::ungroup() %>%
       dplyr::filter(region %in% input$em_region) #%>%
-      #glimpse()
+    #glimpse()
   })
-
+  
   # 2. Nicely formatted text for the selected region ----
   output$years_for_region <- renderText({
     req(input$em_region)
-
+    
     yrs <- years_by_region() |>
       dplyr::filter(region == input$em_region) |>
       dplyr::pull(years_sampled)

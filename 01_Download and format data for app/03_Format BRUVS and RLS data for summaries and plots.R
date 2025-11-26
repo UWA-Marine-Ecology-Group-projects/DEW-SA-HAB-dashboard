@@ -386,21 +386,30 @@ species_richness_impacts <- species_richness_summary %>%
 # Total abundance ----
 # TODO this will need to include a full join to account for drops that don't see any fish
 # TODO double check if this is meant to be only fish!
-total_abundance <- combined_count %>%
+
+total_abundance_samples <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::group_by(region, period, sample) %>%
   dplyr::summarise(total_abundance_sample = sum(count), .groups = "drop") %>%
   ungroup() %>%
-  dplyr::filter(!is.na(region)) %>%
+  dplyr::filter(!is.na(region))
+
+total_abundance_summary <- total_abundance_samples %>%
   dplyr::group_by(region, period) %>%
-  dplyr::summarise(average_abundance = mean(total_abundance_sample)) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(total_abundance_sample))),
+    .groups = "drop"
+  ) %>%
   ungroup()
 
 # Calculate Impacts for Total Abundance ----
-total_abundance_impacts <- total_abundance %>%
+total_abundance_impacts <- total_abundance_summary %>%
+  dplyr::select(-se) %>%
   tidyr::complete(region, period) %>%
-  tidyr::pivot_wider(names_from = period, values_from = average_abundance) %>%
+  tidyr::pivot_wider(names_from = period, values_from = mean) %>%
   clean_names() %>%
   dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
   dplyr::mutate(impact = case_when(
@@ -499,7 +508,7 @@ fish_200_abundance_impacts <- fish_200_abundance %>%
     .default = "Surveys incomplete"
   )) %>%
   mutate(impact_metric = "fish_200_abundance")
-  
+
 
 impact_data <- bind_rows(species_richness_impacts, 
                          total_abundance_impacts,
@@ -517,7 +526,7 @@ overall_impact <- impact_data %>%
     percentage < 50 ~ "High",
     .default = "Surveys incomplete"
   ))
-  
+
 
 # Combined data
 hab_data <- structure(
@@ -562,7 +571,10 @@ hab_data <- structure(
     
     # Tabset plots
     species_richness_samples = species_richness_samples,
-    species_richness_summary = species_richness_summary
+    species_richness_summary = species_richness_summary,
+    
+    total_abundance_samples = total_abundance_samples,
+    total_abundance_summary = total_abundance_summary
   ), class = "data")
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))
