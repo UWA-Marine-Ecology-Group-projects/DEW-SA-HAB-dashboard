@@ -261,6 +261,34 @@ metric_tab_body_ui <- function(id) {
       )
     },
     
+    sharks_rays = {
+      layout_columns(
+        col_widths = c(6, 6),
+        withSpinner(
+          plotOutput("em_plot_shark_ray_richness_main", height = 400),
+          type = 6
+        ),
+        withSpinner(
+          plotOutput("em_plot_shark_ray_richness_detail", height = 400),
+          type = 6
+        )
+      )
+    },
+    
+    reef_associated_richness = {
+      layout_columns(
+        col_widths = c(6, 6),
+        withSpinner(
+          plotOutput("em_plot_reef_associated_richness_main", height = 400),
+          type = 6
+        ),
+        withSpinner(
+          plotOutput("em_plot_reef_associated_richness_detail", height = 400),
+          type = 6
+        )
+      )
+    },
+    
     # ---- example 3-plot layout --------------------------------
     trophic = {
       layout_columns(
@@ -1068,6 +1096,192 @@ server <- function(input, output, session) {
     bindEvent(input$em_region)
   
   # …and so on for trophic, sharks_rays, etc.
+  # Shark and Rays -----
+  output$em_plot_shark_ray_richness_main <- renderPlot({
+    req(input$em_region)
+    df <- hab_data$shark_ray_richness_samples %>%
+      dplyr::filter(region == input$em_region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    mean_se <- hab_data$shark_ray_richness_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      # boxplot (median + IQR + whiskers)
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      # raw points
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      # mean ± SE
+      geom_pointrange(
+        data = mean_se,
+        aes(
+          x    = period,
+          y    = mean,
+          ymin = mean - se,
+          ymax = mean + se
+        ),
+        inherit.aes = FALSE,
+        colour = "black",
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["sharks_rays"]],
+        subtitle = input$em_region
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  # ---------- shark_ray: detail plot ---------------------
+  output$em_plot_shark_ray_richness_detail <- renderPlot({
+    req(input$em_region)
+    
+    df <- hab_data$shark_ray_richness_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      # mean bar
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      # # mean ± SE
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["sharks_rays"]],
+        subtitle = paste(input$em_region, ": Average shark and ray species richness per sample")
+      ) +
+      # facet_wrap(~ zone) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",        # both bars already coloured by period
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  # Reef associated richness -----
+  output$em_plot_reef_associated_richness_main <- renderPlot({
+    req(input$em_region)
+    
+    df <- hab_data$reef_associated_richness_samples %>%
+      dplyr::filter(region == input$em_region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    mean_se <- hab_data$reef_associated_richness_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      # boxplot (median + IQR + whiskers)
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      # raw points
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      # mean ± SE
+      geom_pointrange(
+        data = mean_se,
+        aes(
+          x    = period,
+          y    = mean,
+          ymin = mean - se,
+          ymax = mean + se
+        ),
+        inherit.aes = FALSE,
+        colour = "black",
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["reef_associated_richness"]],
+        subtitle = input$em_region
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
+  
+  # ---------- shark_ray: detail plot ---------------------
+  output$em_plot_reef_associated_richness_detail <- renderPlot({
+    req(input$em_region)
+    
+    df <- hab_data$reef_associated_richness_summary %>%
+      dplyr::filter(region == input$em_region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      # mean bar
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      # # mean ± SE
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["reef_associated_richness"]],
+        subtitle = paste(input$em_region, ": Average reef associated species richness per sample")
+      ) +
+      # facet_wrap(~ zone) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",        # both bars already coloured by period
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$em_region) |>
+    bindEvent(input$em_region)
   
   # ---- HAB % change summary table (per region) ------------------------------
   output$em_change_table <- renderTable({
