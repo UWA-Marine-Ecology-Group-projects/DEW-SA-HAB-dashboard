@@ -484,6 +484,7 @@ reef_associated_richness_summary <- reef_associated_richness_samples %>%
   ungroup()
 
 reef_associated_richness_impacts <- reef_associated_richness_summary %>%
+  dplyr::select(-se) %>%
   tidyr::complete(region, period) %>%
   tidyr::pivot_wider(names_from = period, values_from = mean) %>%
   clean_names() %>%
@@ -506,7 +507,9 @@ fish_200_abundance_samples <- combined_length %>%
   dplyr::summarise(total_abundance_sample = sum(count)) %>%
   ungroup() %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
-  tidyr::replace_na(list(total_abundance_sample = 0)) 
+  tidyr::replace_na(list(total_abundance_sample = 0))  %>%
+  dplyr::filter(!is.na(region))
+
 
 fish_200_abundance_summary <- fish_200_abundance_samples %>%
   dplyr::group_by(region, period) %>%

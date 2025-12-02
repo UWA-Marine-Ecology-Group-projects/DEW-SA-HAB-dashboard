@@ -707,74 +707,74 @@ server <- function(input, output, session) {
   })
   
   
-  # Click handler
-  observeEvent(input$map_shape_click, {
-    click <- input$map_shape_click
-    if (!is.null(click$id)) {
-      selected_region(click$id)
-    }
-  })
+  # # Click handler
+  # observeEvent(input$map_shape_click, {
+  #   click <- input$map_shape_click
+  #   if (!is.null(click$id)) {
+  #     selected_region(click$id)
+  #   }
+  # })
   
-  observe({
-    req(selected_region())
-    
-    region_selected <- regions_joined |>
-      dplyr::filter(region == selected_region())
-    
-    leafletProxy("map") |>
-      clearGroup("highlight") |>
-      addPolygons(
-        data = region_selected,
-        color = "white",
-        weight = 6,
-        fillColor = "white",
-        fillOpacity = 0.2,
-        opacity = 0.75,
-        group = "highlight",
-        options = pathOptions(pane = "highlight")
-      )
-  })
+  # observe({
+  #   req(selected_region())
+  #   
+  #   region_selected <- regions_joined |>
+  #     dplyr::filter(region == selected_region())
+  #   
+  #   leafletProxy("map") |>
+  #     clearGroup("highlight") |>
+  #     addPolygons(
+  #       data = region_selected,
+  #       color = "white",
+  #       weight = 6,
+  #       fillColor = "white",
+  #       fillOpacity = 0.2,
+  #       opacity = 0.75,
+  #       group = "highlight",
+  #       options = pathOptions(pane = "highlight")
+  #     )
+  # })
   
-  # Selected region badge
-  output$selected_region_badge <- renderUI({
-    req(selected_region())
-    reg <- selected_region()
-    ov <- hab_data$regions_summaries |> 
-      filter(region == reg) |> 
-      pull(overall) |> 
-      as.character()
-    
-    badge_col <- hab_data$pal_vals[[ov %||% "low"]]
-    
-    tags$div(
-      style = sprintf("padding:8px 12px;border-radius:8px;background:%s;color:white;display:inline-block;", badge_col),
-      tags$b(reg),
-      if (!is.na(ov)) tags$span(sprintf(" — %s", tools::toTitleCase(ov)))
-    )
-  })
+  # # Selected region badge
+  # output$selected_region_badge <- renderUI({
+  #   req(selected_region())
+  #   reg <- selected_region()
+  #   ov <- hab_data$regions_summaries |> 
+  #     filter(region == reg) |> 
+  #     pull(overall) |> 
+  #     as.character()
+  #   
+  #   badge_col <- hab_data$pal_vals[[ov %||% "low"]]
+  #   
+  #   tags$div(
+  #     style = sprintf("padding:8px 12px;border-radius:8px;background:%s;color:white;display:inline-block;", badge_col),
+  #     tags$b(reg),
+  #     if (!is.na(ov)) tags$span(sprintf(" — %s", tools::toTitleCase(ov)))
+  #   )
+  # })
   
-  # Selected region title ----
-  output$region_title <- renderUI({
-    req(selected_region())
-    reg <- selected_region()
-    
-    tags$div(
-      tags$h3(paste("Algal bloom impacts on nearshore marine biodiversity monitoring progress:", reg))
-    )
-  })
+  # # Selected region title ----
+  # output$region_title <- renderUI({
+  #   req(selected_region())
+  #   reg <- selected_region()
+  #   
+  #   tags$div(
+  #     tags$h3(paste("Algal bloom impacts on nearshore marine biodiversity monitoring progress:", reg))
+  #   )
+  # })
   
-  # ---- Summary text ----
-  output$summary_text <- renderUI({
-    req(selected_region())
-    reg <- selected_region()
-    txt <- hab_data$regions_summaries |>
-      filter(region == reg) |>
-      pull(summary) #|> 
-    #{ if (length(.) == 0) "No summary available for this region yet." else .[1] }
-    
-    # Use markdown::markdownToHTML or commonmark::markdown_html for rendering
-    HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
-})
+#   # ---- Summary text ----
+#   output$summary_text <- renderUI({
+#     req(selected_region())
+#     reg <- selected_region()
+#     txt <- hab_data$regions_summaries |>
+#       filter(region == reg) |>
+#       pull(summary) #|> 
+#     #{ if (length(.) == 0) "No summary available for this region yet." else .[1] }
+#     
+#     # Use markdown::markdownToHTML or commonmark::markdown_html for rendering
+#     HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
+# })
   
   # Indiactor table
   output$indicator_table <- renderUI({
@@ -816,6 +816,28 @@ server <- function(input, output, session) {
             tags$td(indicator_tbl$Description[i])
           )
         })
+      )
+    )
+  })
+  
+  observeEvent(input$open_info_table, {
+    showModal(
+      modalDialog(
+        title = "Metric definitions",
+        tableOutput("indicator_table"),
+        easyClose = TRUE,
+        footer = NULL
+      )
+    )
+  })
+  
+  observeEvent(input$open_info_pointers, {
+    showModal(
+      modalDialog(
+        title = "Metric definitions",
+        tableOutput("indicator_table"),
+        easyClose = TRUE,
+        footer = NULL
       )
     )
   })
@@ -1300,17 +1322,17 @@ server <- function(input, output, session) {
   # ---------- Large fish: two plots ------------
   output$em_plot_large_fish_main <- renderPlot({
     req(input$em_region)
-    
+
     # Filter for this region
     df <- hab_data$fish_200_abundance_samples %>%
       dplyr::filter(region == input$em_region)
-    
+
     mean_se <- hab_data$fish_200_abundance_summary %>%
       dplyr::filter(region == input$em_region)
-    
+
     # Order periods
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
+
     ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
       geom_boxplot(
         width = 0.6,
@@ -1347,16 +1369,16 @@ server <- function(input, output, session) {
   }) |>
     bindCache(input$em_region) |>
     bindEvent(input$em_region)
-  
+
   output$em_plot_large_fish_detail <- renderPlot({
     req(input$em_region)
-    
+
     df <- hab_data$fish_200_abundance_summary %>%
       dplyr::filter(region == input$em_region)
-    
+
     # Order periods
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
+
     ggplot(df,
            aes(x = period, y = mean, fill = period)) +
       geom_col(
