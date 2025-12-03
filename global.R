@@ -37,6 +37,19 @@ load("app_data/dataframes.Rdata")
 load("app_data/plots.Rdata")
 load("app_data/hab_data.Rdata")
 
+# ---- global constants (one-off dashboard values) ----
+sites_planned    <- sum(hab_data$survey_plan$planned_number_sites)
+sites_completed  <- sum(hab_data$survey_plan$complete_number_sites)
+
+bruvs_planned    <- sum(hab_data$survey_plan$planned_number_drops)
+bruvs_completed  <- sum(hab_data$survey_plan$complete_number_drops)
+
+uvc_planned    <- sum(hab_data$survey_plan$planned_number_transects)
+uvc_completed  <- sum(hab_data$survey_plan$complete_number_transects)
+
+percent_completed   <- round((sites_completed/sites_planned*100),1)
+vb_col <- "secondary"
+
 # Suppose the park names live in dataframes$parks$park (adjust as needed)
 all_deployments <- bind_rows(dataframes$deployment_locations, dataframes$deployment_locations_rls) %>% 
   distinct(location)

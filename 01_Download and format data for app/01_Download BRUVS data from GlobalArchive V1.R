@@ -70,8 +70,8 @@ metadata <- ga.list.files("_Metadata.csv") %>% # list all files ending in "_Meta
   # dplyr::select(!c(successful_count, successful_length)) %>%
   glimpse()
 
-unique(metadata$project) %>% sort() # 61 projects
-unique(metadata$campaignid)  %>% sort() # 114 campaigns 
+unique(metadata$project) %>% sort() # 4 projects
+unique(metadata$campaignid)  %>% sort() # 24 campaigns 
 unique(metadata$location)
 
 
@@ -128,10 +128,10 @@ gen_length <- ga.list.files("_Length.csv") %>%
   purrr::map_df(~ga.read.files_csv(.)) %>%
   dplyr::select(project, campaignid, sample, family, genus, species, count, length)
 
-# em_length <- ga.list.files("_Lengths.txt") %>%
-#   purrr::map_df(~ga.read.files_txt(.)) %>%
-#   dplyr::rename(count = number) %>%
-#   dplyr::select(project, campaignid, sample, family, genus, species, count, length, range, precision, rms)
+em_length <- ga.list.files("_Lengths.txt") %>%
+  purrr::map_df(~ga.read.files_txt(.)) %>%
+  dplyr::rename(count = number) %>%
+  dplyr::select(project, campaignid, sample, family, genus, species, count, length, range, precision, rms)
 # 
 # em_threedpoints <- ga.list.files("_3DPoints.txt") %>% 
 #   purrr::map_df(~ga.read.files_txt(.)) %>%

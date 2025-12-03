@@ -120,7 +120,11 @@ bruv_metadata <- readRDS("data/raw/sa_metadata_bruv.RDS") %>%
   CheckEM::clean_names() %>%
   dplyr::mutate(date = paste(str_sub(date, 1, 4), str_sub(date, 5, 6), str_sub(date, 7, 8), sep = "-")) %>%
   dplyr::mutate(sample = as.character(sample)) %>%
-  dplyr::glimpse()
+  dplyr::glimpse() %>%
+  dplyr::mutate(year = str_sub(date, 1, 4)) %>%
+  dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom"))
+
+# unique(bruv_metadata$year) %>% sort()
 
 unique(bruv_metadata$location) %>% sort()
 
@@ -168,14 +172,10 @@ rls_metadata_with_regions <- st_join(rls_metadata_locs, reporting_regions) %>%
 bruv_metadata_with_regions <- st_join(bruv_metadata_locs, reporting_regions) %>%
   glimpse()
 
-bloom_temp_campaign <- bruv_metadata_with_regions %>%
-  dplyr::filter(campaignid %in% c("202110-202205_SA_MarineParkMonitoring_StereoBRUVS", "2015-16_SA_MPA_UpperGSV_StereoBRUVS")) %>%
-  dplyr::mutate(campaignid = "Fake campaigns") %>%
-  dplyr::mutate(date = "2026-01-01")
-
 combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
-                               bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs"),
-                               bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")) %>%
+                               bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
+                               # bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")
+                               ) %>%
   select(campaignid, sample, date, location, region, geometry, depth_m, method) %>%
   dplyr::mutate(year = as.numeric(str_sub(date, 1, 4))) %>%
   dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom"))
@@ -183,21 +183,21 @@ combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(metho
 unique(combined_metadata$period)
 
 # combined length ----
-bruv_length_regions_post <- bruv_length %>%
-  left_join(bruv_metadata_with_regions) %>%
-  dplyr::select(campaignid, sample, family, genus, species, region, count, length) %>%
-  dplyr::filter(campaignid %in% c("202110-202205_SA_MarineParkMonitoring_StereoBRUVS", "2015-16_SA_MPA_UpperGSV_StereoBRUVS")) %>%
-  dplyr::mutate(campaignid = "Fake campaigns") %>%
-  dplyr::mutate(date = "2026-01-01") %>%
-  dplyr::mutate(method = "BRUVs") %>%
-  dplyr::mutate(period = "Bloom")
+# bruv_length_regions_post <- bruv_length %>%
+#   left_join(bruv_metadata_with_regions) %>%
+#   dplyr::select(campaignid, sample, family, genus, species, region, count, length) %>%
+#   dplyr::filter(campaignid %in% c("202110-202205_SA_MarineParkMonitoring_StereoBRUVS", "2015-16_SA_MPA_UpperGSV_StereoBRUVS")) %>%
+#   dplyr::mutate(campaignid = "Fake campaigns") %>%
+#   dplyr::mutate(date = "2026-01-01") %>%
+#   dplyr::mutate(method = "BRUVs") %>%
+#   dplyr::mutate(period = "Bloom")
 
 combined_length <- bruv_length %>%
   left_join(bruv_metadata_with_regions) %>%
-  dplyr::select(campaignid, sample, family, genus, species, region, count, length, date) %>%
-  dplyr::mutate(method = "BRUVs") %>%
-  dplyr::mutate(period = "Pre-bloom") %>%
-  bind_rows(., bruv_length_regions_post)
+  dplyr::select(campaignid, sample, family, genus, species, region, count, length, date, period) %>%
+  dplyr::mutate(method = "BRUVs") #%>%
+  # dplyr::mutate(period = "Pre-bloom") %>%
+  # bind_rows(., bruv_length_regions_post)
 
 # Create metrics for dashboard ----
 # Number of deploymnets by region ----
@@ -218,21 +218,11 @@ hab_number_rls_deployments <- combined_metadata %>%
   dplyr::filter(!is.na(region))
 
 # Number of fish -----
-bruv_count_regions_pre <- bruv_count %>%
+bruv_count_regions <- bruv_count %>%
   left_join(bruv_metadata_with_regions) %>%
-  dplyr::select(sample, family, genus, species, region, count) %>%
+  dplyr::select(sample, family, genus, species, region, count, period) %>%
   dplyr::mutate(method = "BRUVs") %>%
-  dplyr::mutate(period = "Pre-bloom")
-
-# Temp create some bloom data
-bruv_count_regions_post <- bruv_count %>%
-  left_join(bruv_metadata_with_regions) %>%
-  dplyr::select(sample, family, genus, species, region, count) %>%
-  dplyr::filter(campaignid %in% c("202110-202205_SA_MarineParkMonitoring_StereoBRUVS", "2015-16_SA_MPA_UpperGSV_StereoBRUVS")) %>%
-  dplyr::mutate(campaignid = "Fake campaigns") %>%
-  dplyr::mutate(date = "2026-01-01") %>%
-  dplyr::mutate(method = "BRUVs") %>%
-  dplyr::mutate(period = "Bloom")
+  ungroup()
 
 rls_count_regions_pre <- rls_count %>%
   left_join(rls_metadata_with_regions) %>%
@@ -240,7 +230,7 @@ rls_count_regions_pre <- rls_count %>%
   dplyr::mutate(method = "UVC") %>%
   dplyr::mutate(period = "Pre-bloom")
 
-combined_count <- bind_rows(bruv_count_regions_pre, bruv_count_regions_post, rls_count_regions_pre) %>%
+combined_count <- bind_rows(bruv_count_regions, rls_count_regions_pre) %>%
   dplyr::mutate(genus_species = paste(genus, species)) 
 
 hab_number_of_fish <- combined_count %>%
@@ -422,19 +412,38 @@ total_abundance_impacts <- total_abundance_summary %>%
 
 # Shark and Ray richness ----
 # This needs to include zeros, to show where no species were observed
-shark_ray_richness_samples <- combined_count %>%
-  dplyr::filter(count > 0) %>%
+# 1. All BRUV samples (one row per region–period–sample)
+all_bruv_samples <- combined_metadata %>%
+  sf::st_drop_geometry() %>%              # we just need attributes here
   dplyr::filter(method %in% "BRUVs") %>%
-  dplyr::left_join(species_list) %>%
+  dplyr::select(region, period, sample) %>%
+  dplyr::distinct()
+
+# 2. Shark/ray richness only where they occur
+shark_ray_richness_nonzero <- combined_count %>%
+  dplyr::filter(count > 0, method %in% "BRUVs") %>%
+  dplyr::left_join(species_list, by = c("family", "genus", "species")) %>%
   dplyr::filter(class %in% "Elasmobranchii") %>%
-  dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
-  tidyr::replace_na(list(count = 0)) %>%
   dplyr::group_by(region, period, sample) %>%
   dplyr::distinct(family, genus, species) %>%
-  dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
-  ungroup()%>%
+  dplyr::summarise(
+    n_species_sample = dplyr::n(),
+    .groups = "drop"
+  ) %>%
+  ungroup()
+
+nrow(shark_ray_richness_nonzero)
+
+# 3. Join back to all samples → fill missing richness with 0
+shark_ray_richness_samples <- all_bruv_samples %>%
+  dplyr::left_join(
+    shark_ray_richness_nonzero,
+    by = c("region", "period", "sample")
+  ) %>%
+  tidyr::replace_na(list(n_species_sample = 0)) %>%
   dplyr::filter(!is.na(region))
 
+# 4. Summarise by region + period
 shark_ray_richness_summary <- shark_ray_richness_samples %>%
   dplyr::group_by(region, period) %>%
   dplyr::summarise(
@@ -442,22 +451,59 @@ shark_ray_richness_summary <- shark_ray_richness_samples %>%
     se   = sd(n_species_sample, na.rm = TRUE) /
       sqrt(sum(!is.na(n_species_sample))),
     .groups = "drop"
-  ) %>%
-  dplyr::ungroup()
+  )
 
+# 5. Impact calculation (unchanged)
 shark_ray_richness_impacts <- shark_ray_richness_summary %>%
   dplyr::select(-se) %>%
   tidyr::complete(region, period) %>%
   tidyr::pivot_wider(names_from = period, values_from = mean) %>%
-  clean_names() %>%
-  dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
-  dplyr::mutate(impact = case_when(
+  CheckEM::clean_names() %>%
+  dplyr::mutate(percentage = bloom / pre_bloom * 100) %>%
+  dplyr::mutate(impact = dplyr::case_when(
     percentage > 80 ~ "Low",
     percentage > 50 & percentage < 80 ~ "Medium",
     percentage < 50 ~ "High",
-    .default = "Surveys incomplete"
+    .default       = "Surveys incomplete"
   )) %>%
-  mutate(impact_metric = "shark_ray_richness")
+  dplyr::mutate(impact_metric = "shark_ray_richness")
+
+# shark_ray_richness_samples <- combined_count %>%
+#   dplyr::filter(count > 0) %>%
+#   dplyr::filter(method %in% "BRUVs") %>%
+#   dplyr::left_join(species_list) %>%
+#   dplyr::filter(class %in% "Elasmobranchii") %>%
+#   dplyr::group_by(region, period, sample) %>%
+#   dplyr::distinct(family, genus, species) %>%
+#   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
+#   ungroup()%>%
+#   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
+#   tidyr::replace_na(list(n_species_sample = 0)) %>%
+#   dplyr::filter(!is.na(region))
+# 
+# shark_ray_richness_summary <- shark_ray_richness_samples %>%
+#   dplyr::group_by(region, period) %>%
+#   dplyr::summarise(
+#     mean = mean(n_species_sample, na.rm = TRUE),
+#     se   = sd(n_species_sample, na.rm = TRUE) /
+#       sqrt(sum(!is.na(n_species_sample))),
+#     .groups = "drop"
+#   ) %>%
+#   dplyr::ungroup()
+# 
+# shark_ray_richness_impacts <- shark_ray_richness_summary %>%
+#   dplyr::select(-se) %>%
+#   tidyr::complete(region, period) %>%
+#   tidyr::pivot_wider(names_from = period, values_from = mean) %>%
+#   clean_names() %>%
+#   dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
+#   dplyr::mutate(impact = case_when(
+#     percentage > 80 ~ "Low",
+#     percentage > 50 & percentage < 80 ~ "Medium",
+#     percentage < 50 ~ "High",
+#     .default = "Surveys incomplete"
+#   )) %>%
+#   mutate(impact_metric = "shark_ray_richness")
 
 # Reef associated richness ----
 reef_associated_richness_samples <- combined_count %>%

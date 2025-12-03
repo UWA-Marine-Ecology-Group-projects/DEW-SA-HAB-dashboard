@@ -339,6 +339,12 @@ metric_tab_body_ui <- function(id) {
   )
 }
 
+plot_cell <- function(id, width = "120px", height = "120px") {
+  div(
+    style = sprintf("width:%s; height:%s;", width, height),
+    plotOutput(id, width = width, height = height)
+  )
+}
 
 # ------------------------------ server ---------------------------------------
 
@@ -763,38 +769,102 @@ server <- function(input, output, session) {
   #   )
   # })
   
-#   # ---- Summary text ----
-#   output$summary_text <- renderUI({
-#     req(selected_region())
-#     reg <- selected_region()
-#     txt <- hab_data$regions_summaries |>
-#       filter(region == reg) |>
-#       pull(summary) #|> 
-#     #{ if (length(.) == 0) "No summary available for this region yet." else .[1] }
-#     
-#     # Use markdown::markdownToHTML or commonmark::markdown_html for rendering
-#     HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
-# })
+  # ---- Summary text ----
+  output$summary_text <- renderUI({
+    req(input$em_region)
+    
+    reg <- input$em_region
+    
+    txt <- hab_data$regions_summaries |>
+      dplyr::filter(region == reg) |>
+      dplyr::pull(summary) %>%
+      dplyr::glimpse()
+    
+    HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
+})
+  
+  indicator_table <- tibble::tibble(
+    Threshold = c(
+      "Low = ≥80% of the pre-bloom value",
+      "Medium = 50–80% of the pre-bloom value",
+      "High = 0–50% of the pre-bloom value"
+    ),
+    Example = list(
+      plot_cell("example_low"),
+      plot_cell("example_medium"),
+      plot_cell("example_high")
+    )
+  )
+  
+  output$pointer_table <- renderUI({
+    tags$table(
+      # class = "table table-striped table-sm",
+      tags$thead(
+        tags$tr(
+          tags$th("Threshold"),
+          tags$th("Example Plot")
+        )
+      ),
+      tags$tbody(
+        tags$tr(
+          tags$td("Low = ≥80% of the pre-bloom value"),
+          tags$td(plotOutput("example_low", height = 80, width = 120))
+        ),
+        tags$tr(
+          tags$td("Medium = 50–80% of the pre-bloom value"),
+          tags$td(plotOutput("example_medium", height = 80, width = 120))
+        ),
+        tags$tr(
+          tags$td("High = 0–50% of the pre-bloom value"),
+          tags$td(plotOutput("example_high", height = 80, width = 120))
+        )
+      )
+    )
+  })
+  
+  output$example_low <- renderPlot({
+    half_donut_with_dial(
+      values = c(1,1,1),
+      mode   = "absolute",
+      status = "Low"
+    )
+  })
+  
+  output$example_medium <- renderPlot({
+    half_donut_with_dial(
+      values = c(1,1,1),
+      mode   = "absolute",
+      status = "Medium"
+    )
+  })
+  
+  output$example_high <- renderPlot({
+    half_donut_with_dial(
+      values = c(1,1,1),
+      mode   = "absolute",
+      status = "High"
+    )
+  })
   
   # Indiactor table
   output$indicator_table <- renderUI({
-    
-    # text for the single big cell
-    threshold_html <- HTML(paste(
-      "Low = ≥80% of the pre-bloom value",
-      "Medium = 50–80% of the pre-bloom value",
-      "High = 0–50% of the pre-bloom value",
-      sep = "<br>"
-    ))
-    
+
+    # # text for the single big cell
+    # threshold_html <- HTML(paste(
+    #   "Low = ≥80% of the pre-bloom value",
+    #   "Medium = 50–80% of the pre-bloom value",
+    #   "High = 0–50% of the pre-bloom value",
+    #   sep = "<br>"
+    # ))
+
     tags$table(
       class = "table table-sm",  # uses bootstrap styling
       # header
       tags$thead(
         tags$tr(
           tags$th("Indicator"),
-          tags$th("Description"),
-          tags$th("Impact thresholds")
+          tags$th("Description")#,
+          # tags$th("Impact thresholds")
         )
       ),
       # body
@@ -802,12 +872,12 @@ server <- function(input, output, session) {
         # first row: also contains the big thresholds cell
         tags$tr(
           tags$td(indicator_tbl$Indicator[1]),
-          tags$td(indicator_tbl$Description[1]),
-          tags$td(
-            rowspan = nrow(indicator_tbl),    # merge down all rows
-            style   = "vertical-align:top; white-space:normal;",
-            threshold_html
-          )
+          tags$td(indicator_tbl$Description[1])#,
+          # tags$td(
+          #   rowspan = nrow(indicator_tbl),    # merge down all rows
+          #   style   = "vertical-align:top; white-space:normal;",
+          #   threshold_html
+          # )
         ),
         # remaining rows: just Indicator + Description
         lapply(2:nrow(indicator_tbl), function(i) {
@@ -834,8 +904,8 @@ server <- function(input, output, session) {
   observeEvent(input$open_info_pointers, {
     showModal(
       modalDialog(
-        title = "Metric definitions",
-        tableOutput("indicator_table"),
+        title = "Impact definitions",
+        tableOutput("pointer_table"),
         easyClose = TRUE,
         footer = NULL
       )
@@ -883,8 +953,30 @@ server <- function(input, output, session) {
     pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
       dplyr::filter(region %in% input$em_region)
     
+    shp <- regions_joined %>%
+      dplyr::filter(region %in% input$em_region)
+    
     m <- base_map(current_zoom = 7) %>%
-      fitBounds(min_lon(), min_lat(), max_lon(), max_lat())
+      fitBounds(min_lon(), min_lat(), max_lon(), max_lat()) %>%
+      
+      # polygons for reporting region
+      addPolygons(
+        data = shp,
+        layerId = ~region,
+        label   = ~region,
+        # color = ~hab_data$pal_factor(regions_joined$overall_impact),#"#444444",
+        weight = 5,
+        opacity = 1,
+        fillOpacity = 0#, #0.7
+        # fillColor = ~hab_data$pal_factor(regions_joined$overall_impact),
+        # group = "Impact regions",
+        # options = pathOptions(pane = "highlight"),
+        # highlightOptions = highlightOptions(
+        #   color = "white",
+        #   weight = 6,
+        #   bringToFront = TRUE
+        # )
+      )
     
     # add points (no curly block after a pipe)
     if (has_leafgl()) {
@@ -1566,106 +1658,124 @@ server <- function(input, output, session) {
     df[1, ]
   })
   
-  # 2) Does this region use BRUVS or ROV?
-  has_bruvs <- reactive({
-    grepl("BRUVS", survey_region()$methods[[1]], ignore.case = TRUE)
-  })
+  twoValueBoxServer(
+    "sites_progress",
+    left_reactive  = reactive({ sites_planned }),
+    right_reactive = reactive({ sites_completed })
+  )
   
-  has_rov <- reactive({
-    grepl("ROV", survey_region()$methods[[1]], ignore.case = TRUE)
-  })
+  twoValueBoxServer(
+    "bruvs_progress",
+    left_reactive  = reactive({ bruvs_planned }),
+    right_reactive = reactive({ bruvs_completed })
+  )
   
+  twoValueBoxServer(
+    "rov_progress",
+    left_reactive  = reactive({ uvc_planned }),
+    right_reactive = reactive({ uvc_completed })
+  )
+  
+  # # 2) Does this region use BRUVS or ROV?
+  # has_bruvs <- reactive({
+  #   grepl("BRUVS", survey_region()$methods[[1]], ignore.case = TRUE)
+  # })
+  # 
+  # has_rov <- reactive({
+  #   grepl("ROV", survey_region()$methods[[1]], ignore.case = TRUE)
+  # })
+  # 
   # 3) Planned/completed reactives
-  sites_planned <- reactive({ survey_region()$planned_number_sites })
-  sites_completed <- reactive({ survey_region()$complete_number_sites })
-  
-  bruvs_planned <- reactive({
-    if (!has_bruvs()) return(0)
-    survey_region()$planned_number_drops
-  })
-  bruvs_completed <- reactive({
-    if (!has_bruvs()) return(0)
-    survey_region()$complete_number_drops
-  })
-  
-  rov_planned <- reactive({
-    if (!has_rov()) return(0)
-    survey_region()$planned_number_transects
-  })
-  rov_completed <- reactive({
-    if (!has_rov()) return(0)
-    survey_region()$complete_number_transects
-  })
+  # sites_planned <- reactive({ survey_region()$planned_number_sites })
+  # sites_completed <- reactive({ survey_region()$complete_number_sites })
+  # 
+  # bruvs_planned <- reactive({
+  #   if (!has_bruvs()) return(0)
+  #   survey_region()$planned_number_drops
+  # })
+  # bruvs_completed <- reactive({
+  #   if (!has_bruvs()) return(0)
+  #   survey_region()$complete_number_drops
+  # })
+  # 
+  # rov_planned <- reactive({
+  #   if (!has_rov()) return(0)
+  #   survey_region()$planned_number_transects
+  # })
+  # rov_completed <- reactive({
+  #   if (!has_rov()) return(0)
+  #   survey_region()$complete_number_transects
+  # })
   
   # 4) twoValueBoxServer(...) for each
-  twoValueBoxServer("sites_progress",  left_reactive = sites_planned,  right_reactive = sites_completed)
-  twoValueBoxServer("bruvs_progress",  left_reactive = bruvs_planned, right_reactive = bruvs_completed)
-  twoValueBoxServer("rov_progress",    left_reactive = rov_planned,   right_reactive = rov_completed)
+  # twoValueBoxServer("sites_progress",  left_reactive = sites_planned,  right_reactive = sites_completed)
+  # twoValueBoxServer("bruvs_progress",  left_reactive = bruvs_planned, right_reactive = bruvs_completed)
+  # twoValueBoxServer("rov_progress",    left_reactive = rov_planned,   right_reactive = rov_completed)
   
-  # 5) Unified layout for all boxes
-  # ---- Single layout for all progress value boxes --------------------------
-  output$survey_value_boxes <- renderUI({
-    df  <- survey_region()
-    pct <- df$percent_sites_completed
-    vb_col <- completion_theme(pct)
-    
-    has_rov_val <- has_rov()
-    
-    sites_box <- twoValueBoxUI(
-      id          = "sites_progress",
-      title       = "Sites",
-      left_label  = "Planned",
-      right_label = "Completed",
-      icon        = icon("magnifying-glass", class = "fa-xl"),
-      theme_color = "secondary"
-    )
-    
-    bruvs_box <- twoValueBoxUI(
-      id          = "bruvs_progress",
-      title       = "BRUVS deployments",
-      left_label  = "Planned",
-      right_label = "Completed",
-      icon        = icon("ship", class = "fa-xl"),
-      theme_color = "secondary"
-    )
-    
-    pct_box <- value_box(
-      title       = "Locations completed",
-      value       = sprintf("%.1f%%", pct),
-      subtitle    = df$methods[[1]],
-      theme_color = vb_col,
-      showcase    = icon("percent", class = "fa-xl")
-    )
-    
-    if (has_rov_val) {
-      # 4 boxes → 2 per row (width = 1/2)
-      rov_box <- twoValueBoxUI(
-        id          = "rov_progress",
-        title       = "ROV transects",
-        left_label  = "Planned",
-        right_label = "Completed",
-        icon        = icon("video", class = "fa-xl"),
-        theme_color = "secondary"
-      )
-      
-      layout_column_wrap(
-        width = 1/2,
-        sites_box,
-        bruvs_box,
-        rov_box,
-        pct_box
-      )
-      
-    } else {
-      # 3 boxes → 3 on one row (width = 1/3)
-      layout_column_wrap(
-        width = 1/3,
-        sites_box,
-        bruvs_box,
-        pct_box
-      )
-    }
-  })
+  # # 5) Unified layout for all boxes
+  # # ---- Single layout for all progress value boxes --------------------------
+  # output$survey_value_boxes <- renderUI({
+  #   df  <- survey_region()
+  #   pct <- df$percent_sites_completed
+  #   vb_col <- completion_theme(pct)
+  #   
+  #   has_rov_val <- has_rov()
+  #   
+  #   sites_box <- twoValueBoxUI(
+  #     id          = "sites_progress",
+  #     title       = "Sites",
+  #     left_label  = "Planned",
+  #     right_label = "Completed",
+  #     icon        = icon("magnifying-glass", class = "fa-xl"),
+  #     theme_color = "secondary"
+  #   )
+  #   
+  #   bruvs_box <- twoValueBoxUI(
+  #     id          = "bruvs_progress",
+  #     title       = "BRUVS deployments",
+  #     left_label  = "Planned",
+  #     right_label = "Completed",
+  #     icon        = icon("ship", class = "fa-xl"),
+  #     theme_color = "secondary"
+  #   )
+  #   
+  #   pct_box <- value_box(
+  #     title       = "Locations completed",
+  #     value       = sprintf("%.1f%%", pct),
+  #     subtitle    = df$methods[[1]],
+  #     theme_color = vb_col,
+  #     showcase    = icon("percent", class = "fa-xl")
+  #   )
+  #   
+  #   if (has_rov_val) {
+  #     # 4 boxes → 2 per row (width = 1/2)
+  #     rov_box <- twoValueBoxUI(
+  #       id          = "rov_progress",
+  #       title       = "ROV transects",
+  #       left_label  = "Planned",
+  #       right_label = "Completed",
+  #       icon        = icon("video", class = "fa-xl"),
+  #       theme_color = "secondary"
+  #     )
+  #     
+  #     layout_column_wrap(
+  #       width = 1/2,
+  #       sites_box,
+  #       bruvs_box,
+  #       rov_box,
+  #       pct_box
+  #     )
+  #     
+  #   } else {
+  #     # 3 boxes → 3 on one row (width = 1/3)
+  #     layout_column_wrap(
+  #       width = 1/3,
+  #       sites_box,
+  #       bruvs_box,
+  #       pct_box
+  #     )
+  #   }
+  # })
   
   # ===== EXPLORE A MARINE PARK ==============================================
   
