@@ -24,7 +24,6 @@ library(patchwork)
 library(googlesheets4)
 library(rmarkdown)
 library(ggtext)
-
 library(DT)
 
 source("R/helpers.R")          # defines filter_by_park(), ensure_sf_ll(), base_map(), etc.

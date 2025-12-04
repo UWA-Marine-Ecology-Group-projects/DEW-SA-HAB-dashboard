@@ -770,10 +770,10 @@ server <- function(input, output, session) {
   # })
   
   # ---- Summary text ----
-  output$summary_text <- renderUI({
-    req(input$em_region)
+  output$region_summary_text <- renderUI({
+    req(input$region)
     
-    reg <- input$em_region
+    reg <- input$region
     
     txt <- hab_data$regions_summaries |>
       dplyr::filter(region == reg) |>
@@ -920,14 +920,14 @@ server <- function(input, output, session) {
   })
   
   
-  output$impact_gauges_region <- renderPlot({
-    req(input$em_region)
-    make_impact_gauges(input$em_region)
+  output$region_impact_gauges <- renderPlot({
+    req(input$region)
+    make_impact_gauges(input$region)
   })
   
   deployments <- reactive({
     deployments <- hab_data$hab_combined_metadata %>%
-      dplyr::filter(region %in% input$em_region) 
+      dplyr::filter(region %in% input$region) 
     
     # Extract coordinates
     coords <- st_coordinates(deployments)
@@ -947,14 +947,14 @@ server <- function(input, output, session) {
   max_lat <- reactive({max(deployments()$latitude_dd, na.rm = TRUE)})
   max_lon <- reactive({max(deployments()$longitude_dd, na.rm = TRUE)})
   
-  output$surveyeffort <- renderLeaflet({
+  output$region_survey_effort <- renderLeaflet({
     method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
     
     pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
-      dplyr::filter(region %in% input$em_region)
+      dplyr::filter(region %in% input$region)
     
     shp <- regions_joined %>%
-      dplyr::filter(region %in% input$em_region)
+      dplyr::filter(region %in% input$region)
     
     m <- base_map(current_zoom = 7) %>%
       fitBounds(min_lon(), min_lat(), max_lon(), max_lat()) %>%
@@ -1016,7 +1016,7 @@ server <- function(input, output, session) {
   observe({
     req(regions_joined)
     updateSelectizeInput(
-      session, "em_region",
+      session, "region",
       choices = sort(unique(regions_joined$region)),
       selected = selected_region() %||% sort(unique(regions_joined$region))[1],
       server = TRUE
@@ -1024,8 +1024,8 @@ server <- function(input, output, session) {
   })
   
   # Build a tabbed card with one tab per metric
-  output$em_tabset <- renderUI({
-    req(input$em_region)
+  output$region_tabset <- renderUI({
+    req(input$region)
     
     bslib::navset_card_tab(
       !!!lapply(names(metric_defs), function(id) {
@@ -1044,14 +1044,14 @@ server <- function(input, output, session) {
   
   # ---------- RICHNESS: main boxplot --------------------
   output$em_plot_richness_main <- renderPlot({
-    req(input$em_region)
+    req(input$region)
     df <- hab_data$species_richness_samples %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
     
     mean_se <- hab_data$species_richness_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
       # boxplot (median + IQR + whiskers)
@@ -1086,7 +1086,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["richness"]],
-        subtitle = input$em_region
+        subtitle = input$region
       ) +
       theme_minimal(base_size = 16) +
       theme(
@@ -1094,15 +1094,15 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   # ---------- RICHNESS: detail plot ---------------------
   output$em_plot_richness_detail <- renderPlot({
-    req(input$em_region)
+    req(input$region)
     
     df <- hab_data$species_richness_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
     
@@ -1123,7 +1123,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["richness"]],
-        subtitle = paste(input$em_region, ": Average species richness per sample")
+        subtitle = paste(input$region, ": Average species richness per sample")
       ) +
       # facet_wrap(~ zone) +
       theme_minimal(base_size = 16) +
@@ -1132,19 +1132,19 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   # ---------- TOTAL ABUNDANCE: two plots ------------
   output$em_plot_total_abundance_main <- renderPlot({
-    req(input$em_region)
+    req(input$region)
     
     # Filter for this region
     df <- hab_data$total_abundance_samples %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     mean_se <- hab_data$total_abundance_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     # Order periods
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
@@ -1175,7 +1175,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["total_abundance"]],
-        subtitle = input$em_region
+        subtitle = input$region
       ) +
       theme_minimal(base_size = 16) +
       theme(
@@ -1183,14 +1183,14 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   output$em_plot_total_abundance_detail <- renderPlot({
-    req(input$em_region)
+    req(input$region)
     
     df <- hab_data$total_abundance_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     # Order periods
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
@@ -1211,7 +1211,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["total_abundance"]],
-        subtitle = paste(input$em_region, "— Average total abundance per sample")
+        subtitle = paste(input$region, "— Average total abundance per sample")
       ) +
       # facet_wrap(~ zone) +
       theme_minimal(base_size = 16) +
@@ -1220,20 +1220,20 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   # …and so on for trophic, sharks_rays, etc.
   # Shark and Rays -----
   output$em_plot_shark_ray_richness_main <- renderPlot({
-    req(input$em_region)
+    req(input$region)
     df <- hab_data$shark_ray_richness_samples %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
     
     mean_se <- hab_data$shark_ray_richness_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
       # boxplot (median + IQR + whiskers)
@@ -1268,7 +1268,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["sharks_rays"]],
-        subtitle = input$em_region
+        subtitle = input$region
       ) +
       theme_minimal(base_size = 16) +
       theme(
@@ -1276,15 +1276,15 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   # ---------- shark_ray: detail plot ---------------------
   output$em_plot_shark_ray_richness_detail <- renderPlot({
-    req(input$em_region)
+    req(input$region)
     
     df <- hab_data$shark_ray_richness_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
     
@@ -1305,7 +1305,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["sharks_rays"]],
-        subtitle = paste(input$em_region, ": Average shark and ray species richness per sample")
+        subtitle = paste(input$region, ": Average shark and ray species richness per sample")
       ) +
       # facet_wrap(~ zone) +
       theme_minimal(base_size = 16) +
@@ -1314,20 +1314,20 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   # Reef associated richness -----
   output$em_plot_reef_associated_richness_main <- renderPlot({
-    req(input$em_region)
+    req(input$region)
     
     df <- hab_data$reef_associated_richness_samples %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
     
     mean_se <- hab_data$reef_associated_richness_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
       # boxplot (median + IQR + whiskers)
@@ -1362,7 +1362,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["reef_associated_richness"]],
-        subtitle = input$em_region
+        subtitle = input$region
       ) +
       theme_minimal(base_size = 16) +
       theme(
@@ -1370,15 +1370,15 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   # ---------- shark_ray: detail plot ---------------------
   output$em_plot_reef_associated_richness_detail <- renderPlot({
-    req(input$em_region)
+    req(input$region)
     
     df <- hab_data$reef_associated_richness_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
     
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
     
@@ -1399,7 +1399,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["reef_associated_richness"]],
-        subtitle = paste(input$em_region, ": Average reef associated species richness per sample")
+        subtitle = paste(input$region, ": Average reef associated species richness per sample")
       ) +
       # facet_wrap(~ zone) +
       theme_minimal(base_size = 16) +
@@ -1408,19 +1408,19 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   # ---------- Large fish: two plots ------------
   output$em_plot_large_fish_main <- renderPlot({
-    req(input$em_region)
+    req(input$region)
 
     # Filter for this region
     df <- hab_data$fish_200_abundance_samples %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
 
     mean_se <- hab_data$fish_200_abundance_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
 
     # Order periods
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
@@ -1451,7 +1451,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["large_fish"]],
-        subtitle = input$em_region
+        subtitle = input$region
       ) +
       theme_minimal(base_size = 16) +
       theme(
@@ -1459,14 +1459,14 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
 
   output$em_plot_large_fish_detail <- renderPlot({
-    req(input$em_region)
+    req(input$region)
 
     df <- hab_data$fish_200_abundance_summary %>%
-      dplyr::filter(region == input$em_region)
+      dplyr::filter(region == input$region)
 
     # Order periods
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
@@ -1487,7 +1487,7 @@ server <- function(input, output, session) {
       labs(
         x = NULL,
         y = metric_y_lab[["large_fish"]],
-        subtitle = paste(input$em_region, "— Average total abundance per sample")
+        subtitle = paste(input$region, "— Average total abundance per sample")
       ) +
       # facet_wrap(~ zone) +
       theme_minimal(base_size = 16) +
@@ -1496,66 +1496,67 @@ server <- function(input, output, session) {
         panel.grid.minor = element_blank()
       )
   }) |>
-    bindCache(input$em_region) |>
-    bindEvent(input$em_region)
+    bindCache(input$region) |>
+    bindEvent(input$region)
   
   # ---- HAB % change summary table (per region) ------------------------------
-  output$em_change_table <- renderTable({
-    req(input$em_region)
+  output$region_change_table <- renderUI({
+    req(input$region)
     
     df <- hab_metric_change |>
-      dplyr::filter(region == input$em_region) |>
+      dplyr::filter(region == input$region) |>
       dplyr::select(
         Metric = impact_metric,
-        Change = percentage_change   # <- your character column
+        Change = percentage_change
       )
     
     vals <- df$Change
     
-    # 1. Detect “Surveys incomplete”
-    is_incomplete <- !is.na(vals) & grepl("Surveys incomplete", vals, ignore.case = TRUE)
+    # Detect “Surveys incomplete”
+    is_incomplete <- grepl("Surveys incomplete", vals, ignore.case = TRUE)
     
-    # 2. Try to parse numbers
+    # Parse numeric
     num <- suppressWarnings(as.numeric(vals))
     has_num <- !is.na(num) & !is_incomplete
     
-    # 3. Arrows: up for ≥0, down for <0
+    # Arrows
     arrows <- ifelse(num < 0, "&#8595;", "&#8593;")
     
-    # 4. Colour rules (num is % change)
+    # Colour rules
     colours <- ifelse(
-      num <= -50,                    # 50–100% decrease
-      "#EB5757",
-      ifelse(
-        num > -50 & num <= -20,      # 20–50% decrease
-        "#F2C94C",
-        "#3B7EA1"                    # 0–20% decrease OR any increase
-      )
+      num <= -50, "#EB5757",
+      ifelse(num <= -20, "#F2C94C", "#3B7EA1")
     )
     
-    # 5. Build formatted column
+    # Build formatted column
     out <- rep("", length(vals))
-    
-    # Numeric values
     out[has_num] <- sprintf(
       "<span style='color:%s'>%s %s%%</span>",
       colours[has_num],
       arrows[has_num],
       scales::number(abs(num[has_num]), accuracy = 1)
     )
+    out[is_incomplete] <- "<em>Surveys incomplete</em>"
     
-    # Surveys incomplete
-    out[is_incomplete] <- "<span style='color:#000000'><em>Surveys incomplete</em></span>"
-    
-    data.frame(
-      Metric  = df$Metric,
-      Change = out,
-      check.names = FALSE,
-      stringsAsFactors = FALSE
+    # ---- Build striped table manually ----
+    tags$table(
+      class = "table table-striped table-sm",
+      tags$thead(
+        tags$tr(
+          tags$th("Metric"),
+          tags$th("Change")
+        )
+      ),
+      tags$tbody(
+        lapply(seq_len(nrow(df)), function(i) {
+          tags$tr(
+            tags$td(df$Metric[i]),
+            tags$td(HTML(out[i]))
+          )
+        })
+      )
     )
-  },
-  sanitize.text.function = function(x) x   # allow HTML and colours
-  )
+  })
   
   make_top10_plot <- function(region_name, 
                               focal_period = c("Pre-bloom", "Bloom"),
@@ -1592,7 +1593,8 @@ server <- function(input, output, session) {
     species_order <- plot_df |>
       dplyr::filter(period == focal_period) |>
       dplyr::arrange(average) |>
-      dplyr::pull(label)
+      dplyr::pull(label) %>%
+      glimpse()
     
     plot_df$label <- factor(plot_df$label, levels = species_order)
     
@@ -1632,20 +1634,20 @@ server <- function(input, output, session) {
       )
   }
   
-  output$em_common_pre <- renderPlot({
-    req(input$em_region)
-    make_top10_plot(input$em_region,
+  output$region_common_pre <- renderPlot({
+    req(input$region)
+    make_top10_plot(input$region,
                     focal_period = "Pre-bloom",
                     title_lab = "Most common species pre-bloom",
-                    number_species = input$numberspecies)
+                    number_species = input$region_number_species)
   })
   
-  output$em_common_post <- renderPlot({
-    req(input$em_region)
-    make_top10_plot(input$em_region,
+  output$region_common_post <- renderPlot({
+    req(input$region)
+    make_top10_plot(input$region,
                     focal_period = "Bloom",
                     title_lab = "Most common species post-bloom",
-                    number_species = input$numberspecies)
+                    number_species = input$region_number_species)
   })
   
   # ---- Survey progress: filtered to selected reporting region --------------
@@ -1933,51 +1935,51 @@ server <- function(input, output, session) {
   sanitize.text.function = function(x) x
   )
   
-  make_top10_plot_mp <- function(park_name,
-                                 focal_period = c("Pre-bloom", "Bloom"),
-                                 number_species) {
-    
-    focal_period <- match.arg(focal_period)
-    
-    df <- mp_species_counts |>
-      dplyr::filter(park == park_name)
-    
-    top_species <- df |>
-      dplyr::filter(period == focal_period) |>
-      dplyr::slice_max(order_by = average, n = number_species, with_ties = FALSE) |>
-      dplyr::pull(species)
-    
-    plot_df <- df |>
-      dplyr::filter(display_name %in% top_species)
-    
-    order_df <- plot_df |>
-      dplyr::filter(period == focal_period) |>
-      dplyr::arrange(average)
-    
-    plot_df$display_name <- factor(plot_df$display_name, levels = order_df$display_name)
-    
-    ggplot(plot_df, aes(x = average, y = display_name), fill = period) +
-      scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
-      geom_col(position = "dodge") +
-      labs(x = "Count", y = NULL) +
-      scale_fill_manual(values = c("Pre-bloom" = "#0c3978",
-                                   "Bloom" = "#f89f00")) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position = "bottom"
-      )
-  }
-  
-  output$mp_common_pre <- renderPlot({
-    req(input$mp_park)
-    make_top10_plot_mp(input$mp_park, focal_period = "Pre-bloom", number_species = input$numberspeciespark)
-  })
-  
-  output$mp_common_post <- renderPlot({
-    req(input$mp_park)
-    make_top10_plot_mp(input$mp_park, focal_period = "Bloom", number_species = input$numberspeciespark)
-  })
-  
+  # make_top10_plot_location <- function(location,
+  #                                focal_period = c("Pre-bloom", "Bloom"),
+  #                                number_species) {
+  #   
+  #   focal_period <- match.arg(focal_period)
+  #   
+  #   df <- mp_species_counts |>
+  #     dplyr::filter(park == park_name)
+  #   
+  #   top_species <- df |>
+  #     dplyr::filter(period == focal_period) |>
+  #     dplyr::slice_max(order_by = average, n = number_species, with_ties = FALSE) |>
+  #     dplyr::pull(species)
+  #   
+  #   plot_df <- df |>
+  #     dplyr::filter(display_name %in% top_species)
+  #   
+  #   order_df <- plot_df |>
+  #     dplyr::filter(period == focal_period) |>
+  #     dplyr::arrange(average)
+  #   
+  #   plot_df$display_name <- factor(plot_df$display_name, levels = order_df$display_name)
+  #   
+  #   ggplot(plot_df, aes(x = average, y = display_name), fill = period) +
+  #     scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
+  #     geom_col(position = "dodge") +
+  #     labs(x = "Count", y = NULL) +
+  #     scale_fill_manual(values = c("Pre-bloom" = "#0c3978",
+  #                                  "Bloom" = "#f89f00")) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(
+  #       legend.position = "bottom"
+  #     )
+  # }
+  # 
+  # output$location_common_pre <- renderPlot({
+  #   req(input$location)
+  #   make_top10_plot_location(input$mp_park, focal_period = "Pre-bloom", number_species = input$locationnumberspecies)
+  # })
+  # 
+  # output$location_common_post <- renderPlot({
+  #   req(input$location)
+  #   make_top10_plot_location(input$mp_park, focal_period = "Bloom", number_species = input$locationnumberspecies)
+  # })
+  # 
   # ---- Survey progress for marine parks ------------------------------------
   
   mp_survey_row <- reactive({
@@ -2098,16 +2100,16 @@ server <- function(input, output, session) {
         .groups       = "drop"
       ) |>
       dplyr::ungroup() %>%
-      dplyr::filter(region %in% input$em_region) #%>%
+      dplyr::filter(region %in% input$region) #%>%
     #glimpse()
   })
   
   # 2. Nicely formatted text for the selected region ----
   output$years_for_region <- renderText({
-    req(input$em_region)
+    req(input$region)
     
     yrs <- years_by_region() |>
-      dplyr::filter(region == input$em_region) |>
+      dplyr::filter(region == input$region) |>
       dplyr::pull(years_sampled)
     
     yrs

@@ -132,197 +132,212 @@ ui <- page_navbar(
             showcase    = div(class = "vb-icon-wrap", icon("percent", class = "fa-xl"))
           )
         ),
-
-          div(
-            h4("Portal Aims"),
-            h6(HTML("This portal provides a visual assessment of the ecological impacts of the recent harmful algal bloom using stereo-BRUV data uploaded to GlobalArchive.org. It summarises key fish community metrics—including total abundance, species richness, and other indicator responses—to compare conditions before the bloom (Pre-bloom) with those observed during and after the event (Bloom), these metrics are defined in <b>Table 1</b> below. The threshold levels are defined in <b>Table 2</b>.
+        
+        div(
+          h4("Portal Aims"),
+          h6(HTML("This portal provides a visual assessment of the ecological impacts of the recent harmful algal bloom using stereo-BRUV data uploaded to GlobalArchive.org. It summarises key fish community metrics—including total abundance, species richness, and other indicator responses—to compare conditions before the bloom (Pre-bloom) with those observed during and after the event (Bloom), these metrics are defined in <b>Table 1</b> below. The threshold levels are defined in <b>Table 2</b>.
                
                </br></br>By integrating standardised, quality-controlled BRUV annotations with clear temporal comparisons, the dashboard helps highlight shifts in community structure and supports evidence-based management decisions."))),
-          
-          br(),
-          
+        
+        br(),
+        
         layout_column_wrap(
           width = 1/2,
           div(
-          h5("Table 1. Definitions of fish indicator metrics"),
+            h5("Table 1. Definitions of fish indicator metrics"),
             tableOutput("indicator_table"),
           ),
-
+          
           div(
             h5("Table 2. Definitions of threshold levels"),
             tableOutput("pointer_table"),
           ),
         )
-    ),
-    
-    card(
-      full_screen = TRUE,
-      card_header("Sites Surveyed"),
-      leafletOutput("map")
+      ),
+      
+      card(
+        full_screen = TRUE,
+        card_header("Sites Surveyed"),
+        leafletOutput("map")
+      )
     )
-  )
-),
-
-nav_panel(
-  "Region Summary",
-  layout_sidebar(
-    sidebar = sidebar(
-      width = "350px",
-      selectizeInput(
-        "em_region",
-        "Choose a region",
-        choices = NULL, multiple = FALSE,
-        options = list(placeholder = "Choose a region...")
-      ),
-      
-      h6("Years sampled:"),
-      textOutput("years_for_region"),
-      br(),
-      
-      h6("Summary:"),
-      uiOutput("summary_text"),
-      br(),
-      
-      numericInput( 
-        "numberspecies", 
-        "Choose number of species to plot", 
-        value = 10, 
-        min = 1, 
-        max = 20 
-      ),
-      helpText("")
-    ),
-    
-    div(
-      class = "container-fluid",
-      
-      layout_columns(
-        col_widths = c(7, 5),
-        card(min_height = 600,
-             card_header("Survey Effort"),
-             leafletOutput("surveyeffort")),
+  ),
+  
+  nav_panel(
+    "Region Summary",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = "350px",
+        selectizeInput(
+          "region",
+          "Choose a region",
+          choices = NULL, multiple = FALSE,
+          options = list(placeholder = "Choose a region...")
+        ),
         
-        div(
-          card(
-            card_header(
-              div(
-                "Region Impact overview",
-                style = "display:inline-block;"
-              ),
-              # info icon that acts as a button
-              div(
-                actionLink(
-                  inputId = "open_info_pointers",
-                  label = NULL,
-                  icon = icon("circle-info")  # or "info-circle"
+        h6("Years sampled:"),
+        textOutput("years_for_region"),
+        br(),
+        
+        h6("Summary:"),
+        uiOutput("region_summary_text"),
+        br(),
+        
+        helpText("")
+      ),
+      
+      div(
+        class = "container-fluid",
+        
+        layout_columns(
+          col_widths = c(7, 5),
+          card(min_height = 600,
+               full_screen = TRUE,
+               card_header("Survey Effort"),
+               leafletOutput("region_survey_effort")),
+          
+          div(
+            card(
+              card_header(
+                div(
+                  "Region Impact overview",
+                  style = "display:inline-block;"
                 ),
-                style = "float:right; margin-top:-2px;"
-              )
-            ),
-            
-            plotOutput("impact_gauges_region", height = 350)
-          ),
-          card(
-            card_header(
-              div(
-                "Percentage change compared to pre-bloom levels",
-                style = "display:inline-block;"
+                
+                # info icon that acts as a button
+                div(
+                  actionLink(
+                    inputId = "open_info_pointers",
+                    label = NULL,
+                    icon = icon("circle-info")  # or "info-circle"
+                  ),
+                  style = "float:right; margin-top:-2px;"
+                )
               ),
-              # info icon that acts as a button
-              div(
-                actionLink(
-                  inputId = "open_info_table",
-                  label = NULL,
-                  icon = icon("circle-info")  # or "info-circle"
-                ),
-                style = "float:right; margin-top:-2px;"
-              )
+              
+              plotOutput("region_impact_gauges", height = 350)
             ),
-            card_body(
-              # card_header("Percentage change compared to pre-bloom levels"),
-              tableOutput("em_change_table")
+            card(
+              card_header(
+                div(
+                  "Percentage change compared to pre-bloom levels",
+                  style = "display:inline-block;"
+                ),
+                
+                # info icon that acts as a button
+                div(
+                  actionLink(
+                    inputId = "open_info_table",
+                    label = NULL,
+                    icon = icon("circle-info")  # or "info-circle"
+                  ),
+                  style = "float:right; margin-top:-2px;"
+                )
+              ),
+              card_body(
+                uiOutput("region_change_table")
+              )
             )
           )
-        )
-      ),
-      
-      layout_columns(
-        col_widths = c(6, 6),
-        card(min_height = 500,
-             card_header("Most common species pre-bloom"),
-             plotOutput("em_common_pre", height = 500)
         ),
+        
         card(min_height = 500,
-             card_header("Most common species post-bloom"),
-             plotOutput("em_common_post", height = 500)
-        )
-      ),
-      br(),
-      uiOutput("em_tabset")   # tabset stays, now below the table
+             card_header("Common species"),
+             full_screen = TRUE,
+             
+             layout_sidebar(
+               sidebar =     
+                 
+                 div(
+                   h6(strong("Plot inputs:")),
+                   # br(),
+                   numericInput( 
+                     "region_number_species", 
+                     "Choose number of species to plot", 
+                     value = 10, 
+                     min = 1, 
+                     max = 20 
+                   ),
+                   checkboxInput("region_species_status",
+                                 "Include status",
+                                 FALSE)
+                 ),
+               
+               layout_columns(
+                 col_widths = c(6, 6),
+                 
+                 plotOutput("region_common_pre", height = 500),
+                 plotOutput("region_common_post", height = 500)
+               )
+             ),
+             
+        ),
+        br(),
+        uiOutput("region_tabset")   # tabset stays, now below the table
+      )
+    )
+  ),
+  
+  # nav_panel(
+  #   "Location Summary",
+  #   layout_sidebar(
+  #     sidebar = sidebar(
+  #       width = "350px",
+  #       selectizeInput(
+  #         "location",
+  #         "Choose a location",
+  #         choices = NULL, multiple = FALSE,
+  #         options = list(placeholder = "Choose a location...")
+  #       ),
+  #       # helpText("Explore indicators, common species and survey progress for a selected marine park.")
+  #     ),
+  #     
+  #     # Park-level survey progress boxes
+  #     uiOutput("loation_survey_value_boxes"),
+  #     
+  #     
+  #     div(
+  #       class = "container-fluid",
+  #       layout_columns(
+  #         col_widths = c(7, 5),
+  #         card(min_height = 600,
+  #              card_header("Survey Effort"),
+  #              leafletOutput("locationsurveyeffort")),
+  #         
+  #         div(
+  #           card(
+  #             card_header("Location impact overview"),
+  #             plotOutput("location_impact_gauges_region", height = 350)#,
+  #           ),
+  #           card(
+  #             card_header("Percentage change compared to pre-bloom levels"),
+  #             tableOutput("location_change_table")
+  #           ))),
+  # 
+  #       layout_columns(
+  #         col_widths = c(6, 6),
+  #         card(
+  #           card_header("Most common species pre-bloom"),
+  #           plotOutput("location_common_pre", height = 400)
+  #         ),
+  #         card(
+  #           card_header("Most common species post-bloom"),
+  #           plotOutput("location_common_post", height = 400)
+  #         )
+  #       ),
+  #       
+  #       br(),
+  #       uiOutput("location_tabset")   # tabset for park-level metrics
+  #     )
+  #   )
+  # ),
+  
+  nav_spacer(),
+  
+  nav_item(
+    tags$div(
+      style = "display:flex; gap:10px; align-items:center; padding-right:15px;",
+      tags$img(src = "dew_logo.png", height = "70px")
     )
   )
-),
-
-# nav_panel(
-#   "Location Summary",
-#   layout_sidebar(
-#     sidebar = sidebar(
-#       width = "350px",
-#       selectizeInput(
-#         "location",
-#         "Choose a location",
-#         choices = NULL, multiple = FALSE,
-#         options = list(placeholder = "Choose a location...")
-#       ),
-#       # helpText("Explore indicators, common species and survey progress for a selected marine park.")
-#     ),
-#     
-#     # Park-level survey progress boxes
-#     uiOutput("loation_survey_value_boxes"),
-#     
-#     
-#     div(
-#       class = "container-fluid",
-#       layout_columns(
-#         col_widths = c(7, 5),
-#         card(min_height = 600,
-#              card_header("Survey Effort"),
-#              leafletOutput("locationsurveyeffort")),
-#         
-#         div(
-#           card(
-#             card_header("Location impact overview"),
-#             plotOutput("location_impact_gauges_region", height = 350)#,
-#           ),
-#           card(
-#             card_header("Percentage change compared to pre-bloom levels"),
-#             tableOutput("location_change_table")
-#           ))),
-# 
-#       layout_columns(
-#         col_widths = c(6, 6),
-#         card(
-#           card_header("Most common species pre-bloom"),
-#           plotOutput("location_common_pre", height = 400)
-#         ),
-#         card(
-#           card_header("Most common species post-bloom"),
-#           plotOutput("location_common_post", height = 400)
-#         )
-#       ),
-#       
-#       br(),
-#       uiOutput("location_tabset")   # tabset for park-level metrics
-#     )
-#   )
-# ),
-
-nav_spacer(),
-
-nav_item(
-  tags$div(
-    style = "display:flex; gap:10px; align-items:center; padding-right:15px;",
-    tags$img(src = "dew_logo.png", height = "70px")
-  )
-)
 )

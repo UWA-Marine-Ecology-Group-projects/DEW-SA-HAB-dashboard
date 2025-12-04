@@ -71,7 +71,7 @@ metadata <- ga.list.files("_Metadata.csv") %>% # list all files ending in "_Meta
   glimpse()
 
 unique(metadata$project) %>% sort() # 4 projects
-unique(metadata$campaignid)  %>% sort() # 24 campaigns 
+unique(metadata$campaignid)  %>% sort() # 26 campaigns 
 unique(metadata$location)
 
 
@@ -100,7 +100,10 @@ points_maxn <- points %>%
 counts <- ga.list.files("_Count.csv") %>% 
   purrr::map_df(~ga.read.files_csv(.)) %>%
   dplyr::select(project, campaignid, sample, family, genus, species, count) %>% # , stage
-  dplyr::mutate(count = as.numeric(count))
+  dplyr::mutate(count = as.numeric(count)) %>%
+  dplyr::mutate(family = ifelse(family %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(family))) %>%
+  dplyr::mutate(genus = ifelse(genus %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(genus))) %>%
+  dplyr::mutate(species = ifelse(species %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "spp", as.character(species))) 
 
 names(counts)
 
@@ -110,6 +113,13 @@ counts_single <- counts %>%
 
 count <- bind_rows(points_maxn, counts_single)
 
+count_with_syn <- dplyr::left_join(count, CheckEM::aus_synonyms) %>%
+  dplyr::mutate(genus = ifelse(!genus_correct%in%c(NA), genus_correct, genus)) %>%
+  dplyr::mutate(species = ifelse(!is.na(species_correct), species_correct, species)) %>%
+  dplyr::mutate(family = ifelse(!is.na(family_correct), family_correct, family)) %>%
+  dplyr::select(-c(family_correct, genus_correct, species_correct)) %>%
+  dplyr::mutate(scientific = paste(family, genus, species))
+
 # Test which metadata files do not have a match in count
 missing_metadata <- anti_join(count, metadata) # TODO chase these up with Sasha if they are being used
 
@@ -117,21 +127,27 @@ missing_metadata <- anti_join(count, metadata) # TODO chase these up with Sasha 
 missing_count <- anti_join(metadata, count)
 
 # Save count file ----
-write.csv(count, "data/raw/sa_count_bruv.csv", row.names = FALSE)
-saveRDS(count, "data/raw/sa_count_bruv.RDS")
+write.csv(count_with_syn, "data/raw/sa_count_bruv.csv", row.names = FALSE)
+saveRDS(count_with_syn, "data/raw/sa_count_bruv.RDS")
 
-unique(count$project) %>% sort() # 3 projects
-unique(count$campaignid) # 14 campaigns
+unique(count$project) %>% sort() # 4 projects
+unique(count$campaignid) # 26 campaigns
 
 ## Combine Length, Lengths and 3D point files into length3dpoints----
 gen_length <- ga.list.files("_Length.csv") %>% 
   purrr::map_df(~ga.read.files_csv(.)) %>%
-  dplyr::select(project, campaignid, sample, family, genus, species, count, length)
+  dplyr::select(project, campaignid, sample, family, genus, species, count, length) %>%
+  dplyr::mutate(family = ifelse(family %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(family))) %>%
+  dplyr::mutate(genus = ifelse(genus %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(genus))) %>%
+  dplyr::mutate(species = ifelse(species %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "spp", as.character(species))) 
 
 em_length <- ga.list.files("_Lengths.txt") %>%
   purrr::map_df(~ga.read.files_txt(.)) %>%
   dplyr::rename(count = number) %>%
-  dplyr::select(project, campaignid, sample, family, genus, species, count, length, range, precision, rms)
+  dplyr::select(project, campaignid, sample, family, genus, species, count, length, range, precision, rms) %>%
+  dplyr::mutate(family = ifelse(family %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(family))) %>%
+  dplyr::mutate(genus = ifelse(genus %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(genus))) %>%
+  dplyr::mutate(species = ifelse(species %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "spp", as.character(species))) 
 # 
 # em_threedpoints <- ga.list.files("_3DPoints.txt") %>% 
 #   purrr::map_df(~ga.read.files_txt(.)) %>%
@@ -146,7 +162,14 @@ em_length <- ga.list.files("_Lengths.txt") %>%
 # unique(length3dpoints$project) %>% sort() # 49 projects
 # unique(length3dpoints$campaignid) # 91 campaigns with length
 
+length_with_syn <- dplyr::left_join(gen_length, CheckEM::aus_synonyms) %>%
+  dplyr::mutate(genus = ifelse(!genus_correct%in%c(NA), genus_correct, genus)) %>%
+  dplyr::mutate(species = ifelse(!is.na(species_correct), species_correct, species)) %>%
+  dplyr::mutate(family = ifelse(!is.na(family_correct), family_correct, family)) %>%
+  dplyr::select(-c(family_correct, genus_correct, species_correct)) %>%
+  dplyr::mutate(scientific = paste(family, genus, species))
+
 ## Save length files ----
-write.csv(gen_length, "data/raw/sa_length_bruv.csv", row.names = FALSE)
-saveRDS(gen_length, "data/raw/sa_length_bruv.RDS")
+write.csv(length_with_syn, "data/raw/sa_length_bruv.csv", row.names = FALSE)
+saveRDS(length_with_syn, "data/raw/sa_length_bruv.RDS")
 

@@ -122,7 +122,8 @@ bruv_metadata <- readRDS("data/raw/sa_metadata_bruv.RDS") %>%
   dplyr::mutate(sample = as.character(sample)) %>%
   dplyr::glimpse() %>%
   dplyr::mutate(year = str_sub(date, 1, 4)) %>%
-  dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom"))
+  dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
+  dplyr::filter(successful_count %in% "Yes")
 
 # unique(bruv_metadata$year) %>% sort()
 
@@ -176,11 +177,17 @@ combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(metho
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
                                # bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")
                                ) %>%
-  select(campaignid, sample, date, location, region, geometry, depth_m, method) %>%
+  select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length) %>%
   dplyr::mutate(year = as.numeric(str_sub(date, 1, 4))) %>%
-  dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom"))
+  dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
+  dplyr::filter(!is.na(region))
 
 unique(combined_metadata$period)
+unique(combined_metadata$successful_count)
+unique(combined_metadata$successful_length)
+
+successful_length_drops <- combined_metadata %>%
+  dplyr::filter(successful_length %in% "Yes")
 
 # combined length ----
 # bruv_length_regions_post <- bruv_length %>%
@@ -195,9 +202,8 @@ unique(combined_metadata$period)
 combined_length <- bruv_length %>%
   left_join(bruv_metadata_with_regions) %>%
   dplyr::select(campaignid, sample, family, genus, species, region, count, length, date, period) %>%
-  dplyr::mutate(method = "BRUVs") #%>%
-  # dplyr::mutate(period = "Pre-bloom") %>%
-  # bind_rows(., bruv_length_regions_post)
+  dplyr::mutate(method = "BRUVs") %>%
+  semi_join(successful_length_drops)
 
 # Create metrics for dashboard ----
 # Number of deploymnets by region ----
@@ -219,16 +225,18 @@ hab_number_rls_deployments <- combined_metadata %>%
 
 # Number of fish -----
 bruv_count_regions <- bruv_count %>%
-  left_join(bruv_metadata_with_regions) %>%
+  left_join(combined_metadata) %>%
   dplyr::select(sample, family, genus, species, region, count, period) %>%
   dplyr::mutate(method = "BRUVs") %>%
+  semi_join(combined_metadata) %>%
   ungroup()
 
 rls_count_regions_pre <- rls_count %>%
-  left_join(rls_metadata_with_regions) %>%
+  left_join(combined_metadata) %>%
   dplyr::select(sample, family, genus, species, region, count) %>%
   dplyr::mutate(method = "UVC") %>%
-  dplyr::mutate(period = "Pre-bloom")
+  dplyr::mutate(period = "Pre-bloom") %>%
+  semi_join(combined_metadata)
 
 combined_count <- bind_rows(bruv_count_regions, rls_count_regions_pre) %>%
   dplyr::mutate(genus_species = paste(genus, species)) 
@@ -317,9 +325,19 @@ region_top_species <- combined_count %>%
   dplyr::select(region, period, display_name, total_number)  %>%
   ungroup()
 
+# Have removed family from this because there were lots of species in multiple families!
 region_top_species_average <- combined_count %>%
+  full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
-  dplyr::group_by(region, period, family, genus, species, genus_species) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Unknown", family, genus)) %>%
+  dplyr::select(campaignid, sample, genus, species, genus_species, count) %>%
+  tidyr::complete(nesting(campaignid, sample), nesting(genus, species, genus_species)) %>%
+  dplyr::mutate(id = paste(campaignid, sample)) %>%
+  dplyr::filter(!is.na(species)) %>%
+  replace_na(list(count = 0)) %>%
+  # dplyr::mutate(species_id = paste(genus, species, genus_species)) %>%
+  dplyr::left_join(combined_metadata) %>%
+  dplyr::group_by(region, period, genus, species, genus_species) %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count)))
@@ -327,8 +345,7 @@ region_top_species_average <- combined_count %>%
   dplyr::ungroup() %>%
   dplyr::left_join(dew_species %>% dplyr::select(genus_species, common_name)) %>%
   dplyr::left_join(species_list) %>%
-  dplyr::select(family, genus, species, common_name, australian_common_name,
-                average, se, region, period) %>%
+  dplyr::select(genus, species, common_name, australian_common_name, average, se, region, period) %>%
   dplyr::mutate(common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name)) %>%
   dplyr::mutate(display_name = paste0(genus, " ", species, " (", common_name, ")")) %>%
   dplyr::group_by(region, period) %>%
@@ -338,29 +355,41 @@ region_top_species_average <- combined_count %>%
   tidyr::complete(tidyr::nesting(region, display_name), period) %>%
   tidyr::replace_na(list(average = 0, se = 0))
 
+test <- region_top_species_average %>%
+  group_by(region, period, display_name) %>%
+  dplyr::summarise(n = n()) %>%
+  filter(n > 1)
+
 # Species Richness ----
 species_richness_samples <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
+  
+  dplyr::filter(!genus %in% "Unknown") %>%
+  dplyr::filter(!species %in% "spp") %>%
+  
   dplyr::group_by(region, period, sample) %>%
-  dplyr::distinct(family, genus, species) %>%
+  dplyr::distinct(genus, species) %>% # removed family due to inconsistencies
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
-  dplyr::filter(!is.na(region))
+  dplyr::filter(!is.na(region))%>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  replace_na(list(n_species_sample = 0))
 
-# TODO this will need to include a full join to account for drops that don't see any fish
 species_richness_summary <- species_richness_samples %>%
   dplyr::group_by(region, period) %>%
   dplyr::summarise(
     mean = mean(n_species_sample, na.rm = TRUE),
     se   = sd(n_species_sample, na.rm = TRUE) /
       sqrt(sum(!is.na(n_species_sample))),
+    num = n(),
     .groups = "drop"
   )
 
 # Calculate Impacts for Species Richness ----
 species_richness_impacts <- species_richness_summary %>%
-  dplyr::select(-se) %>%
+  dplyr::select(-se, -num) %>%
   tidyr::complete(region, period) %>%
   tidyr::pivot_wider(names_from = period, values_from = mean) %>%
   clean_names() %>%
@@ -374,16 +403,16 @@ species_richness_impacts <- species_richness_summary %>%
   mutate(impact_metric = "species_richness")
 
 # Total abundance ----
-# TODO this will need to include a full join to account for drops that don't see any fish
-# TODO double check if this is meant to be only fish!
-
 total_abundance_samples <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::group_by(region, period, sample) %>%
   dplyr::summarise(total_abundance_sample = sum(count), .groups = "drop") %>%
   ungroup() %>%
-  dplyr::filter(!is.na(region))
+  dplyr::filter(!is.na(region)) %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  tidyr::replace_na(list(total_abundance_sample = 0))
 
 total_abundance_summary <- total_abundance_samples %>%
   dplyr::group_by(region, period) %>%
@@ -425,7 +454,7 @@ shark_ray_richness_nonzero <- combined_count %>%
   dplyr::left_join(species_list, by = c("family", "genus", "species")) %>%
   dplyr::filter(class %in% "Elasmobranchii") %>%
   dplyr::group_by(region, period, sample) %>%
-  dplyr::distinct(family, genus, species) %>%
+  dplyr::distinct(genus, species) %>%
   dplyr::summarise(
     n_species_sample = dplyr::n(),
     .groups = "drop"
@@ -514,7 +543,7 @@ reef_associated_richness_samples <- combined_count %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
   tidyr::replace_na(list(count = 0)) %>%
   dplyr::group_by(region, period, sample) %>%
-  dplyr::distinct(family, genus, species) %>%
+  dplyr::distinct(genus, species) %>%
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
   dplyr::filter(!is.na(region))
@@ -554,8 +583,8 @@ fish_200_abundance_samples <- combined_length %>%
   ungroup() %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
   tidyr::replace_na(list(total_abundance_sample = 0))  %>%
-  dplyr::filter(!is.na(region))
-
+  dplyr::filter(!is.na(region)) %>%
+  semi_join(successful_length_drops)
 
 fish_200_abundance_summary <- fish_200_abundance_samples %>%
   dplyr::group_by(region, period) %>%
