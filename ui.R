@@ -90,6 +90,7 @@ ui <- page_navbar(
     
     layout_columns(
       col_widths = c(7, 5),
+      
       div(
         h4("Algal bloom impacts on nearshore marine biodiversity monitoring progress"),
         
@@ -103,7 +104,7 @@ ui <- page_navbar(
             right_label = "Completed",
             icon        = div(class = "vb-icon-wrap", icon("magnifying-glass", class = "fa-xl")),
             theme_color = "secondary",
-            height = 200
+            height = 150
           ),
           
           twoValueBoxUI(
@@ -131,22 +132,34 @@ ui <- page_navbar(
             showcase    = div(class = "vb-icon-wrap", icon("percent", class = "fa-xl"))
           )
         ),
-        
-        card(
-          card_header("Portal Aims"),
-          card_body("This portal provides a visual assessment of the ecological impacts of the recent harmful algal bloom using stereo-BRUV data uploaded to GlobalArchive.org. It summarises key fish community metrics—including total abundance, species richness, and other indicator responses—to compare conditions before the bloom (Pre-bloom) with those observed during and after the event (Bloom). By integrating standardised, quality-controlled BRUV annotations with clear temporal comparisons, the dashboard helps highlight shifts in community structure and supports evidence-based management decisions.")
-        ),
-        
+
+          div(
+            h4("Portal Aims"),
+            h6(HTML("This portal provides a visual assessment of the ecological impacts of the recent harmful algal bloom using stereo-BRUV data uploaded to GlobalArchive.org. It summarises key fish community metrics—including total abundance, species richness, and other indicator responses—to compare conditions before the bloom (Pre-bloom) with those observed during and after the event (Bloom), these metrics are defined in <b>Table 1</b> below. The threshold levels are defined in <b>Table 2</b>.
+               
+               </br></br>By integrating standardised, quality-controlled BRUV annotations with clear temporal comparisons, the dashboard helps highlight shifts in community structure and supports evidence-based management decisions."))),
+          
+          br(),
+          
         layout_column_wrap(
-          width = 1/2,  
-          card(
-            card_header("Definitions of fish indicator metrics"),
-            tableOutput("indicator_table")
+          width = 1/2,
+
+          # card(
+            # card_header("Definitions of fish indicator metrics"),
+          div(
+          h5("Table 1. Definitions of fish indicator metrics"),
+            tableOutput("indicator_table"),
           ),
           
-          card(
-            card_header("Definitions of threshold levels"),
-            tableOutput("pointer_table")
+          # card(
+            # card_header("Definitions of threshold levels"),
+          div(
+            # box(
+           
+            h5("Table 2. Definitions of threshold levels"),
+            # card(
+            tableOutput("pointer_table"),
+            # )
           ),
         )
     ),

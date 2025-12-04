@@ -798,7 +798,7 @@ server <- function(input, output, session) {
   
   output$pointer_table <- renderUI({
     tags$table(
-      # class = "table table-striped table-sm",
+      class = "table table-striped table-sm",
       tags$thead(
         tags$tr(
           tags$th("Threshold"),
@@ -808,7 +808,7 @@ server <- function(input, output, session) {
       tags$tbody(
         tags$tr(
           tags$td("Low = ≥80% of the pre-bloom value"),
-          tags$td(plotOutput("example_low", height = 80, width = 120))
+          tags$td(plotOutput("example_low",  height = 80, width = 120))
         ),
         tags$tr(
           tags$td("Medium = 50–80% of the pre-bloom value"),
@@ -822,28 +822,28 @@ server <- function(input, output, session) {
     )
   })
   
-  output$example_low <- renderPlot({
-    half_donut_with_dial(
-      values = c(1,1,1),
-      mode   = "absolute",
-      status = "Low"
-    )
+  output$example_low <- renderPlot(bg = "transparent", {
+    half_donut_with_dial(values = c(1,1,1), mode = "absolute", status = "Low") +
+      theme(
+        panel.background = element_rect(fill = NA, colour = NA),
+        plot.background  = element_rect(fill = NA, colour = NA)
+      )
   })
   
-  output$example_medium <- renderPlot({
-    half_donut_with_dial(
-      values = c(1,1,1),
-      mode   = "absolute",
-      status = "Medium"
-    )
+  output$example_medium <- renderPlot(bg = "transparent", {
+    half_donut_with_dial(values = c(1,1,1), mode = "absolute", status = "Medium") +
+      theme(
+        panel.background = element_rect(fill = NA, colour = NA),
+        plot.background  = element_rect(fill = NA, colour = NA)
+      )
   })
   
-  output$example_high <- renderPlot({
-    half_donut_with_dial(
-      values = c(1,1,1),
-      mode   = "absolute",
-      status = "High"
-    )
+  output$example_high <- renderPlot(bg = "transparent", {
+    half_donut_with_dial(values = c(1,1,1), mode = "absolute", status = "High") +
+      theme(
+        panel.background = element_rect(fill = NA, colour = NA),
+        plot.background  = element_rect(fill = NA, colour = NA)
+      )
   })
   
   # Indiactor table
@@ -858,7 +858,7 @@ server <- function(input, output, session) {
     # ))
 
     tags$table(
-      class = "table table-sm",  # uses bootstrap styling
+      class = "table table-striped table-sm",  # uses bootstrap styling
       # header
       tags$thead(
         tags$tr(
