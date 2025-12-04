@@ -143,28 +143,20 @@ ui <- page_navbar(
           
         layout_column_wrap(
           width = 1/2,
-
-          # card(
-            # card_header("Definitions of fish indicator metrics"),
           div(
           h5("Table 1. Definitions of fish indicator metrics"),
             tableOutput("indicator_table"),
           ),
-          
-          # card(
-            # card_header("Definitions of threshold levels"),
+
           div(
-            # box(
-           
             h5("Table 2. Definitions of threshold levels"),
-            # card(
             tableOutput("pointer_table"),
-            # )
           ),
         )
     ),
     
     card(
+      full_screen = TRUE,
       card_header("Sites Surveyed"),
       leafletOutput("map")
     )
@@ -253,8 +245,6 @@ nav_panel(
           )
         )
       ),
-      
-      # card(textOutput("summary_text")),
       
       layout_columns(
         col_widths = c(6, 6),
