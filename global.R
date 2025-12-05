@@ -693,3 +693,32 @@ post_mp <- mp_base_abund |>
 
 mp_species_counts <- dplyr::bind_rows(pre_mp, post_mp)
 # cols: park, species, period, count
+
+spinnerPlotOutput <- function(outputId, ...) {
+  withSpinner(
+    plotOutput(outputId, ...),
+    type = 6
+  )
+}
+
+spinnerLeafletOutput <- function(outputId, ...) {
+  withSpinner(
+    leafletOutput(outputId, ...),
+    type = 6
+  )
+}
+
+spinnerTableOutput <- function(outputId, ...) {
+  withSpinner(
+    tableOutput(outputId, ...),
+    type = 6
+  )
+}
+
+spinnerUiOutput <- function(outputId, ...) {
+  withSpinner(
+    uiOutput(outputId, ...),
+    type = 6
+  )
+}
+

@@ -227,83 +227,265 @@ make_impact_gauges <- function(region_name) {
     (p3 | p4 | p5)
 }
 
+# metric_tab_body_ui <- function(id) {
+#   switch(
+#     id,
+#     
+#     # ---- 2-plot layout ----------------------------------------
+#     richness = {
+#       layout_columns(
+#         col_widths = c(6, 6),
+#         withSpinner(
+#           plotOutput("em_plot_richness_main", height = 400),
+#           type = 6
+#         ),
+#         withSpinner(
+#           plotOutput("em_plot_richness_detail", height = 400),
+#           type = 6
+#         )
+#       )
+#     },
+#     
+#     # ---- 1-plot layout ----------------------------------------
+#     total_abundance = {
+#       layout_columns(
+#         col_widths = c(6, 6),
+#         withSpinner(
+#           plotOutput("em_plot_total_abundance_main", height = 400),
+#           type = 6
+#         ),
+#         withSpinner(
+#           plotOutput("em_plot_total_abundance_detail", height = 400),
+#           type = 6
+#         )
+#       )
+#     },
+#     
+#     sharks_rays = {
+#       layout_columns(
+#         col_widths = c(6, 6),
+#         withSpinner(
+#           plotOutput("em_plot_shark_ray_richness_main", height = 400),
+#           type = 6
+#         ),
+#         withSpinner(
+#           plotOutput("em_plot_shark_ray_richness_detail", height = 400),
+#           type = 6
+#         )
+#       )
+#     },
+#     
+#     reef_associated_richness = {
+#       layout_columns(
+#         col_widths = c(6, 6),
+#         withSpinner(
+#           plotOutput("em_plot_reef_associated_richness_main", height = 400),
+#           type = 6
+#         ),
+#         withSpinner(
+#           plotOutput("em_plot_reef_associated_richness_detail", height = 400),
+#           type = 6
+#         )
+#       )
+#     },
+#     
+#     large_fish = {
+#       layout_columns(
+#         col_widths = c(6, 6),
+#         withSpinner(
+#           plotOutput("em_plot_large_fish_main", height = 400),
+#           type = 6
+#         ),
+#         withSpinner(
+#           plotOutput("em_plot_large_fish_detail", height = 400),
+#           type = 6
+#         )
+#       )
+#     },
+#     
+#     # ---- example 3-plot layout --------------------------------
+#     trophic = {
+#       layout_columns(
+#         col_widths = c(4, 4, 4),
+#         withSpinner(
+#           plotOutput("em_plot_trophic_main", height = 350),
+#           type = 6
+#         ),
+#         withSpinner(
+#           plotOutput("em_plot_trophic_detail", height = 350),
+#           type = 6
+#         ),
+#         withSpinner(
+#           plotOutput("em_plot_trophic_extra", height = 350),
+#           type = 6
+#         )
+#       )
+#     },
+#     
+#     # ---- default: same as your old 2-plot layout --------------
+#     {
+#       layout_columns(
+#         col_widths = c(6, 6),
+#         withSpinner(
+#           plotOutput(paste0("em_plot_", id, "_main"), height = 400),
+#           type = 6
+#         ),
+#         withSpinner(
+#           plotOutput(paste0("em_plot_", id, "_detail"), height = 400),
+#           type = 6
+#         )
+#       )
+#     }
+#   )
+# }
+
 metric_tab_body_ui <- function(id) {
   switch(
     id,
     
-    # ---- 2-plot layout ----------------------------------------
+    # ---- RICHNESS: now 4 plots (2x2) --------------------------
     richness = {
-      layout_columns(
-        col_widths = c(6, 6),
-        withSpinner(
-          plotOutput("em_plot_richness_main", height = 400),
-          type = 6
+      tagList(
+        # Row 1: current main + detail
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_richness_main", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_richness_detail", height = 400),
+            type = 6
+          )
         ),
-        withSpinner(
-          plotOutput("em_plot_richness_detail", height = 400),
-          type = 6
+        # Row 2: new status plots
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_richness_main_status", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_richness_detail_status", height = 400),
+            type = 6
+          )
         )
       )
     },
     
-    # ---- 1-plot layout ----------------------------------------
+    # ---- TOTAL ABUNDANCE: now 4 plots (2x2) -------------------
     total_abundance = {
-      layout_columns(
-        col_widths = c(6, 6),
-        withSpinner(
-          plotOutput("em_plot_total_abundance_main", height = 400),
-          type = 6
+      tagList(
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_total_abundance_main", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_total_abundance_detail", height = 400),
+            type = 6
+          )
         ),
-        withSpinner(
-          plotOutput("em_plot_total_abundance_detail", height = 400),
-          type = 6
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_total_abundance_main_status", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_total_abundance_detail_status", height = 400),
+            type = 6
+          )
         )
       )
     },
     
+    # ---- SHARKS & RAYS: 4 plots -------------------------------
     sharks_rays = {
-      layout_columns(
-        col_widths = c(6, 6),
-        withSpinner(
-          plotOutput("em_plot_shark_ray_richness_main", height = 400),
-          type = 6
+      tagList(
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_shark_ray_richness_main", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_shark_ray_richness_detail", height = 400),
+            type = 6
+          )
         ),
-        withSpinner(
-          plotOutput("em_plot_shark_ray_richness_detail", height = 400),
-          type = 6
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_shark_ray_richness_main_status", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_shark_ray_richness_detail_status", height = 400),
+            type = 6
+          )
         )
       )
     },
     
+    # ---- REEF-ASSOCIATED RICHNESS: 4 plots -------------------
     reef_associated_richness = {
-      layout_columns(
-        col_widths = c(6, 6),
-        withSpinner(
-          plotOutput("em_plot_reef_associated_richness_main", height = 400),
-          type = 6
+      tagList(
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_reef_associated_richness_main", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_reef_associated_richness_detail", height = 400),
+            type = 6
+          )
         ),
-        withSpinner(
-          plotOutput("em_plot_reef_associated_richness_detail", height = 400),
-          type = 6
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_reef_associated_richness_main_status", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_reef_associated_richness_detail_status", height = 400),
+            type = 6
+          )
         )
       )
     },
     
+    # ---- LARGE FISH: 4 plots ---------------------------------
     large_fish = {
-      layout_columns(
-        col_widths = c(6, 6),
-        withSpinner(
-          plotOutput("em_plot_large_fish_main", height = 400),
-          type = 6
+      tagList(
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_large_fish_main", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_large_fish_detail", height = 400),
+            type = 6
+          )
         ),
-        withSpinner(
-          plotOutput("em_plot_large_fish_detail", height = 400),
-          type = 6
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_large_fish_main_status", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_large_fish_detail_status", height = 400),
+            type = 6
+          )
         )
       )
     },
     
-    # ---- example 3-plot layout --------------------------------
+    # ---- example 3-plot layout stays as-is --------------------
     trophic = {
       layout_columns(
         col_widths = c(4, 4, 4),
@@ -338,6 +520,7 @@ metric_tab_body_ui <- function(id) {
     }
   )
 }
+
 
 plot_cell <- function(id, width = "120px", height = "120px") {
   div(
@@ -1065,6 +1248,7 @@ server <- function(input, output, session) {
       geom_jitter(
         aes(colour = period),
         width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
         alpha = 0.35,
         size = 1.2
       ) +
@@ -1135,6 +1319,101 @@ server <- function(input, output, session) {
     bindCache(input$region) |>
     bindEvent(input$region)
   
+  # ---------- RICHNESS: main boxplot by Status --------------------
+  output$em_plot_richness_main_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$species_richness_samples %>%
+      dplyr::filter(region == input$region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      
+      # ⬇️ Add this
+      geom_point(
+        stat = "summary",
+        fun = "mean",
+        shape = 21,
+        size = 3,
+        fill = "white",
+        colour = "black"
+      ) +
+      
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["richness"]],
+        subtitle = paste(input$region, "— Species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  # ---------- RICHNESS: detail barplot by Status ------------------
+  output$em_plot_richness_detail_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$species_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se   = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        .groups = "drop"
+      )
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["richness"]],
+        subtitle = paste(input$region, "— Average species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  
   # ---------- TOTAL ABUNDANCE: two plots ------------
   output$em_plot_total_abundance_main <- renderPlot({
     req(input$region)
@@ -1159,6 +1438,7 @@ server <- function(input, output, session) {
       geom_jitter(
         aes(colour = period),
         width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
         alpha = 0.35,
         size = 1.2
       ) +
@@ -1223,6 +1503,101 @@ server <- function(input, output, session) {
     bindCache(input$region) |>
     bindEvent(input$region)
   
+  output$em_plot_total_abundance_main_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$total_abundance_samples %>%
+      dplyr::filter(region == input$region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      
+      # ⬇️ Add this
+      geom_point(
+        stat = "summary",
+        fun = "mean",
+        shape = 21,
+        size = 3,
+        fill = "white",
+        colour = "black"
+      ) +
+      
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["total_abundance"]],
+        subtitle = paste(input$region, "— Total abundance per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  output$em_plot_total_abundance_detail_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$total_abundance_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(total_abundance_sample, na.rm = TRUE),
+        se   = sd(total_abundance_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(total_abundance_sample))),
+        .groups = "drop"
+      )
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df,
+           aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["total_abundance"]],
+        subtitle = paste(input$region,
+                         "— Average total abundance per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  
   # …and so on for trophic, sharks_rays, etc.
   # Shark and Rays -----
   output$em_plot_shark_ray_richness_main <- renderPlot({
@@ -1247,6 +1622,7 @@ server <- function(input, output, session) {
       geom_jitter(
         aes(colour = period),
         width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
         alpha = 0.35,
         size = 1.2
       ) +
@@ -1341,6 +1717,7 @@ server <- function(input, output, session) {
       geom_jitter(
         aes(colour = period),
         width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
         alpha = 0.35,
         size = 1.2
       ) +
@@ -1411,6 +1788,196 @@ server <- function(input, output, session) {
     bindCache(input$region) |>
     bindEvent(input$region)
   
+  # ---------- REEF-ASSOCIATED: main boxplot by Status ---------------
+  output$em_plot_reef_associated_richness_main_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$reef_associated_richness_samples %>%
+      dplyr::filter(region == input$region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      
+      # ⬇️ Add this
+      geom_point(
+        stat = "summary",
+        fun = "mean",
+        shape = 21,
+        size = 3,
+        fill = "white",
+        colour = "black"
+      ) +
+      
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["reef_associated_richness"]],
+        subtitle = paste(input$region, "— Reef-associated species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  # ---------- REEF-ASSOCIATED: detail barplot by Status -------------
+  output$em_plot_reef_associated_richness_detail_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$reef_associated_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se   = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        .groups = "drop"
+      )
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["reef_associated_richness"]],
+        subtitle = paste(input$region, "— Average reef-associated species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  
+  # ---------- SHARK & RAY: main boxplot by Status --------------------
+  output$em_plot_shark_ray_richness_main_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$shark_ray_richness_samples %>%
+      dplyr::filter(region == input$region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      
+      # ⬇️ Add this
+      geom_point(
+        stat = "summary",
+        fun = "mean",
+        shape = 21,
+        size = 3,
+        fill = "white",
+        colour = "black"
+      ) +
+      
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["sharks_rays"]],
+        subtitle = paste(input$region, "— Shark & ray species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  # ---------- SHARK & RAY: detail barplot by Status -----------------
+  output$em_plot_shark_ray_richness_detail_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$shark_ray_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se   = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        .groups = "drop"
+      )
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["sharks_rays"]],
+        subtitle = paste(input$region, "— Average shark & ray species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  
   # ---------- Large fish: two plots ------------
   output$em_plot_large_fish_main <- renderPlot({
     req(input$region)
@@ -1435,6 +2002,7 @@ server <- function(input, output, session) {
       geom_jitter(
         aes(colour = period),
         width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
         alpha = 0.35,
         size = 1.2
       ) +
@@ -1498,6 +2066,102 @@ server <- function(input, output, session) {
   }) |>
     bindCache(input$region) |>
     bindEvent(input$region)
+  
+  # ---------- LARGE FISH: main boxplot by Status --------------------
+  output$em_plot_large_fish_main_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$fish_200_abundance_samples %>%
+      dplyr::filter(region == input$region)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      
+      # ⬇️ Add this
+      geom_point(
+        stat = "summary",
+        fun = "mean",
+        shape = 21,
+        size = 3,
+        fill = "white",
+        colour = "black"
+      ) +
+      
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["large_fish"]],
+        subtitle = paste(input$region, "— Large fish (>200 mm) abundance per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  # ---------- LARGE FISH: detail barplot by Status ------------------
+  output$em_plot_large_fish_detail_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$fish_200_abundance_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(total_abundance_sample, na.rm = TRUE),
+        se   = sd(total_abundance_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(total_abundance_sample))),
+        .groups = "drop"
+      )
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df,
+           aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["large_fish"]],
+        subtitle = paste(input$region, "— Average large fish (>200 mm) abundance per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
   
   # ---- HAB % change summary table (per region) ------------------------------
   output$region_change_table <- renderUI({
@@ -2401,6 +3065,7 @@ server <- function(input, output, session) {
           geom_jitter(
             aes(colour = period),
             width = 0.15,
+            height = 0,      # <— prevents any vertical jitter
             alpha = 0.35,
             size  = 1.2
           ) +
@@ -2436,6 +3101,7 @@ server <- function(input, output, session) {
           geom_jitter(
             aes(colour = period),
             width = 0.15,
+            height = 0,      # <— prevents any vertical jitter
             alpha = 0.35,
             size  = 1.2
           ) +

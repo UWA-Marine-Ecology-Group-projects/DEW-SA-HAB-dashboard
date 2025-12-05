@@ -487,15 +487,16 @@ total_abundance_impacts <- total_abundance_summary %>%
 all_bruv_samples <- combined_metadata %>%
   sf::st_drop_geometry() %>%              # we just need attributes here
   dplyr::filter(method %in% "BRUVs") %>%
-  dplyr::select(region, period, sample) %>%
+  dplyr::select(region, period, sample, status) %>%
   dplyr::distinct()
 
 # 2. Shark/ray richness only where they occur
 shark_ray_richness_nonzero <- combined_count %>%
   dplyr::filter(count > 0, method %in% "BRUVs") %>%
   dplyr::left_join(species_list, by = c("family", "genus", "species")) %>%
+  dplyr::left_join(combined_metadata) %>%
   dplyr::filter(class %in% "Elasmobranchii") %>%
-  dplyr::group_by(region, period, sample) %>%
+  dplyr::group_by(region, period, status, sample) %>%
   dplyr::distinct(genus, species) %>%
   dplyr::summarise(
     n_species_sample = dplyr::n(),
@@ -509,7 +510,7 @@ nrow(shark_ray_richness_nonzero)
 shark_ray_richness_samples <- all_bruv_samples %>%
   dplyr::left_join(
     shark_ray_richness_nonzero,
-    by = c("region", "period", "sample")
+    by = c("region", "period", "sample", "status")
   ) %>%
   tidyr::replace_na(list(n_species_sample = 0)) %>%
   dplyr::filter(!is.na(region))
@@ -539,42 +540,6 @@ shark_ray_richness_impacts <- shark_ray_richness_summary %>%
   )) %>%
   dplyr::mutate(impact_metric = "shark_ray_richness")
 
-# shark_ray_richness_samples <- combined_count %>%
-#   dplyr::filter(count > 0) %>%
-#   dplyr::filter(method %in% "BRUVs") %>%
-#   dplyr::left_join(species_list) %>%
-#   dplyr::filter(class %in% "Elasmobranchii") %>%
-#   dplyr::group_by(region, period, sample) %>%
-#   dplyr::distinct(family, genus, species) %>%
-#   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
-#   ungroup()%>%
-#   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
-#   tidyr::replace_na(list(n_species_sample = 0)) %>%
-#   dplyr::filter(!is.na(region))
-# 
-# shark_ray_richness_summary <- shark_ray_richness_samples %>%
-#   dplyr::group_by(region, period) %>%
-#   dplyr::summarise(
-#     mean = mean(n_species_sample, na.rm = TRUE),
-#     se   = sd(n_species_sample, na.rm = TRUE) /
-#       sqrt(sum(!is.na(n_species_sample))),
-#     .groups = "drop"
-#   ) %>%
-#   dplyr::ungroup()
-# 
-# shark_ray_richness_impacts <- shark_ray_richness_summary %>%
-#   dplyr::select(-se) %>%
-#   tidyr::complete(region, period) %>%
-#   tidyr::pivot_wider(names_from = period, values_from = mean) %>%
-#   clean_names() %>%
-#   dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
-#   dplyr::mutate(impact = case_when(
-#     percentage > 80 ~ "Low",
-#     percentage > 50 & percentage < 80 ~ "Medium",
-#     percentage < 50 ~ "High",
-#     .default = "Surveys incomplete"
-#   )) %>%
-#   mutate(impact_metric = "shark_ray_richness")
 
 # Reef associated richness ----
 reef_associated_richness_samples <- combined_count %>%
@@ -584,7 +549,7 @@ reef_associated_richness_samples <- combined_count %>%
   dplyr::mutate(functional_group %in% "reef-associated") %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
   tidyr::replace_na(list(count = 0)) %>%
-  dplyr::group_by(region, period, sample) %>%
+  dplyr::group_by(region, period, status, sample) %>%
   dplyr::distinct(genus, species) %>%
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%

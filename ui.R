@@ -85,6 +85,54 @@ ui <- page_navbar(
     )
   ),
   
+  tags$head(
+    tags$style(HTML("
+    /* existing CSS ... */
+
+    /* Make spinner wrappers fill the map card */
+    .map-full-wrapper {
+      height: 100%;
+    }
+
+    .map-full-wrapper .shiny-spinner-output-container,
+    .map-full-wrapper .shiny-spinner-placeholder {
+      height: 100%;
+    }
+
+    .map-full-wrapper .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+    }
+  "))
+  ),
+  
+  tags$head(
+    tags$style(HTML("
+    /* Map spinners (leaflet) */
+    .map-full-wrapper {
+      height: 100%;
+    }
+    .map-full-wrapper .shiny-spinner-output-container,
+    .map-full-wrapper .shiny-spinner-placeholder {
+      height: 100%;
+    }
+    .map-full-wrapper .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+    }
+
+    /* Plot spinners: parent controls height */
+    .plot-full-wrapper {
+      height: 100%;
+    }
+    .plot-full-wrapper .shiny-spinner-output-container,
+    .plot-full-wrapper .shiny-spinner-placeholder {
+      height: 100%;
+    }
+  "))
+  ),
+  
+  
   nav_panel(
     "Overview",
     
@@ -140,26 +188,40 @@ ui <- page_navbar(
                </br></br>By integrating standardised, quality-controlled BRUV annotations with clear temporal comparisons, the dashboard helps highlight shifts in community structure and supports evidence-based management decisions."))),
         
         br(),
-        
+
         layout_column_wrap(
           width = 1/2,
           div(
             h5("Table 1. Definitions of fish indicator metrics"),
-            tableOutput("indicator_table"),
+            spinnerTableOutput("indicator_table")  # was: tableOutput("indicator_table")
           ),
           
           div(
             h5("Table 2. Definitions of threshold levels"),
-            tableOutput("pointer_table"),
+            spinnerTableOutput("pointer_table")    # was: tableOutput("pointer_table")
           ),
         )
+        
       ),
+      
+      # card(
+      #   full_screen = TRUE,
+      #   card_header("Sites Surveyed"),
+      #   leafletOutput("map")
+      # )
       
       card(
         full_screen = TRUE,
         card_header("Sites Surveyed"),
-        leafletOutput("map")
+        div(
+          class = "map-full-wrapper",
+          withSpinner(
+            leafletOutput("map", height = "100%"),
+            type = 6
+          )
+        )
       )
+      
     )
   ),
   
@@ -191,10 +253,25 @@ ui <- page_navbar(
         
         layout_columns(
           col_widths = c(7, 5),
-          card(min_height = 600,
-               full_screen = TRUE,
-               card_header("Survey Effort"),
-               leafletOutput("region_survey_effort")),
+          
+          # card(min_height = 600,
+          #      full_screen = TRUE,
+          #      card_header("Survey Effort"),
+          #      leafletOutput("region_survey_effort")
+          #      ),
+          
+          card(
+            min_height = 600,
+            full_screen = TRUE,
+            card_header("Survey Effort"),
+            div(
+              class = "map-full-wrapper",
+              withSpinner(
+                leafletOutput("region_survey_effort", height = "100%"),
+                type = 6
+              )
+            )
+          ),
           
           div(
             card(
@@ -203,80 +280,99 @@ ui <- page_navbar(
                   "Region Impact overview",
                   style = "display:inline-block;"
                 ),
-                
-                # info icon that acts as a button
                 div(
                   actionLink(
                     inputId = "open_info_pointers",
                     label = NULL,
-                    icon = icon("circle-info")  # or "info-circle"
+                    icon = icon("circle-info")
                   ),
                   style = "float:right; margin-top:-2px;"
                 )
               ),
-              
-              plotOutput("region_impact_gauges", height = 350)
+              spinnerPlotOutput("region_impact_gauges", height = 350)  # was: plotOutput(...)
             ),
+            
             card(
               card_header(
                 div(
                   "Percentage change compared to pre-bloom levels",
                   style = "display:inline-block;"
                 ),
-                
-                # info icon that acts as a button
                 div(
                   actionLink(
                     inputId = "open_info_table",
                     label = NULL,
-                    icon = icon("circle-info")  # or "info-circle"
+                    icon = icon("circle-info")
                   ),
                   style = "float:right; margin-top:-2px;"
                 )
               ),
               card_body(
-                uiOutput("region_change_table")
+                spinnerUiOutput("region_change_table")  # was: uiOutput("region_change_table")
               )
             )
+            
           )
         ),
         
-        card(min_height = 500,
-             card_header("Common species"),
-             full_screen = TRUE,
-             
-             layout_sidebar(
-               sidebar = div(
-                 h6(strong("Plot inputs:")),
-                 numericInput( 
-                   "region_number_species", 
-                   "Choose number of species to plot", 
-                   value = 10, 
-                   min   = 1, 
-                   max   = 20 
-                 ),
-                 checkboxInput(
-                   "region_species_status",
-                   "Show status (Fished vs No-take)",
-                   FALSE
-                 ),
-                 checkboxInput(
-                   "region_species_facet",
-                   "Facet by status",
-                   FALSE
-                 )
-               ),
-               
-               layout_columns(
-                 col_widths = c(6, 6),
-                 
-                 plotOutput("region_common_pre", height = 500),
-                 plotOutput("region_common_post", height = 500)
-               )
-             ),
-             
+        card(
+          min_height = 500,
+          card_header("Common species"),
+          full_screen = TRUE,
+          
+          layout_sidebar(
+            sidebar = div(
+              h6(strong("Plot inputs:")),
+              numericInput( 
+                "region_number_species", 
+                "Choose number of species to plot", 
+                value = 10, 
+                min   = 1, 
+                max   = 20 
+              ),
+              checkboxInput(
+                "region_species_status",
+                "Show status (Fished vs No-take)",
+                FALSE
+              ),
+              checkboxInput(
+                "region_species_facet",
+                "Facet by status",
+                FALSE
+              )
+            ),
+            
+            # layout_columns(
+            #   col_widths = c(6, 6),
+            #   spinnerPlotOutput("region_common_pre",  height = 500),  # was plotOutput
+            #   spinnerPlotOutput("region_common_post", height = 500)   # was plotOutput
+            # )
+            
+            layout_columns(
+              col_widths = c(6, 6),
+              
+              div(
+                class = "plot-full-wrapper",
+                # style = "height:500px;",
+                withSpinner(
+                  plotOutput("region_common_pre", height = "100%"),
+                  type = 6
+                )
+              ),
+              div(
+                class = "plot-full-wrapper",
+                # style = "height:500px;",
+                withSpinner(
+                  plotOutput("region_common_post", height = "100%"),
+                  type = 6
+                )
+              )
+            )
+            
+            
+          )
         ),
-        br(),
+        # br(),
         uiOutput("region_tabset")   # tabset stays, now below the table
       )
     )
