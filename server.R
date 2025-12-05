@@ -227,118 +227,6 @@ make_impact_gauges <- function(region_name) {
     (p3 | p4 | p5)
 }
 
-# metric_tab_body_ui <- function(id) {
-#   switch(
-#     id,
-#     
-#     # ---- 2-plot layout ----------------------------------------
-#     richness = {
-#       layout_columns(
-#         col_widths = c(6, 6),
-#         withSpinner(
-#           plotOutput("em_plot_richness_main", height = 400),
-#           type = 6
-#         ),
-#         withSpinner(
-#           plotOutput("em_plot_richness_detail", height = 400),
-#           type = 6
-#         )
-#       )
-#     },
-#     
-#     # ---- 1-plot layout ----------------------------------------
-#     total_abundance = {
-#       layout_columns(
-#         col_widths = c(6, 6),
-#         withSpinner(
-#           plotOutput("em_plot_total_abundance_main", height = 400),
-#           type = 6
-#         ),
-#         withSpinner(
-#           plotOutput("em_plot_total_abundance_detail", height = 400),
-#           type = 6
-#         )
-#       )
-#     },
-#     
-#     sharks_rays = {
-#       layout_columns(
-#         col_widths = c(6, 6),
-#         withSpinner(
-#           plotOutput("em_plot_shark_ray_richness_main", height = 400),
-#           type = 6
-#         ),
-#         withSpinner(
-#           plotOutput("em_plot_shark_ray_richness_detail", height = 400),
-#           type = 6
-#         )
-#       )
-#     },
-#     
-#     reef_associated_richness = {
-#       layout_columns(
-#         col_widths = c(6, 6),
-#         withSpinner(
-#           plotOutput("em_plot_reef_associated_richness_main", height = 400),
-#           type = 6
-#         ),
-#         withSpinner(
-#           plotOutput("em_plot_reef_associated_richness_detail", height = 400),
-#           type = 6
-#         )
-#       )
-#     },
-#     
-#     large_fish = {
-#       layout_columns(
-#         col_widths = c(6, 6),
-#         withSpinner(
-#           plotOutput("em_plot_large_fish_main", height = 400),
-#           type = 6
-#         ),
-#         withSpinner(
-#           plotOutput("em_plot_large_fish_detail", height = 400),
-#           type = 6
-#         )
-#       )
-#     },
-#     
-#     # ---- example 3-plot layout --------------------------------
-#     trophic = {
-#       layout_columns(
-#         col_widths = c(4, 4, 4),
-#         withSpinner(
-#           plotOutput("em_plot_trophic_main", height = 350),
-#           type = 6
-#         ),
-#         withSpinner(
-#           plotOutput("em_plot_trophic_detail", height = 350),
-#           type = 6
-#         ),
-#         withSpinner(
-#           plotOutput("em_plot_trophic_extra", height = 350),
-#           type = 6
-#         )
-#       )
-#     },
-#     
-#     # ---- default: same as your old 2-plot layout --------------
-#     {
-#       layout_columns(
-#         col_widths = c(6, 6),
-#         withSpinner(
-#           plotOutput(paste0("em_plot_", id, "_main"), height = 400),
-#           type = 6
-#         ),
-#         withSpinner(
-#           plotOutput(paste0("em_plot_", id, "_detail"), height = 400),
-#           type = 6
-#         )
-#       )
-#     }
-#   )
-# }
-
 metric_tab_body_ui <- function(id) {
   switch(
     id,
@@ -487,22 +375,53 @@ metric_tab_body_ui <- function(id) {
     
     # ---- example 3-plot layout stays as-is --------------------
     trophic = {
-      layout_columns(
-        col_widths = c(4, 4, 4),
-        withSpinner(
-          plotOutput("em_plot_trophic_main", height = 350),
-          type = 6
+      tagList(
+        
+        # ---------- FIRST ROW: main + stacked ----------
+        layout_columns(
+          col_widths = c(6, 6),
+          
+          # Main trophic plot (unchanged)
+          withSpinner(
+            plotOutput("em_plot_trophic_main", height = 400),
+            type = 6
+          ),
+          
+          # Right column: toggle + stacked plot
+          tagList(
+            # div(
+            #   style = "margin-bottom: 10px;",
+            #   radioButtons(
+            #     inputId = "trophic_stack_scale",
+            #     label   = "Stacked plot display:",
+            #     choices = c("Proportion" = "prop",
+            #                 "Count"      = "count"),
+            #     inline  = TRUE,
+            #     selected = "prop"
+            #   )
+            # ),
+            withSpinner(
+              plotOutput("em_plot_trophic_stack", height = 400),
+              type = 6
+            )
+          )
         ),
-        withSpinner(
-          plotOutput("em_plot_trophic_detail", height = 350),
-          type = 6
-        ),
-        withSpinner(
-          plotOutput("em_plot_trophic_extra", height = 350),
-          type = 6
+        
+        # ---------- SECOND ROW: status plots ----------
+        layout_columns(
+          col_widths = c(6, 6),
+          withSpinner(
+            plotOutput("em_plot_trophic_main_status", height = 400),
+            type = 6
+          ),
+          withSpinner(
+            plotOutput("em_plot_trophic_stack_status", height = 400),
+            type = 6
+          )
         )
       )
     },
+    
     
     # ---- default: same as your old 2-plot layout --------------
     {
@@ -2162,6 +2081,213 @@ server <- function(input, output, session) {
     bindCache(input$region) |>
     bindEvent(input$region)
   
+  # ---------- Trophic Groups: two plots ------------
+  output$em_plot_trophic_main <- renderPlot({
+    req(input$region)
+    
+    # Filter for this region
+    df <- hab_data$trophic_groups_samples %>%
+      dplyr::filter(region == input$region)
+    
+    mean_se <- hab_data$trophic_groups_summary %>%
+      dplyr::filter(region == input$region)
+    
+    # Order periods
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
+    
+    # (Optional) order diet groups if you want a specific order
+    diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+    df$diet <- factor(df$diet, levels = diet_levels)
+    mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
+    
+    dodge <- position_dodge(width = 0.75)
+    
+    ggplot(df, aes(x = diet, y = n_individuals_sample, fill = period)) +
+      geom_boxplot(
+        position = dodge,
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      geom_jitter(
+        aes(colour = period),
+        position = position_jitterdodge(
+          jitter.width  = 0.15,
+          jitter.height = 0,
+          dodge.width   = 0.75
+        ),
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      geom_pointrange(
+        data = mean_se,
+        aes(
+          x    = diet,
+          y    = mean,
+          ymin = mean - se,
+          ymax = mean + se,
+          group = period,
+          colour = period
+        ),
+        position = dodge,
+        inherit.aes = FALSE,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,  # or "Diet group"
+        y = metric_y_lab[["large_fish"]],
+        subtitle = input$region
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "top",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  # ---------- Trophic Groups: stacked composition plot ------------
+ 
+  output$em_plot_trophic_stack <- renderPlot({
+    req(input$region#, input$trophic_stack_scale
+        )
+    
+    diet_levels <- names(diet_cols)
+    
+    # Start from the SUMMARY table (means per sample)
+    mean_se <- hab_data$trophic_groups_richness_summary %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(
+        period = factor(period, levels = c("Pre-bloom", "Bloom")),
+        diet   = factor(diet,   levels = diet_levels)
+      )
+    
+      # -------- COUNT VIEW (mean-based) --------
+      ggplot(mean_se, aes(x = period, y = mean, fill = diet)) +
+        geom_col(position = "stack") +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_manual(values = diet_cols, drop = FALSE) +
+        labs(
+          x        = NULL,
+          y        = "Mean no. species per sample",
+          fill     = "Diet group",
+          subtitle = input$region
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(panel.grid.minor = element_blank())
+    # }
+  }) |>
+    bindCache(input$region, input$trophic_stack_scale) |>
+    bindEvent(input$region, input$trophic_stack_scale)
+  
+  output$em_plot_trophic_main_status <- renderPlot({
+    req(input$region)
+    
+    # Filter for this region
+    df <- hab_data$trophic_groups_samples %>%
+      dplyr::filter(region == input$region)
+    
+    mean_se <- hab_data$trophic_groups_summary %>%
+      dplyr::filter(region == input$region)
+    
+    # Order periods
+    df$period     <- factor(df$period,     levels = c("Pre-bloom", "Bloom"))
+    mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
+    
+    # Diet ordering
+    diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+    df$diet     <- factor(df$diet,     levels = diet_levels)
+    mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
+    
+    dodge <- position_dodge(width = 0.75)
+    
+    ggplot(df, aes(x = diet, y = n_individuals_sample, fill = period)) +
+      geom_boxplot(
+        position = dodge,
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      geom_jitter(
+        aes(colour = period),
+        position = position_jitterdodge(
+          jitter.width  = 0.15,
+          jitter.height = 0,
+          dodge.width   = 0.75
+        ),
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      geom_pointrange(
+        data = mean_se,
+        aes(
+          x    = diet,
+          y    = mean,
+          ymin = mean - se,
+          ymax = mean + se,
+          group = period,
+          colour = period
+        ),
+        inherit.aes = FALSE,
+        position = dodge,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_colour_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["large_fish"]],
+        subtitle = input$region
+      ) +
+      facet_wrap(~ status) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position = "top",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$region) |>
+    bindEvent(input$region)
+  
+  output$em_plot_trophic_stack_status <- renderPlot({
+    req(input$region#, input$trophic_stack_scale
+    )
+    
+    diet_levels <- names(diet_cols)
+    
+    # Start from the SUMMARY table (means per sample)
+    mean_se <- hab_data$trophic_groups_richness_summary_status %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(
+        period = factor(period, levels = c("Pre-bloom", "Bloom")),
+        diet   = factor(diet,   levels = diet_levels)
+      )
+    
+    # -------- COUNT VIEW (mean-based) --------
+    ggplot(mean_se, aes(x = period, y = mean, fill = diet)) +
+      geom_col(position = "stack") +
+      scale_y_continuous(labels = scales::comma) +
+      scale_fill_manual(values = diet_cols, drop = FALSE) +
+      labs(
+        x        = NULL,
+        y        = "Mean no. species per sample",
+        fill     = "Diet group",
+        subtitle = input$region
+      ) +
+      facet_wrap(~ status) +
+      theme_minimal(base_size = 16) +
+      theme(panel.grid.minor = element_blank())
+    # }
+  }) |>
+    bindCache(input$region, input$trophic_stack_scale) |>
+    bindEvent(input$region, input$trophic_stack_scale)
+  
   
   # ---- HAB % change summary table (per region) ------------------------------
   output$region_change_table <- renderUI({
@@ -2221,396 +2347,6 @@ server <- function(input, output, session) {
       )
     )
   })
-  
-#   make_top10_plot <- function(region_name, 
-#                               focal_period = c("Pre-bloom", "Bloom"),
-#                               title_lab = "Common species",
-#                               number_species,
-#                               split_status = FALSE,
-#                               facet_status = FALSE) {
-#     
-#     focal_period  <- match.arg(focal_period)
-#     split_status  <- isTRUE(split_status)
-#     facet_status  <- isTRUE(facet_status)
-#     
-#     df_raw <- hab_data$region_top_species_average |>
-#       dplyr::filter(region == region_name)
-#     
-#     # For choosing the top species, always collapse over status
-#     df_for_top <- df_raw |>
-#       dplyr::group_by(region, period, display_name) |>
-#       dplyr::summarise(
-#         average = mean(average, na.rm = TRUE),     # status-averaged
-#         se      = sqrt(sum(se^2, na.rm = TRUE)),   # rough pooled SE
-#         .groups = "drop"
-#       )
-#     
-#     # Identify top N species within the focal period only
-#     top_species <- df_for_top |>
-#       dplyr::filter(period == focal_period) |>
-#       dplyr::slice_max(order_by = average,
-#                        n = number_species,
-#                        with_ties = FALSE) |>
-#       dplyr::pull(display_name)
-#     
-#     # Data for plotting: either collapsed over status or full split
-#     if (split_status) {
-#       plot_df <- df_raw |>
-#         dplyr::filter(display_name %in% top_species)
-#     } else {
-#       plot_df <- df_for_top |>
-#         dplyr::filter(display_name %in% top_species)
-#     }
-#     
-#     plot_df <- plot_df |>
-#       tidyr::extract(
-#         display_name,
-#         into   = c("sci", "common"),
-#         regex  = "^(.*?)\\s*\\((.*?)\\)$",
-#         remove = FALSE
-#       ) |>
-#       dplyr::mutate(
-#         label = paste0("*", sci, "*<br>(", common, ")")
-#       )
-#     
-#     # Period order: focal period first
-#     plot_df$period <- factor(
-#       plot_df$period,
-#       levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
-#     )
-#     
-#     # Species order: descending for focal period
-#     species_order <- plot_df |>
-#       dplyr::filter(period == focal_period) |>
-#       dplyr::arrange(average) |>
-#       dplyr::pull(label) |>
-#       unique()
-#     
-#     plot_df$label <- factor(plot_df$label, levels = species_order)
-#     
-#     plot_df <- plot_df |>
-#       dplyr::arrange(label, period, dplyr::across(dplyr::any_of("status")))
-#     
-#     dodge <- position_dodge(width = 0.8)
-#     
-#     # ----- Aesthetics depending on split/facet -----
-#     
-#     if (split_status && !facet_status) {
-#       
-#       # 4-bar version: period + status combined
-#       plot_df <- plot_df |>
-#         dplyr::mutate(
-#           period_status = paste(period, status, sep = ": ")
-#         )
-#       
-#       # Optional: order legend nicely if you know the status levels
-#       plot_df$period_status <- factor(
-#         plot_df$period_status,
-#         levels = c(
-#           "Pre-bloom: No-take",
-#           "Pre-bloom: Fished",
-#           "Bloom: No-take",
-#           "Bloom: Fished"
-#         )
-#       )
-#       
-#       p <- ggplot(
-#         plot_df,
-#         aes(
-#           x    = average,
-#           y    = label,
-#           fill = period_status
-#         )
-#       ) +
-#         geom_col(position = dodge) +
-#         geom_errorbarh(
-#           aes(
-#             xmin = average - se,
-#             xmax = average + se
-#           ),
-#           position = dodge,
-#           height   = 0.3
-#         ) +
-#         labs(
-#           x     = "Average abundance per BRUV",
-#           y     = NULL,
-#           title = title_lab,
-#           fill  = NULL
-#         )
-#       
-#       # You can let ggplot choose colours or define them manually:
-#       # p <- p + scale_fill_manual(values = c(...))
-#       
-#     } else {
-#       # either not split at all, or split + facet (fill = period only)
-#       
-#       p <- ggplot(
-#         plot_df,
-#         aes(
-#           x    = average,
-#           y    = label,
-#           fill = period
-#         )
-#       ) +
-#         geom_col(position = dodge) +
-#         geom_errorbarh(
-#           aes(
-#             xmin = average - se,
-#             xmax = average + se
-#           ),
-#           position = dodge,
-#           height   = 0.3
-#         ) +
-#         labs(
-#           x     = "Average abundance per BRUV",
-#           y     = NULL,
-#           title = title_lab,
-#           fill  = NULL
-#         ) +
-#         scale_fill_manual(
-#           values = c("Pre-bloom" = "#0c3978", "Bloom" = "#f89f00")
-#         )
-#       
-# if (split_status && !facet_status) {
-#   
-#   # Combine period + status for the legend
-#   plot_df <- plot_df |>
-#     dplyr::mutate(
-#       period_status = paste(period, status, sep = ": ")
-#     )
-#   
-#   # Colour palette: original strong colours for No-take, alpha for Fished
-#   period_cols <- c(
-#     "Pre-bloom" = "#0c3978",
-#     "Bloom"     = "#f89f00"
-#   )
-#   
-#   status_alpha <- 0.45
-#   
-#   combo_cols <- c(
-#     "Pre-bloom: No-take" = period_cols["Pre-bloom"],
-#     "Pre-bloom: Fished"  = scales::alpha(period_cols["Pre-bloom"], status_alpha),
-#     "Bloom: No-take"     = period_cols["Bloom"],
-#     "Bloom: Fished"      = scales::alpha(period_cols["Bloom"], status_alpha)
-#   )
-#   
-#   p <- ggplot(
-#     plot_df,
-#     aes(x = average, y = label, fill = period_status)
-#   ) +
-#     geom_col(position = dodge) +
-#     geom_errorbarh(
-#       aes(
-#         xmin = average - se,
-#         xmax = average + se
-#       ),
-#       position = dodge,
-#       height   = 0.3
-#     ) +
-#     labs(
-#       x     = "Average abundance per BRUV",
-#       y     = NULL,
-#       title = title_lab,
-#       fill  = NULL
-#     ) +
-#     scale_fill_manual(values = combo_cols)
-# }
-# 
-#     }
-#     
-#     p +
-#       scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
-#       theme_classic() +
-#       theme(
-#         legend.position = "bottom",
-#         axis.text.y     = ggtext::element_markdown(size = 12)
-#       )
-#   }
-  
-  
-  # make_top10_plot <- function(region_name, 
-  #                             focal_period = c("Pre-bloom", "Bloom"),
-  #                             title_lab = "Common species",
-  #                             number_species,
-  #                             split_status = FALSE,
-  #                             facet_status = FALSE) {
-  #   
-  #   focal_period <- match.arg(focal_period)
-  #   split_status <- isTRUE(split_status)
-  #   facet_status <- isTRUE(facet_status)
-  #   
-  #   # Base colours (your existing theme)
-  #   period_cols <- c(
-  #     "Pre-bloom" = "#0c3978",
-  #     "Bloom"     = "#f89f00"
-  #   )
-  #   
-  #   # Data for this region
-  #   df_raw <- hab_data$region_top_species_average |>
-  #     dplyr::filter(region == region_name)
-  #   
-  #   # For choosing top species, collapse over status
-  #   df_for_top <- df_raw |>
-  #     dplyr::group_by(region, period, display_name) |>
-  #     dplyr::summarise(
-  #       average = mean(average, na.rm = TRUE),
-  #       se      = sqrt(sum(se^2, na.rm = TRUE)),  # rough pooled SE
-  #       .groups = "drop"
-  #     )
-  #   
-  #   # Top N species within the focal period
-  #   top_species <- df_for_top |>
-  #     dplyr::filter(period == focal_period) |>
-  #     dplyr::slice_max(order_by = average,
-  #                      n = number_species,
-  #                      with_ties = FALSE) |>
-  #     dplyr::pull(display_name)
-  #   
-  #   # Data for plotting: either split by status or averaged across status
-  #   if (split_status) {
-  #     plot_df <- df_raw |>
-  #       dplyr::filter(display_name %in% top_species)
-  #   } else {
-  #     plot_df <- df_for_top |>
-  #       dplyr::filter(display_name %in% top_species)
-  #   }
-  #   
-  #   # Extract sci/common and build markdown label
-  #   plot_df <- plot_df |>
-  #     tidyr::extract(
-  #       display_name,
-  #       into   = c("sci", "common"),
-  #       regex  = "^(.*?)\\s*\\((.*?)\\)$",
-  #       remove = FALSE
-  #     ) |>
-  #     dplyr::mutate(
-  #       label = paste0("*", sci, "*<br>(", common, ")")
-  #     )
-  #   
-  #   # Period order: focal period first
-  #   plot_df$period <- factor(
-  #     plot_df$period,
-  #     levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
-  #   )
-  #   
-  #   # Species order: smallest at bottom, biggest at top for focal period
-  #   species_order <- plot_df |>
-  #     dplyr::filter(period == focal_period) |>
-  #     dplyr::arrange(average) |>
-  #     dplyr::pull(label) |>
-  #     unique()
-  #   
-  #   plot_df$label <- factor(plot_df$label, levels = species_order)
-  #   
-  #   # Arrange rows so dodging is stable
-  #   plot_df <- plot_df |>
-  #     dplyr::arrange(label, period, dplyr::across(dplyr::any_of("status")))
-  #   
-  #   dodge <- position_dodge(width = 0.8)
-  #   
-  #   # -------------------------
-  #   #  A) split_status & no facet
-  #   # -------------------------
-  #   if (split_status && !facet_status) {
-  #     
-  #     # Build combined period:status variable
-  #     plot_df <- plot_df |>
-  #       dplyr::mutate(
-  #         period_status = paste(period, status, sep = ": ")
-  #       )
-  #     
-  #     # Optional: enforce legend order if you like
-  #     plot_df$period_status <- factor(
-  #       plot_df$period_status,
-  #       levels = c(
-  #         "Pre-bloom: No-take",
-  #         "Pre-bloom: Fished",
-  #         "Bloom: No-take",
-  #         "Bloom: Fished"
-  #       )
-  #     )
-  #     
-  #     # Alpha for Fished
-  #     status_alpha <- 0.45
-  #     
-  #     combo_cols <- c(
-  #       "Pre-bloom: No-take" = period_cols["Pre-bloom"],
-  #       "Pre-bloom: Fished"  = scales::alpha(period_cols["Pre-bloom"], status_alpha),
-  #       "Bloom: No-take"     = period_cols["Bloom"],
-  #       "Bloom: Fished"      = scales::alpha(period_cols["Bloom"], status_alpha)
-  #     )
-  #     
-  #     p <- ggplot(
-  #       plot_df,
-  #       aes(
-  #         x    = average,
-  #         y    = label,
-  #         fill = period_status
-  #       )
-  #     ) +
-  #       geom_col(position = dodge) +
-  #       geom_errorbarh(
-  #         aes(
-  #           xmin = average - se,
-  #           xmax = average + se
-  #         ),
-  #         position = dodge,
-  #         height   = 0.3
-  #       ) +
-  #       labs(
-  #         x     = "Average abundance per BRUV",
-  #         y     = NULL,
-  #         title = title_lab,
-  #         fill  = NULL
-  #       ) +
-  #       scale_fill_manual(values = combo_cols)
-  #     
-  #   } else {
-  #     # -------------------------
-  #     #  B) not split, or split + facet (fill = period only)
-  #     # -------------------------
-  #     
-  #     p <- ggplot(
-  #       plot_df,
-  #       aes(
-  #         x    = average,
-  #         y    = label,
-  #         fill = period
-  #       )
-  #     ) +
-  #       geom_col(position = dodge) +
-  #       geom_errorbarh(
-  #         aes(
-  #           xmin = average - se,
-  #           xmax = average + se
-  #         ),
-  #         position = dodge,
-  #         height   = 0.3
-  #       ) +
-  #       labs(
-  #         x     = "Average abundance per BRUV",
-  #         y     = NULL,
-  #         title = title_lab,
-  #         fill  = NULL
-  #       ) +
-  #       scale_fill_manual(
-  #         values = period_cols
-  #       )
-  #     
-  #     if (split_status && facet_status) {
-  #       p <- p + facet_wrap(~ status, nrow = 1)
-  #     }
-  #   }
-  #   
-  #   # Shared scales / theme
-  #   p +
-  #     scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
-  #     theme_classic() +
-  #     theme(
-  #       legend.position = "bottom",
-  #       axis.text.y     = ggtext::element_markdown(size = 12)
-  #     )
-  # }
   
   make_top10_plot <- function(region_name, 
                               focal_period = c("Pre-bloom", "Bloom"),
@@ -2905,107 +2641,6 @@ server <- function(input, output, session) {
     left_reactive  = reactive({ uvc_planned }),
     right_reactive = reactive({ uvc_completed })
   )
-  
-  # # 2) Does this region use BRUVS or ROV?
-  # has_bruvs <- reactive({
-  #   grepl("BRUVS", survey_region()$methods[[1]], ignore.case = TRUE)
-  # })
-  # 
-  # has_rov <- reactive({
-  #   grepl("ROV", survey_region()$methods[[1]], ignore.case = TRUE)
-  # })
-  # 
-  # 3) Planned/completed reactives
-  # sites_planned <- reactive({ survey_region()$planned_number_sites })
-  # sites_completed <- reactive({ survey_region()$complete_number_sites })
-  # 
-  # bruvs_planned <- reactive({
-  #   if (!has_bruvs()) return(0)
-  #   survey_region()$planned_number_drops
-  # })
-  # bruvs_completed <- reactive({
-  #   if (!has_bruvs()) return(0)
-  #   survey_region()$complete_number_drops
-  # })
-  # 
-  # rov_planned <- reactive({
-  #   if (!has_rov()) return(0)
-  #   survey_region()$planned_number_transects
-  # })
-  # rov_completed <- reactive({
-  #   if (!has_rov()) return(0)
-  #   survey_region()$complete_number_transects
-  # })
-  
-  # 4) twoValueBoxServer(...) for each
-  # twoValueBoxServer("sites_progress",  left_reactive = sites_planned,  right_reactive = sites_completed)
-  # twoValueBoxServer("bruvs_progress",  left_reactive = bruvs_planned, right_reactive = bruvs_completed)
-  # twoValueBoxServer("rov_progress",    left_reactive = rov_planned,   right_reactive = rov_completed)
-  
-  # # 5) Unified layout for all boxes
-  # # ---- Single layout for all progress value boxes --------------------------
-  # output$survey_value_boxes <- renderUI({
-  #   df  <- survey_region()
-  #   pct <- df$percent_sites_completed
-  #   vb_col <- completion_theme(pct)
-  #   
-  #   has_rov_val <- has_rov()
-  #   
-  #   sites_box <- twoValueBoxUI(
-  #     id          = "sites_progress",
-  #     title       = "Sites",
-  #     left_label  = "Planned",
-  #     right_label = "Completed",
-  #     icon        = icon("magnifying-glass", class = "fa-xl"),
-  #     theme_color = "secondary"
-  #   )
-  #   
-  #   bruvs_box <- twoValueBoxUI(
-  #     id          = "bruvs_progress",
-  #     title       = "BRUVS deployments",
-  #     left_label  = "Planned",
-  #     right_label = "Completed",
-  #     icon        = icon("ship", class = "fa-xl"),
-  #     theme_color = "secondary"
-  #   )
-  #   
-  #   pct_box <- value_box(
-  #     title       = "Locations completed",
-  #     value       = sprintf("%.1f%%", pct),
-  #     subtitle    = df$methods[[1]],
-  #     theme_color = vb_col,
-  #     showcase    = icon("percent", class = "fa-xl")
-  #   )
-  #   
-  #   if (has_rov_val) {
-  #     # 4 boxes → 2 per row (width = 1/2)
-  #     rov_box <- twoValueBoxUI(
-  #       id          = "rov_progress",
-  #       title       = "ROV transects",
-  #       left_label  = "Planned",
-  #       right_label = "Completed",
-  #       icon        = icon("video", class = "fa-xl"),
-  #       theme_color = "secondary"
-  #     )
-  #     
-  #     layout_column_wrap(
-  #       width = 1/2,
-  #       sites_box,
-  #       bruvs_box,
-  #       rov_box,
-  #       pct_box
-  #     )
-  #     
-  #   } else {
-  #     # 3 boxes → 3 on one row (width = 1/3)
-  #     layout_column_wrap(
-  #       width = 1/3,
-  #       sites_box,
-  #       bruvs_box,
-  #       pct_box
-  #     )
-  #   }
-  # })
   
   # ===== EXPLORE A MARINE PARK ==============================================
   

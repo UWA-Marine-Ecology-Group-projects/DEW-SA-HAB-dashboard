@@ -722,3 +722,10 @@ spinnerUiOutput <- function(outputId, ...) {
   )
 }
 
+diet_cols <- c(
+  "Carnivore"    = "#e02b35",  # vermillion (clean red-orange)
+  "Herbivore"    = "#59a89c",  # bluish green
+  "Omnivore"     = "#f0c571",  # warm grey / taupe
+  "Planktivore"  = "#082a54",  # deep blue
+  "Diet missing" = "#cecece"   # neutral grey
+)

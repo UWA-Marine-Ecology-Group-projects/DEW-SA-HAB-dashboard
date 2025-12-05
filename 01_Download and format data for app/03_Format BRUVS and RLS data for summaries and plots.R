@@ -394,6 +394,107 @@ region_top_species_average <- combined_count %>%
     display_name = paste0(genus, " ", species, " (", common_name, ")")
   )
 
+trophic_groups_samples <- combined_count %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::mutate(genus = dplyr::if_else(genus %in% "Unknown", family, genus)) %>%
+  # keep region/period/status here so we don't have to join later
+  dplyr::select(
+    campaignid, sample, region, period, status,
+    genus, species, genus_species, count
+  ) %>%
+  tidyr::complete(
+    tidyr::nesting(campaignid, sample, region, period, status),
+    tidyr::nesting(genus, species, genus_species)
+  ) %>%
+  dplyr::filter(!is.na(species)) %>%
+  tidyr::replace_na(list(count = 0)) %>%
+  dplyr::left_join(dew_species) %>%
+  dplyr::mutate(diet = if_else(diet %in% c("NA", NA), "Diet missing", diet)) %>%
+  dplyr::group_by(campaignid, sample, region, period, status, diet) %>%
+  dplyr::summarise(n_individuals_sample = sum(count))
+  
+nrow(combined_metadata %>% filter(method %in% "BRUVs")) * 5
+
+trophic_groups_summary <- trophic_groups_samples %>%
+  dplyr::group_by(region, period, diet) %>%
+  dplyr::summarise(
+    mean = mean(n_individuals_sample, na.rm = TRUE),
+    se   = sd(n_individuals_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(n_individuals_sample))),
+    num = n(),
+    .groups = "drop"
+  )
+
+# Calculate Impacts for Trophic Group abundance ----
+trophic_groups_impacts <- trophic_groups_summary %>%
+  dplyr::select(-se, -num) %>%
+  tidyr::complete(region, period, diet) %>%
+  tidyr::pivot_wider(names_from = period, values_from = mean) %>%
+  clean_names() %>%
+  dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
+  dplyr::mutate(impact = case_when(
+    percentage > 80 ~ "Low",
+    percentage > 50 & percentage < 80 ~ "Medium",
+    percentage < 50 ~ "High",
+    .default = "Surveys incomplete"
+  )) %>%
+  mutate(impact_metric = "trophic_group")
+
+# Trophic group species richness
+trophic_groups_richness_samples <- combined_count %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::mutate(genus = dplyr::if_else(genus %in% "Unknown", family, genus)) %>%
+  dplyr::select(
+    campaignid, sample, region, period, status,
+    genus, species, genus_species, count
+  ) %>%
+  dplyr::filter(!is.na(species)) %>%
+  tidyr::replace_na(list(count = 0)) %>%
+  dplyr::left_join(dew_species) %>%
+  dplyr::mutate(diet = if_else(diet %in% c("NA", NA), "Diet missing", diet)) %>%
+  dplyr::group_by(campaignid, sample, region, period, status, diet) %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::distinct(genus, species) %>% # removed family due to inconsistencies
+  dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
+  ungroup() %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::select(
+    campaignid, sample, region, period, status,
+    diet, n_species_sample
+  ) %>%
+  tidyr::complete(
+    tidyr::nesting(campaignid, sample, region, period, status),
+    tidyr::nesting(diet)
+  ) %>%
+  dplyr::filter(!is.na(diet)) %>%
+  tidyr::replace_na(list(n_species_sample = 0))
+
+nrow(combined_metadata %>% filter(method %in% "BRUVs")) * 5
+
+trophic_groups_richness_summary <- trophic_groups_richness_samples %>%
+  dplyr::group_by(region, period, diet) %>%
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(n_species_sample))),
+    num = n(),
+    .groups = "drop"
+  )
+
+trophic_groups_richness_summary_status <- trophic_groups_richness_samples %>%
+  dplyr::group_by(region, period, status, diet) %>%
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(n_species_sample))),
+    num = n(),
+    .groups = "drop"
+  )
+
+
 # store as before
 # hab_data$region_top_species_average <- region_top_species_average
 
@@ -622,7 +723,9 @@ impact_data <- bind_rows(species_richness_impacts,
                          total_abundance_impacts,
                          shark_ray_richness_impacts,
                          reef_associated_richness_impacts,
-                         fish_200_abundance_impacts)
+                         fish_200_abundance_impacts#,
+                         #trophic_groups_impacts
+                         )
 
 overall_impact <- impact_data %>%
   group_by(region) %>%
@@ -691,7 +794,16 @@ hab_data <- structure(
     reef_associated_richness_summary = reef_associated_richness_summary,
     
     fish_200_abundance_samples = fish_200_abundance_samples,
-    fish_200_abundance_summary = fish_200_abundance_summary
+    fish_200_abundance_summary = fish_200_abundance_summary,
+    
+    trophic_groups_summary = trophic_groups_summary,
+    trophic_groups_samples = trophic_groups_samples,
+    
+    trophic_groups_richness_summary = trophic_groups_richness_summary,
+    trophic_groups_richness_samples = trophic_groups_richness_samples,
+    
+    trophic_groups_richness_summary_status = trophic_groups_richness_summary_status
+    
   ), class = "data")
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))
