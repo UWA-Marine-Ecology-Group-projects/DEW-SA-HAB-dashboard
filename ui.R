@@ -246,22 +246,26 @@ ui <- page_navbar(
              full_screen = TRUE,
              
              layout_sidebar(
-               sidebar =     
-                 
-                 div(
-                   h6(strong("Plot inputs:")),
-                   # br(),
-                   numericInput( 
-                     "region_number_species", 
-                     "Choose number of species to plot", 
-                     value = 10, 
-                     min = 1, 
-                     max = 20 
-                   ),
-                   checkboxInput("region_species_status",
-                                 "Include status",
-                                 FALSE)
+               sidebar = div(
+                 h6(strong("Plot inputs:")),
+                 numericInput( 
+                   "region_number_species", 
+                   "Choose number of species to plot", 
+                   value = 10, 
+                   min   = 1, 
+                   max   = 20 
                  ),
+                 checkboxInput(
+                   "region_species_status",
+                   "Show status (Fished vs No-take)",
+                   FALSE
+                 ),
+                 checkboxInput(
+                   "region_species_facet",
+                   "Facet by status",
+                   FALSE
+                 )
+               ),
                
                layout_columns(
                  col_widths = c(6, 6),

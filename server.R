@@ -1558,97 +1558,661 @@ server <- function(input, output, session) {
     )
   })
   
+#   make_top10_plot <- function(region_name, 
+#                               focal_period = c("Pre-bloom", "Bloom"),
+#                               title_lab = "Common species",
+#                               number_species,
+#                               split_status = FALSE,
+#                               facet_status = FALSE) {
+#     
+#     focal_period  <- match.arg(focal_period)
+#     split_status  <- isTRUE(split_status)
+#     facet_status  <- isTRUE(facet_status)
+#     
+#     df_raw <- hab_data$region_top_species_average |>
+#       dplyr::filter(region == region_name)
+#     
+#     # For choosing the top species, always collapse over status
+#     df_for_top <- df_raw |>
+#       dplyr::group_by(region, period, display_name) |>
+#       dplyr::summarise(
+#         average = mean(average, na.rm = TRUE),     # status-averaged
+#         se      = sqrt(sum(se^2, na.rm = TRUE)),   # rough pooled SE
+#         .groups = "drop"
+#       )
+#     
+#     # Identify top N species within the focal period only
+#     top_species <- df_for_top |>
+#       dplyr::filter(period == focal_period) |>
+#       dplyr::slice_max(order_by = average,
+#                        n = number_species,
+#                        with_ties = FALSE) |>
+#       dplyr::pull(display_name)
+#     
+#     # Data for plotting: either collapsed over status or full split
+#     if (split_status) {
+#       plot_df <- df_raw |>
+#         dplyr::filter(display_name %in% top_species)
+#     } else {
+#       plot_df <- df_for_top |>
+#         dplyr::filter(display_name %in% top_species)
+#     }
+#     
+#     plot_df <- plot_df |>
+#       tidyr::extract(
+#         display_name,
+#         into   = c("sci", "common"),
+#         regex  = "^(.*?)\\s*\\((.*?)\\)$",
+#         remove = FALSE
+#       ) |>
+#       dplyr::mutate(
+#         label = paste0("*", sci, "*<br>(", common, ")")
+#       )
+#     
+#     # Period order: focal period first
+#     plot_df$period <- factor(
+#       plot_df$period,
+#       levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
+#     )
+#     
+#     # Species order: descending for focal period
+#     species_order <- plot_df |>
+#       dplyr::filter(period == focal_period) |>
+#       dplyr::arrange(average) |>
+#       dplyr::pull(label) |>
+#       unique()
+#     
+#     plot_df$label <- factor(plot_df$label, levels = species_order)
+#     
+#     plot_df <- plot_df |>
+#       dplyr::arrange(label, period, dplyr::across(dplyr::any_of("status")))
+#     
+#     dodge <- position_dodge(width = 0.8)
+#     
+#     # ----- Aesthetics depending on split/facet -----
+#     
+#     if (split_status && !facet_status) {
+#       
+#       # 4-bar version: period + status combined
+#       plot_df <- plot_df |>
+#         dplyr::mutate(
+#           period_status = paste(period, status, sep = ": ")
+#         )
+#       
+#       # Optional: order legend nicely if you know the status levels
+#       plot_df$period_status <- factor(
+#         plot_df$period_status,
+#         levels = c(
+#           "Pre-bloom: No-take",
+#           "Pre-bloom: Fished",
+#           "Bloom: No-take",
+#           "Bloom: Fished"
+#         )
+#       )
+#       
+#       p <- ggplot(
+#         plot_df,
+#         aes(
+#           x    = average,
+#           y    = label,
+#           fill = period_status
+#         )
+#       ) +
+#         geom_col(position = dodge) +
+#         geom_errorbarh(
+#           aes(
+#             xmin = average - se,
+#             xmax = average + se
+#           ),
+#           position = dodge,
+#           height   = 0.3
+#         ) +
+#         labs(
+#           x     = "Average abundance per BRUV",
+#           y     = NULL,
+#           title = title_lab,
+#           fill  = NULL
+#         )
+#       
+#       # You can let ggplot choose colours or define them manually:
+#       # p <- p + scale_fill_manual(values = c(...))
+#       
+#     } else {
+#       # either not split at all, or split + facet (fill = period only)
+#       
+#       p <- ggplot(
+#         plot_df,
+#         aes(
+#           x    = average,
+#           y    = label,
+#           fill = period
+#         )
+#       ) +
+#         geom_col(position = dodge) +
+#         geom_errorbarh(
+#           aes(
+#             xmin = average - se,
+#             xmax = average + se
+#           ),
+#           position = dodge,
+#           height   = 0.3
+#         ) +
+#         labs(
+#           x     = "Average abundance per BRUV",
+#           y     = NULL,
+#           title = title_lab,
+#           fill  = NULL
+#         ) +
+#         scale_fill_manual(
+#           values = c("Pre-bloom" = "#0c3978", "Bloom" = "#f89f00")
+#         )
+#       
+# if (split_status && !facet_status) {
+#   
+#   # Combine period + status for the legend
+#   plot_df <- plot_df |>
+#     dplyr::mutate(
+#       period_status = paste(period, status, sep = ": ")
+#     )
+#   
+#   # Colour palette: original strong colours for No-take, alpha for Fished
+#   period_cols <- c(
+#     "Pre-bloom" = "#0c3978",
+#     "Bloom"     = "#f89f00"
+#   )
+#   
+#   status_alpha <- 0.45
+#   
+#   combo_cols <- c(
+#     "Pre-bloom: No-take" = period_cols["Pre-bloom"],
+#     "Pre-bloom: Fished"  = scales::alpha(period_cols["Pre-bloom"], status_alpha),
+#     "Bloom: No-take"     = period_cols["Bloom"],
+#     "Bloom: Fished"      = scales::alpha(period_cols["Bloom"], status_alpha)
+#   )
+#   
+#   p <- ggplot(
+#     plot_df,
+#     aes(x = average, y = label, fill = period_status)
+#   ) +
+#     geom_col(position = dodge) +
+#     geom_errorbarh(
+#       aes(
+#         xmin = average - se,
+#         xmax = average + se
+#       ),
+#       position = dodge,
+#       height   = 0.3
+#     ) +
+#     labs(
+#       x     = "Average abundance per BRUV",
+#       y     = NULL,
+#       title = title_lab,
+#       fill  = NULL
+#     ) +
+#     scale_fill_manual(values = combo_cols)
+# }
+# 
+#     }
+#     
+#     p +
+#       scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
+#       theme_classic() +
+#       theme(
+#         legend.position = "bottom",
+#         axis.text.y     = ggtext::element_markdown(size = 12)
+#       )
+#   }
+  
+  
+  # make_top10_plot <- function(region_name, 
+  #                             focal_period = c("Pre-bloom", "Bloom"),
+  #                             title_lab = "Common species",
+  #                             number_species,
+  #                             split_status = FALSE,
+  #                             facet_status = FALSE) {
+  #   
+  #   focal_period <- match.arg(focal_period)
+  #   split_status <- isTRUE(split_status)
+  #   facet_status <- isTRUE(facet_status)
+  #   
+  #   # Base colours (your existing theme)
+  #   period_cols <- c(
+  #     "Pre-bloom" = "#0c3978",
+  #     "Bloom"     = "#f89f00"
+  #   )
+  #   
+  #   # Data for this region
+  #   df_raw <- hab_data$region_top_species_average |>
+  #     dplyr::filter(region == region_name)
+  #   
+  #   # For choosing top species, collapse over status
+  #   df_for_top <- df_raw |>
+  #     dplyr::group_by(region, period, display_name) |>
+  #     dplyr::summarise(
+  #       average = mean(average, na.rm = TRUE),
+  #       se      = sqrt(sum(se^2, na.rm = TRUE)),  # rough pooled SE
+  #       .groups = "drop"
+  #     )
+  #   
+  #   # Top N species within the focal period
+  #   top_species <- df_for_top |>
+  #     dplyr::filter(period == focal_period) |>
+  #     dplyr::slice_max(order_by = average,
+  #                      n = number_species,
+  #                      with_ties = FALSE) |>
+  #     dplyr::pull(display_name)
+  #   
+  #   # Data for plotting: either split by status or averaged across status
+  #   if (split_status) {
+  #     plot_df <- df_raw |>
+  #       dplyr::filter(display_name %in% top_species)
+  #   } else {
+  #     plot_df <- df_for_top |>
+  #       dplyr::filter(display_name %in% top_species)
+  #   }
+  #   
+  #   # Extract sci/common and build markdown label
+  #   plot_df <- plot_df |>
+  #     tidyr::extract(
+  #       display_name,
+  #       into   = c("sci", "common"),
+  #       regex  = "^(.*?)\\s*\\((.*?)\\)$",
+  #       remove = FALSE
+  #     ) |>
+  #     dplyr::mutate(
+  #       label = paste0("*", sci, "*<br>(", common, ")")
+  #     )
+  #   
+  #   # Period order: focal period first
+  #   plot_df$period <- factor(
+  #     plot_df$period,
+  #     levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
+  #   )
+  #   
+  #   # Species order: smallest at bottom, biggest at top for focal period
+  #   species_order <- plot_df |>
+  #     dplyr::filter(period == focal_period) |>
+  #     dplyr::arrange(average) |>
+  #     dplyr::pull(label) |>
+  #     unique()
+  #   
+  #   plot_df$label <- factor(plot_df$label, levels = species_order)
+  #   
+  #   # Arrange rows so dodging is stable
+  #   plot_df <- plot_df |>
+  #     dplyr::arrange(label, period, dplyr::across(dplyr::any_of("status")))
+  #   
+  #   dodge <- position_dodge(width = 0.8)
+  #   
+  #   # -------------------------
+  #   #  A) split_status & no facet
+  #   # -------------------------
+  #   if (split_status && !facet_status) {
+  #     
+  #     # Build combined period:status variable
+  #     plot_df <- plot_df |>
+  #       dplyr::mutate(
+  #         period_status = paste(period, status, sep = ": ")
+  #       )
+  #     
+  #     # Optional: enforce legend order if you like
+  #     plot_df$period_status <- factor(
+  #       plot_df$period_status,
+  #       levels = c(
+  #         "Pre-bloom: No-take",
+  #         "Pre-bloom: Fished",
+  #         "Bloom: No-take",
+  #         "Bloom: Fished"
+  #       )
+  #     )
+  #     
+  #     # Alpha for Fished
+  #     status_alpha <- 0.45
+  #     
+  #     combo_cols <- c(
+  #       "Pre-bloom: No-take" = period_cols["Pre-bloom"],
+  #       "Pre-bloom: Fished"  = scales::alpha(period_cols["Pre-bloom"], status_alpha),
+  #       "Bloom: No-take"     = period_cols["Bloom"],
+  #       "Bloom: Fished"      = scales::alpha(period_cols["Bloom"], status_alpha)
+  #     )
+  #     
+  #     p <- ggplot(
+  #       plot_df,
+  #       aes(
+  #         x    = average,
+  #         y    = label,
+  #         fill = period_status
+  #       )
+  #     ) +
+  #       geom_col(position = dodge) +
+  #       geom_errorbarh(
+  #         aes(
+  #           xmin = average - se,
+  #           xmax = average + se
+  #         ),
+  #         position = dodge,
+  #         height   = 0.3
+  #       ) +
+  #       labs(
+  #         x     = "Average abundance per BRUV",
+  #         y     = NULL,
+  #         title = title_lab,
+  #         fill  = NULL
+  #       ) +
+  #       scale_fill_manual(values = combo_cols)
+  #     
+  #   } else {
+  #     # -------------------------
+  #     #  B) not split, or split + facet (fill = period only)
+  #     # -------------------------
+  #     
+  #     p <- ggplot(
+  #       plot_df,
+  #       aes(
+  #         x    = average,
+  #         y    = label,
+  #         fill = period
+  #       )
+  #     ) +
+  #       geom_col(position = dodge) +
+  #       geom_errorbarh(
+  #         aes(
+  #           xmin = average - se,
+  #           xmax = average + se
+  #         ),
+  #         position = dodge,
+  #         height   = 0.3
+  #       ) +
+  #       labs(
+  #         x     = "Average abundance per BRUV",
+  #         y     = NULL,
+  #         title = title_lab,
+  #         fill  = NULL
+  #       ) +
+  #       scale_fill_manual(
+  #         values = period_cols
+  #       )
+  #     
+  #     if (split_status && facet_status) {
+  #       p <- p + facet_wrap(~ status, nrow = 1)
+  #     }
+  #   }
+  #   
+  #   # Shared scales / theme
+  #   p +
+  #     scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
+  #     theme_classic() +
+  #     theme(
+  #       legend.position = "bottom",
+  #       axis.text.y     = ggtext::element_markdown(size = 12)
+  #     )
+  # }
+  
   make_top10_plot <- function(region_name, 
                               focal_period = c("Pre-bloom", "Bloom"),
                               title_lab = "Common species",
-                              number_species) {
+                              number_species,
+                              split_status = FALSE,
+                              facet_status = FALSE) {
     
     focal_period <- match.arg(focal_period)
+    split_status <- isTRUE(split_status)
+    facet_status <- isTRUE(facet_status)
     
-    df <- hab_data$region_top_species_average |>
+    # Base colours (your existing theme)
+    period_cols <- c(
+      "Pre-bloom" = "#0c3978",
+      "Bloom"     = "#f89f00"
+    )
+    
+    # ---- Data prep ----
+    df_raw <- hab_data$region_top_species_average |>
       dplyr::filter(region == region_name)
     
-    # Identify top N species *within the focal period only*
-    top_species <- df |>
+    # Tidy spaces in status if present
+    if ("status" %in% names(df_raw)) {
+      df_raw$status <- trimws(df_raw$status)
+    }
+    
+    # For choosing top species, collapse over status
+    df_for_top <- df_raw |>
+      dplyr::group_by(region, period, display_name) |>
+      dplyr::summarise(
+        average = mean(average, na.rm = TRUE),
+        se      = sqrt(sum(se^2, na.rm = TRUE)),  # rough pooled SE
+        .groups = "drop"
+      )
+    
+    # Top N species within the focal period
+    top_species <- df_for_top |>
       dplyr::filter(period == focal_period) |>
-      dplyr::slice_max(order_by = average, n = number_species, with_ties = FALSE) |>
+      dplyr::slice_max(order_by = average,
+                       n = number_species,
+                       with_ties = FALSE) |>
       dplyr::pull(display_name)
     
-    # Only those species, but showing both pre/post
-    plot_df <- df |>
-      dplyr::filter(display_name %in% top_species) |>
-      tidyr::extract(display_name, into = c("sci", "common"),
-                     regex = "^(.*?)\\s*\\((.*?)\\)$", remove = FALSE) |>
+    # Data for plotting: either split by status or averaged across status
+    if (split_status) {
+      plot_df <- df_raw |>
+        dplyr::filter(display_name %in% top_species)
+    } else {
+      plot_df <- df_for_top |>
+        dplyr::filter(display_name %in% top_species)
+    }
+    
+    # Extract sci/common and build markdown label
+    plot_df <- plot_df |>
+      tidyr::extract(
+        display_name,
+        into   = c("sci", "common"),
+        regex  = "^(.*?)\\s*\\((.*?)\\)$",
+        remove = FALSE
+      ) |>
       dplyr::mutate(
         label = paste0("*", sci, "*<br>(", common, ")")
       )
     
-    # 1. Period order: focal period FIRST in dodge (nearest axis)
+    # Period order: focal period first
     plot_df$period <- factor(
       plot_df$period,
-      levels = c(focal_period, setdiff(c("Pre-bloom","Bloom"), focal_period))
+      levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
     )
     
-    # 2. Species order: descending average for focal period (biggest at top)
+    # Species order: smallest at bottom, biggest at top for focal period
     species_order <- plot_df |>
       dplyr::filter(period == focal_period) |>
       dplyr::arrange(average) |>
-      dplyr::pull(label) %>%
-      glimpse()
+      dplyr::pull(label) |>
+      unique()
     
     plot_df$label <- factor(plot_df$label, levels = species_order)
     
-    # 3. Arrange rows so dodge respects period order
+    # Arrange rows so dodging is stable
     plot_df <- plot_df |>
-      dplyr::arrange(label, period)
+      dplyr::arrange(label, period, dplyr::across(dplyr::any_of("status")))
     
-    # Use a shared dodge for bars + error bars
-    # dodge <- position_dodge2(reverse = TRUE, preserve = "single")
     dodge <- position_dodge(width = 0.8)
     
-    ggplot(
-      plot_df,
-      aes(x = average,
-          y = label,
-          fill = period,
-          group = period)     # <-- add group here
-    ) +
-      geom_col(position = dodge) +
-      geom_errorbarh(
-        aes(xmin = average - se,
-            xmax = average + se),
-        position = dodge,
-        height = 0.3
+    # ============================
+    #  A) split_status & no facet
+    # ============================
+    if (split_status && !facet_status) {
+      
+      # Build combined period:status variable
+      plot_df <- plot_df |>
+        dplyr::mutate(
+          period_status = interaction(period, status, sep = ": ", drop = TRUE)
+        )
+      
+      plot_df$period_status <- droplevels(plot_df$period_status)
+      
+      # Build palette dynamically from the actual levels
+      status_alpha <- 0.45
+      ps_levels    <- levels(plot_df$period_status)
+      
+      combo_cols_vec <- sapply(ps_levels, function(ps) {
+        # split "Pre-bloom: Fished" into c("Pre-bloom", "Fished")
+        parts <- strsplit(ps, ": ", fixed = TRUE)[[1]]
+        per   <- parts[1]
+        stat  <- ifelse(length(parts) > 1, parts[2], NA_character_)
+        base_col <- unname(period_cols[per])
+        if (!is.na(stat) && stat == "Fished") {
+          scales::alpha(base_col, status_alpha)
+        } else {
+          base_col
+        }
+      })
+      
+      combo_cols <- setNames(combo_cols_vec, ps_levels)
+      
+      p <- ggplot(
+        plot_df,
+        aes(
+          x    = average,
+          y    = label,
+          fill = period_status
+        )
       ) +
-      labs(
-        x = "Average abundance per BRUV",
-        y = NULL,
-        title = title_lab
-      ) +
-      scale_fill_manual(values = c("Pre-bloom" = "#0c3978", "Bloom" = "#f89f00")) +
+        geom_col(position = dodge) +
+        geom_errorbarh(
+          aes(
+            xmin = average - se,
+            xmax = average + se
+          ),
+          position = dodge,
+          height   = 0.3
+        ) +
+        labs(
+          x     = "Average abundance per BRUV",
+          y     = NULL,
+          title = title_lab,
+          fill  = NULL
+        ) +
+        scale_fill_manual(values = combo_cols)
+      
+    } else {
+      # =======================================
+      #  B) non-split OR split + facet
+      # =======================================
+      
+      if (split_status && facet_status) {
+        # Build period_status for colour mapping
+        plot_df <- plot_df |>
+          dplyr::mutate(
+            period_status = interaction(period, status, sep = ": ", drop = TRUE)
+          )
+        
+        plot_df$period_status <- droplevels(plot_df$period_status)
+        
+        status_alpha <- 0.45
+        ps_levels    <- levels(plot_df$period_status)
+        
+        combo_cols_vec <- sapply(ps_levels, function(ps) {
+          parts <- strsplit(ps, ": ", fixed = TRUE)[[1]]
+          per   <- parts[1]
+          stat  <- ifelse(length(parts) > 1, parts[2], NA_character_)
+          base_col <- unname(period_cols[per])
+          if (!is.na(stat) && stat == "Fished") {
+            scales::alpha(base_col, status_alpha)
+          } else {
+            base_col
+          }
+        })
+        
+        combo_cols <- setNames(combo_cols_vec, ps_levels)
+        
+        p <- ggplot(
+          plot_df,
+          aes(
+            x    = average,
+            y    = label,
+            fill = period_status
+          )
+        ) +
+          geom_col(position = dodge) +
+          geom_errorbarh(
+            aes(
+              xmin = average - se,
+              xmax = average + se
+            ),
+            position = dodge,
+            height   = 0.3
+          ) +
+          facet_wrap(~ status, nrow = 1) +
+          labs(
+            x     = "Average abundance per BRUV",
+            y     = NULL,
+            title = title_lab,
+            fill  = NULL
+          ) +
+          scale_fill_manual(values = combo_cols)
+        
+      } else {
+        # NOT split, NOT facet → original 2-colour period-only plot
+        
+        p <- ggplot(
+          plot_df,
+          aes(
+            x    = average,
+            y    = label,
+            fill = period
+          )
+        ) +
+          geom_col(position = dodge) +
+          geom_errorbarh(
+            aes(
+              xmin = average - se,
+              xmax = average + se
+            ),
+            position = dodge,
+            height   = 0.3
+          ) +
+          labs(
+            x     = "Average abundance per BRUV",
+            y     = NULL,
+            title = title_lab,
+            fill  = NULL
+          ) +
+          scale_fill_manual(values = period_cols)
+      }
+    }
+    
+    # Shared scales / theme
+    p +
       scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
       theme_classic() +
       theme(
         legend.position = "bottom",
-        axis.text.y = ggtext::element_markdown(size = 12)
+        axis.text.y     = ggtext::element_markdown(size = 12)
       )
   }
   
+  
+
   output$region_common_pre <- renderPlot({
     req(input$region)
-    make_top10_plot(input$region,
-                    focal_period = "Pre-bloom",
-                    title_lab = "Most common species pre-bloom",
-                    number_species = input$region_number_species)
+    make_top10_plot(
+      region_name    = input$region,
+      focal_period   = "Pre-bloom",
+      title_lab      = "Most common species pre-bloom",
+      number_species = input$region_number_species,
+      split_status   = input$region_species_status,
+      facet_status   = input$region_species_facet
+    )
   })
   
   output$region_common_post <- renderPlot({
     req(input$region)
-    make_top10_plot(input$region,
-                    focal_period = "Bloom",
-                    title_lab = "Most common species post-bloom",
-                    number_species = input$region_number_species)
+    make_top10_plot(
+      region_name    = input$region,
+      focal_period   = "Bloom",
+      title_lab      = "Most common species post-bloom",
+      number_species = input$region_number_species,
+      split_status   = input$region_species_status,
+      facet_status   = input$region_species_facet
+    )
   })
+  
   
   # ---- Survey progress: filtered to selected reporting region --------------
   
