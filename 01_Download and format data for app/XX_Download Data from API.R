@@ -1,3 +1,8 @@
+library(httr)
+library(CheckEM)
+library(dplyr)
+library(stringr)
+
 # Set your API token to access GlobalArchive data shared with you ----
 # It is extremely important that you keep your API token out of your scripts, and github repository!
 # This function will ask you to put your API token in the console
@@ -10,10 +15,10 @@ token <- readRDS("secrets/api_token.RDS")
 
 # # Load the metadata, count and length ----
 # # This way does not include the zeros where a species isn't present - it returns a much smaller dataframe
-# CheckEM::ga_api_all_data(synthesis_id = "19",
-#                          token = token,
-#                          dir = "data/raw/",
-#                          include_zeros = FALSE)
+CheckEM::ga_api_all_data(synthesis_id = "19",
+                         token = token,
+                         dir = "data/raw/",
+                         include_zeros = FALSE)
 
 # The campaigns we care about are:
 campaign_list <- c("2015-16_SA_MPA_UpperGSV_StereoBRUVS",
