@@ -3065,16 +3065,16 @@ server <- function(input, output, session) {
     make_impact_gauges_location(input$location)
   })
   
-  hab_metric_change_location <- impact_data_location %>%
-    dplyr::transmute(
-      reporting_name,
-      impact_metric,
-      percentage_change = dplyr::case_when(
-        is.na(percentage) ~ "Surveys incomplete",
-        TRUE ~ as.character(round(percentage - 100, 1))  # e.g. +20 means 120% of pre
-      )
-    )
-  
+  # hab_metric_change_location <- hab_data$impact_data_location %>%
+  #   dplyr::transmute(
+  #     reporting_name,
+  #     impact_metric,
+  #     percentage_change = dplyr::case_when(
+  #       is.na(percentage) ~ "Surveys incomplete",
+  #       TRUE ~ as.character(round(percentage - 100, 1))  # e.g. +20 means 120% of pre
+  #     )
+  #   )
+  # 
   output$location_change_table <- renderUI({
     req(input$location)
     

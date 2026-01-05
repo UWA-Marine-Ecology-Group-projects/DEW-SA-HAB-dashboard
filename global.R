@@ -250,21 +250,21 @@ hab_regions <- sort(unique(hab_data$regions_summaries$region))
 # Deterministic dummy % change data for each region x metric
 set.seed(2025)
 
-
-hab_metric_change <- tidyr::expand_grid(
-  region = hab_regions,
-  metric = hab_metrics
-) |>
-  dplyr::mutate(
-    # negative = decline, positive = increase
-    inside_change  = round(runif(dplyr::n(), -70, -10)), # -70% … -10%
-    outside_change = round(runif(dplyr::n(), -70, -10)),
-  ) |>
-  dplyr::mutate(
-    overall_change = round((inside_change + outside_change) / 2)
-  )
-
 hab_metric_change <- hab_data$impact_data %>%
+  mutate(
+    percentage = (bloom / pre_bloom) * 100,
+    percentage_change = (bloom - pre_bloom) / pre_bloom * 100
+  ) %>%
+  dplyr::mutate(percentage_change = if_else(is.na(percentage_change), "Surveys incomplete", as.character(percentage_change))) %>%
+  dplyr::mutate(impact_metric = case_when(
+    impact_metric %in% "species_richness" ~ "Species richness",
+    impact_metric %in% "total_abundance" ~ "Total abundance",
+    impact_metric %in% "shark_ray_richness" ~ "Shark and ray richness",
+    impact_metric %in% "reef_associated_richness" ~ "Reef associated species richness",
+    impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance"
+  ))
+
+hab_metric_change_location <- hab_data$impact_data_location %>%
   mutate(
     percentage = (bloom / pre_bloom) * 100,
     percentage_change = (bloom - pre_bloom) / pre_bloom * 100
@@ -352,46 +352,46 @@ mp_metric_change <- tidyr::expand_grid(
 ## --- Common species per park (pre/post) -------------------------------------
 
 # Reuse the species list you already defined: hab_species, global_common_species
-
-mp_base_abund <- tidyr::expand_grid(
-  park    = marine_parks,
-  species = hab_species
-) |>
-  dplyr::mutate(
-    base_lambda = ifelse(
-      species %in% global_common_species,
-      runif(dplyr::n(), 30, 80),
-      runif(dplyr::n(), 2, 20)
-    )
-  )
-
-# Pre-bloom counts
-pre_mp <- mp_base_abund |>
-  dplyr::transmute(
-    park,
-    species,
-    period = "Pre-bloom",
-    count  = rpois(dplyr::n(), lambda = base_lambda)
-  )
-
-# Post-bloom counts with park-specific severity
-severity_by_park <- runif(length(marine_parks), 0.25, 0.75)
-names(severity_by_park) <- marine_parks
-
-post_mp <- mp_base_abund |>
-  dplyr::mutate(
-    lambda_post = base_lambda * severity_by_park[park]
-  ) |>
-  dplyr::transmute(
-    park,
-    species,
-    period = "Post-bloom",
-    count  = pmax(0L, rpois(dplyr::n(), lambda = lambda_post))
-  )
-
-mp_species_counts <- dplyr::bind_rows(pre_mp, post_mp)
-# cols: park, species, period, count
-
+# 
+# mp_base_abund <- tidyr::expand_grid(
+#   park    = marine_parks,
+#   species = hab_species
+# ) |>
+#   dplyr::mutate(
+#     base_lambda = ifelse(
+#       species %in% global_common_species,
+#       runif(dplyr::n(), 30, 80),
+#       runif(dplyr::n(), 2, 20)
+#     )
+#   )
+# 
+# # Pre-bloom counts
+# pre_mp <- mp_base_abund |>
+#   dplyr::transmute(
+#     park,
+#     species,
+#     period = "Pre-bloom",
+#     count  = rpois(dplyr::n(), lambda = base_lambda)
+#   )
+# 
+# # Post-bloom counts with park-specific severity
+# severity_by_park <- runif(length(marine_parks), 0.25, 0.75)
+# names(severity_by_park) <- marine_parks
+# 
+# post_mp <- mp_base_abund |>
+#   dplyr::mutate(
+#     lambda_post = base_lambda * severity_by_park[park]
+#   ) |>
+#   dplyr::transmute(
+#     park,
+#     species,
+#     period = "Post-bloom",
+#     count  = pmax(0L, rpois(dplyr::n(), lambda = lambda_post))
+#   )
+# 
+# mp_species_counts <- dplyr::bind_rows(pre_mp, post_mp)
+# # cols: park, species, period, count
+# 
 spinnerPlotOutput <- function(outputId, ...) {
   withSpinner(
     plotOutput(outputId, ...),
