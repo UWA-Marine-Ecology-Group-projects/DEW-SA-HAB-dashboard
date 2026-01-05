@@ -1580,7 +1580,7 @@ server <- function(input, output, session) {
     bindCache(input$region) |>
     bindEvent(input$region)
   
-  # ---------- shark_ray: detail plot ---------------------
+  # ---------- shark and ray: detail plot ---------------------
   output$em_plot_reef_associated_richness_detail <- renderPlot({
     req(input$region)
     
@@ -3739,7 +3739,193 @@ server <- function(input, output, session) {
     bindCache(input$location) |>
     bindEvent(input$location)
   
+  # Shark and Rays -----
+  output$loc_plot_shark_ray_richness_main <- renderPlot({
+    req(input$location)
+    
+    df <- hab_data$shark_ray_richness_samples %>%
+      dplyr::filter(reporting_name == input$location)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    mean_se <- hab_data$shark_ray_richness_summary_location %>%
+      dplyr::filter(reporting_name == input$location)
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      # boxplot (median + IQR + whiskers)
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      # raw points
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      # mean ± SE
+      geom_pointrange(
+        data = mean_se,
+        aes(
+          x    = period,
+          y    = mean,
+          ymin = mean - se,
+          ymax = mean + se
+        ),
+        inherit.aes = FALSE,
+        colour = "black",
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["sharks_rays"]],
+        subtitle = input$location
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
   
+  # ---------- shark_ray: detail plot ---------------------
+  output$loc_plot_shark_ray_richness_detail <- renderPlot({
+    req(input$location)
+    
+    df <- hab_data$shark_ray_richness_summary_location %>%
+      dplyr::filter(reporting_name == input$location)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      # mean bar
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      # # mean ± SE
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["sharks_rays"]],
+        subtitle = paste(input$location, ": Average shark and ray species richness per sample")
+      ) +
+      # facet_wrap(~ zone) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",        # both bars already coloured by period
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
   
+  # ---------- SHARK & RAY: main boxplot by Status --------------------
+  output$loc_plot_shark_ray_richness_main_status <- renderPlot({
+    req(input$region)
+    
+    df <- hab_data$shark_ray_richness_samples %>%
+      dplyr::filter(reporting_name == input$location)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      
+      # ⬇️ Add this
+      geom_point(
+        stat = "summary",
+        fun = "mean",
+        shape = 21,
+        size = 3,
+        fill = "white",
+        colour = "black"
+      ) +
+      
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["sharks_rays"]],
+        subtitle = paste(input$location, "— Shark & ray species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
+  
+  # ---------- SHARK & RAY: detail barplot by Status -----------------
+  output$loc_plot_shark_ray_richness_detail_status <- renderPlot({
+    req(input$location)
+    
+    df <- hab_data$shark_ray_richness_samples %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se   = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        .groups = "drop"
+      )
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["sharks_rays"]],
+        subtitle = paste(input$location, "— Average shark & ray species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
   
   }
