@@ -235,74 +235,6 @@ metric_groups <- function(metric_id) {
   )
 }
 
-
-# Deterministic dummy data for pre/post per region+metric+Inside/Outside
-dummy_metric_data <- function(metric_id, region, n = 120) {
-  stopifnot(metric_id %in% names(metric_defs))
-  set.seed(sum(utf8ToInt(paste(metric_id, region))))  # stable per metric/region
-  
-  base_mean <- switch(metric_id,
-                      richness      = 60,
-                      site_attached = 40,
-                      sharks_rays   = 10,
-                      large_fish    = 50,
-                      func_groups   = 300,
-                      cti           = 18.5,
-                      trophic       = 3.1
-  )
-  base_sd <- switch(metric_id,
-                    richness      = 10,
-                    site_attached = 10,
-                    sharks_rays   = 5,
-                    large_fish    = 20,
-                    func_groups   = 90,
-                    cti           = 0.6,
-                    trophic       = 0.25
-  )
-  shift <- switch(metric_id,
-                  richness      = -6,
-                  site_attached = -12,
-                  sharks_rays   = -5,
-                  large_fish    = -5,
-                  func_groups   = -45,
-                  cti           = +0.4,
-                  trophic       = +0.15
-  )
-  
-  # small offset so Outside is a bit lower on average
-  zone_offset <- c("Inside" = 0, "Outside" = -5)
-  
-  make_zone_df <- function(z) {
-    pre  <- rnorm(n, mean = base_mean + zone_offset[[z]], sd = base_sd)
-    post <- rnorm(n, mean = base_mean + shift + zone_offset[[z]], sd = base_sd)
-    
-    df <- tibble::tibble(
-      region = region,
-      metric = metric_id,
-      zone   = z,
-      period = factor(rep(c("pre-bloom", "post-bloom"), each = n),
-                      levels = c("pre-bloom", "post-bloom")),
-      value  = c(pre, post)
-    )
-    
-    # 👉 functional groups, not trophic
-    if (metric_id == "func_groups") {
-      func_groups_vec <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore")
-      df$group <- sample(func_groups_vec, size = nrow(df), replace = TRUE)
-    }
-    
-    df
-  }
-  
-  dplyr::bind_rows(
-    make_zone_df("Inside"),
-    make_zone_df("Outside")
-  )
-}
-
-
-# ---- Dummy % change table for HAB impacts -----------------------------------
-
 # Metrics to match the screenshot
 hab_metrics <- c(
   "Species Richness",
@@ -347,240 +279,6 @@ hab_metric_change <- hab_data$impact_data %>%
   ))
 
 # unique(hab_metric_change$impact_metric)
-
-# ==== DUMMY COMMON-SPECIES DATA FOR EACH REGION =============================
-# # Paste the species list as a single string (omit the "genus_species" header)
-species_text <- "
-Acanthaluteres brownii
-Acanthaluteres spilomelanurus
-Acanthaluteres vittiger
-Achoerodus gouldii
-Anoplocapros amygdaloides
-Anoplocapros lenticularis
-Aplodactylus arctidens
-Aptychotrema vincentiana
-Aracana aurita
-Aracana ornata
-Arripis georgianus
-Arripis truttaceus
-Asymbolus vincenti
-Atherinidae spp
-Austrolabrus maculatus
-Bathytoshia brevicaudata
-Bodianus frenchii
-Brachaluteres jacksonianus
-Caesioperca lepidoptera
-Caesioperca rasor
-Callorhinchus milii
-Carcharhinus brachyurus
-Carcharodon carcharias
-Centroberyx gerrardi
-Centroberyx lineatus
-Chelmonops curiosus
-Chirodactylus spectabilis
-Chironemus georgianus
-Chironemus maculosus
-Chrysophrys auratus
-Coris auricularis
-Dactylophora nigricans
-Dinolestes lewini
-Diodon nicthemerus
-Dotalabrus aurantiacus
-Enoplosus armatus
-Eubalichthys bucephalus
-Eubalichthys cyanoura
-Eubalichthys gunnii
-Eubalichthys mosaicus
-Eupetrichthys angustipes
-Furgaleus macki
-Galeorhinus galeus
-Genypterus tigerinus
-Girella zebra
-Gobiesocidae spp
-Gobiidae spp
-Gymnapistes marmoratus
-Gymnothorax prasinus
-Haletta semifasciata
-Helcogramma decurrens
-Heterodontus portusjacksoni
-Heteroscarus acroptilus
-Hippocampus spp
-Hyperlophus vittatus
-Hypoplectrodes nigroruber
-Hyporhamphus melanochir
-Iso rhothophilus
-Kyphosus sydneyanus
-Latropiscis purpurissatus
-Leptoichthys fistularius
-Lotella rhacina
-Meuschenia australis
-Meuschenia flavolineata
-Meuschenia freycineti
-Meuschenia galii
-Meuschenia hippocrepis
-Meuschenia scaber
-Meuschenia venusta
-Monacanthidae juvenile
-Mustelus antarcticus
-Myliobatis tenuicaudatus
-Neatypus obliquus
-Nelusetta ayraud
-Nemadactylus macropterus
-Nemadactylus valenciennesi
-Neoodax balteatus
-Neosebastes bougainvillii
-Neosebastes pandus
-Neosebastes scorpaenoides
-Notolabrus fucicola
-Notolabrus parilus
-Notolabrus tetricus
-Olisthops cyanomelas
-Omegophora armilla
-Omegophora cyanopunctata
-Ophthalmolepis lineolatus
-Oplegnathus woodwardi
-Othos dentex
-Parapercis haackei
-Parapercis ramsayi
-Paraplesiops meleagris
-Parascyllium ferrugineum
-Parascyllium variolatum
-Parequula melbournensis
-Parma victoriae
-Pelates octolineatus
-Pempheris klunzingeri
-Pempheris multiradiata
-Pentaceropsis recurvirostris
-Phyllopteryx taeniolatus
-Pictilabrus laticlavius
-Platycephalus aurimaculatus
-Platycephalus bassensis
-Platycephalus grandispinis
-Platycephalus speculator
-Pseudocaranx spp
-Pseudogoniistius nigripes
-Pseudolabrus rubicundus
-Pseudophycis bachus
-Pseudophycis barbata
-Pseudorhombus arsius
-Scobinichthys granulatus
-Scomber australasicus
-Scorpis aequipinnis
-Scorpis georgiana
-Scorpis lineolata
-Seriola hippos
-Seriola lalandi
-Sillaginodes punctatus
-Sillago spp
-Siphamia cephalotes
-Siphonognathus attenuatus
-Siphonognathus beddomei
-Siphonognathus caninis
-Siphonognathus tanyourus
-Sphyraena forsteri
-Sphyraena novaehollandiae
-Sphyrna zygaena
-Spiniraja whitleyi
-Squalus megalops
-Sutorectus tentaculatus
-Syngnathidae spp
-Tetractenos glaber
-Thamnaconus degeni
-Thyrsites atun
-Tilodon sexfasciatus
-Torquigener pleurogramma
-Trachichthys australis
-Trachinops noarlungae
-Trachurus declivis
-Trachurus novaezelandiae
-Trygonoptera mucosa
-Trygonorrhina dumerilii
-Upeneichthys vlamingii
-Urolophus gigas
-Urolophus spp
-Vincentia conspersa
-Coscinasterias muricata
-Diogenidae spp
-Jasus edwardsii
-Leptomithrax gaimardii
-Melicertus latisulcatus
-Naxia aurita
-Nectocarcinus integrifrons
-Neophoca cinerea
-Macroctopus maorum
-Octopodidae spp
-Ovalipes australiensis
-Ozius truncatus
-Pectinidae spp
-Phalacrocorax spp
-Plagusia chabrus
-Portunus armatus
-Pycnogonidae spp
-Sagaminopteron ornatum
-Sepia apama
-Sepioteuthis australis
-Tursiops spp
-"
-
-hab_species <- scan(text = species_text, what = character(), sep = "\n", quiet = TRUE)
-
-# drop any accidental blanks / "Nil Nil" if present
-hab_species <- hab_species[nchar(hab_species) > 0 & hab_species != "Nil Nil"]
-
-# length(hab_species)  # just to sanity check
-
-set.seed(4242)
-
-# Pick a set of species that tend to be common everywhere
-global_common_species <- sample(hab_species, 15)
-
-# # Base lambda per region x species (bigger for globally common spp)
-# base_abund <- tidyr::expand_grid(
-#   region  = hab_regions,
-#   species = hab_species
-# ) |>
-#   dplyr::mutate(
-#     base_lambda = ifelse(
-#       species %in% global_common_species,
-#       runif(dplyr::n(), 30, 80),  # common spp
-#       runif(dplyr::n(), 2, 20)    # rarer spp
-#     )
-#   )
-
-# # Pre-bloom counts
-# pre_counts <- base_abund |>
-#   dplyr::transmute(
-#     region,
-#     species,
-#     period = "Pre-bloom",
-#     count  = rpois(dplyr::n(), lambda = base_lambda)
-#   )
-
-# # Post-bloom counts (generally lower; region-specific severity)
-# severity_by_region <- runif(length(hab_regions), 0.25, 0.75)  # 25–75% of pre
-# names(severity_by_region) <- hab_regions
-# 
-# post_counts <- base_abund |>
-#   dplyr::mutate(
-#     lambda_post = base_lambda * severity_by_region[region]
-#   ) |>
-#   dplyr::transmute(
-#     region,
-#     species,
-#     period = "Post-bloom",
-#     count  = pmax(0L, rpois(dplyr::n(), lambda = lambda_post))
-#   )
-# 
-# # Final long table used for plotting
-# hab_species_counts <- dplyr::bind_rows(pre_counts, post_counts)
-
-# Columns: region, species, period ("Pre-bloom"/"Post-bloom"), count
-
-# # Replace with your sheet URL or ID
-# survey_plan <- googlesheets4::read_sheet(
-#   "https://docs.google.com/spreadsheets/d/1QxTP_s58cbhLYB4GIuS39wK1c3QfBu8TGbUhV9rD3FY/edit?gid=1319001580#gid=1319001580",
-#   sheet = "reporting_region_summary"   # or "Sheet1" etc.
-# )
 
 # Helper: map % complete -> value_box colour
 completion_theme <- function(p) {
@@ -729,3 +427,25 @@ diet_cols <- c(
   "Planktivore"  = "#082a54",  # deep blue
   "Diet missing" = "#cecece"   # neutral grey
 )
+
+# ---- Plot output ID builder (prefix-aware) ----------------------------------
+metric_plot_id <- function(prefix, metric_id, which) {
+  paste0(prefix, "_plot_", metric_id, "_", which)
+}
+
+metric_plotOutput <- function(prefix, metric_id, which, height = 400, spinner_type = 6) {
+  withSpinner(
+    plotOutput(metric_plot_id(prefix, metric_id, which), height = height),
+    type = spinner_type
+  )
+}
+
+# ---- Metric key -> underlying data key aliasing -----------------------------
+# Your UI uses names(metric_defs). Your data tables use e.g. shark_ray_richness, fish_200_abundance.
+metric_data_key <- function(metric_id) {
+  switch(metric_id,
+         sharks_rays = "shark_ray_richness",
+         large_fish  = "fish_200_abundance",
+         metric_id
+  )
+}

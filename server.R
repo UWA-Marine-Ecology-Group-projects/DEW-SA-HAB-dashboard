@@ -227,218 +227,129 @@ make_impact_gauges <- function(region_name) {
     (p3 | p4 | p5)
 }
 
-metric_tab_body_ui <- function(id) {
+# ---- output id helpers -------------------------------------------------------
+metric_plot_id <- function(prefix, metric_id, which) {
+  paste0(prefix, "_plot_", metric_id, "_", which)
+}
+
+metric_plotOutput <- function(prefix, metric_id, which, height = 400, spinner_type = 6) {
+  withSpinner(
+    plotOutput(metric_plot_id(prefix, metric_id, which), height = height),
+    type = spinner_type
+  )
+}
+
+metric_tab_body_ui <- function(metric_id, prefix = "em") {
+  
+  data_id <- metric_data_key(metric_id)
+  
   switch(
-    id,
+    metric_id,
     
-    # ---- RICHNESS: now 4 plots (2x2) --------------------------
     richness = {
       tagList(
-        # Row 1: current main + detail
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_richness_main", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_richness_detail", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main"),
+          metric_plotOutput(prefix, data_id, "detail")
         ),
-        # Row 2: new status plots
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_richness_main_status", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_richness_detail_status", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main_status"),
+          metric_plotOutput(prefix, data_id, "detail_status")
         )
       )
     },
     
-    # ---- TOTAL ABUNDANCE: now 4 plots (2x2) -------------------
     total_abundance = {
       tagList(
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_total_abundance_main", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_total_abundance_detail", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main"),
+          metric_plotOutput(prefix, data_id, "detail")
         ),
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_total_abundance_main_status", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_total_abundance_detail_status", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main_status"),
+          metric_plotOutput(prefix, data_id, "detail_status")
         )
       )
     },
     
-    # ---- SHARKS & RAYS: 4 plots -------------------------------
     sharks_rays = {
       tagList(
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_shark_ray_richness_main", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_shark_ray_richness_detail", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main"),
+          metric_plotOutput(prefix, data_id, "detail")
         ),
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_shark_ray_richness_main_status", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_shark_ray_richness_detail_status", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main_status"),
+          metric_plotOutput(prefix, data_id, "detail_status")
         )
       )
     },
     
-    # ---- REEF-ASSOCIATED RICHNESS: 4 plots -------------------
     reef_associated_richness = {
       tagList(
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_reef_associated_richness_main", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_reef_associated_richness_detail", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main"),
+          metric_plotOutput(prefix, data_id, "detail")
         ),
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_reef_associated_richness_main_status", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_reef_associated_richness_detail_status", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main_status"),
+          metric_plotOutput(prefix, data_id, "detail_status")
         )
       )
     },
     
-    # ---- LARGE FISH: 4 plots ---------------------------------
     large_fish = {
       tagList(
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_large_fish_main", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_large_fish_detail", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main"),
+          metric_plotOutput(prefix, data_id, "detail")
         ),
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_large_fish_main_status", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_large_fish_detail_status", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, data_id, "main_status"),
+          metric_plotOutput(prefix, data_id, "detail_status")
         )
       )
     },
     
-    # ---- example 3-plot layout stays as-is --------------------
     trophic = {
       tagList(
-        
-        # ---------- FIRST ROW: main + stacked ----------
         layout_columns(
           col_widths = c(6, 6),
-          
-          # Main trophic plot (unchanged)
-          withSpinner(
-            plotOutput("em_plot_trophic_main", height = 400),
-            type = 6
-          ),
-          
-          # Right column: toggle + stacked plot
-          tagList(
-            # div(
-            #   style = "margin-bottom: 10px;",
-            #   radioButtons(
-            #     inputId = "trophic_stack_scale",
-            #     label   = "Stacked plot display:",
-            #     choices = c("Proportion" = "prop",
-            #                 "Count"      = "count"),
-            #     inline  = TRUE,
-            #     selected = "prop"
-            #   )
-            # ),
-            withSpinner(
-              plotOutput("em_plot_trophic_stack", height = 400),
-              type = 6
-            )
-          )
+          metric_plotOutput(prefix, "trophic", "main"),
+          metric_plotOutput(prefix, "trophic", "stack")
         ),
-        
-        # ---------- SECOND ROW: status plots ----------
         layout_columns(
           col_widths = c(6, 6),
-          withSpinner(
-            plotOutput("em_plot_trophic_main_status", height = 400),
-            type = 6
-          ),
-          withSpinner(
-            plotOutput("em_plot_trophic_stack_status", height = 400),
-            type = 6
-          )
+          metric_plotOutput(prefix, "trophic", "main_status"),
+          metric_plotOutput(prefix, "trophic", "stack_status")
         )
       )
     },
     
-    
-    # ---- default: same as your old 2-plot layout --------------
+    # default: 2 plots
     {
       layout_columns(
         col_widths = c(6, 6),
-        withSpinner(
-          plotOutput(paste0("em_plot_", id, "_main"), height = 400),
-          type = 6
-        ),
-        withSpinner(
-          plotOutput(paste0("em_plot_", id, "_detail"), height = 400),
-          type = 6
-        )
+        metric_plotOutput(prefix, data_id, "main"),
+        metric_plotOutput(prefix, data_id, "detail")
       )
     }
   )
 }
+
+
+
+
 
 
 plot_cell <- function(id, width = "120px", height = "120px") {
@@ -1133,7 +1044,7 @@ server <- function(input, output, session) {
       !!!lapply(names(metric_defs), function(id) {
         bslib::nav(
           title = metric_defs[[id]],
-          metric_tab_body_ui(id)   # <- custom per metric
+          metric_tab_body_ui(id, prefix = "em")
         )
       })
     )
@@ -3472,6 +3383,177 @@ server <- function(input, output, session) {
   })
   
   
+  output$location_tabset <- renderUI({
+    req(input$location)
+    
+    bslib::navset_card_tab(
+      !!!lapply(names(metric_defs), function(id) {
+        bslib::nav(
+          title = metric_defs[[id]],
+          metric_tab_body_ui(id, prefix = "loc")
+        )
+      })
+    )
+  })
   
+  output$loc_plot_richness_main <- renderPlot({
+    req(input$location)
+    
+    df <- hab_data$species_richness_samples %>% 
+      dplyr::filter(reporting_name == input$location)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    mean_se <- hab_data$species_richness_summary_location %>% 
+      dplyr::filter(reporting_name == input$location)
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      geom_boxplot(width = 0.6, outlier.shape = NA, alpha = 0.85, colour = "black") +
+      geom_jitter(aes(colour = period), width = 0.15, height = 0, alpha = 0.35, size = 1.2) +
+      geom_pointrange(
+        data = mean_se,
+        aes(x = period, y = mean, ymin = mean - se, ymax = mean + se),
+        inherit.aes = FALSE, colour = "black", linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(x = NULL, y = metric_y_lab[["richness"]], subtitle = input$location) +
+      theme_minimal(base_size = 16) +
+      theme(legend.position = "none", panel.grid.minor = element_blank())
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
+  
+  # ---------- RICHNESS: detail plot ---------------------
+  output$loc_plot_richness_detail <- renderPlot({
+    req(input$location)
+    
+    df <- hab_data$species_richness_summary_location %>%
+      dplyr::filter(reporting_name == input$location)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      # mean bar
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      # # mean ± SE
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["richness"]],
+        subtitle = paste(input$location, ": Average species richness per sample")
+      ) +
+      # facet_wrap(~ zone) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",        # both bars already coloured by period
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
+  
+  # ---------- RICHNESS: main boxplot by Status --------------------
+  output$loc_plot_richness_main_status <- renderPlot({
+    req(input$location)
+    
+    df <- hab_data$species_richness_samples %>%
+      dplyr::filter(reporting_name == input$location)
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+      geom_boxplot(
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      
+      # ⬇️ Add this
+      geom_point(
+        stat = "summary",
+        fun = "mean",
+        shape = 21,
+        size = 3,
+        fill = "white",
+        colour = "black"
+      ) +
+      
+      geom_jitter(
+        aes(colour = period),
+        width = 0.15,
+        height = 0,      # <— prevents any vertical jitter
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["richness"]],
+        subtitle = paste(input$location, "— Species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
+  
+  # ---------- RICHNESS: detail barplot by Status ------------------
+  output$loc_plot_richness_detail_status <- renderPlot({
+    req(input$location)
+    
+    df <- hab_data$species_richness_samples %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se   = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        .groups = "drop"
+      )
+    
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    
+    ggplot(df, aes(x = period, y = mean, fill = period)) +
+      geom_col(
+        width  = 0.6,
+        colour = "black",
+        alpha  = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = mean - se, ymax = mean + se),
+        width = 0.2,
+        linewidth = 0.6
+      ) +
+      facet_wrap(~ status, nrow = 1) +
+      scale_fill_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["richness"]],
+        subtitle = paste(input$location, "— Average species richness per sample by status")
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "none",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
   
   }

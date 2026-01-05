@@ -996,23 +996,30 @@ hab_data <- structure(
     # Tabset plots
     species_richness_samples = species_richness_samples,
     species_richness_summary = species_richness_summary,
+    species_richness_summary_location = species_richness_summary_location,
     
     total_abundance_samples = total_abundance_samples,
     total_abundance_summary = total_abundance_summary,
+    total_abundance_summary_location = total_abundance_summary_location,
     
     shark_ray_richness_samples = shark_ray_richness_samples,
     shark_ray_richness_summary = shark_ray_richness_summary,
+    shark_ray_richness_summary_location = shark_ray_richness_summary_location,
     
     reef_associated_richness_samples = reef_associated_richness_samples,
     reef_associated_richness_summary = reef_associated_richness_summary,
+    reef_associated_richness_summary_location = reef_associated_richness_summary_location,
     
     fish_200_abundance_samples = fish_200_abundance_samples,
     fish_200_abundance_summary = fish_200_abundance_summary,
+    fish_200_abundance_summary_location = fish_200_abundance_summary_location,
     
     trophic_groups_summary = trophic_groups_summary,
+    # trophic_groups_summary_location = trophic_groups_summary_location,
     trophic_groups_samples = trophic_groups_samples,
     
     trophic_groups_richness_summary = trophic_groups_richness_summary,
+    # trophic_groups_richness_summary_location = trophic_groups_richness_summary_location,
     trophic_groups_richness_samples = trophic_groups_richness_samples,
     
     trophic_groups_richness_summary_status = trophic_groups_richness_summary_status
