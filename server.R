@@ -2980,4 +2980,72 @@ server <- function(input, output, session) {
     yrs
   })
   
+  
+  
+  # ===== LOCATION SUMMARY (mirrors Region Summary) =============================
+  
+  # (A) Build a location list (optionally filtered by region)
+  locations_all <- reactive({
+    
+    hab_data$hab_combined_metadata |>
+      dplyr::filter(!reporting_name %in% "NA") %>%
+      dplyr::pull(reporting_name) |>
+      unique() |>
+      sort()
+  })
+  
+  # (B) Populate location choices
+  observe({
+    # If you want location list *dependent* on selected region:
+    req(input$region)
+    locs <- locations_all()
+    updateSelectizeInput(
+      session, "location",
+      choices  = locs,
+      selected = locs[1] %||% NULL,
+      server   = TRUE
+    )
+  })
+  
+  # (C) Summary text for location (needs a location summaries table)
+  # If you don't have hab_data$locations_summaries yet, see note below.
+  output$location_summary_text <- renderUI({
+    req(input$location)
+    
+    txt <- hab_data$locations_summaries |>
+      dplyr::filter(reporting_name == input$location) |>
+      dplyr::pull(summary)
+    
+    HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
+  })
+  
+  # (D) Years sampled for location (BRUVs only, same as your region pattern)
+  years_by_location <- reactive({
+    hab_data$year_dat |>
+      dplyr::filter(method %in% "BRUVs") |>
+      dplyr::distinct(reporting_name, year) |>
+      dplyr::group_by(reporting_name) |>
+      dplyr::summarise(
+        n_years       = dplyr::n(),
+        years_sampled = paste(sort(unique(year)), collapse = ", "),
+        .groups       = "drop"
+      )
+  })
+  
+  output$years_for_location <- renderText({
+    req(input$location)
+    
+    years_by_location() |>
+      dplyr::filter(reporting_name == input$location) |>
+      dplyr::pull(years_sampled)
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
   }

@@ -45,15 +45,6 @@ sf_use_s2(FALSE)
 #     plot.title = ggplot2::element_text(color = "black", size = 12, face = "bold.italic")
 #   )
 
-# ---- Load data from Google Sheets ----
-temp_scores_sheet <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0ganthAWa8TTcfG-eZtIObRM45k/edit?gid=0#gid=0"
-# 
-# # ---- Data loaders ----
-# scores <-  read_sheet(temp_scores_sheet) 
-# 2
-
-regions_summaries <- read_sheet(temp_scores_sheet, "summary_text") 
-2
 # Shapefiles ----
 # Reporting regions -----
 regions_shp <- st_read("data/spatial/Reporting_regions_30102025.shp", quiet = TRUE) %>%
@@ -61,6 +52,16 @@ regions_shp <- st_read("data/spatial/Reporting_regions_30102025.shp", quiet = TR
 
 # Ensure WGS84 for Leaflet 
 regions_shp <- st_transform(regions_shp, 4326)  # TODO put this in a shapefile list
+
+# Reporting locations ----
+locations_shp <- st_read("data/spatial/Locations_SZ_groupings.shp") %>%
+  dplyr::rename(reporting_location = LocationNa, reporting_sanctuary = SanctuaryZ) %>%
+  dplyr::select(-c(Shape_Leng, Shape_Area)) %>%
+  dplyr::mutate(reporting_name = paste(reporting_location, "-", reporting_sanctuary, "Sanctuary Zone", sep = " ")) |>
+  dplyr::mutate(reporting_name = str_replace_all(reporting_name, " - NA Sanctuary Zone", ""))
+
+# Ensure WGS84 for Leaflet 
+locations_shp <- st_transform(locations_shp, 4326)  # TODO put this in a shapefile list
 
 # Read in state marineparks ----
 state_mp <- read_sf("data/spatial/CONSERVATION_StateMarineParkNW_Zoning_GDA94.shp") %>%
@@ -83,6 +84,19 @@ state_mp$zone <- fct_relevel(state_mp$zone,
 sa_state_mp <- st_cast(state_mp, "POLYGON")
 
 saveRDS(sa_state_mp, "app_data/spatial/sa_state_mp.RDS") # TODO put this in a shapefile list
+
+# ---- Load data from Google Sheets ----
+summary_sheet <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0ganthAWa8TTcfG-eZtIObRM45k/edit?gid=0#gid=0"
+# 
+# # ---- Data loaders ----
+# scores <-  read_sheet(temp_scores_sheet) 
+# 2
+
+regions_summaries <- read_sheet(summary_sheet, "region_summary_text") 
+2
+
+locations_summaries <- read_sheet(summary_sheet, "location_summary_text") %>%
+  left_join(., locations_shp) 
 
 # ---- Color mapping ----
 # TODO move this to global instead of here, is very quick to load
@@ -167,18 +181,21 @@ unique(rls_metadata_locs$location)
 
 # Add reporting regions to the metadata ----
 reporting_regions <- st_transform(regions_shp, st_crs(state_mp))
+reporting_locations <- st_transform(locations_shp, st_crs(state_mp))
 
 rls_metadata_with_regions <- st_join(rls_metadata_locs, reporting_regions) %>%
+  st_join(reporting_locations) %>%
   glimpse()
 
 bruv_metadata_with_regions <- st_join(bruv_metadata_locs, reporting_regions) %>%
+  st_join(reporting_locations) %>%
   glimpse()
 
 combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
                                # bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")
                                ) %>%
-  select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length, status) %>%
+  select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length, status, reporting_location, reporting_sanctuary, reporting_name) %>%
   dplyr::mutate(year = as.numeric(str_sub(date, 1, 4))) %>%
   dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
   dplyr::filter(!is.na(region))
@@ -202,7 +219,7 @@ successful_length_drops <- combined_metadata %>%
 
 combined_length <- bruv_length %>%
   left_join(bruv_metadata_with_regions) %>%
-  dplyr::select(campaignid, sample, family, genus, species, region, count, length, date, period) %>%
+  dplyr::select(campaignid, sample, family, genus, species, region, count, length, date, period, reporting_location, reporting_sanctuary, reporting_name) %>%
   dplyr::mutate(method = "BRUVs") %>%
   semi_join(successful_length_drops)
 
@@ -227,14 +244,14 @@ hab_number_rls_deployments <- combined_metadata %>%
 # Number of fish -----
 bruv_count_regions <- bruv_count %>%
   left_join(combined_metadata) %>%
-  dplyr::select(sample, family, genus, species, region, count, period) %>%
+  dplyr::select(sample, family, genus, species, region, count, period, reporting_location, reporting_sanctuary, reporting_name) %>%
   dplyr::mutate(method = "BRUVs") %>%
   semi_join(combined_metadata) %>%
   ungroup()
 
 rls_count_regions_pre <- rls_count %>%
   left_join(combined_metadata) %>%
-  dplyr::select(sample, family, genus, species, region, count) %>%
+  dplyr::select(sample, family, genus, species, region, count, reporting_location, reporting_sanctuary) %>%
   dplyr::mutate(method = "UVC") %>%
   dplyr::mutate(period = "Pre-bloom") %>%
   semi_join(combined_metadata)
@@ -748,6 +765,7 @@ hab_data <- structure(
     
     # Summary Text
     regions_summaries = regions_summaries,
+    locations_summaries = locations_summaries,
     
     # Shapefiles
     regions_shp = regions_shp,  # TODO put this in a shapefile list with state_mp

@@ -203,12 +203,7 @@ ui <- page_navbar(
         )
         
       ),
-      
-      # card(
-      #   full_screen = TRUE,
-      #   card_header("Sites Surveyed"),
-      #   leafletOutput("map")
-      # )
+
       
       card(
         full_screen = TRUE,
@@ -253,12 +248,7 @@ ui <- page_navbar(
         
         layout_columns(
           col_widths = c(7, 5),
-          
-          # card(min_height = 600,
-          #      full_screen = TRUE,
-          #      card_header("Survey Effort"),
-          #      leafletOutput("region_survey_effort")
-          #      ),
+
           
           card(
             min_height = 600,
@@ -341,13 +331,7 @@ ui <- page_navbar(
                 FALSE
               )
             ),
-            
-            # layout_columns(
-            #   col_widths = c(6, 6),
-            #   spinnerPlotOutput("region_common_pre",  height = 500),  # was plotOutput
-            #   spinnerPlotOutput("region_common_post", height = 500)   # was plotOutput
-            # )
-            
+
             layout_columns(
               col_widths = c(6, 6),
               
@@ -378,59 +362,141 @@ ui <- page_navbar(
     )
   ),
   
-  # nav_panel(
-  #   "Location Summary",
-  #   layout_sidebar(
-  #     sidebar = sidebar(
-  #       width = "350px",
-  #       selectizeInput(
-  #         "location",
-  #         "Choose a location",
-  #         choices = NULL, multiple = FALSE,
-  #         options = list(placeholder = "Choose a location...")
-  #       ),
-  #       # helpText("Explore indicators, common species and survey progress for a selected marine park.")
-  #     ),
-  #     
-  #     # Park-level survey progress boxes
-  #     uiOutput("loation_survey_value_boxes"),
-  #     
-  #     
-  #     div(
-  #       class = "container-fluid",
-  #       layout_columns(
-  #         col_widths = c(7, 5),
-  #         card(min_height = 600,
-  #              card_header("Survey Effort"),
-  #              leafletOutput("locationsurveyeffort")),
-  #         
-  #         div(
-  #           card(
-  #             card_header("Location impact overview"),
-  #             plotOutput("location_impact_gauges_region", height = 350)#,
-  #           ),
-  #           card(
-  #             card_header("Percentage change compared to pre-bloom levels"),
-  #             tableOutput("location_change_table")
-  #           ))),
-  # 
-  #       layout_columns(
-  #         col_widths = c(6, 6),
-  #         card(
-  #           card_header("Most common species pre-bloom"),
-  #           plotOutput("location_common_pre", height = 400)
-  #         ),
-  #         card(
-  #           card_header("Most common species post-bloom"),
-  #           plotOutput("location_common_post", height = 400)
-  #         )
-  #       ),
-  #       
-  #       br(),
-  #       uiOutput("location_tabset")   # tabset for park-level metrics
-  #     )
-  #   )
-  # ),
+  nav_panel(
+    "Location Summary",
+    layout_sidebar(
+      sidebar = sidebar(
+        width = "350px",
+        selectizeInput(
+          "location",
+          "Choose a location",
+          choices = NULL, multiple = FALSE,
+          options = list(placeholder = "Choose a location...")
+        ),
+        
+        h6("Years sampled:"),
+        textOutput("years_for_location"),
+        br(),
+        
+        h6("Summary:"),
+        uiOutput("location_summary_text"),
+        br(),
+        
+        helpText("")
+      ),
+      
+      div(
+        class = "container-fluid",
+        
+        layout_columns(
+          col_widths = c(7, 5),
+          
+          card(
+            min_height = 600,
+            full_screen = TRUE,
+            card_header("Survey Effort"),
+            div(
+              class = "map-full-wrapper",
+              withSpinner(
+                leafletOutput("location_survey_effort", height = "100%"),
+                type = 6
+              )
+            )
+          ),
+          
+          div(
+            card(
+              card_header(
+                div(
+                  "Location Impact overview",
+                  style = "display:inline-block;"
+                ),
+                div(
+                  actionLink(
+                    inputId = "open_info_pointers_location",
+                    label = NULL,
+                    icon = icon("circle-info")
+                  ),
+                  style = "float:right; margin-top:-2px;"
+                )
+              ),
+              spinnerPlotOutput("location_impact_gauges", height = 350)
+            ),
+            
+            card(
+              card_header(
+                div(
+                  "Percentage change compared to pre-bloom levels",
+                  style = "display:inline-block;"
+                ),
+                div(
+                  actionLink(
+                    inputId = "open_info_table_location",
+                    label = NULL,
+                    icon = icon("circle-info")
+                  ),
+                  style = "float:right; margin-top:-2px;"
+                )
+              ),
+              card_body(
+                spinnerUiOutput("location_change_table")
+              )
+            )
+          )
+        ),
+        
+        card(
+          min_height = 500,
+          card_header("Common species"),
+          full_screen = TRUE,
+          
+          layout_sidebar(
+            sidebar = div(
+              h6(strong("Plot inputs:")),
+              numericInput(
+                "location_number_species",
+                "Choose number of species to plot",
+                value = 10,
+                min   = 1,
+                max   = 20
+              ),
+              checkboxInput(
+                "location_species_status",
+                "Show status (Fished vs No-take)",
+                FALSE
+              ),
+              checkboxInput(
+                "location_species_facet",
+                "Facet by status",
+                FALSE
+              )
+            ),
+            
+            layout_columns(
+              col_widths = c(6, 6),
+              
+              div(
+                class = "plot-full-wrapper",
+                withSpinner(
+                  plotOutput("location_common_pre", height = "100%"),
+                  type = 6
+                )
+              ),
+              div(
+                class = "plot-full-wrapper",
+                withSpinner(
+                  plotOutput("location_common_post", height = "100%"),
+                  type = 6
+                )
+              )
+            )
+          )
+        ),
+        
+        uiOutput("location_tabset")
+      )
+    )
+  ),
   
   nav_spacer(),
   
