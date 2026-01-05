@@ -3104,7 +3104,109 @@ server <- function(input, output, session) {
       leaflet::hideGroup("Australian Marine Parks")
   })
   
+  get_metric_plot_location <- function(metric_id, title_lab, wrap_width = 22, chosen_location) {
+    
+    txt <- hab_data$impact_data_location |>
+      dplyr::filter(reporting_name == chosen_location, impact_metric == metric_id) |>
+      dplyr::pull(impact)
+    
+    if (length(txt) == 0 || is.na(txt) || txt == "Surveys incomplete") {
+      return(no_data_plot(stringr::str_wrap(title_lab, wrap_width)))
+    }
+    
+    half_donut_with_dial(values = c(1, 1, 1), mode = "absolute", status = txt) +
+      labs(title = stringr::str_wrap(title_lab, width = wrap_width)) +
+      theme(
+        plot.title  = element_text(hjust = 0.5, face = "bold", size = 14),
+        plot.margin = margin(2, 2, 2, 2)
+      )
+  }
   
+  make_impact_gauges_location <- function(location_name) {
+    
+    overall_status <- hab_data$overall_impact_location |>
+      dplyr::filter(reporting_name == location_name) |>
+      dplyr::pull(overall_impact)
+    
+    p0 <- if (length(overall_status) == 0 || is.na(overall_status) ||
+              identical(overall_status, "Surveys incomplete")) {
+      no_data_plot("Overall impact")
+    } else {
+      half_donut_with_dial(values = c(1, 1, 1), mode = "absolute", status = overall_status) +
+        ggtitle("Overall impact") +
+        theme(
+          plot.title  = element_text(hjust = 0.5, face = "bold.italic", size = 16),
+          plot.margin = margin(2, 2, 2, 2)
+        )
+    }
+    
+    p1 <- get_metric_plot_location("species_richness",         "Species richness",                 chosen_location = location_name)
+    p2 <- get_metric_plot_location("total_abundance",          "Total abundance",                  chosen_location = location_name)
+    p3 <- get_metric_plot_location("shark_ray_richness",       "Shark and ray richness",           chosen_location = location_name)
+    p4 <- get_metric_plot_location("reef_associated_richness", "Reef associated species richness", chosen_location = location_name)
+    p5 <- get_metric_plot_location("fish_200_abundance",       "Fish > 200 mm abundance",          chosen_location = location_name)
+    
+    (p0 | p1 | p2) / (p3 | p4 | p5)
+  }
+  
+  output$location_impact_gauges <- renderPlot({
+    req(input$location)
+    make_impact_gauges_location(input$location)
+  })
+  
+  hab_metric_change_location <- impact_data_location %>%
+    dplyr::transmute(
+      reporting_name,
+      impact_metric,
+      percentage_change = dplyr::case_when(
+        is.na(percentage) ~ "Surveys incomplete",
+        TRUE ~ as.character(round(percentage - 100, 1))  # e.g. +20 means 120% of pre
+      )
+    )
+  
+  output$location_change_table <- renderUI({
+    req(input$location)
+    
+    df <- hab_metric_change_location |>
+      dplyr::filter(reporting_name == input$location) |>
+      dplyr::select(
+        Metric = impact_metric,
+        Change = percentage_change
+      )
+    
+    vals <- df$Change
+    is_incomplete <- grepl("Surveys incomplete", vals, ignore.case = TRUE)
+    num <- suppressWarnings(as.numeric(vals))
+    has_num <- !is.na(num) & !is_incomplete
+    
+    arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
+    colours <- ifelse(num <= -50, "#EB5757",
+                      ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+    
+    out <- rep("", length(vals))
+    out[has_num] <- sprintf(
+      "<span style='color:%s'>%s %s%%</span>",
+      colours[has_num],
+      arrows[has_num],
+      scales::number(abs(num[has_num]), accuracy = 1)
+    )
+    out[is_incomplete] <- "<em>Surveys incomplete</em>"
+    
+    tags$table(
+      class = "table table-striped table-sm",
+      tags$thead(
+        tags$tr(tags$th("Metric"), tags$th("Change"))
+      ),
+      tags$tbody(
+        lapply(seq_len(nrow(df)), function(i) {
+          tags$tr(
+            tags$td(df$Metric[i]),
+            tags$td(HTML(out[i]))
+          )
+        })
+      )
+    )
+  })
   
   
   
