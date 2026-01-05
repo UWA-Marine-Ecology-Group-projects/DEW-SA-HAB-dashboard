@@ -3040,7 +3040,69 @@ server <- function(input, output, session) {
       dplyr::pull(years_sampled)
   })
   
+  # Map of deployments
+  location_deployments <- reactive({
+    req(input$location)
+    
+    deployments <- hab_data$hab_combined_metadata %>%
+      dplyr::filter(reporting_name %in% input$location)
+    
+    coords <- sf::st_coordinates(deployments)
+    coords_df <- as.data.frame(coords)
+    colnames(coords_df) <- c("longitude_dd", "latitude_dd")
+    
+    dplyr::bind_cols(deployments, coords_df)
+  })
   
+  loc_min_lat <- reactive({ min(location_deployments()$latitude_dd,  na.rm = TRUE) })
+  loc_min_lon <- reactive({ min(location_deployments()$longitude_dd, na.rm = TRUE) })
+  loc_max_lat <- reactive({ max(location_deployments()$latitude_dd,  na.rm = TRUE) })
+  loc_max_lon <- reactive({ max(location_deployments()$longitude_dd, na.rm = TRUE) })
+  
+  # Add location survey map
+  output$location_survey_effort <- renderLeaflet({
+    req(input$location)
+    
+    method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
+    
+    pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
+      dplyr::filter(reporting_name %in% input$location)
+    
+    m <- base_map(current_zoom = 7) %>%
+      fitBounds(loc_min_lon(), loc_min_lat(), loc_max_lon(), loc_max_lat())
+    
+    if (has_leafgl()) {
+      m <- leafgl::addGlPoints(
+        m,
+        data      = pts,
+        fillColor = method_cols[pts$method],
+        weight    = 1,
+        popup     = pts$popup,
+        group     = "Sampling locations",
+        pane      = "points"
+      )
+    } else {
+      m <- leaflet::addCircleMarkers(
+        m, data = pts,
+        radius = 6, fillColor = "#f89f00", fillOpacity = 1,
+        weight = 1, color = "black", popup = pts$popup,
+        group = "Sampling locations",
+        options = leaflet::pathOptions(pane = "points")
+      )
+    }
+    
+    leaflet::addLegend(
+      m,
+      "topright",
+      colors  = unname(method_cols),
+      labels  = names(method_cols),
+      title   = "Survey method",
+      opacity = 1,
+      group   = "Sampling locations",
+      layerId = "methodLegend"
+    ) %>%
+      leaflet::hideGroup("Australian Marine Parks")
+  })
   
   
   
