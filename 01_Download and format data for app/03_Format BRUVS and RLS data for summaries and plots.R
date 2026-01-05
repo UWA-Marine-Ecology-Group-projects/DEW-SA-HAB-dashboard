@@ -1004,6 +1004,7 @@ hab_data <- structure(
     
     shark_ray_richness_samples = shark_ray_richness_samples,
     shark_ray_richness_summary = shark_ray_richness_summary,
+    shark_ray_richness_samples_location = shark_ray_richness_samples_location,
     shark_ray_richness_summary_location = shark_ray_richness_summary_location,
     
     reef_associated_richness_samples = reef_associated_richness_samples,

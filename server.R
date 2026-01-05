@@ -3743,7 +3743,7 @@ server <- function(input, output, session) {
   output$loc_plot_shark_ray_richness_main <- renderPlot({
     req(input$location)
     
-    df <- hab_data$shark_ray_richness_samples %>%
+    df <- hab_data$shark_ray_richness_samples_location %>%
       dplyr::filter(reporting_name == input$location)
     
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
@@ -3838,7 +3838,7 @@ server <- function(input, output, session) {
   output$loc_plot_shark_ray_richness_main_status <- renderPlot({
     req(input$region)
     
-    df <- hab_data$shark_ray_richness_samples %>%
+    df <- hab_data$shark_ray_richness_samples_location %>%
       dplyr::filter(reporting_name == input$location)
     
     df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
@@ -3889,7 +3889,7 @@ server <- function(input, output, session) {
   output$loc_plot_shark_ray_richness_detail_status <- renderPlot({
     req(input$location)
     
-    df <- hab_data$shark_ray_richness_samples %>%
+    df <- hab_data$shark_ray_richness_samples_location %>%
       dplyr::filter(reporting_name == input$location) %>%
       dplyr::group_by(period, status) %>%
       dplyr::summarise(
