@@ -3067,16 +3067,6 @@ server <- function(input, output, session) {
     make_impact_gauges_location(input$location)
   })
   
-  # hab_metric_change_location <- hab_data$impact_data_location %>%
-  #   dplyr::transmute(
-  #     reporting_name,
-  #     impact_metric,
-  #     percentage_change = dplyr::case_when(
-  #       is.na(percentage) ~ "Surveys incomplete",
-  #       TRUE ~ as.character(round(percentage - 100, 1))  # e.g. +20 means 120% of pre
-  #     )
-  #   )
-  # 
   output$location_change_table <- renderUI({
     req(input$location)
     
@@ -3084,41 +3074,65 @@ server <- function(input, output, session) {
       dplyr::filter(reporting_name == input$location) |>
       dplyr::select(
         Metric = impact_metric,
-        Change = percentage_change
+        'Change Overall'= percentage_change,
+        'Change Fished' = change_fished,
+        'Change No-take' = change_no_take
       )
     
-    vals <- df$Change
-    is_incomplete <- grepl("Surveys incomplete", vals, ignore.case = TRUE)
-    num <- suppressWarnings(as.numeric(vals))
-    has_num <- !is.na(num) & !is_incomplete
+    no_status_locations <- c("Boston Bay", "Glenelg")
+    show_status <- !input$location %in% no_status_locations
     
-    arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
-    colours <- ifelse(num <= -50, "#EB5757",
-                      ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+    fmt_change <- function(vals) {
+      vals_chr <- as.character(vals)
+      
+      is_incomplete <- grepl("Surveys incomplete", vals_chr, ignore.case = TRUE) | is.na(vals_chr)
+      
+      num <- suppressWarnings(as.numeric(vals_chr))
+      has_num <- !is.na(num) & !is_incomplete
+      
+      arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
+      colours <- ifelse(num <= -50, "#EB5757",
+                        ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+      
+      out <- rep("", length(vals_chr))
+      out[has_num] <- sprintf(
+        "<span style='color:%s'>%s %s%%</span>",
+        colours[has_num],
+        arrows[has_num],
+        scales::number(abs(num[has_num]), accuracy = 1)
+      )
+      out[is_incomplete] <- "<em>Surveys incomplete</em>"
+      out
+    }
     
-    out <- rep("", length(vals))
-    out[has_num] <- sprintf(
-      "<span style='color:%s'>%s %s%%</span>",
-      colours[has_num],
-      arrows[has_num],
-      scales::number(abs(num[has_num]), accuracy = 1)
-    )
-    out[is_incomplete] <- "<em>Surveys incomplete</em>"
+    out_overall <- fmt_change(df$`Change Overall`)
+    out_fished  <- fmt_change(df$`Change Fished`)
+    out_notake  <- fmt_change(df$`Change No-take`)
     
     tags$table(
       class = "table table-striped table-sm",
+      
       tags$thead(
-        tags$tr(tags$th("Metric"), tags$th("Change"))
+        tags$tr(
+          tags$th("Metric"),
+          tags$th("Change Overall"),
+          if (show_status) tags$th("Change Fished"),
+          if (show_status) tags$th("Change No-take")
+        )
       ),
+      
       tags$tbody(
         lapply(seq_len(nrow(df)), function(i) {
           tags$tr(
             tags$td(df$Metric[i]),
-            tags$td(HTML(out[i]))
+            tags$td(HTML(out_overall[i])),
+            if (show_status) tags$td(HTML(out_fished[i])),
+            if (show_status) tags$td(HTML(out_notake[i]))
           )
         })
       )
     )
+    
   })
   
   make_top10_plot_location <- function(location_name,

@@ -269,7 +269,8 @@ hab_metric_change_location <- hab_data$impact_data_location %>%
     percentage = (bloom / pre_bloom) * 100,
     percentage_change = (bloom - pre_bloom) / pre_bloom * 100
   ) %>%
-  dplyr::mutate(percentage_change = if_else(is.na(percentage_change), "Surveys incomplete", as.character(percentage_change))) %>%
+  dplyr::mutate(percentage_change = if_else(is.na(percentage_change), "Surveys incomplete", as.character(percentage_change)))  %>%
+  left_join(hab_data$impact_data_location_status) %>%
   dplyr::mutate(impact_metric = case_when(
     impact_metric %in% "species_richness" ~ "Species richness",
     impact_metric %in% "total_abundance" ~ "Total abundance",

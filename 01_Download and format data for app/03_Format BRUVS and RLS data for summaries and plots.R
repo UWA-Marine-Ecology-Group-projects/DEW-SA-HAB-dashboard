@@ -194,7 +194,7 @@ bruv_metadata_with_regions <- st_join(bruv_metadata_locs, reporting_regions) %>%
 combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
                                # bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")
-                               ) %>%
+) %>%
   select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length, status, reporting_location, reporting_sanctuary, reporting_name) %>%
   dplyr::mutate(year = as.numeric(str_sub(date, 1, 4))) %>%
   dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
@@ -468,7 +468,7 @@ trophic_groups_samples <- combined_count %>%
   dplyr::mutate(diet = if_else(diet %in% c("NA", NA), "Diet missing", diet)) %>%
   dplyr::group_by(campaignid, sample, region, period, status, diet, reporting_name) %>%
   dplyr::summarise(n_individuals_sample = sum(count))
-  
+
 nrow(combined_metadata %>% filter(method %in% "BRUVs")) * 5
 
 trophic_groups_summary <- trophic_groups_samples %>%
@@ -790,7 +790,7 @@ impact_data <- bind_rows(species_richness_impacts,
                          reef_associated_richness_impacts,
                          fish_200_abundance_impacts#,
                          #trophic_groups_impacts
-                         )
+)
 
 overall_impact <- impact_data %>%
   group_by(region) %>%
@@ -831,6 +831,26 @@ calc_impacts <- function(summary_df, group_col, metric_id) {
     )
 }
 
+calc_impacts_status <- function(summary_df, group_col, status_col = status, metric_id) {
+  summary_df %>%
+    dplyr::select({{ group_col }}, {{ status_col }}, period, mean) %>%
+    tidyr::complete({{ group_col }}, {{ status_col }}, period) %>%
+    tidyr::pivot_wider(names_from = period, values_from = mean) %>%
+    CheckEM::clean_names() %>%
+    dplyr::mutate(
+      percentage = bloom / pre_bloom * 100,
+      percentage_change = percentage - 100,  # <- handy “change from pre” (0 means no change)
+      impact = dplyr::case_when(
+        is.na(pre_bloom) | is.na(bloom)        ~ "Surveys incomplete",
+        percentage >= 80                       ~ "Low",
+        percentage >= 50 & percentage < 80     ~ "Medium",
+        percentage < 50                        ~ "High",
+        TRUE                                   ~ "Surveys incomplete"
+      ),
+      impact_metric = metric_id
+    )
+}
+
 species_richness_summary_location <- species_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
   dplyr::group_by(reporting_name, period) %>%
@@ -847,6 +867,31 @@ species_richness_impacts_location <- calc_impacts(
   metric_id  = "species_richness"
 )
 
+species_richness_summary_location_status <- species_richness_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
+
+species_richness_impacts_location_status <- calc_impacts_status(
+  summary_df = species_richness_summary_location_status,
+  group_col  = reporting_name,
+  status_col = status,
+  metric_id  = "species_richness")  %>%
+  dplyr::select(reporting_name, status, impact_metric, percentage_change) %>%
+  tidyr::pivot_wider(
+    names_from  = status,
+    values_from = percentage_change,
+    names_prefix = "change_"
+  ) %>%
+  CheckEM::clean_names() %>%
+  glimpse()
+
+
 total_abundance_summary_location <- total_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -861,6 +906,29 @@ total_abundance_impacts_location <- calc_impacts(
   group_col  = reporting_name,
   metric_id  = "total_abundance"
 )
+
+total_abundance_summary_location_status <- total_abundance_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
+    .groups = "drop"
+  )
+
+total_abundance_impacts_location_status <- calc_impacts_status(
+  summary_df = total_abundance_summary_location_status,
+  group_col  = reporting_name,
+  status_col = status,
+  metric_id  = "total_abundance")  %>%
+  dplyr::select(reporting_name, status, impact_metric, percentage_change) %>%
+  tidyr::pivot_wider(
+    names_from  = status,
+    values_from = percentage_change,
+    names_prefix = "change_"
+  ) %>%
+  CheckEM::clean_names() %>%
+  glimpse()
 
 shark_ray_richness_nonzero_loc <- combined_count %>%
   dplyr::filter(count > 0, method %in% "BRUVs") %>%
@@ -893,6 +961,28 @@ shark_ray_richness_impacts_location <- calc_impacts(
   metric_id  = "shark_ray_richness"
 )
 
+shark_ray_richness_summary_location_status <- shark_ray_richness_samples_location %>%
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
+    .groups = "drop"
+  )
+
+shark_ray_richness_impacts_location_status <- calc_impacts_status(
+  summary_df = shark_ray_richness_summary_location_status,
+  group_col  = reporting_name,
+  status_col = status,
+  metric_id  = "shark_ray_richness")  %>%
+  dplyr::select(reporting_name, status, impact_metric, percentage_change) %>%
+  tidyr::pivot_wider(
+    names_from  = status,
+    values_from = percentage_change,
+    names_prefix = "change_"
+  ) %>%
+  CheckEM::clean_names() %>%
+  glimpse()
+
 reef_associated_richness_summary_location <- reef_associated_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -908,6 +998,29 @@ reef_associated_richness_impacts_location <- calc_impacts(
   metric_id  = "reef_associated_richness"
 )
 
+reef_associated_richness_summary_location_status <- reef_associated_richness_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
+    .groups = "drop"
+  )
+
+reef_associated_richness_impacts_location_status <- calc_impacts_status(
+  summary_df = reef_associated_richness_summary_location_status,
+  group_col  = reporting_name,
+  status_col = status,
+  metric_id  = "reef_associated_richness")  %>%
+  dplyr::select(reporting_name, status, impact_metric, percentage_change) %>%
+  tidyr::pivot_wider(
+    names_from  = status,
+    values_from = percentage_change,
+    names_prefix = "change_"
+  ) %>%
+  CheckEM::clean_names() %>%
+  glimpse()
+
 fish_200_abundance_summary_location <- fish_200_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -922,6 +1035,29 @@ fish_200_abundance_impacts_location <- calc_impacts(
   group_col  = reporting_name,
   metric_id  = "fish_200_abundance"
 )
+
+fish_200_abundance_summary_location_status <- fish_200_abundance_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
+    .groups = "drop"
+  )
+
+fish_200_abundance_impacts_location_status <- calc_impacts_status(
+  summary_df = fish_200_abundance_summary_location_status,
+  group_col  = reporting_name,
+  status_col = status,
+  metric_id  = "fish_200_abundance")  %>%
+  dplyr::select(reporting_name, status, impact_metric, percentage_change) %>%
+  tidyr::pivot_wider(
+    names_from  = status,
+    values_from = percentage_change,
+    names_prefix = "change_"
+  ) %>%
+  CheckEM::clean_names() %>%
+  glimpse()
 
 impact_data_location <- dplyr::bind_rows(
   species_richness_impacts_location,
@@ -943,6 +1079,23 @@ overall_impact_location <- impact_data_location %>%
       TRUE                        ~ "Surveys incomplete"
     )
   )
+
+impact_data_location_status <- bind_rows(
+  species_richness_impacts_location_status,
+  total_abundance_impacts_location_status,
+  shark_ray_richness_impacts_location_status,
+  reef_associated_richness_impacts_location_status,
+  fish_200_abundance_impacts_location_status
+)
+
+sanity_table_location <- combined_metadata %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  group_by(reporting_name, status, period) %>%
+  dplyr::summarise(number_of_deployments = n()) %>%
+  sf::st_drop_geometry() %>%
+  ungroup() %>%
+  pivot_wider(names_from = period, values_from = number_of_deployments)
 
 # hab_metric_change_location <- impact_data_location %>%
 #   dplyr::transmute(
@@ -1001,6 +1154,7 @@ hab_data <- structure(
     
     impact_data_location = impact_data_location,
     overall_impact_location = overall_impact_location,
+    impact_data_location_status = impact_data_location_status,
     # hab_metric_change_location = hab_metric_change_location,
     
     # Tabset plots
