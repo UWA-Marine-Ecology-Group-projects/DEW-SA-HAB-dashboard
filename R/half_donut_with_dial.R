@@ -54,17 +54,45 @@ half_donut_with_dial <- function(
     ) +
     scale_fill_manual(values = tier_colors)
   
+  # # labels (optional, only once)
+  # if (show_labels) {
+  #   label_r <- r_outer * 1.2
+  #   lab_df <- data.frame(
+  #     x = sin(mids) * label_r,
+  #     y = pmax(cos(mids) * label_r, 0.015),
+  #     lab = segments
+  #   )
+  #   p <- p + geom_text(data = lab_df,
+  #                      aes(x = x, y = y, label = lab),
+  #                      # fontface = "bold", 
+  #                      size = 5)
+  # }
+  
   # labels (optional, only once)
   if (show_labels) {
+    
     label_r <- r_outer * 1.08
+    
+    # per-label radial multipliers (tweak these)
+    label_mult <- c("Low" = 1.15, "Medium" = 1.05, "High" = 1.15)
+    
+    # ensure names match segments
+    label_mult <- label_mult[segments]
+    
     lab_df <- data.frame(
-      x = sin(mids) * label_r,
-      y = pmax(cos(mids) * label_r, 0.015),
-      lab = segments
+      lab  = segments,
+      theta = mids,
+      r     = label_r * label_mult
     )
-    p <- p + geom_text(data = lab_df,
-                       aes(x = x, y = y, label = lab),
-                       fontface = "bold", size = 5)
+    
+    lab_df$x <- sin(lab_df$theta) * lab_df$r
+    lab_df$y <- pmax(cos(lab_df$theta) * lab_df$r, 0.015)
+    
+    p <- p + geom_text(
+      data = lab_df,
+      aes(x = x, y = y, label = lab),
+      size = 5
+    )
   }
   
   # dial (needle)

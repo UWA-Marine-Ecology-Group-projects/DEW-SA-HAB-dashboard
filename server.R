@@ -232,7 +232,7 @@ metric_plot_id <- function(prefix, metric_id, which) {
   paste0(prefix, "_plot_", metric_id, "_", which)
 }
 
-metric_plotOutput <- function(prefix, metric_id, which, height = 400, spinner_type = 6) {
+metric_plotOutput <- function(prefix, metric_id, which, height = 600, spinner_type = 6) {
   withSpinner(
     plotOutput(metric_plot_id(prefix, metric_id, which), height = height),
     type = spinner_type
@@ -2272,8 +2272,8 @@ server <- function(input, output, session) {
     
     # Base colours (your existing theme)
     period_cols <- c(
-      "Pre-bloom" = "#0c3978",
-      "Bloom"     = "#f89f00"
+      "Pre-bloom" = "#072759",
+      "Bloom"     = "#e88e98"
     )
     
     # ---- Data prep ----
@@ -2324,10 +2324,12 @@ server <- function(input, output, session) {
       )
     
     # Period order: focal period first
-    plot_df$period <- factor(
-      plot_df$period,
-      levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
-    )
+    # plot_df$period <- factor(
+    #   plot_df$period,
+    #   levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
+    # )
+    # Period order: ALWAYS Pre-bloom then Bloom
+    plot_df$period <- factor(plot_df$period, levels = c("Pre-bloom", "Bloom"))
     
     # Species order: smallest at bottom, biggest at top for focal period
     species_order <- plot_df |>
@@ -3132,8 +3134,8 @@ server <- function(input, output, session) {
     
     # Base colours (your existing theme)
     period_cols <- c(
-      "Pre-bloom" = "#0c3978",
-      "Bloom"     = "#f89f00"
+      "Pre-bloom" = "#072759",
+      "Bloom"     = "#e88e98"
     )
     
     # Same structure as your region table, just filtered by location
@@ -3183,11 +3185,14 @@ server <- function(input, output, session) {
         label = paste0("*", sci, "*<br>(", common, ")")
       )
     
-    # Period order: focal period first
-    plot_df$period <- factor(
-      plot_df$period,
-      levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
-    )
+    # # Period order: focal period first
+    # plot_df$period <- factor(
+    #   plot_df$period,
+    #   levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
+    # )
+    
+    # Period order: ALWAYS Pre-bloom then Bloom
+    plot_df$period <- factor(plot_df$period, levels = c("Pre-bloom", "Bloom"))
     
     # Species order: smallest at bottom, biggest at top for focal period
     species_order <- plot_df |>
@@ -3927,5 +3932,216 @@ server <- function(input, output, session) {
   }) |>
     bindCache(input$location) |>
     bindEvent(input$location)
+  
+  
+  
+  # ---------- Trophic Groups: two plots ------------
+  output$loc_plot_trophic_main <- renderPlot({
+    req(input$location)
+    
+    # Filter for this region
+    df <- hab_data$trophic_groups_samples %>%
+      dplyr::filter(reporting_name == input$location)
+    
+    mean_se <- hab_data$trophic_groups_summary %>%
+      dplyr::filter(reporting_name == input$location)
+    
+    # Order periods
+    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
+    
+    # (Optional) order diet groups if you want a specific order
+    diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+    df$diet <- factor(df$diet, levels = diet_levels)
+    mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
+    
+    dodge <- position_dodge(width = 0.75)
+    
+    ggplot(df, aes(x = diet, y = n_individuals_sample, fill = period)) +
+      geom_boxplot(
+        position = dodge,
+        width = 0.6,
+        outlier.shape = NA,
+        alpha = 0.85,
+        colour = "black"
+      ) +
+      geom_jitter(
+        aes(colour = period),
+        position = position_jitterdodge(
+          jitter.width  = 0.15,
+          jitter.height = 0,
+          dodge.width   = 0.75
+        ),
+        alpha = 0.35,
+        size = 1.2
+      ) +
+      geom_pointrange(
+        data = mean_se,
+        aes(
+          x    = diet,
+          y    = mean,
+          ymin = mean - se,
+          ymax = mean + se,
+          group = period,
+          colour = period
+        ),
+        position = dodge,
+        inherit.aes = FALSE,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols) +
+      scale_color_manual(values = metric_period_cols) +
+      labs(
+        x = NULL,  # or "Diet group"
+        y = metric_y_lab[["large_fish"]],
+        subtitle = input$location
+      ) +
+      theme_minimal(base_size = 16) +
+      theme(
+        legend.position  = "top",
+        panel.grid.minor = element_blank()
+      )
+  }) |>
+    bindCache(input$location) |>
+    bindEvent(input$location)
+  # 
+  # # ---------- Trophic Groups: stacked composition plot ------------
+  # 
+  # output$em_plot_trophic_stack <- renderPlot({
+  #   req(input$region#, input$trophic_stack_scale
+  #   )
+  #   
+  #   diet_levels <- names(diet_cols)
+  #   
+  #   # Start from the SUMMARY table (means per sample)
+  #   mean_se <- hab_data$trophic_groups_richness_summary %>%
+  #     dplyr::filter(region == input$region) %>%
+  #     dplyr::mutate(
+  #       period = factor(period, levels = c("Pre-bloom", "Bloom")),
+  #       diet   = factor(diet,   levels = diet_levels)
+  #     )
+  #   
+  #   # -------- COUNT VIEW (mean-based) --------
+  #   ggplot(mean_se, aes(x = period, y = mean, fill = diet)) +
+  #     geom_col(position = "stack") +
+  #     scale_y_continuous(labels = scales::comma) +
+  #     scale_fill_manual(values = diet_cols, drop = FALSE) +
+  #     labs(
+  #       x        = NULL,
+  #       y        = "Mean no. species per sample",
+  #       fill     = "Diet group",
+  #       subtitle = input$region
+  #     ) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(panel.grid.minor = element_blank())
+  #   # }
+  # }) |>
+  #   bindCache(input$region, input$trophic_stack_scale) |>
+  #   bindEvent(input$region, input$trophic_stack_scale)
+  # 
+  # output$em_plot_trophic_main_status <- renderPlot({
+  #   req(input$region)
+  #   
+  #   # Filter for this region
+  #   df <- hab_data$trophic_groups_samples %>%
+  #     dplyr::filter(region == input$region)
+  #   
+  #   mean_se <- hab_data$trophic_groups_summary %>%
+  #     dplyr::filter(region == input$region)
+  #   
+  #   # Order periods
+  #   df$period     <- factor(df$period,     levels = c("Pre-bloom", "Bloom"))
+  #   mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
+  #   
+  #   # Diet ordering
+  #   diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+  #   df$diet     <- factor(df$diet,     levels = diet_levels)
+  #   mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
+  #   
+  #   dodge <- position_dodge(width = 0.75)
+  #   
+  #   ggplot(df, aes(x = diet, y = n_individuals_sample, fill = period)) +
+  #     geom_boxplot(
+  #       position = dodge,
+  #       width = 0.6,
+  #       outlier.shape = NA,
+  #       alpha = 0.85,
+  #       colour = "black"
+  #     ) +
+  #     geom_jitter(
+  #       aes(colour = period),
+  #       position = position_jitterdodge(
+  #         jitter.width  = 0.15,
+  #         jitter.height = 0,
+  #         dodge.width   = 0.75
+  #       ),
+  #       alpha = 0.35,
+  #       size = 1.2
+  #     ) +
+  #     geom_pointrange(
+  #       data = mean_se,
+  #       aes(
+  #         x    = diet,
+  #         y    = mean,
+  #         ymin = mean - se,
+  #         ymax = mean + se,
+  #         group = period,
+  #         colour = period
+  #       ),
+  #       inherit.aes = FALSE,
+  #       position = dodge,
+  #       linewidth = 0.6
+  #     ) +
+  #     scale_fill_manual(values = metric_period_cols) +
+  #     scale_colour_manual(values = metric_period_cols) +
+  #     labs(
+  #       x = NULL,
+  #       y = metric_y_lab[["large_fish"]],
+  #       subtitle = input$region
+  #     ) +
+  #     facet_wrap(~ status) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(
+  #       legend.position = "top",
+  #       panel.grid.minor = element_blank()
+  #     )
+  # }) |>
+  #   bindCache(input$region) |>
+  #   bindEvent(input$region)
+  # 
+  # output$em_plot_trophic_stack_status <- renderPlot({
+  #   req(input$region#, input$trophic_stack_scale
+  #   )
+  #   
+  #   diet_levels <- names(diet_cols)
+  #   
+  #   # Start from the SUMMARY table (means per sample)
+  #   mean_se <- hab_data$trophic_groups_richness_summary_status %>%
+  #     dplyr::filter(region == input$region) %>%
+  #     dplyr::mutate(
+  #       period = factor(period, levels = c("Pre-bloom", "Bloom")),
+  #       diet   = factor(diet,   levels = diet_levels)
+  #     )
+  #   
+  #   # -------- COUNT VIEW (mean-based) --------
+  #   ggplot(mean_se, aes(x = period, y = mean, fill = diet)) +
+  #     geom_col(position = "stack") +
+  #     scale_y_continuous(labels = scales::comma) +
+  #     scale_fill_manual(values = diet_cols, drop = FALSE) +
+  #     labs(
+  #       x        = NULL,
+  #       y        = "Mean no. species per sample",
+  #       fill     = "Diet group",
+  #       subtitle = input$region
+  #     ) +
+  #     facet_wrap(~ status) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(panel.grid.minor = element_blank())
+  #   # }
+  # }) |>
+  #   bindCache(input$region, input$trophic_stack_scale) |>
+  #   bindEvent(input$region, input$trophic_stack_scale)
+  # 
+  
   
   }

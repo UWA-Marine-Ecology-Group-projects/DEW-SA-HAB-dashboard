@@ -456,23 +456,33 @@ trophic_groups_samples <- combined_count %>%
   # keep region/period/status here so we don't have to join later
   dplyr::select(
     campaignid, sample, region, period, status,
-    genus, species, genus_species, count
+    genus, species, genus_species, count, reporting_name
   ) %>%
   tidyr::complete(
-    tidyr::nesting(campaignid, sample, region, period, status),
+    tidyr::nesting(campaignid, sample, region, period, status, reporting_name),
     tidyr::nesting(genus, species, genus_species)
   ) %>%
   dplyr::filter(!is.na(species)) %>%
   tidyr::replace_na(list(count = 0)) %>%
   dplyr::left_join(dew_species) %>%
   dplyr::mutate(diet = if_else(diet %in% c("NA", NA), "Diet missing", diet)) %>%
-  dplyr::group_by(campaignid, sample, region, period, status, diet) %>%
+  dplyr::group_by(campaignid, sample, region, period, status, diet, reporting_name) %>%
   dplyr::summarise(n_individuals_sample = sum(count))
   
 nrow(combined_metadata %>% filter(method %in% "BRUVs")) * 5
 
 trophic_groups_summary <- trophic_groups_samples %>%
   dplyr::group_by(region, period, diet) %>%
+  dplyr::summarise(
+    mean = mean(n_individuals_sample, na.rm = TRUE),
+    se   = sd(n_individuals_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(n_individuals_sample))),
+    num = n(),
+    .groups = "drop"
+  )
+
+trophic_groups_summary_location <- trophic_groups_samples %>%
+  dplyr::group_by(region, reporting_name, period, diet) %>%
   dplyr::summarise(
     mean = mean(n_individuals_sample, na.rm = TRUE),
     se   = sd(n_individuals_sample, na.rm = TRUE) /
@@ -1016,7 +1026,7 @@ hab_data <- structure(
     fish_200_abundance_summary_location = fish_200_abundance_summary_location,
     
     trophic_groups_summary = trophic_groups_summary,
-    # trophic_groups_summary_location = trophic_groups_summary_location,
+    trophic_groups_summary_location = trophic_groups_summary_location,
     trophic_groups_samples = trophic_groups_samples,
     
     trophic_groups_richness_summary = trophic_groups_richness_summary,

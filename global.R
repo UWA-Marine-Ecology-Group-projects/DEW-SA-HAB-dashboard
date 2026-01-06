@@ -223,8 +223,8 @@ metric_y_lab <- list(
 
 # shared colours for pre/post everywhere
 metric_period_cols <- c(
-  "Pre-bloom"  = "#0c3978",  # same blue
-  "Bloom" = "#f89f00"   # same orange
+  "Pre-bloom"  = "#072759",  # same blue
+  "Bloom" = "#e88e98"   # same orange
 )
 
 metric_groups <- function(metric_id) {
