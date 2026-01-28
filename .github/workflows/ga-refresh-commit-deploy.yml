@@ -35,6 +35,13 @@ jobs:
         run: |
           Rscript -e 'install.packages(c("rsconnect","httr","jsonlite"))'
 
+      - name: Install R packages (CRAN + GitHub)
+        run: |
+          Rscript -e 'install.packages(c("remotes","httr","jsonlite","R.utils","RCurl","plyr","dplyr","tidyr","purrr","readr","stringr","sf","leaflet","here","forcats","janitor"))'
+          Rscript -e 'remotes::install_github("UWAMEGFisheries/GlobalArchive", dependencies = TRUE)'
+          Rscript -e 'remotes::install_github("GlobalArchiveManual/CheckEM", dependencies = TRUE)'
+
+
       - name: Update GA data cache
         run: |
           Rscript scripts/update_ga_data.R
