@@ -160,16 +160,20 @@ ui <- page_navbar(
             title       = "BRUVS deployments",
             left_label  = "Planned",
             right_label = "Completed",
-            icon        = div(class = "vb-icon-wrap", icon("ship", class = "fa-xl")),
+            icon        = img(src = "stereo-BRUV_filled_transparent.png",
+                              height = "70px"
+            ), #div(class = "vb-icon-wrap", icon("ship", class = "fa-xl")),
             theme_color = "secondary"
           ),
           
           twoValueBoxUI(
-            id          = "rov_progress",
-            title       = "ROV transects",
+            id          = "uvc_progress",
+            title       = "Dive transects",
             left_label  = "Planned",
             right_label = "Completed",
-            icon        = div(class = "vb-icon-wrap", icon("video", class = "fa-xl")),
+            icon        = img(src = "uvc_new.png",
+                              height = "100px"),
+              #div(class = "vb-icon-wrap", icon("video", class = "fa-xl")),
             theme_color = "secondary"
           ),
           
@@ -251,7 +255,7 @@ ui <- page_navbar(
 
           
           card(
-            min_height = 600,
+            min_height = 550,
             full_screen = TRUE,
             card_header("Survey Effort"),
             div(
@@ -279,7 +283,12 @@ ui <- page_navbar(
                   style = "float:right; margin-top:-2px;"
                 )
               ),
-              spinnerPlotOutput("region_impact_gauges", height = 350)  # was: plotOutput(...)
+              
+              spinnerPlotOutput("overall_impact_gauge", height = 180),  # was: plotOutput(...)
+              h6("Algal bloom impact on:"),
+              spinnerPlotOutput("region_impact_gauges", height = 300),
+              helpText(
+              "* Bluefin leatherjacket impact is reversed, click on the info icon for more information ")# was: plotOutput(...)
             ),
             
             card(
@@ -298,7 +307,8 @@ ui <- page_navbar(
                 )
               ),
               card_body(
-                spinnerUiOutput("region_change_table")  # was: uiOutput("region_change_table")
+                spinnerUiOutput("region_change_table"#, height = 200
+                                )  # was: uiOutput("region_change_table")
               )
             )
             

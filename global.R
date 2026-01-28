@@ -261,7 +261,8 @@ hab_metric_change <- hab_data$impact_data %>%
     impact_metric %in% "total_abundance" ~ "Total abundance",
     impact_metric %in% "shark_ray_richness" ~ "Shark and ray richness",
     impact_metric %in% "reef_associated_richness" ~ "Reef associated species richness",
-    impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance"
+    impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance",
+    impact_metric %in% "thamnaconus_degeni" ~ "Bluefin leatherjacket displacement*",
   ))
 
 hab_metric_change_location <- hab_data$impact_data_location %>%
@@ -276,7 +277,8 @@ hab_metric_change_location <- hab_data$impact_data_location %>%
     impact_metric %in% "total_abundance" ~ "Total abundance",
     impact_metric %in% "shark_ray_richness" ~ "Shark and ray richness",
     impact_metric %in% "reef_associated_richness" ~ "Reef associated species richness",
-    impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance"
+    impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance",
+    impact_metric %in% "thamnaconus_degeni" ~ "Bluefin leatherjacket displacement*"
   ))
 
 # unique(hab_metric_change$impact_metric)

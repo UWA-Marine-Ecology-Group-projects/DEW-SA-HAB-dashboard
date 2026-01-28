@@ -73,7 +73,7 @@ metadata <- ga.list.files("_Metadata.csv") %>% # list all files ending in "_Meta
 unique(metadata$project) %>% sort() # 4 projects
 unique(metadata$campaignid)  %>% sort() # 26 campaigns 
 unique(metadata$location)
-
+unique(metadata$sample)
 
 write.csv(metadata, "data/raw/sa_metadata_bruv.csv", row.names = FALSE)
 saveRDS(metadata, "data/raw/sa_metadata_bruv.RDS")
@@ -84,6 +84,17 @@ points <- ga.list.files("_Points.txt") %>%
   purrr::map_df(~ga.read.files_txt(.)) %>%
   dplyr::select(project, campaignid, sample, family, genus, species, number, stage, frame) %>%
  dplyr::mutate(number = as.numeric(number)) %>%
+  dplyr::mutate(family = ifelse(family %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(family))) %>%
+  dplyr::mutate(genus = ifelse(genus %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(genus))) %>%
+  dplyr::mutate(species = ifelse(species %in% c("NA", 
+                                                "NANA", 
+                                                NA, 
+                                                "unknown", 
+                                                "", NULL, 
+                                                " ", 
+                                                NA_character_, 
+                                                "sp", 
+                                                "spp."), "spp", as.character(species)))  %>%
   glimpse()
 
 names(points)
@@ -103,7 +114,19 @@ counts <- ga.list.files("_Count.csv") %>%
   dplyr::mutate(count = as.numeric(count)) %>%
   dplyr::mutate(family = ifelse(family %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(family))) %>%
   dplyr::mutate(genus = ifelse(genus %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(genus))) %>%
-  dplyr::mutate(species = ifelse(species %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "spp", as.character(species))) 
+  dplyr::mutate(species = ifelse(species %in% c("NA", 
+                                                "NANA", 
+                                                NA, 
+                                                "unknown", 
+                                                "", NULL, 
+                                                " ", 
+                                                NA_character_, 
+                                                "sp", 
+                                                "spp."), "spp", as.character(species))) 
+
+# TODO check with the 
+
+unique(counts$species) %>% sort()
 
 names(counts)
 
@@ -111,14 +134,59 @@ counts_single <- counts %>%
   dplyr::group_by(project, campaignid, sample, family, genus, species) %>%
   dplyr::slice(which.max(count))
 
-count <- bind_rows(points_maxn, counts_single)
+count <- bind_rows(points_maxn, counts_single) %>%
+  ungroup() %>%
+  dplyr::mutate(genus = case_when(
+    genus %in% "Pagrus" ~ "Chrysophrys",
+    genus %in% "Unidentified" ~ "Unknown",
+    genus %in% "Cheilodactylus" ~ "Pseudogoniistius",
+    genus %in% "Dasyatis" ~ "Bathytoshia",
+    genus %in% "Pelates" & species %in% "octolineatus" ~ "Helotes",
+    genus %in% "Unknown" ~ family,
+    .default = genus
+  )) %>%
+  
+  dplyr::mutate(species = case_when(
+    species %in% c("sp.", "fish sp.", "fish sp. 1") ~ "spp",
+    genus %in% "Portunus" & species %in% "pelagicus" ~ "armatus",    
+    .default = species
+  )) %>%
+  
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
+  glimpse()
 
+# Test which species are missing ----
+# Read in DEWs sheet ----
+dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
+
+# Find which ones are missing ----
+unique_species <- count %>%
+
+  distinct(family, genus, species, genus_species) %>%
+  glimpse()
+
+missing_from_list <- anti_join(unique_species, dew_species)
+
+# Add to google sheet
+to_add <- missing_from_list %>%
+  select(genus_species)
+
+sheet_append("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing", to_add)
+
+
+
+
+# Synoynms -----
+# TODO - brooke to figure out if she needs to do this or not - not sure why in 3rd person
 count_with_syn <- dplyr::left_join(count, CheckEM::aus_synonyms) %>%
   dplyr::mutate(genus = ifelse(!genus_correct%in%c(NA), genus_correct, genus)) %>%
   dplyr::mutate(species = ifelse(!is.na(species_correct), species_correct, species)) %>%
   dplyr::mutate(family = ifelse(!is.na(family_correct), family_correct, family)) %>%
   dplyr::select(-c(family_correct, genus_correct, species_correct)) %>%
-  dplyr::mutate(scientific = paste(family, genus, species))
+  mutate(species = case_when(
+    genus == "Portunus" & species == "pelagicus" ~ "armatus",    
+    .default =  species)) %>%
+  dplyr::mutate(scientific = paste(family, genus, species)) 
 
 # Test which metadata files do not have a match in count
 missing_metadata <- anti_join(count, metadata) # TODO chase these up with Sasha if they are being used
@@ -139,7 +207,7 @@ gen_length <- ga.list.files("_Length.csv") %>%
   dplyr::select(project, campaignid, sample, family, genus, species, count, length) %>%
   dplyr::mutate(family = ifelse(family %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(family))) %>%
   dplyr::mutate(genus = ifelse(genus %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(genus))) %>%
-  dplyr::mutate(species = ifelse(species %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "spp", as.character(species))) 
+  dplyr::mutate(species = ifelse(species %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_, "sp", "spp."), "spp", as.character(species))) 
 
 em_length <- ga.list.files("_Lengths.txt") %>%
   purrr::map_df(~ga.read.files_txt(.)) %>%

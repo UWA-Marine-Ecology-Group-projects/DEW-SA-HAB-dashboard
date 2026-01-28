@@ -1,5 +1,5 @@
 # --------------------------- shared helpers ----------------------------------
-base_map <- function(max_zoom = 11, current_zoom = 6) {
+base_map <- function(max_zoom = 20, current_zoom = 6) {
   leaflet() |>
     addTiles(options = tileOptions(minZoom = 4, max_zoom)) |>
     setView(lng = 137.618521, lat = -34.25, current_zoom) |>
@@ -189,6 +189,39 @@ safe_pull <- function(expr) {
   })
 }
 
+make_overall_impact_gauge <- function(region_name) {
+  
+  message(region_name)
+  
+  # ---- Overall impact ----
+  overall_status <- hab_data$overall_impact |>
+    dplyr::filter(region == region_name) |>
+    dplyr::pull(overall_impact) %>%
+    dplyr::glimpse()
+  
+  p0 <- if (identical(overall_status, "Surveys incomplete") ||
+            length(overall_status) == 0 ||
+            is.na(overall_status)) {
+    
+    no_data_plot("Overall impact")
+    
+  } else {
+  p0 <-   half_donut_with_dial(
+      values = c(1, 1, 1),
+      mode   = "absolute",
+      status = overall_status
+    ) +
+      ggtitle("Overall impact") +
+      theme(
+        plot.title = element_text(hjust = 0.5, face = "bold.italic", size = 16),
+        plot.margin = margin(2, 2, 2, 2)
+      )
+  }
+  
+  # Final layout
+  (p0)
+}
+
 make_impact_gauges <- function(region_name) {
   
   # ---- Overall impact ----
@@ -221,10 +254,11 @@ make_impact_gauges <- function(region_name) {
   p3 <- get_metric_plot("shark_ray_richness",       "Shark and ray richness",           chosen_region = region_name)
   p4 <- get_metric_plot("reef_associated_richness", "Reef associated species richness", chosen_region = region_name)
   p5 <- get_metric_plot("fish_200_abundance",       "Fish > 200 mm abundance",          chosen_region = region_name)
+  p6 <- get_metric_plot("thamnaconus_degeni",       "Bluefin leatherjacket displacement*",          chosen_region = region_name)
   
   # Final layout
-  (p0 | p1 | p2) /
-    (p3 | p4 | p5)
+  (p1 | p2 | p3) /
+    (p4 | p5 | p6)
 }
 
 # ---- output id helpers -------------------------------------------------------
@@ -368,9 +402,17 @@ server <- function(input, output, session) {
     left_join(hab_data$overall_impact)
   
   # Default selected region (first available)
-  selected_region <- reactiveVal({
-    (regions_joined$region[!is.na(regions_joined$region)])[8]
-  })
+  # selected_region <- reactiveVal({
+  #   (regions_joined$region[!is.na(regions_joined$region)])[8]
+  # })
+  
+  selected_region <- reactiveVal((regions_joined$region[!is.na(regions_joined$region)])[8])
+  
+  # whenever the dropdown changes, update selected_region
+  observeEvent(input$region, {
+    req(input$region)
+    selected_region(input$region)
+  }, ignoreInit = TRUE)
   
   # Value boxes ----
   # Number of BRUV Deployments ----
@@ -657,7 +699,7 @@ server <- function(input, output, session) {
   
   output$map <- renderLeaflet({
     
-    method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
+    method_cols <- c("BRUVs" = "#004DA7", "UVC" = "#C600FF")
     pts <- ensure_sf_ll(hab_data$hab_combined_metadata)
     
     m <- base_map(current_zoom = 7) |>
@@ -928,8 +970,14 @@ server <- function(input, output, session) {
   # Pointer plots----
   # Pointer plots: overall + 5 indicators in one figure ------------------------
   output$impact_gauges <- renderPlot({
-    req(selected_region())
-    make_impact_gauges(selected_region())
+    req(input$region)
+    make_impact_gauges(input$region)
+  })
+  
+  
+  output$overall_impact_gauge <- renderPlot({
+    req(input$region)
+    make_overall_impact_gauge(input$region)
   })
   
   
@@ -961,7 +1009,9 @@ server <- function(input, output, session) {
   max_lon <- reactive({max(deployments()$longitude_dd, na.rm = TRUE)})
   
   output$region_survey_effort <- renderLeaflet({
-    method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
+    method_cols <- c("BRUVs" = "#004DA7"
+                     #, "UVC" = "#C600FF"
+                     )
     
     pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
       dplyr::filter(region %in% input$region)
@@ -2223,10 +2273,22 @@ server <- function(input, output, session) {
     # Arrows
     arrows <- ifelse(num < 0, "&#8595;", "&#8593;")
     
-    # Colour rules
+    # # Colour rules
+    # colours <- ifelse(
+    #   num <= -50, "#EB5757",
+    #   ifelse(num <= -20, "#F2C94C", "#3B7EA1")
+    # )
+    # Colour rules (default + special-case one metric)
+    special_metric <- "Bluefin leatherjacket displacement*"
+    
     colours <- ifelse(
-      num <= -50, "#EB5757",
-      ifelse(num <= -20, "#F2C94C", "#3B7EA1")
+      df$Metric == special_metric,
+      # Special rule (based on magnitude, regardless of sign)
+      ifelse(abs(num) < 120, "#3B7EA1",
+             ifelse(abs(num) <= 150, "#F2C94C", "#EB5757")),
+      # Default rule (your existing thresholds; uses signed num)
+      ifelse(num <= -50, "#EB5757",
+             ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
     )
     
     # Build formatted column
@@ -2550,7 +2612,7 @@ server <- function(input, output, session) {
   )
   
   twoValueBoxServer(
-    "rov_progress",
+    "uvc_progress",
     left_reactive  = reactive({ uvc_planned }),
     right_reactive = reactive({ uvc_completed })
   )
@@ -2976,7 +3038,7 @@ server <- function(input, output, session) {
   output$location_survey_effort <- renderLeaflet({
     req(input$location)
     
-    method_cols <- c("BRUVs" = "#f89f00", "UVC" = "#0c3978")
+    method_cols <- c("BRUVs" = "#004DA7", "UVC" = "#C600FF")
     
     pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
       dplyr::filter(reporting_name %in% input$location)
@@ -3041,25 +3103,26 @@ server <- function(input, output, session) {
       dplyr::filter(reporting_name == location_name) |>
       dplyr::pull(overall_impact)
     
-    p0 <- if (length(overall_status) == 0 || is.na(overall_status) ||
-              identical(overall_status, "Surveys incomplete")) {
-      no_data_plot("Overall impact")
-    } else {
-      half_donut_with_dial(values = c(1, 1, 1), mode = "absolute", status = overall_status) +
-        ggtitle("Overall impact") +
-        theme(
-          plot.title  = element_text(hjust = 0.5, face = "bold.italic", size = 16),
-          plot.margin = margin(2, 2, 2, 2)
-        )
-    }
-    
+    # p0 <- if (length(overall_status) == 0 || is.na(overall_status) ||
+    #           identical(overall_status, "Surveys incomplete")) {
+    #   no_data_plot("Overall impact")
+    # } else {
+    #   half_donut_with_dial(values = c(1, 1, 1), mode = "absolute", status = overall_status) +
+    #     ggtitle("Overall impact") +
+    #     theme(
+    #       plot.title  = element_text(hjust = 0.5, face = "bold.italic", size = 16),
+    #       plot.margin = margin(2, 2, 2, 2)
+    #     )
+    # }
+    # 
     p1 <- get_metric_plot_location("species_richness",         "Species richness",                 chosen_location = location_name)
     p2 <- get_metric_plot_location("total_abundance",          "Total abundance",                  chosen_location = location_name)
     p3 <- get_metric_plot_location("shark_ray_richness",       "Shark and ray richness",           chosen_location = location_name)
     p4 <- get_metric_plot_location("reef_associated_richness", "Reef associated species richness", chosen_location = location_name)
     p5 <- get_metric_plot_location("fish_200_abundance",       "Fish > 200 mm abundance",          chosen_location = location_name)
+    p6 <- get_metric_plot_location("degeni_impacts",       "Bluefin leatherjacket displacement*",          chosen_location = location_name)
     
-    (p0 | p1 | p2) / (p3 | p4 | p5)
+    (p1 | p2 | p3) / (p4 | p5 | p6)
   }
   
   output$location_impact_gauges <- renderPlot({

@@ -573,7 +573,7 @@ species_richness_samples <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   
-  dplyr::filter(!genus %in% "Unknown") %>%
+  dplyr::filter(!genus %in% "Unknown") %>% # TODO check sasha's script to see if this is different
   dplyr::filter(!species %in% "spp") %>%
   
   dplyr::group_by(region, period, sample) %>%
@@ -622,6 +622,22 @@ total_abundance_samples <- combined_count %>%
   dplyr::filter(method %in% "BRUVs") %>%
   tidyr::replace_na(list(total_abundance_sample = 0))
 
+# df_for_sasha <- total_abundance_samples %>%
+#   dplyr::group_by(region, reporting_location, period) %>%
+#   dplyr::summarise(n = n())
+# 
+# sasha <- read_csv("windara-samples.csv") %>%
+#   clean_names()
+# 
+# windara_ta <- total_abundance_samples %>%
+#   dplyr::filter(reporting_location %in% "Windara Reef") %>%
+#   # full_join(sasha) %>%
+#   glimpse()
+# 
+# num_ta <- windara_ta %>%
+#   dplyr::group_by(period) %>%
+#   dplyr::summarise(n = n())
+
 total_abundance_summary <- total_abundance_samples %>%
   dplyr::group_by(region, period) %>%
   dplyr::summarise(
@@ -646,6 +662,44 @@ total_abundance_impacts <- total_abundance_summary %>%
     .default = "Surveys incomplete"
   )) %>%
   mutate(impact_metric = "total_abundance")
+
+# Total abundance ----
+degeni_samples <- combined_count %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::filter(genus_species %in% c("Thamnaconus degeni")) %>%
+  dplyr::group_by(region, period, sample) %>%
+  dplyr::summarise(total_abundance_sample = sum(count), .groups = "drop") %>%
+  ungroup() %>%
+  dplyr::filter(!is.na(region)) %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  tidyr::replace_na(list(total_abundance_sample = 0))
+
+degeni_summary <- degeni_samples %>%
+  dplyr::group_by(region, period) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(total_abundance_sample))),
+    .groups = "drop"
+  ) %>%
+  ungroup()
+
+# Calculate Impacts for Total Abundance ----
+degeni_impacts <- degeni_summary %>%
+  dplyr::select(-se) %>%
+  tidyr::complete(region, period) %>%
+  tidyr::pivot_wider(names_from = period, values_from = mean) %>%
+  clean_names() %>%
+  dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
+  dplyr::mutate(impact = case_when(
+    percentage > 50 ~ "High",
+    percentage > 20 & percentage < 50 ~ "Medium",
+    percentage < 20 ~ "Low",
+    .default = "Surveys incomplete"
+  )) %>%
+  mutate(impact_metric = "thamnaconus_degeni")
 
 # Shark and Ray richness ----
 # This needs to include zeros, to show where no species were observed
@@ -788,20 +842,30 @@ impact_data <- bind_rows(species_richness_impacts,
                          total_abundance_impacts,
                          shark_ray_richness_impacts,
                          reef_associated_richness_impacts,
-                         fish_200_abundance_impacts#,
-                         #trophic_groups_impacts
+                         fish_200_abundance_impacts,
+                         degeni_impacts
 )
 
 overall_impact <- impact_data %>%
+  # dplyr::filter(region %in% "Adelaide Metro") %>%
+  dplyr::mutate(percent_change = ((bloom / pre_bloom) - 1) * 100) %>%
+  dplyr::mutate(direction = case_when(
+    impact_metric %in% c("thamnaconus_degeni") ~ 1,
+    .default = -1)) %>%
+  dplyr::mutate(impact_score = percent_change * direction)  %>%
+  dplyr::mutate(impact_scaled = impact_score / 100 ) %>%
+                  # pmin(impact_score, 100) / 100) %>% # TODO ask if they want to max this out
+  # dplyr::glimpse() %>%
   group_by(region) %>%
-  dplyr::summarise(percentage = mean(percentage)) %>%
+  dplyr::summarise(percentage = mean(impact_scaled)) %>%
   ungroup() %>%
-  dplyr::mutate(overall_impact = case_when(
-    percentage > 80 ~ "Low",
-    percentage > 50 & percentage < 80 ~ "Medium",
-    percentage < 50 ~ "High",
-    .default = "Surveys incomplete"
-  ))
+  dplyr::mutate(overall_impact = 
+                  case_when(
+                    percentage >= 0.50 ~ "High",
+                    percentage >= 0.20 ~ "Medium",
+                    is.na(percentage) ~ "Surveys incomplete",
+                    TRUE ~ "Low"
+                  ))
 
 
 # Location data ----
