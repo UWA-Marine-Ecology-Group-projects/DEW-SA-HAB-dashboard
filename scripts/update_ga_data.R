@@ -1,35 +1,26 @@
 #!/usr/bin/env Rscript
 options(error = function() { traceback(2); quit(status = 1) })
 
-dir.create("state", showWarnings = FALSE, recursive = TRUE)
-dir.create("app_data", showWarnings = FALSE, recursive = TRUE)
+dir.create("state", recursive = TRUE, showWarnings = FALSE)
+dir.create("data/raw", recursive = TRUE, showWarnings = FALSE)
+dir.create("app_data", recursive = TRUE, showWarnings = FALSE)
+dir.create("app_data/spatial", recursive = TRUE, showWarnings = FALSE)
 
-ga_token <- Sys.getenv("GA_TOKEN")
-if (ga_token == "") stop("GA_TOKEN env var is missing")
+# Fail fast if secrets missing
+if (Sys.getenv("API_USER_TOKEN") == "") stop("API_USER_TOKEN is missing")
 
-marker_file <- file.path("state", "ga_last_seen.rds")
-
-last_seen <- if (file.exists(marker_file)) readRDS(marker_file) else NULL
-
-# ---- TODO: replace with your GA "what's new" request ----
-# Example idea:
-# new_items <- ga_list_new_items(token = ga_token, since = last_seen)
-new_items <- list()  # placeholder
-
-if (length(new_items) == 0) {
-  message("No new GA uploads. Exiting.")
-  quit(status = 0)
+# If you’re using googlesheets4 in Script 2, enforce it here too:
+# (Script 2 can also do this itself; doing it here is fine either way.)
+if (Sys.getenv("GSHEETS_SERVICE_JSON") == "") {
+  message("GSHEETS_SERVICE_JSON is missing. If Script 2 reads Google Sheets, it will fail.")
 }
 
-message("New items found: ", length(new_items))
+# 1) Download raw GA data
+source("01_Download and format data for app/01_Download BRUVS data from GlobalArchive V1.R")
 
-# ---- TODO: download delta + rebuild cached artifacts ----
-# Example:
-# updated_data <- rebuild_app_cache(new_items)
-# saveRDS(updated_data, "app_data/some_cache.rds")
+# 2) Format + build app_data/hab_data.Rdata (and spatial RDS etc.)
+source("01_Download and format data for app/03_Format BRUVS and RLS data for summaries and plots.R")
 
-# Write marker only after success:
-new_last_seen <- Sys.time()
-saveRDS(new_last_seen, marker_file)
-
-message("Update complete.")
+# 3) Write a marker so you can see last successful run
+saveRDS(Sys.time(), file = "state/last_successful_update.rds")
+message("Update pipeline complete.")

@@ -6,13 +6,14 @@ options(timeout = 9999999) # the package is large, so need to extend the timeout
 library(CheckEM)
 # library(devtools)
 library(dplyr)
-library(googlesheets4)
+# library(googlesheets4)
 # library(httr)
 library(sf)
 library(stringr)
 library(tidyverse)
 # library(RJSONIO)
 library(leaflet)
+library(readr)
 
 sf_use_s2(FALSE)
 
@@ -86,16 +87,17 @@ sa_state_mp <- st_cast(state_mp, "POLYGON")
 saveRDS(sa_state_mp, "app_data/spatial/sa_state_mp.RDS") # TODO put this in a shapefile list
 
 # ---- Load data from Google Sheets ----
-summary_sheet <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0ganthAWa8TTcfG-eZtIObRM45k/edit?gid=0#gid=0"
+# summary_sheet <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0ganthAWa8TTcfG-eZtIObRM45k/edit?gid=0#gid=0"
+
+# summary_sheet <- 
 # 
 # # ---- Data loaders ----
 # scores <-  read_sheet(temp_scores_sheet) 
 # 2
 
-regions_summaries <- read_sheet(summary_sheet, "region_summary_text") 
-2
+regions_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - region_summary_text.csv")
 
-locations_summaries <- read_sheet(summary_sheet, "location_summary_text") %>%
+locations_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - location_summary_text.csv")#read_sheet(summary_sheet, "location_summary_text") %>%
   left_join(., locations_shp) 
 
 # ---- Color mapping ----
@@ -113,9 +115,10 @@ pal_vals <- c(  "High" = "#EB5757",   # red
 pal_factor <- colorFactor(palette = pal_vals, domain = ordered_levels, ordered = TRUE)
 
 # Survey tracking ----
-survey_plan <- googlesheets4::read_sheet(
-  "https://docs.google.com/spreadsheets/d/1QxTP_s58cbhLYB4GIuS39wK1c3QfBu8TGbUhV9rD3FY/edit?gid=1319001580#gid=1319001580",
-  sheet = "reporting_region_summary")
+# survey_plan <- googlesheets4::read_sheet(
+#   "https://docs.google.com/spreadsheets/d/1QxTP_s58cbhLYB4GIuS39wK1c3QfBu8TGbUhV9rD3FY/edit?gid=1319001580#gid=1319001580",
+#   sheet = "reporting_region_summary")
+survey_plan <- read_csv("data/lookups/SA-HAB-All_fieldwork_tracking - reporting_region_summary.csv")
 
 # Fish Species Lists ----
 species_list <- CheckEM::australia_life_history
@@ -123,7 +126,8 @@ species_list <- CheckEM::australia_life_history
 fish_species <- species_list %>%
   dplyr::filter(class %in% c("Actinopterygii", "Elasmobranchii", "Myxini"))
 
-dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
+# dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
+dew_species <- read_csv("data/lookups/SA-HAB-Functional Traits.csv")
 
 # TODO brooke to check species names in here e.g. spp, and spelling
 

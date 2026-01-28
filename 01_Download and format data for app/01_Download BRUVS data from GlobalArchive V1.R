@@ -7,12 +7,12 @@
 
 ### Please forward any updates and improvements to tim.langlois@uwa.edu.au & brooke.gibbons@uwa.edu.au or raise an issue in the "globalarchive-query" GitHub repository
 
-rm(list=ls()) # Clear memory
+# rm(list=ls()) # Clear memory
 
 ## Load Libraries ----
 # To connect to GlobalArchive
-library(devtools)
-install_github("UWAMEGFisheries/GlobalArchive", dependencies = TRUE) # to check for updates
+# library(devtools)
+# install_github("UWAMEGFisheries/GlobalArchive", dependencies = TRUE) # to check for updates
 library(GlobalArchive)
 library(httr)
 library(jsonlite)
@@ -26,7 +26,7 @@ library(tidyr)
 library(purrr)
 library(readr)
 library(stringr)
-remotes::install_github("GlobalArchiveManual/CheckEM")
+# remotes::install_github("GlobalArchiveManual/CheckEM")
 library(CheckEM)
 
 ga.read.files_csv <- function(flnm) {
@@ -41,6 +41,10 @@ ga.read.files_csv <- function(flnm) {
 ## Set your working directory ----
 working.dir <- "data/GlobalArchive" # to directory of current file - or type your own
 
+dir.create(working.dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(file.path(working.dir, "Downloads"), recursive = TRUE, showWarnings = FALSE)
+dir.create("data/raw", recursive = TRUE, showWarnings = FALSE)
+
 ## Save these directory names to use later----
 download.dir <- paste(working.dir, "Downloads", sep = "/")
 
@@ -50,7 +54,8 @@ source("https://raw.githubusercontent.com/UWAMEGFisheries/GlobalArchive/master/v
 
 # An API token allows R to communicate with GlobalArchive
 # Add your personal API user token ----
-API_USER_TOKEN <- "993ba5c4267b9f8cd21de73b0434c95bc72f518a4f6e725226986022"
+API_USER_TOKEN <- Sys.getenv("API_USER_TOKEN")
+if (API_USER_TOKEN == "") stop("API_USER_TOKEN is missing (set as GitHub repo secret).")
 
 ## Download data ----
 # takes 6 minutes to run - turn on again to refresh the data
@@ -157,7 +162,8 @@ count <- bind_rows(points_maxn, counts_single) %>%
 
 # Test which species are missing ----
 # Read in DEWs sheet ----
-dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
+# dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
+dew_species <- read_csv("data/lookups/SA-HAB-Functional Traits.csv")
 
 # Find which ones are missing ----
 unique_species <- count %>%
@@ -167,14 +173,13 @@ unique_species <- count %>%
 
 missing_from_list <- anti_join(unique_species, dew_species)
 
-# Add to google sheet
+# # Add to google sheet
 to_add <- missing_from_list %>%
   select(genus_species)
 
-sheet_append("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing", to_add)
-
-
-
+# sheet_append("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing", to_add)
+# 
+# 
 
 # Synoynms -----
 # TODO - brooke to figure out if she needs to do this or not - not sure why in 3rd person
