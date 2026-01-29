@@ -97,7 +97,7 @@ saveRDS(sa_state_mp, "app_data/spatial/sa_state_mp.RDS") # TODO put this in a sh
 
 regions_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - region_summary_text.csv")
 
-locations_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - location_summary_text.csv")#read_sheet(summary_sheet, "location_summary_text") %>%
+locations_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - location_summary_text.csv") %>% #read_sheet(summary_sheet, "location_summary_text") 
   left_join(., locations_shp) 
 
 # ---- Color mapping ----
