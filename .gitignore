@@ -33,6 +33,12 @@ docs/
 po/*~
 # RStudio Connect folder
 rsconnect/
+# ignore all data by default
 data/
+
+# but keep lookup tables tracked
+!data/lookups/
+!data/lookups/**
+
 secrets/
 .secrets
