@@ -39,6 +39,8 @@ data/
 # but keep lookup tables tracked
 !data/lookups/
 !data/lookups/**
+!data/spatial/
+!data/spatial/**
 
 secrets/
 .secrets
