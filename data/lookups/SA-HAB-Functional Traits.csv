@@ -1,0 +1,207 @@
+genus_species,type,fisheries_status,diet,common_name,body_shape,functional_group,colour
+Acanthaluteres brownii,Teleost,Target,Omnivore,Spiny-tailed leatherjacket,short and / or deep,reef-associated,NA
+Acanthaluteres spilomelanurus,Teleost,Target,Omnivore,Bridled leatherjacket,short and / or deep,demersal,NA
+Acanthaluteres vittiger,Teleost,Target,Omnivore,Toothbrush leatherjacket,short and / or deep,demersal,NA
+Achoerodus gouldii,Teleost,Target,Carnivore,Western blue groper,fusiform / normal,reef-associated,NA
+Argyrosomus japonicus,Teleost,Target,Carnivore,Mulloway,fusiform / normal,benthopelagic,NA
+Anoplocapros amygdaloides,Teleost,Non-target,Carnivore,Western smooth boxfish,short and / or deep,demersal,NA
+Anoplocapros lenticularis,Teleost,Non-target,Carnivore,White-barred boxfish,short and / or deep,demersal,NA
+Aplodactylus arctidens,Teleost,Non-target,Herbivore,Marblefish,elongated,reef-associated,NA
+Aptychotrema vincentiana,Chondrichthyes,Non-target,Carnivore,Western shovelnose ray,other,demersal,NA
+Aracana aurita,Teleost,Non-target,Carnivore,Shaws cowfish,short and / or deep,demersal,NA
+Aracana ornata,Teleost,Non-target,Carnivore,Ornate cowfish,short and / or deep,demersal,#FDA700
+Arripis georgianus,Teleost,Target,Carnivore,Australian herring,fusiform / normal,pelagic-neritic,NA
+Arripis truttaceus,Teleost,Target,Carnivore,Western Australian salmon,fusiform / normal,benthopelagic,#E1E2E4
+Asymbolus vincenti,Chondrichthyes,Non-target,Carnivore,Gulf catshark,elongated,reef-associated,NA
+Atherinidae spp,Teleost,Non-target,Planktivore,Hardyhead,elongated,pelagic-neritic,NA
+Austrolabrus maculatus,Teleost,Non-target,Carnivore,Black-spotted wrasse,short and / or deep,reef-associated,NA
+Bathytoshia brevicaudata,Chondrichthyes,By-catch,Carnivore,Smooth ray,other,demersal,NA
+Bodianus frenchii,Teleost,Target,Carnivore,Foxfish,fusiform / normal,reef-associated,NA
+Brachaluteres jacksonianus,Teleost,Non-target,Omnivore,Southern Pygmy leatherjacket,short and / or deep,reef-associated,NA
+Caesioperca lepidoptera,Teleost,Target,Planktivore,Butterfly perch,short and / or deep,demersal,NA
+Caesioperca rasor,Teleost,Target,Planktivore,Barber perch,fusiform / normal,demersal,NA
+Callorhinchus milii,Chondrichthyes,Target,Carnivore,Elephant fish,elongated,demersal,NA
+Carcharhinus brachyurus,Chondrichthyes,Target,Carnivore,Bronze whaler,fusiform / normal,reef-associated,NA
+Carcharodon carcharias,Chondrichthyes,Non-target,Carnivore,White shark,fusiform / normal,pelagic-oceanic,NA
+Centroberyx gerrardi,Teleost,Target,Carnivore,Bight redfish,fusiform / normal,demersal,NA
+Centroberyx lineatus,Teleost,Target,Carnivore,Swallowtail,fusiform / normal,benthopelagic,NA
+Chelmonops curiosus,Teleost,Non-target,Carnivore,Western talma,short and / or deep,reef-associated,NA
+Chirodactylus spectabilis,Teleost,Target,Carnivore,Banded morwong,short and / or deep,demersal,NA
+Chironemus georgianus,Teleost,Target,Herbivore,Western kelpfish,fusiform / normal,demersal,NA
+Chironemus maculosus,Teleost,Non-target,Herbivore,Silver spot,fusiform / normal,reef-associated,NA
+Chrysophrys auratus,Teleost,Target,Carnivore,Snapper,short and / or deep,reef-associated,#A9263B
+Coris auricularis,Teleost,Non-target,Carnivore,Western king wrasse,fusiform / normal,reef-associated,NA
+Dactylophora nigricans,Teleost,Target,Omnivore,Dusky morwong,elongated,reef-associated,NA
+Dinolestes lewini,Teleost,Target,Carnivore,Longfin pike,elongated,pelagic-neritic,#2242B4
+Diodon nicthemerus,Teleost,Non-target,Carnivore,Globefish,short and / or deep,reef-associated,NA
+Dotalabrus aurantiacus,Teleost,Non-target,Carnivore,Castelnau's wrasse,Elongated,demersal,NA
+Enoplosus armatus,Teleost,Non-target,Carnivore,Old wife,elongated,reef-associated,NA
+Eubalichthys bucephalus,Teleost,Target,Omnivore,Black reef leatherjacket,short and / or deep,demersal,NA
+Eubalichthys cyanoura,Teleost,Target,Omnivore,Bluetail leatherjacket,short and / or deep,reef-associated,NA
+Eubalichthys gunnii,Teleost,Target,Omnivore,Gunn's leatherjacket,short and / or deep,demersal,NA
+Eubalichthys mosaicus,Teleost,Target,Omnivore,Mosaic leatherjacket,short and / or deep,reef-associated,NA
+Eupetrichthys angustipes,Teleost,Non-target,Carnivore,Snakeskin wrasse,Elongated,demersal,NA
+Furgaleus macki,Chondrichthyes,Target,Carnivore,Whiskery shark,elongated,demersal,NA
+Galeorhinus galeus,Chondrichthyes,Target,Carnivore,School shark,elongated,benthopelagic,NA
+Genypterus tigerinus,Teleost,Target,Carnivore,Rock ling,elongated,demersal,NA
+Girella zebra,Teleost,By-catch,Herbivore,Zebra fish,short and / or deep,reef-associated,NA
+Gobiesocidae spp,Teleost,Non-target,Omnivore,Clingfish,elongated,reef-associated,NA
+Gobiidae spp,Teleost,Non-target,Omnivore,Goby,elongated,reef-associated,NA
+Gymnapistes marmoratus,Teleost,Non-target,Carnivore,Soldier,fusiform / normal,demersal,NA
+Gymnothorax prasinus,Teleost,Non-target,Carnivore,Green moray,eel-like,reef-associated,NA
+Haletta semifasciata,Teleost,By-catch,Carnivore,Blue weed whiting,fusiform / normal,demersal,NA
+Helcogramma decurrens,Teleost,Non-target,Omnivore,Black-throated triplefin,elongated,benthopelagic,NA
+Heterodontus portusjacksoni,Chondrichthyes,Non-target,Carnivore,Port Jackson shark,elongated,demersal,NA
+Heteroscarus acroptilus,Teleost,Non-target,Omnivore,Rainbow cale,fusiform / normal,reef-associated,NA
+Hippocampus spp,Teleost,Non-target,Planktivore,Seahorse,elongated,reef-associated,NA
+Hyperlophus vittatus,Teleost,Target,Planktivore,Sandy sprat,elongated,pelagic-neritic,NA
+Hypoplectrodes nigroruber,Teleost,Target,Carnivore,Banded seaperch,fusiform / normal,reef-associated,NA
+Hyporhamphus melanochir,Teleost,Target,Omnivore,Southern garfish,elongated,pelagic-neritic,NA
+Iso rhothophilus,Teleost,Non-target,Planktivore,Surf sardine,elongated,pelagic-neritic,NA
+Kyphosus sydneyanus,Teleost,By-catch,Herbivore,Silver drummer,short and / or deep,demersal,NA
+Latropiscis purpurissatus,Teleost,Target,Carnivore,Sergeant baker,elongated,reef-associated,NA
+Leptoichthys fistularius,Teleost,Non-target,Planktivore,Brushtail pipefish,eel-like,demersal,NA
+Lotella rhacina,Teleost,Target,Carnivore,Rock cod,elongated,demersal,NA
+Meuschenia australis,Teleost,Target,Omnivore,Southern leatherjacket,short and / or deep,reef-associated,NA
+Meuschenia flavolineata,Teleost,Target,Omnivore,Yellow-striped leatherjacket,short and / or deep,reef-associated,NA
+Meuschenia freycineti,Teleost,Target,Omnivore,Six-spined leatherjacket,short and / or deep,demersal,NA
+Meuschenia galii,Teleost,Target,Omnivore,Blue-lined leatherjacket,short and / or deep,reef-associated,NA
+Meuschenia hippocrepis,Teleost,Target,Omnivore,Horseshoe leatherjacket,short and / or deep,demersal,NA
+Meuschenia scaber,Teleost,Target,Carnivore,Velvet leatherjacket,short and / or deep,demersal,NA
+Meuschenia venusta,Teleost,Target,Omnivore,Stars and stripes leatherjacket,short and / or deep,reef-associated,NA
+Monacanthidae juvenile,Teleost,Non-target,Omnivore,Leatherjacket juvenile,short and / or deep,reef-associated,#1CB4FB
+Mustelus antarcticus,Chondrichthyes,Target,Carnivore,Gummy shark,elongated,demersal,NA
+Myliobatis tenuicaudatus,Chondrichthyes,By-catch,Carnivore,Southern eagle ray,other,benthopelagic,NA
+Neatypus obliquus,Teleost,Non-target,Planktivore,Footballer sweep,short and / or deep,reef-associated,NA
+Nelusetta ayraud,Teleost,Target,Carnivore,Oceanjacket,short and / or deep,demersal,NA
+Nemadactylus macropterus,Teleost,Target,Carnivore,Jackass morwong,fusiform / normal,demersal,NA
+Nemadactylus valenciennesi,Teleost,Target,Carnivore,Queen snapper,fusiform / normal,demersal,NA
+Neoodax balteatus,Teleost,Non-target,Carnivore,Little weed whiting,elongated,demersal,NA
+Neosebastes bougainvillii,Teleost,Target,Carnivore,Gulf gurnard perch,short and / or deep,reef-associated,NA
+Neosebastes pandus,Teleost,Target,Carnivore,Bighead gurnard perch,short and / or deep,reef-associated,NA
+Neosebastes scorpaenoides,Teleost,Target,Carnivore,Common gurnard perch,short and / or deep,reef-associated,NA
+Notolabrus fucicola,Teleost,Non-target,Carnivore,Purple wrasse,fusiform / normal,reef-associated,NA
+Notolabrus parilus,Teleost,Non-target,Carnivore,Brownspotted wrasse,fusiform / normal,reef-associated,NA
+Notolabrus tetricus,Teleost,Target,Carnivore,Bluethroat wrasse,short and / or deep,reef-associated,NA
+Notorynchus cepedianus,Chondrichthyes,Target,Carnivore,Sevengill shark,elongated,demersal,NA
+Olisthops cyanomelas,Teleost,Non-target,Herbivore,Herring cale,fusiform / normal,pelagic-neritic,NA
+Omegophora armilla,Teleost,Non-target,Omnivore,Ringed toadfish,short and / or deep,demersal,NA
+Omegophora cyanopunctata,Teleost,Non-target,Omnivore,Bluespotted toadfish,short and / or deep,reef-associated,NA
+Ophthalmolepis lineolatus,Teleost,Non-target,Carnivore,Maori wrasse,elongated,benthopelagic,NA
+Oplegnathus woodwardi,Teleost,Non-target,Carnivore,Knifejaw,short and / or deep,demersal,NA
+Othos dentex,Teleost,Target,Carnivore,Harlequin fish,fusiform / normal,reef-associated,NA
+Parapercis haackei,Teleost,Non-target,Carnivore,Wavy grubfish,elongated,reef-associated,NA
+Parapercis ramsayi,Teleost,Non-target,Carnivore,Spotted grubfish,elongated,demersal,NA
+Paraplesiops meleagris,Teleost,By-catch,Carnivore,Southern blue devil,elongated,reef-associated,NA
+Parascyllium ferrugineum,Chondrichthyes,Non-target,Carnivore,Rusty carpetshark,elongated,demersal,NA
+Parascyllium variolatum,Chondrichthyes,Non-target,Carnivore,Varied carpetshark,elongated,demersal,NA
+Parequula melbournensis,Teleost,Non-target,Carnivore,Silverbelly,short and / or deep,demersal,NA
+Parma victoriae,Teleost,Non-target,Herbivore,Victorian scalyfin,short and / or deep,reef-associated,NA
+Helotes octolineatus,Teleost,Non-target,Herbivore,Western striped grunter,elongated,demersal,#FFA4C8
+Pempheris klunzingeri,Teleost,Non-target,Carnivore,Rough bullseye,short and / or deep,demersal,NA
+Pempheris multiradiata,Teleost,Non-target,Planktivore,Bigscale bullseye,short and / or deep,demersal,NA
+Pentaceropsis recurvirostris,Teleost,Target,Omnivore,Longsnout boarfish,short and / or deep,reef-associated,NA
+Phyllopteryx taeniolatus,Teleost,Non-target,Carnivore,Weedy seadragon,other,reef-associated,NA
+Pictilabrus laticlavius,Teleost,Non-target,Carnivore,Senator wrasse,fusiform / normal,reef-associated,NA
+Platycephalus aurimaculatus,Teleost,Target,Carnivore,Toothy flathead,Elongated,demersal,NA
+Platycephalus bassensis,Teleost,Target,Carnivore,Southern sand flathead,fusiform / normal,demersal,NA
+Platycephalus grandispinis,Teleost,Target,Carnivore,Longspine flathead,elongated,demersal,NA
+Platycephalus speculator,Teleost,Target,Carnivore,Southern bluespotted flathead,elongated,demersal,NA
+Pseudocaranx spp,Teleost,Target,Carnivore,Trevally,fusiform / normal,benthopelagic,#FE162A
+Pseudogoniistius nigripes,Teleost,Target,Omnivore,Magpie perch,fusiform / normal,reef-associated,NA
+Pseudolabrus rubicundus,Teleost,Non-target,Carnivore,Rosy wrasse,fusiform / normal,reef-associated,NA
+Pseudophycis bachus,Teleost,Target,Carnivore,Red cod,fusiform / normal,demersal,NA
+Pseudophycis barbata,Teleost,Target,Carnivore,Bearded cod,elongated,demersal,NA
+Pseudorhombus arsius,Teleost,Target,Carnivore,Largetooth flounder,short and / or deep,demersal,NA
+Scobinichthys granulatus,Teleost,Target,Omnivore,Rough leatherjackets,short and / or deep,reef-associated,NA
+Scomber australasicus,Teleost,Target,Carnivore,Blue mackerel,fusiform / normal,pelagic-neritic,NA
+Scorpis aequipinnis,Teleost,Target,Planktivore,Sea sweep,short and / or deep,demersal,NA
+Scorpis georgiana,Teleost,Target,Planktivore,Banded sweep,short and / or deep,reef-associated,NA
+Scorpis lineolata,Teleost,Target,Planktivore,Silver sweep,short and / or deep,reef-associated,NA
+Seriola hippos,Teleost,Target,Carnivore,Samson fish,fusiform / normal,pelagic-neritic,NA
+Seriola lalandi,Teleost,Target,Carnivore,Yellowtail kingfish,fusiform / normal,benthopelagic,NA
+Sillaginodes punctatus,Teleost,Target,Carnivore,King George whiting,elongated,demersal,NA
+Sillago spp,Teleost,Target,Carnivore,Sand whiting,elongated,demersal,NA
+Siphamia cephalotes,Teleost,Non-target,Planktivore,Wood's siphonfish,short and / or deep,benthopelagic,NA
+Siphonognathus attenuatus,Teleost,Non-target,Planktivore,Slender weed whiting,elongated,demersal,NA
+Siphonognathus beddomei,Teleost,Non-target,Planktivore,Pencil weed whiting,elongated,demersal,NA
+Siphonognathus caninis,Teleost,Non-target,Planktivore,Sharpnose weed whiting,elongated,demersal,NA
+Siphonognathus tanyourus,Teleost,Non-target,Planktivore,Longtail weed whiting,elongated,demersal,NA
+Siphonognathus radiatus,Teleost,Non-target,Planktivore,Longray weed whiting,elongated,demersal,NA
+Sphyraena forsteri,Teleost,Target,Carnivore,Bigeye barracuda,elongated,reef-associated,NA
+Sphyraena novaehollandiae,Teleost,Target,Carnivore,Snook,elongated,pelagic-neritic,NA
+Sphyrna zygaena,Chondrichthyes,By-catch,Carnivore,Smooth hammerhead,elongated,pelagic-oceanic,NA
+Spiniraja whitleyi,Chondrichthyes,By-catch,Carnivore,Melbourne skate,other,demersal,NA
+Squalus megalops,Chondrichthyes,Target,Carnivore,Shortnose spurdog,elongated,demersal,NA
+Sutorectus tentaculatus,Chondrichthyes,Non-target,Carnivore,Cobbler wobbegong,elongated,reef-associated,NA
+Syngnathidae spp,Teleost,Non-target,Planktivore,Pipefish,elongated,reef-associated,NA
+Tetractenos glaber,Teleost,Non-target,Carnivore,Smooth toadfish,short and / or deep,demersal,NA
+Thamnaconus degeni,Teleost,Target,Omnivore,Bluefin leatherjacket,short and / or deep,demersal,#941CCB
+Thyrsites atun,Teleost,Target,Carnivore,Barracouta,elongated,benthopelagic,NA
+Tilodon sexfasciatus,Teleost,Non-target,Carnivore,Moonlighter,short and / or deep,demersal,NA
+Torquigener pleurogramma,Teleost,Non-target,Carnivore,Toadfish,fusiform / normal,demersal,NA
+Trachichthys australis,Teleost,Non-target,Planktivore,Southern roughy,short and / or deep,reef-associated,NA
+Trachinops noarlungae,Teleost,Non-target,Carnivore,Yellowhead hulafish,elongated,reef-associated,NA
+Trachurus declivis,Teleost,Target,Carnivore,Common jack mackerel,fusiform / normal,benthopelagic,NA
+Trachurus novaezelandiae,Teleost,Target,Carnivore,Yellowtail scad,fusiform / normal,pelagic-oceanic,#00FBF8
+Trygonoptera mucosa,Chondrichthyes,By-catch,Carnivore,Western shovelnose stingaree,other,demersal,NA
+Trygonorrhina dumerilii,Chondrichthyes,By-catch,Carnivore,Southern fiddler ray,other,demersal,NA
+Upeneichthys vlamingii,Teleost,Target,Carnivore,Goatfish,fusiform / normal,demersal,#4BDCFF
+Urolophus gigas,Chondrichthyes,Non-target,Carnivore,Spotted stingaree,other,demersal,NA
+Urolophus spp,Chondrichthyes,Non-target,Carnivore,Stingaree,other,demersal,NA
+Vincentia conspersa,Teleost,Non-target,Planktivore,Southern cardinalfish,Elongated,reef-associated,NA
+Coscinasterias muricata,Invertebrate,Non-target,NA,Eleven arm seastar,NA,NA,NA
+Diogenidae spp,Invertebrate,Non-target,NA,Hermit crab,NA,NA,NA
+Jasus edwardsii,Invertebrate,Target,NA,Southern rock lobster,NA,NA,NA
+Leptomithrax gaimardii,Invertebrate,Non-target,NA,Spider crab,NA,NA,#F36600
+Melicertus latisulcatus,Invertebrate,Target,NA,King prawn,NA,NA,NA
+Naxia aurita,Invertebrate,Non-target,NA,Decorator crab,NA,NA,NA
+Nectocarcinus integrifrons,Invertebrate,Non-target,NA,Rough rock crab,NA,NA,#00F7C0
+Neophoca cinerea,Other,Non-target,NA,Australian sealion,NA,NA,NA
+Nil Nil,Empty,NA,NA,N/A,NA,NA,NA
+Macroctopus maorum,Invertebrate,Target,NA,Maori octopus,NA,NA,NA
+Octopodidae spp,Invertebrate,Target,NA,Octopus,NA,NA,NA
+Ovalipes australiensis,Invertebrate,By-catch,NA,Sand crab,NA,NA,NA
+Ozius truncatus,Invertebrate,Non-target,NA,Reef crab,NA,NA,NA
+Pectinidae spp,Invertebrate,Target,NA,Scallop,NA,NA,NA
+Phalacrocorax spp,Other,Non-target,NA,Cormorant,NA,NA,NA
+Plagusia chabrus,Invertebrate,Non-target,NA,Red bait crab,NA,NA,NA
+Portunus armatus,Invertebrate,Target,NA,Blue swimmer crab,NA,NA,#00A5AB
+Pycnogonidae spp,Invertebrate,Non-target,NA,Sea spider,NA,NA,NA
+Sagaminopteron ornatum,Invertebrate,Non-target,NA,Batwing seaslug,NA,NA,NA
+Sepia apama,Invertebrate,Target,NA,Giant cuttlefish,NA,NA,NA
+Sepioteuthis australis,Invertebrate,Target,NA,Southern calamari squid,NA,NA,NA
+Tursiops spp,Other,Non-target,NA,Bottlenose dolphin,NA,NA,NA
+Seriolella brama,Teleost,Target,Carnivore,Common warehou,NA,benthopelagic,NA
+Paristiopterus gallipavo,Teleost,Target,Omnivore,Yellowspotted boarfish,NA,demersal,NA
+Monacanthidae spp,Teleost,Non-target,Omnivore,Leatherjacket,NA,NA,#CA162E
+Parapriacanthus elongatus,Teleost,Non-target,Planktivore,Elongate bullseye,NA,demersal,#F500C1
+Austrodromidia octodentata,Invertebrate,Non-target,NA,Sponge crab,NA,NA,NA
+Aracana spp,Teleost,Non-target,Carnivore,Cowfish,NA,demersal,NA
+Gobiesocidae spp,Teleost,Non-target,Carnivore,Clingfish,NA,demersal,NA
+Engraulis australis,Teleost,Target,Planktivore,Anchovy,elongated,pelagic-neritic,#A3809F
+Phalacrocorax fuscescens,Other,Non-target,NA,Cormorant,NA,NA,NA
+Sillago schomburgkii,,,,,,,
+Odax cyanomelas,,,,,,,
+Portunidae australiensis,,,,,,,
+Siphonognathus spp,,,,,,,
+Portunus australiensis,,,,,,,
+Heptranchias perlo,,,,,,,
+Trachurus spp,,,,,,,
+Unknown spp,,,,,,,
+Platycephalus spp,,,,,,,
+Parequula elongata,,,,,,,
+Unknown australiensis,,,,,,,
+Pseudocaranx georgianus,,,,,,,
+Nototodarus gouldi,,,,,,,
+Dasella brevicaudata,,,,,,,
+Cheilio nigripes,,,,,,,
+Cheilinus nigripes,,,,,,,
+Labrus laticlavis,,,,,,,
+Nesogobius spp,,,,,,,
+Sillago bassensis,,,,,,,
+Diodon nichthemerus,,,,,,,
+Lepidotrigla papilio,,,,,,,
+Octopus spp,,,,,,,
+Hapalochlaena spp,,,,,,,
+Pleuronectidae spp,,,,,,,
