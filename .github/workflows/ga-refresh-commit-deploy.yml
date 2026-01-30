@@ -50,3 +50,34 @@ jobs:
           date
           time Rscript scripts/update_ga_data.R
           date
+          
+# Detect changes in app_data/ or state/ and expose as an output
+      - name: Detect changes
+        id: changes
+        shell: bash
+        run: |
+          echo "Git status:"
+          git status --porcelain || true
+
+          if git status --porcelain | awk '{print $2}' | grep -qE '^(app_data/|state/)'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Changes detected in app_data/ or state/."
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes detected in app_data/ or state/."
+          fi
+
+      - name: Commit updated data (if changed)
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app_data state
+          git commit -m "Update GA cache [skip ci]"
+          git push
+
+      - name: Deploy (only if cache changed)
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          Rscript scripts/deploy.R
+          
