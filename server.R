@@ -753,6 +753,8 @@ server <- function(input, output, session) {
       
       hideGroup("Australian Marine Parks") |>
       
+      hideGroup("Impact regions") |>
+      
       addLegend(
         "topright",
         colors = unname(method_cols),
@@ -853,7 +855,7 @@ server <- function(input, output, session) {
   
   output$pointer_table <- renderUI({
     tags$table(
-      class = "table table-striped table-sm",
+      class = "table table-sm hab-table",
       tags$thead(
         tags$tr(
           tags$th("Threshold"),
@@ -913,7 +915,7 @@ server <- function(input, output, session) {
     # ))
 
     tags$table(
-      class = "table table-striped table-sm",  # uses bootstrap styling
+      class = "table table-sm hab-table",  # uses bootstrap styling
       # header
       tags$thead(
         tags$tr(
@@ -959,7 +961,7 @@ server <- function(input, output, session) {
   observeEvent(input$open_info_pointers, {
     showModal(
       modalDialog(
-        title = "Impact definitions",
+        title = "Impact assessment",
         tableOutput("pointer_table"),
         easyClose = TRUE,
         footer = NULL
@@ -1010,7 +1012,7 @@ server <- function(input, output, session) {
   
   output$region_survey_effort <- renderLeaflet({
     method_cols <- c("BRUVs" = "#004DA7"
-                     #, "UVC" = "#C600FF"
+                     # , "UVC" = "#C600FF"
                      )
     
     pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
@@ -2303,7 +2305,7 @@ server <- function(input, output, session) {
     
     # ---- Build striped table manually ----
     tags$table(
-      class = "table table-striped table-sm",
+      class = "table table-sm hab-table",
       tags$thead(
         tags$tr(
           tags$th("Metric"),
@@ -3173,7 +3175,7 @@ server <- function(input, output, session) {
     out_notake  <- fmt_change(df$`Change No-take`)
     
     tags$table(
-      class = "table table-striped table-sm",
+      class = "table table-sm hab-table",
       
       tags$thead(
         tags$tr(

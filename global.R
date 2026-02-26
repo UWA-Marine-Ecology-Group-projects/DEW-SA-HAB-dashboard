@@ -176,12 +176,12 @@ twoValueBoxUI <- function(id,
                           theme_color = "secondary",
                           height = 125) {
   ns <- NS(id)
-  value_box(
+  value_box(class = "modern-kpi",
     title = title,
     theme_color = theme_color,
     showcase = icon,
     height = height,
-    class = "pp-title-center",
+    # class = "pp-title-center",
     value = div(
       class = "pp-wrap",
       div(class="pp-col",
@@ -398,6 +398,7 @@ mp_metric_change <- tidyr::expand_grid(
 spinnerPlotOutput <- function(outputId, ...) {
   withSpinner(
     plotOutput(outputId, ...),
+    color = getOption("spinner.color", default = "#0D576E"),
     type = 6
   )
 }
@@ -405,6 +406,7 @@ spinnerPlotOutput <- function(outputId, ...) {
 spinnerLeafletOutput <- function(outputId, ...) {
   withSpinner(
     leafletOutput(outputId, ...),
+    color = getOption("spinner.color", default = "#0D576E"),
     type = 6
   )
 }
@@ -412,6 +414,7 @@ spinnerLeafletOutput <- function(outputId, ...) {
 spinnerTableOutput <- function(outputId, ...) {
   withSpinner(
     tableOutput(outputId, ...),
+    color = getOption("spinner.color", default = "#0D576E"),
     type = 6
   )
 }
@@ -419,6 +422,7 @@ spinnerTableOutput <- function(outputId, ...) {
 spinnerUiOutput <- function(outputId, ...) {
   withSpinner(
     uiOutput(outputId, ...),
+    color = getOption("spinner.color", default = "#0D576E"),
     type = 6
   )
 }
