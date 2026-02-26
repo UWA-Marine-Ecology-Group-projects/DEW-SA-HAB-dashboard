@@ -474,7 +474,7 @@ nav_panel(
       
       radioButtons(
         inputId  = "method",
-        label    = "Choose a method:",
+        label    = "Choose a method to display:",
         choices  = c("BRUVS", "Dive"),
         inline   = TRUE
       ),
@@ -603,6 +603,7 @@ nav_panel(
               # style = "height:500px;",
               withSpinner(
                 plotOutput("region_common_pre", height = "100%"),
+                color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             ),
@@ -611,6 +612,7 @@ nav_panel(
               # style = "height:500px;",
               withSpinner(
                 plotOutput("region_common_post", height = "100%"),
+                color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             )
@@ -741,6 +743,7 @@ nav_panel(
               class = "plot-full-wrapper",
               withSpinner(
                 plotOutput("location_common_pre", height = "100%"),
+                color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             ),
@@ -748,6 +751,7 @@ nav_panel(
               class = "plot-full-wrapper",
               withSpinner(
                 plotOutput("location_common_post", height = "100%"),
+                color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             )
