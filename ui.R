@@ -348,7 +348,7 @@ nav_panel(
       
       div(class = "page-header",
           h3("Overview"),
-          # p("Monitoring progress for algal bloom response", class = "text-muted")
+          h5("Algal bloom impacts on nearshore marine biodiversity monitoring progress", class = "text-muted")
       ),
       
       
