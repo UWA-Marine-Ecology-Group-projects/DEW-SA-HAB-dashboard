@@ -841,6 +841,26 @@ fish_200_abundance_impacts <- fish_200_abundance_summary %>%
   )) %>%
   mutate(impact_metric = "fish_200_abundance")
 
+# Shannon Diversity ----
+shannon_diversity_samples <- combined_count %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  
+  dplyr::filter(!genus %in% "Unknown") %>% # TODO check sasha's script to see if this is different
+  dplyr::filter(!species %in% "spp") %>%
+  
+  dplyr::group_by(region, period, sample) %>%
+  dplyr::distinct(genus, species) %>% # removed family due to inconsistencies
+  dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
+  ungroup() %>%
+  dplyr::filter(!is.na(region))%>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  replace_na(list(n_species_sample = 0))
+
+
+# Combine all impacts together -----
+
 
 impact_data <- bind_rows(species_richness_impacts, 
                          total_abundance_impacts,
