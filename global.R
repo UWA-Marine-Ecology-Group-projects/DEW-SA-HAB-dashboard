@@ -36,6 +36,9 @@ load("app_data/dataframes.Rdata")
 load("app_data/plots.Rdata")
 load("app_data/hab_data.Rdata")
 
+# List of campaigns ----
+campaigns <- unique((hab_data$hab_combined_metadata)$campaignid) %>% sort()
+
 # ---- global constants (one-off dashboard values) ----
 sites_planned    <- sum(hab_data$survey_plan$planned_number_sites)
 sites_completed  <- sum(hab_data$survey_plan$complete_number_sites)
@@ -177,22 +180,22 @@ twoValueBoxUI <- function(id,
                           height = 125) {
   ns <- NS(id)
   value_box(class = "modern-kpi",
-    title = title,
-    theme_color = theme_color,
-    showcase = icon,
-    height = height,
-    # class = "pp-title-center",
-    value = div(
-      class = "pp-wrap",
-      div(class="pp-col",
-          span(class="pp-lab", left_label),
-          span(class="pp-val", uiOutput(ns("left_val")))
-      ),
-      div(class="pp-col",
-          span(class="pp-lab", right_label),
-          span(class="pp-val", uiOutput(ns("right_val")))
-      )
-    )
+            title = title,
+            theme_color = theme_color,
+            showcase = icon,
+            height = height,
+            # class = "pp-title-center",
+            value = div(
+              class = "pp-wrap",
+              div(class="pp-col",
+                  span(class="pp-lab", left_label),
+                  span(class="pp-val", uiOutput(ns("left_val")))
+              ),
+              div(class="pp-col",
+                  span(class="pp-lab", right_label),
+                  span(class="pp-val", uiOutput(ns("right_val")))
+              )
+            )
   )
 }
 
@@ -203,7 +206,7 @@ metric_defs <- c(
   
   sharks_rays   = "Shark and ray species richness",
   reef_associated_richness = "Reef associated fish species richness",
- 
+  
   large_fish    = "Count of large fish (>200 mm)",
   # cti           = "Community temperature index",
   # func_groups   = "Abundance by functional group",
