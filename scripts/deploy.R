@@ -12,6 +12,6 @@ rsconnect::setAccountInfo(
 
 rsconnect::deployApp(
   appDir = ".",
-  appName = "DEW-SA-HAB-dashboard",
+  appName = "SA-HAB",
   forceUpdate = TRUE
 )
