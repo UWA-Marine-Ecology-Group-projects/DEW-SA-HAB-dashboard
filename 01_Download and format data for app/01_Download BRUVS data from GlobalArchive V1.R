@@ -54,6 +54,7 @@ source("https://raw.githubusercontent.com/UWAMEGFisheries/GlobalArchive/master/v
 
 # An API token allows R to communicate with GlobalArchive
 # Add your personal API user token ----
+
 API_USER_TOKEN <- Sys.getenv("API_USER_TOKEN")
 if (API_USER_TOKEN == "") stop("API_USER_TOKEN is missing (set as GitHub repo secret).")
 
@@ -61,6 +62,52 @@ if (API_USER_TOKEN == "") stop("API_USER_TOKEN is missing (set as GitHub repo se
 # takes 6 minutes to run - turn on again to refresh the data
 ga.get.campaign.list(API_USER_TOKEN, process_campaign_object,
                      q = ga.query.workgroup("SA+Dashboard"))
+
+# This has a bug:
+expected_names <- c(
+  "2015-16_SA_MPA_UpperGSV_StereoBRUVS",
+  "202110-202205_SA_MarineParkMonitoring_StereoBRUVS",
+  "2017-18_SA_Shellfish Reefs_StereoBruvs",
+  "2014-09_GSVwinter.BRUVS_monoBRUVS",
+  "2022-12_Glenelg_BRUVS",
+  "2025-12_Carrickalinga_BRUVS",
+  "2015-04_Desal.BRUVS_monoBRUVS",
+  "2017-02_Neptunes.BRUVS_monoBRUVS",
+  "2021-10_Glenelg_BRUVS",
+  "2025-12_ChinamansHat_BRUVS",
+  "2025-11_PortGibbon_BRUVS",
+  "2015-201706_SA_MPA_StereoBRUVS",
+  "201712-201806_SA_MarineParkMonitoring_StereoBRUVS",
+  "2015-10_Desal.BRUVS_monoBRUVS",
+  "2025-10_OffshoreArdrossan_BRUVS",
+  "2025-02_RapidHead_BRUVS",
+  "202012-202105_SA_MarineParkMonitoring_StereoBRUVS",
+  "2016-11_GSV_monoBRUVs",
+  "2019-02_Neptunes_monoBRUVs",
+  "2025-10_Windara_BRUVS",
+  "2022-12_OSullivan_BRUVS",
+  "2024-12_OSullivan_BRUVS",
+  "201812-201906_SA_MarineParkMonitoring_StereoBRUVS",
+  "201910_SA_Shellfish Reef Monitoring_StereoBruvs",
+  "2016-02_GSVsummer.BRUVS_MonoBRUVS",
+  "2023-12_OSullivan_BRUVS",
+  "202001-202010_SA_Shellfish Reef Monitoring_StereoBruvs",
+  "2020-04_Neptunes_monoBRUVs",
+  "2021-10_BostonBay_monoBRUVs",
+  "2022-05_BostonBay_monoBRUVs",
+  "2025-12_RapidHead_BRUVS",
+  "202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS",
+  "2022-03-Neptunes_monoBRUVs",
+  "2025-10_Glenelg_BRUVS",
+  "2023-11_Glenelg_BRUVS"
+)
+
+expected_names <- gsub(" ", "+", expected_names)
+
+for(i in expected_names){
+  ga.get.campaign.list(API_USER_TOKEN, process_campaign_object,
+                       q = ga.query.campaign(i))
+}
 
 # Combine all downloaded data----
 # Your data is now downloaded into many folders within the 'Downloads' folder. (You can open File Explorer or use the Files Pane to check)
@@ -76,7 +123,7 @@ metadata <- ga.list.files("_Metadata.csv") %>% # list all files ending in "_Meta
   glimpse()
 
 unique(metadata$project) %>% sort() # 4 projects
-unique(metadata$campaignid)  %>% sort() # 26 campaigns 
+unique(metadata$campaignid)  %>% sort() # 35 campaigns 
 unique(metadata$location)
 unique(metadata$sample)
 
@@ -88,7 +135,7 @@ saveRDS(metadata, "data/raw/sa_metadata_bruv.RDS")
 points <- ga.list.files("_Points.txt") %>% 
   purrr::map_df(~ga.read.files_txt(.)) %>%
   dplyr::select(project, campaignid, sample, family, genus, species, number, stage, frame) %>%
- dplyr::mutate(number = as.numeric(number)) %>%
+  dplyr::mutate(number = as.numeric(number)) %>%
   dplyr::mutate(family = ifelse(family %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(family))) %>%
   dplyr::mutate(genus = ifelse(genus %in% c("NA", "NANA", NA, "unknown", "", NULL, " ", NA_character_), "Unknown", as.character(genus))) %>%
   dplyr::mutate(species = ifelse(species %in% c("NA", 
@@ -167,7 +214,7 @@ dew_species <- read_csv("data/lookups/SA-HAB-Functional Traits.csv")
 
 # Find which ones are missing ----
 unique_species <- count %>%
-
+  
   distinct(family, genus, species, genus_species) %>%
   glimpse()
 
@@ -204,7 +251,7 @@ write.csv(count_with_syn, "data/raw/sa_count_bruv.csv", row.names = FALSE)
 saveRDS(count_with_syn, "data/raw/sa_count_bruv.RDS")
 
 unique(count$project) %>% sort() # 4 projects
-unique(count$campaignid) # 26 campaigns
+unique(count$campaignid) # 34 campaigns
 
 ## Combine Length, Lengths and 3D point files into length3dpoints----
 gen_length <- ga.list.files("_Length.csv") %>% 
