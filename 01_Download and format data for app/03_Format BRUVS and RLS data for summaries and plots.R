@@ -841,13 +841,62 @@ fish_200_abundance_impacts <- fish_200_abundance_summary %>%
   )) %>%
   mutate(impact_metric = "fish_200_abundance")
 
+# Shannon Diversity ----
+shannon_diversity_samples <- combined_count %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  
+  dplyr::filter(!genus %in% "Unknown") %>% # TODO check sasha's script to see if this is different
+  dplyr::filter(!species %in% "spp") %>%
+  
+  dplyr::group_by(region, period, sample, family, genus, species) %>%
+  
+  dplyr::summarise(n = sum(count), .groups = "drop") %>%
+  
+  dplyr::group_by(region, sample, period) %>%
+  mutate(p = n / sum(n)) %>%
+  summarise(
+    shannon = -sum(p * log(p)),
+    .groups = "drop"
+  ) %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  replace_na(list(n_species_sample = 0))
+
+shannon_diversity_summary <- shannon_diversity_samples %>%
+  dplyr::group_by(region, period) %>%
+  dplyr::summarise(
+    mean = mean(shannon, na.rm = TRUE),
+    se   = sd(shannon, na.rm = TRUE) /
+      sqrt(sum(!is.na(shannon))),
+    .groups = "drop"
+  ) %>%
+  ungroup()
+
+shannon_impacts <- shannon_diversity_summary %>%
+  dplyr::select(-se) %>%
+  tidyr::complete(region, period) %>%
+  tidyr::pivot_wider(names_from = period, values_from = mean) %>%
+  clean_names() %>%
+  dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
+  dplyr::mutate(impact = case_when(
+    percentage > 80 ~ "Low",
+    percentage > 50 & percentage < 80 ~ "Medium",
+    percentage < 50 ~ "High",
+    .default = "Surveys incomplete"
+  )) %>%
+  mutate(impact_metric = "shannon_diversity")
+
+# Combine all impacts together -----
+
 
 impact_data <- bind_rows(species_richness_impacts, 
                          total_abundance_impacts,
                          shark_ray_richness_impacts,
                          reef_associated_richness_impacts,
                          fish_200_abundance_impacts,
-                         degeni_impacts
+                         degeni_impacts,
+                         shannon_impacts
 )
 
 overall_impact <- impact_data %>%
@@ -858,7 +907,7 @@ overall_impact <- impact_data %>%
     .default = -1)) %>%
   dplyr::mutate(impact_score = percent_change * direction)  %>%
   dplyr::mutate(impact_scaled = impact_score / 100 ) %>%
-                  # pmin(impact_score, 100) / 100) %>% # TODO ask if they want to max this out
+  # pmin(impact_score, 100) / 100) %>% # TODO ask if they want to max this out
   # dplyr::glimpse() %>%
   group_by(region) %>%
   dplyr::summarise(percentage = mean(impact_scaled)) %>%
