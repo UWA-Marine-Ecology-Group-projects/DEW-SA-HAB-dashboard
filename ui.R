@@ -348,56 +348,56 @@ nav_panel(
       
       div(class = "page-header",
           h3("Overview"),
-          # p("Monitoring progress for algal bloom response", class = "text-muted")
+          h5("Algal bloom impacts on nearshore marine biodiversity monitoring progress", class = "text-muted")
       ),
       
       
       # card(
-        # card_header("Monitoring progress for algal bloom response"),
+      # card_header("Monitoring progress for algal bloom response"),
       div(
         class = "kpi-row",
-      layout_column_wrap(
-        width = 1/4,   # 3 boxes on one row
-        
-        twoValueBoxUI(
-          id          = "sites_progress",
-          title       = "Sites",
-          left_label  = "Planned",
-          right_label = "Completed",
-          icon        = div(class = "vb-icon-wrap", icon("magnifying-glass", class = "fa-xl", style = "color:#0D576E;")),
-          theme_color = NULL,
-          height = 150
-        ),
-        
-        twoValueBoxUI(
-          id          = "bruvs_progress",
-          title       = "BRUVS deployments",
-          left_label  = "Planned",
-          right_label = "Completed",
-          icon        = img(src = "teal_bruv.png",
-                            height = "80px"
-          ), #div(class = "vb-icon-wrap", icon("ship", class = "fa-xl")),
-          theme_color = NULL
-        ),
-        
-        twoValueBoxUI(
-          id          = "uvc_progress",
-          title       = "Dive transects",
-          left_label  = "Planned",
-          right_label = "Completed",
-          icon        = img(src = "teal_uvc.png",
-                            height = "80px"),
-          #div(class = "vb-icon-wrap", icon("video", class = "fa-xl")),
-          theme_color = NULL
-        ),
-        
-        value_box(class = "modern-kpi",
-          title       = "Locations completed",
-          value       = paste0(percent_completed, "%"),
-          theme_color = NULL,
-          showcase    = div(class = "vb-icon-wrap", icon("percent", class = "fa-xl", style = "color:#0D576E;"))
-        )#)
-      )),
+        layout_column_wrap(
+          width = 1/4,   # 3 boxes on one row
+          
+          twoValueBoxUI(
+            id          = "sites_progress",
+            title       = "Sites",
+            left_label  = "Planned",
+            right_label = "Completed",
+            icon        = div(class = "vb-icon-wrap", icon("magnifying-glass", class = "fa-xl", style = "color:#0D576E;")),
+            theme_color = NULL,
+            height = 150
+          ),
+          
+          twoValueBoxUI(
+            id          = "bruvs_progress",
+            title       = "BRUVS deployments",
+            left_label  = "Planned",
+            right_label = "Completed",
+            icon        = img(src = "teal_bruv.png",
+                              height = "80px"
+            ), #div(class = "vb-icon-wrap", icon("ship", class = "fa-xl")),
+            theme_color = NULL
+          ),
+          
+          twoValueBoxUI(
+            id          = "uvc_progress",
+            title       = "Dive transects",
+            left_label  = "Planned",
+            right_label = "Completed",
+            icon        = img(src = "teal_uvc.png",
+                              height = "80px"),
+            #div(class = "vb-icon-wrap", icon("video", class = "fa-xl")),
+            theme_color = NULL
+          ),
+          
+          value_box(class = "modern-kpi",
+                    title       = "Locations completed",
+                    value       = paste0(percent_completed, "%"),
+                    theme_color = NULL,
+                    showcase    = div(class = "vb-icon-wrap", icon("percent", class = "fa-xl", style = "color:#0D576E;"))
+          )#)
+        )),
       
       # hr(style = "opacity:0.1s5; margin-top:1rem; margin-bottom:2rem;"),
       
@@ -412,9 +412,9 @@ nav_panel(
       
       # div(
       #   h4("Portal Aims"),
-        # h6(HTML("This portal provides a visual assessment of the ecological impacts of the recent harmful algal bloom using stereo-BRUV data uploaded to GlobalArchive.org. It summarises key fish community metrics—including total abundance, species richness, and other indicator responses—to compare conditions before the bloom (Pre-bloom) with those observed during and after the event (Bloom), these metrics are defined in <b>Table 1</b> below. The threshold levels are defined in <b>Table 2</b>.
-        # 
-        #        </br></br>By integrating standardised, quality-controlled BRUV annotations with clear temporal comparisons, the dashboard helps highlight shifts in community structure and supports evidence-based management decisions."))),
+      # h6(HTML("This portal provides a visual assessment of the ecological impacts of the recent harmful algal bloom using stereo-BRUV data uploaded to GlobalArchive.org. It summarises key fish community metrics—including total abundance, species richness, and other indicator responses—to compare conditions before the bloom (Pre-bloom) with those observed during and after the event (Bloom), these metrics are defined in <b>Table 1</b> below. The threshold levels are defined in <b>Table 2</b>.
+      # 
+      #        </br></br>By integrating standardised, quality-controlled BRUV annotations with clear temporal comparisons, the dashboard helps highlight shifts in community structure and supports evidence-based management decisions."))),
       
       # br(),
       # 
@@ -474,7 +474,7 @@ nav_panel(
       
       radioButtons(
         inputId  = "method",
-        label    = "Choose a method:",
+        label    = "Choose a method to display:",
         choices  = c("BRUVS", "Dive"),
         inline   = TRUE
       ),
@@ -603,6 +603,7 @@ nav_panel(
               # style = "height:500px;",
               withSpinner(
                 plotOutput("region_common_pre", height = "100%"),
+                color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             ),
@@ -611,12 +612,11 @@ nav_panel(
               # style = "height:500px;",
               withSpinner(
                 plotOutput("region_common_post", height = "100%"),
+                color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             )
           )
-          
-          
         )
       ),
       # br(),
@@ -743,6 +743,7 @@ nav_panel(
               class = "plot-full-wrapper",
               withSpinner(
                 plotOutput("location_common_pre", height = "100%"),
+                color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             ),
@@ -750,6 +751,7 @@ nav_panel(
               class = "plot-full-wrapper",
               withSpinner(
                 plotOutput("location_common_post", height = "100%"),
+                color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             )
@@ -763,6 +765,16 @@ nav_panel(
 ),
 
 nav_spacer(),
+
+
+nav_panel(
+  "Admin",
+  
+  h3("Campaigns included"),
+  
+  tableOutput("campaigns_table")
+  
+),
 
 nav_item(
   tags$div(
