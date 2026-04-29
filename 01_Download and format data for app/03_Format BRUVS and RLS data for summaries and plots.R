@@ -1176,12 +1176,55 @@ fish_200_abundance_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
+# Shannon diversity location -----
+shannon_diversity_summary_location <- shannon_diversity_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(shannon, na.rm = TRUE),
+    se   = sd(shannon, na.rm = TRUE) / sqrt(sum(!is.na(shannon))),
+    .groups = "drop"
+  )
+
+shannon_diversity_impacts_location <- calc_impacts(
+  summary_df = shannon_diversity_summary_location,
+  group_col  = reporting_name,
+  metric_id  = "shannon_diversity"
+)
+
+shannon_diversity_summary_location_status <- shannon_diversity_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(
+    mean = mean(shannon, na.rm = TRUE),
+    se   = sd(shannon, na.rm = TRUE) / sqrt(sum(!is.na(shannon))),
+    .groups = "drop"
+  )
+
+shannon_diversity_impacts_location_status <- calc_impacts_status(
+  summary_df = shannon_diversity_summary_location_status,
+  group_col  = reporting_name,
+  status_col = status,
+  metric_id  = "shannon_diversity")  %>%
+  dplyr::select(reporting_name, status, impact_metric, percentage_change) %>%
+  tidyr::pivot_wider(
+    names_from  = status,
+    values_from = percentage_change,
+    names_prefix = "change_"
+  ) %>%
+  CheckEM::clean_names() %>%
+  glimpse()
+
+
+
+
 impact_data_location <- dplyr::bind_rows(
   species_richness_impacts_location,
   total_abundance_impacts_location,
   shark_ray_richness_impacts_location,
   reef_associated_richness_impacts_location,
-  fish_200_abundance_impacts_location
+  fish_200_abundance_impacts_location,
+  shannon_diversity_impacts_location
 )
 
 overall_impact_location <- impact_data_location %>%
@@ -1202,7 +1245,8 @@ impact_data_location_status <- bind_rows(
   total_abundance_impacts_location_status,
   shark_ray_richness_impacts_location_status,
   reef_associated_richness_impacts_location_status,
-  fish_200_abundance_impacts_location_status
+  fish_200_abundance_impacts_location_status,
+  shannon_diversity_impacts_location_status
 )
 
 sanity_table_location <- combined_metadata %>%
