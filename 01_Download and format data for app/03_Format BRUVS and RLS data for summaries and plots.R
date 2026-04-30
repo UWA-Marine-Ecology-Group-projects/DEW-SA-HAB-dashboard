@@ -1253,6 +1253,118 @@ sanity_table_location <- combined_metadata %>%
   ungroup() %>%
   pivot_wider(names_from = period, values_from = number_of_deployments)
 
+
+
+## Stacked bar plots -----
+format_stacked_species_data <- function(
+    df,
+    group_var,
+    period_var = period,
+    species_var = genus_species,
+    count_var = count,
+    top_n = 7
+) {
+  
+  group_var   <- rlang::ensym(group_var)
+  period_var  <- rlang::ensym(period_var)
+  species_var <- rlang::ensym(species_var)
+  count_var   <- rlang::ensym(count_var)
+  
+  df_sum <- df %>%
+    dplyr::filter(
+      !is.na(!!group_var),
+      !is.na(!!period_var),
+      !is.na(!!species_var)
+    ) %>%
+    dplyr::group_by(!!group_var, !!period_var, !!species_var) %>%
+    dplyr::summarise(
+      total_count = sum(!!count_var, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::rename(
+      group_name = !!group_var,
+      period_name = !!period_var,
+      species_name = !!species_var
+    )
+  
+  top_species <- df_sum %>%
+    dplyr::group_by(group_name, period_name) %>%
+    dplyr::slice_max(
+      order_by = total_count,
+      n = top_n,
+      with_ties = FALSE
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(group_name, period_name, species_name) %>%
+    dplyr::mutate(is_top_species = TRUE)
+  
+  plot_df <- df_sum %>%
+    dplyr::left_join(
+      top_species,
+      by = c("group_name", "period_name", "species_name")
+    ) %>%
+    dplyr::mutate(
+      species_plot = dplyr::if_else(
+        is.na(is_top_species),
+        "Other",
+        species_name
+      )
+    ) %>%
+    dplyr::group_by(group_name, period_name, species_plot) %>%
+    dplyr::summarise(
+      total_count = sum(total_count, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::group_by(group_name, period_name) %>%
+    dplyr::mutate(
+      percent = total_count / sum(total_count, na.rm = TRUE) * 100
+    ) %>%
+    dplyr::ungroup()
+  
+  other_labels <- df_sum %>%
+    dplyr::anti_join(
+      top_species,
+      by = c("group_name", "period_name", "species_name")
+    ) %>%
+    dplyr::group_by(group_name, period_name) %>%
+    dplyr::summarise(
+      n_other = dplyr::n_distinct(species_name),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(
+      label = paste0(n_other, " spp.")
+    )
+  
+  list(
+    plot_df = plot_df,
+    other_labels = other_labels
+  )
+}
+
+species_stacked <- format_stacked_species_data(
+  df = combined_count %>% filter(method == "BRUVs"),
+  group_var = region,
+  top_n = 7
+)
+
+location_species_stacked <- format_stacked_species_data(
+  df = combined_count %>% filter(method == "BRUVs"),
+  group_var = reporting_name,
+  top_n = 7
+)
+
+plot_stacked_species(
+  plot_df = species_stacked$plot_df,
+  other_labels = species_stacked$other_labels,
+  selected_name = "Adelaide Metro"
+)
+
+plot_stacked_species(
+  plot_df = location_species_stacked$plot_df,
+  other_labels = location_species_stacked$other_labels,
+  selected_name = "Windara Reef - Windara Shell fish Reef Sanctuary Zone"
+)
+
 # hab_metric_change_location <- impact_data_location %>%
 #   dplyr::transmute(
 #     reporting_name,
@@ -1343,7 +1455,10 @@ hab_data <- structure(
     # trophic_groups_richness_summary_location = trophic_groups_richness_summary_location,
     trophic_groups_richness_samples = trophic_groups_richness_samples,
     
-    trophic_groups_richness_summary_status = trophic_groups_richness_summary_status
+    trophic_groups_richness_summary_status = trophic_groups_richness_summary_status,
+    
+    species_stacked = species_stacked,
+    location_species_stacked = location_species_stacked
     
   ), class = "data")
 

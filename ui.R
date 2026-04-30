@@ -570,6 +570,18 @@ nav_panel(
       
       card(
         min_height = 500,
+        card_header("Stacked abundance plots"),
+        full_screen = TRUE,
+        
+        withSpinner(
+          plotOutput("region_stacked_plot", height = "480px"),
+          color = getOption("spinner.color", default = "#0D576E"),
+          type = 6
+        )
+      ),
+      
+      card(
+        min_height = 500,
         card_header("Common species"),
         full_screen = TRUE,
         
@@ -706,6 +718,18 @@ nav_panel(
               spinnerUiOutput("location_change_table")
             )
           )
+        )
+      ),
+      
+      card(
+        min_height = 500,
+        card_header("Stacked abundance plots"),
+        full_screen = TRUE,
+        
+        withSpinner(
+          plotOutput("location_stacked_plot", height = "480px"),
+          color = getOption("spinner.color", default = "#0D576E"),
+          type = 6
         )
       ),
       

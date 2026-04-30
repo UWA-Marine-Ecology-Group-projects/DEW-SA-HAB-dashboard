@@ -391,6 +391,58 @@ plot_cell <- function(id, width = "120px", height = "120px") {
   )
 }
 
+plot_stacked_species <- function(
+    plot_df,
+    other_labels,
+    selected_name,
+    period_order = c("Pre-bloom", "Bloom")
+) {
+  
+  df <- plot_df %>%
+    dplyr::filter(group_name == selected_name) %>%
+    dplyr::mutate(
+      period_name = factor(period_name, levels = period_order),
+      species_plot = forcats::fct_relevel(species_plot, "Other", after = Inf)
+    )
+  
+  labels_df <- other_labels %>%
+    dplyr::filter(group_name == selected_name) %>%
+    dplyr::left_join(
+      df %>%
+        dplyr::filter(species_plot == "Other") %>%
+        dplyr::select(group_name, period_name, percent),
+      by = c("group_name", "period_name")
+    ) %>%
+    dplyr::mutate(ypos = percent / 2)
+  
+  ggplot2::ggplot(df, ggplot2::aes(x = period_name, y = percent, fill = species_plot)) +
+    ggplot2::geom_col(width = 0.75, colour = "black") +
+    ggplot2::geom_text(
+      data = labels_df,
+      ggplot2::aes(x = period_name, y = ypos, label = label),
+      inherit.aes = FALSE,
+      fontface = "bold",
+      size = 4
+    ) +
+    ggplot2::scale_y_continuous(
+      labels = scales::label_percent(scale = 1),
+      limits = c(0, 100),
+      expand = ggplot2::expansion(mult = c(0, 0.02))
+    ) +
+    ggplot2::labs(
+      x = NULL,
+      y = "Percentage of observations",
+      fill = NULL
+    ) +
+    ggplot2::theme_minimal(base_size = 15) +
+    ggplot2::theme(
+      panel.grid = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(size = 13),
+      legend.text = ggplot2::element_text(face = "italic"),
+      legend.position = "right"
+    )
+}
+
 # ------------------------------ server ---------------------------------------
 
 server <- function(input, output, session) {
@@ -1040,22 +1092,25 @@ server <- function(input, output, session) {
       )
     
     # add points (no curly block after a pipe)
-    if (has_leafgl()) {
-      m <- leafgl::addGlPoints(
-        m, 
-        data = pts, 
-        fillColor = method_cols[pts$method], 
-        weight = 1, 
-        popup = pts$popup, 
-        group = "Sampling locations", pane = "points"
-      )
-    } else {
+    # if (has_leafgl()) {
+      # m <- leafgl::addGlPoints(
+      #   m, 
+      #   data = pts, 
+      #   fillColor = method_cols[pts$method], 
+      #   weight = 1, 
+      #   popup = pts$popup, 
+      #   group = "Sampling locations", pane = "points"
+      # )
+    # } else {
       m <- addCircleMarkers(
-        m, data = pts, radius = 6, fillColor = "#f89f00", fillOpacity = 1,
+        m, data = pts, radius = 6, fillColor = "#004DA7", fillOpacity = 1,
         weight = 1, color = "black", popup = pts$popup,
         group = "Sampling locations", options = pathOptions(pane = "points")
       )
-    }
+    # }
+      
+      
+      
     
     addLegend(m,
               "topright",
@@ -1067,6 +1122,8 @@ server <- function(input, output, session) {
               layerId = "methodLegend"
     ) %>%
       hideGroup("Australian Marine Parks")
+    
+    return(m)
   })
   
   # ===== EXPLORE INDICATORS & METRICS =====
@@ -4235,6 +4292,61 @@ server <- function(input, output, session) {
   
   output$campaigns_table <- renderTable({
     campaign_table()
+  })
+  
+  # Stacked plots -----
+  output$region_stacked_plot <- renderPlot({
+    req(input$region)
+    
+    print(input$region)
+    
+    print(
+      hab_data$species_stacked$plot_df %>%
+        dplyr::distinct(group_name) %>%
+        dplyr::filter(stringr::str_detect(group_name, "Windara"))
+    )
+    
+    df_check <- hab_data$species_stacked$plot_df %>%
+      dplyr::filter(group_name == input$region)
+    
+    print(df_check)
+    
+    validate(
+      need(nrow(df_check) > 0, paste("No stacked plot data for:", input$region))
+    )
+    
+    plot_stacked_species(
+      plot_df = hab_data$species_stacked$plot_df,
+      other_labels = hab_data$species_stacked$other_labels,
+      selected_name = input$region
+    )
+  })
+  
+  output$location_stacked_plot <- renderPlot({
+    req(input$location)
+    
+    print(input$location)
+    
+    print(
+      hab_data$location_species_stacked$plot_df %>%
+        dplyr::distinct(group_name) %>%
+        dplyr::filter(stringr::str_detect(group_name, "Windara"))
+    )
+    
+    df_check <- hab_data$location_species_stacked$plot_df %>%
+      dplyr::filter(group_name == input$location)
+    
+    print(df_check)
+    
+    validate(
+      need(nrow(df_check) > 0, paste("No stacked plot data for:", input$location))
+    )
+    
+    plot_stacked_species(
+      plot_df = hab_data$location_species_stacked$plot_df,
+      other_labels = hab_data$location_species_stacked$other_labels,
+      selected_name = input$location
+    )
   })
   
   

@@ -103,10 +103,30 @@ base_map <- function(max_zoom = 11, current_zoom = 6) {
     ) 
 }
 
+# ensure_sf_ll <- function(x, lon = "longitude_dd", lat = "latitude_dd") {
+#   if (inherits(x, "sf")) return(x)
+#   stopifnot(lon %in% names(x), lat %in% names(x))
+#   sf::st_as_sf(x, coords = c(lon, lat), crs = 4326)
+# }
+
 ensure_sf_ll <- function(x, lon = "longitude_dd", lat = "latitude_dd") {
-  if (inherits(x, "sf")) return(x)
+  
+  if (inherits(x, "sf")) {
+    if (is.na(sf::st_crs(x))) {
+      sf::st_crs(x) <- 4326
+      return(x)
+    }
+    
+    return(sf::st_transform(x, 4326))
+  }
+  
   stopifnot(lon %in% names(x), lat %in% names(x))
-  sf::st_as_sf(x, coords = c(lon, lat), crs = 4326)
+  
+  sf::st_as_sf(
+    x,
+    coords = c(lon, lat),
+    crs = 4326
+  )
 }
 
 add_bubble_legend <- function(map, max_val, title, layerId = "bubbleLegendSpecies", methodcol = "#f89f00") {
