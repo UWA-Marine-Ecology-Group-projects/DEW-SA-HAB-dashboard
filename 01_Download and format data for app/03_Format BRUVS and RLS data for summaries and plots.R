@@ -1270,7 +1270,7 @@ format_stacked_species_data <- function(
     period_var = period,
     species_var = genus_species,
     count_var = count,
-    top_n = 7
+    top_n = 5
 ) {
   
   group_var   <- rlang::ensym(group_var)
@@ -1352,13 +1352,13 @@ format_stacked_species_data <- function(
 species_stacked <- format_stacked_species_data(
   df = combined_count %>% filter(method == "BRUVs"),
   group_var = region,
-  top_n = 7
+  top_n = 5
 )
 
 location_species_stacked <- format_stacked_species_data(
   df = combined_count %>% filter(method == "BRUVs"),
   group_var = reporting_name,
-  top_n = 7
+  top_n = 5
 )
 
 MASTER_COLOURS <- readRDS("sasha example/master_species_colours.rds")
