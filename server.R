@@ -454,8 +454,22 @@ plot_stacked_species <- function(
   df <- plot_df %>%
     dplyr::filter(group_name == selected_name) %>%
     dplyr::mutate(
-      period_name = factor(period_name, levels = period_order),
-      species_plot = forcats::fct_relevel(species_plot, "Other", after = Inf)
+      period_name = factor(period_name, levels = period_order)#,
+      # species_plot = forcats::fct_relevel(species_plot, "Other", after = Inf)
+    )
+  
+  species_order <- df %>%
+    dplyr::filter(species_plot != "Other") %>%
+    dplyr::group_by(species_plot) %>%
+    dplyr::summarise(total_percent = sum(percent, na.rm = TRUE), .groups = "drop") %>%
+    dplyr::arrange(-total_percent) %>%
+    dplyr::pull(species_plot)
+  
+  species_order <- c(species_order, "Other")
+  
+  df <- df %>%
+    dplyr::mutate(
+      species_plot = factor(species_plot, levels = species_order)
     )
   
   labels_df <- other_labels %>%

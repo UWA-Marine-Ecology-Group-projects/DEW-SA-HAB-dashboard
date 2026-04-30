@@ -569,12 +569,12 @@ nav_panel(
       ),
       
       card(
-        min_height = 500,
+        min_height = 550,
         card_header("Stacked abundance plots"),
         full_screen = TRUE,
         
         withSpinner(
-          plotOutput("region_stacked_plot", height = "480px"),
+          plotOutput("region_stacked_plot", height = "550px"),
           color = getOption("spinner.color", default = "#0D576E"),
           type = 6
         )
@@ -722,12 +722,12 @@ nav_panel(
       ),
       
       card(
-        min_height = 500,
+        min_height = 550,
         card_header("Stacked abundance plots"),
         full_screen = TRUE,
         
         withSpinner(
-          plotOutput("location_stacked_plot", height = "480px"),
+          plotOutput("location_stacked_plot", height = "550px"),
           color = getOption("spinner.color", default = "#0D576E"),
           type = 6
         )
