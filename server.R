@@ -301,9 +301,11 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         tagList(
           layout_columns(
             col_widths = c(6, 6),
-            metric_plotOutput(prefix, data_id, "main"),
-            metric_plotOutput(prefix, data_id, "status")
-          ),
+            # metric_plotOutput(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            # metric_plotOutput(prefix, data_id, "status")
+            metric_plot_with_downloads(prefix, data_id, "status")
+          )
           # layout_columns(
           #   col_widths = c(6, 6),
           #   metric_plotOutput(prefix, data_id, "main_years"),
@@ -333,6 +335,16 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
       },
       
       reef_associated_richness = {
+        tagList(
+          layout_columns(
+            col_widths = c(6, 6),
+            metric_plotOutput(prefix, data_id, "main"),
+            metric_plotOutput(prefix, data_id, "status")
+          )
+        )
+      },
+      
+      shannon_diversity = {
         tagList(
           layout_columns(
             col_widths = c(6, 6),
@@ -381,6 +393,80 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         )
       }
     )
+  )
+}
+
+metric_plot_with_downloads <- function(prefix, data_id, plot_id) {
+  
+  tagList(
+    metric_plotOutput(prefix, data_id, plot_id),
+    
+    layout_columns(
+      col_widths = c(4, 4, 4),
+      
+      downloadButton(
+        outputId = paste(prefix, "download", data_id, plot_id, "results", sep = "_"),
+        label = "Download plot results"
+      ),
+      
+      downloadButton(
+        outputId = paste(prefix, "download", data_id, plot_id, "raw", sep = "_"),
+        label = "Download raw data"
+      ),
+      
+      downloadButton(
+        outputId = paste(prefix, "download", data_id, plot_id, "plot", sep = "_"),
+        label = "Download plot"
+      )
+    )
+  )
+}
+
+add_metric_downloads <- function(
+    output,
+    prefix,
+    data_id,
+    plot_id,
+    results_reactive,
+    raw_reactive,
+    plot_reactive
+) {
+  
+  results_id <- paste(prefix, "download", data_id, plot_id, "results", sep = "_")
+  raw_id     <- paste(prefix, "download", data_id, plot_id, "raw", sep = "_")
+  plot_dl_id <- paste(prefix, "download", data_id, plot_id, "plot", sep = "_")
+  
+  output[[results_id]] <- downloadHandler(
+    filename = function() {
+      paste(prefix, data_id, plot_id, "results", Sys.Date(), "csv", sep = ".")
+    },
+    content = function(file) {
+      readr::write_csv(results_reactive(), file)
+    }
+  )
+  
+  output[[raw_id]] <- downloadHandler(
+    filename = function() {
+      paste(prefix, data_id, plot_id, "raw_data", Sys.Date(), "csv", sep = ".")
+    },
+    content = function(file) {
+      readr::write_csv(raw_reactive(), file)
+    }
+  )
+  
+  output[[plot_dl_id]] <- downloadHandler(
+    filename = function() {
+      paste(prefix, data_id, plot_id, "plot", Sys.Date(), "png", sep = ".")
+    },
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = plot_reactive(),
+        width = 8,
+        height = 6,
+        dpi = 300
+      )
+    }
   )
 }
 
