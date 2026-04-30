@@ -6,7 +6,7 @@ options(timeout = 9999999) # the package is large, so need to extend the timeout
 library(CheckEM)
 # library(devtools)
 library(dplyr)
-# library(googlesheets4)
+library(googlesheets4)
 # library(httr)
 library(sf)
 library(stringr)
@@ -87,17 +87,18 @@ sa_state_mp <- st_cast(state_mp, "POLYGON")
 saveRDS(sa_state_mp, "app_data/spatial/sa_state_mp.RDS") # TODO put this in a shapefile list
 
 # ---- Load data from Google Sheets ----
+# unhash to update sheets -----
 # summary_sheet <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0ganthAWa8TTcfG-eZtIObRM45k/edit?gid=0#gid=0"
-
-# summary_sheet <- 
 # 
-# # ---- Data loaders ----
-# scores <-  read_sheet(temp_scores_sheet) 
-# 2
+# regions_summaries <- read_sheet(summary_sheet, sheet = "region_summary_text")
+# locations_summaries <- read_sheet(summary_sheet, sheet = "location_summary_text")
+# 
+# write_csv(regions_summaries, "data/lookups/SA-HAB-Summary Text - region_summary_text.csv")
+# write_csv(locations_summaries, "data/lookups/SA-HAB-Summary Text - location_summary_text.csv")
 
+# ---- Data loaders ----
 regions_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - region_summary_text.csv")
-
-locations_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - location_summary_text.csv") %>% #read_sheet(summary_sheet, "location_summary_text") 
+locations_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - location_summary_text.csv") %>% 
   left_join(., locations_shp) 
 
 # ---- Color mapping ----
@@ -115,9 +116,13 @@ pal_vals <- c(  "High" = "#EB5757",   # red
 pal_factor <- colorFactor(palette = pal_vals, domain = ordered_levels, ordered = TRUE)
 
 # Survey tracking ----
+# unhash to update sheets 
 # survey_plan <- googlesheets4::read_sheet(
 #   "https://docs.google.com/spreadsheets/d/1QxTP_s58cbhLYB4GIuS39wK1c3QfBu8TGbUhV9rD3FY/edit?gid=1319001580#gid=1319001580",
 #   sheet = "reporting_region_summary")
+# 
+# write_csv(survey_plan, "data/lookups/SA-HAB-All_fieldwork_tracking - reporting_region_summary.csv")
+
 survey_plan <- read_csv("data/lookups/SA-HAB-All_fieldwork_tracking - reporting_region_summary.csv")
 
 # Fish Species Lists ----
@@ -127,6 +132,9 @@ fish_species <- species_list %>%
   dplyr::filter(class %in% c("Actinopterygii", "Elasmobranchii", "Myxini"))
 
 # dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
+# 
+# write_csv(dew_species, "data/lookups/SA-HAB-Functional Traits.csv")
+
 dew_species <- read_csv("data/lookups/SA-HAB-Functional Traits.csv")
 
 # TODO brooke to check species names in here e.g. spp, and spelling
@@ -1353,17 +1361,73 @@ location_species_stacked <- format_stacked_species_data(
   top_n = 7
 )
 
-plot_stacked_species(
-  plot_df = species_stacked$plot_df,
-  other_labels = species_stacked$other_labels,
-  selected_name = "Adelaide Metro"
+MASTER_COLOURS <- readRDS("sasha example/master_species_colours.rds")
+
+build_species_palette <- function(species_vec, dew_species, colour_pool) {
+  
+  # Match species to dew_species table
+  lookup <- dew_species %>%
+    dplyr::select(genus_species, colour)
+  
+  df <- data.frame(genus_species = species_vec) %>%
+    dplyr::left_join(lookup, by = "genus_species")
+  
+  # Existing colours from dew_species
+  used_cols <- df$colour[!is.na(df$colour)]
+  
+  # Species needing colours
+  missing_species <- df$genus_species[is.na(df$colour)]
+  
+  if (length(missing_species) > 0) {
+    
+    available_cols <- setdiff(colour_pool, used_cols)
+    
+    if (length(available_cols) < length(missing_species)) {
+      stop("Not enough colours in master palette")
+    }
+    
+    # Assign colours
+    new_cols <- setNames(
+      sample(available_cols, length(missing_species)),
+      missing_species
+    )
+    
+    df$colour[is.na(df$colour)] <- new_cols[df$genus_species[is.na(df$colour)]]
+  }
+  
+  # Named vector for ggplot
+  setNames(df$colour, df$genus_species)
+}
+
+all_species <- unique(
+  c(
+    species_stacked$plot_df$species_plot,
+    location_species_stacked$plot_df$species_plot
+  )
 )
 
-plot_stacked_species(
-  plot_df = location_species_stacked$plot_df,
-  other_labels = location_species_stacked$other_labels,
-  selected_name = "Windara Reef - Windara Shell fish Reef Sanctuary Zone"
+all_species <- setdiff(all_species, "Other")
+
+species_palette <- build_species_palette(
+  species_vec = all_species,
+  dew_species = dew_species,
+  colour_pool = MASTER_COLOURS
 )
+
+# Add "Other"
+species_palette["Other"] <- "grey70"
+
+# plot_stacked_species(
+#   plot_df = species_stacked$plot_df,
+#   other_labels = species_stacked$other_labels,
+#   selected_name = "Adelaide Metro"
+# )
+
+# plot_stacked_species(
+#   plot_df = location_species_stacked$plot_df,
+#   other_labels = location_species_stacked$other_labels,
+#   selected_name = "Windara Reef - Windara Shell fish Reef Sanctuary Zone"
+# )
 
 # hab_metric_change_location <- impact_data_location %>%
 #   dplyr::transmute(
@@ -1458,7 +1522,8 @@ hab_data <- structure(
     trophic_groups_richness_summary_status = trophic_groups_richness_summary_status,
     
     species_stacked = species_stacked,
-    location_species_stacked = location_species_stacked
+    location_species_stacked = location_species_stacked,
+    species_palette = species_palette
     
   ), class = "data")
 
