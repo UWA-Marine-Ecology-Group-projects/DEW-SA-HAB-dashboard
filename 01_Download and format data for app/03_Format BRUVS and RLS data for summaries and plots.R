@@ -888,8 +888,6 @@ shannon_impacts <- shannon_diversity_summary %>%
   mutate(impact_metric = "shannon_diversity")
 
 # Combine all impacts together -----
-
-
 impact_data <- bind_rows(species_richness_impacts, 
                          total_abundance_impacts,
                          shark_ray_richness_impacts,
@@ -1214,9 +1212,6 @@ shannon_diversity_impacts_location_status <- calc_impacts_status(
   ) %>%
   CheckEM::clean_names() %>%
   glimpse()
-
-
-
 
 impact_data_location <- dplyr::bind_rows(
   species_richness_impacts_location,

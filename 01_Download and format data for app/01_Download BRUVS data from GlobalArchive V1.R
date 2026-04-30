@@ -63,6 +63,12 @@ if (API_USER_TOKEN == "") stop("API_USER_TOKEN is missing (set as GitHub repo se
 ga.get.campaign.list(API_USER_TOKEN, process_campaign_object,
                      q = ga.query.workgroup("SA+Dashboard"))
 
+ga.get.campaign.list(API_USER_TOKEN, process_campaign_object,
+                     q = ga.query.workgroup("SA_HAB"))
+
+ga.get.campaign.list(API_USER_TOKEN, process_campaign_object,
+                     q = ga.query.workgroup("Test_Monitoring"))
+
 # This has a bug:
 expected_names <- c(
   "2015-16_SA_MPA_UpperGSV_StereoBRUVS",
@@ -123,7 +129,7 @@ metadata <- ga.list.files("_Metadata.csv") %>% # list all files ending in "_Meta
   glimpse()
 
 unique(metadata$project) %>% sort() # 4 projects
-unique(metadata$campaignid)  %>% sort() # 35 campaigns 
+unique(metadata$campaignid)  %>% sort() # 44 campaigns 
 unique(metadata$location)
 unique(metadata$sample)
 
