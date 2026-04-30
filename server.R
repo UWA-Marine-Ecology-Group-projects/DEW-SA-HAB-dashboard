@@ -255,10 +255,11 @@ make_impact_gauges <- function(region_name) {
   p4 <- get_metric_plot("reef_associated_richness", "Reef associated species richness", chosen_region = region_name)
   p5 <- get_metric_plot("fish_200_abundance",       "Fish > 200 mm abundance",          chosen_region = region_name)
   p6 <- get_metric_plot("thamnaconus_degeni",       "Bluefin leatherjacket displacement*",          chosen_region = region_name)
+  p7 <- get_metric_plot("shannon_diversity",        "Shannon diversity index",          chosen_region = region_name)
   
   # Final layout
   (p1 | p2 | p3) /
-    (p4 | p5 | p6)
+    (p4 | p5 | p6 | p7)
 }
 
 # ---- output id helpers -------------------------------------------------------
@@ -3123,9 +3124,10 @@ server <- function(input, output, session) {
     p3 <- get_metric_plot_location("shark_ray_richness",       "Shark and ray richness",           chosen_location = location_name)
     p4 <- get_metric_plot_location("reef_associated_richness", "Reef associated species richness", chosen_location = location_name)
     p5 <- get_metric_plot_location("fish_200_abundance",       "Fish > 200 mm abundance",          chosen_location = location_name)
-    p6 <- get_metric_plot_location("degeni_impacts",       "Bluefin leatherjacket displacement*",          chosen_location = location_name)
+    p6 <- get_metric_plot_location("degeni_impacts",           "Bluefin leatherjacket displacement*",          chosen_location = location_name)
+    p7 <- get_metric_plot_location("shannon_diversity",        "Shannon diversity",          chosen_location = location_name)
     
-    (p1 | p2 | p3) / (p4 | p5 | p6)
+    (p1 | p2 | p3) / (p4 | p5 | p6 | p7)
   }
   
   output$location_impact_gauges <- renderPlot({
