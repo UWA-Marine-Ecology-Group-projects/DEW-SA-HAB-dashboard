@@ -64,6 +64,24 @@ rich_dat <- prep_metric_data(
     "Upper Gulf St Vincent"
                        ))
 
+shark_dat <- prep_metric_data(
+  hab_data$shark_ray_richness_samples %>% left_join(metadata),
+  "n_species_sample"
+) %>%
+  filter(region %in% c("Adelaide Metro", 
+                       "Western Spencer Gulf",
+                       "Upper Gulf St Vincent"
+  ))
+
+reef_dat <- prep_metric_data(
+  hab_data$shark_ray_richness_samples %>% left_join(metadata),
+  "n_species_sample"
+) %>%
+  filter(region %in% c("Adelaide Metro", 
+                       "Western Spencer Gulf",
+                       "Upper Gulf St Vincent"
+  ))
+
 unique(abund_dat$site)
 
 # -----------------------------
@@ -249,23 +267,44 @@ rich_models <- run_metric_models(
   use_site = FALSE
 )
 
+shark_models <- run_metric_models(
+  shark_dat,
+  response_col = "n_species_sample",
+  metric_name = "Shark and ray richness",
+  use_site = FALSE
+)
+
+reef_models <- run_metric_models(
+  reef_dat,
+  response_col = "n_species_sample",
+  metric_name = "Reef associated species richness",
+  use_site = FALSE
+)
+
 # -----------------------------
 # 5. Combine dashboard-ready outputs
 # -----------------------------
 
 period_results <- bind_rows(
   abund_models$period_means,
-  rich_models$period_means
+  rich_models$period_means,
+  shark_models$period_means,
+  reef_models$period_means
+  
 )
 
 period_status_results <- bind_rows(
   abund_models$period_status_means,
-  rich_models$period_status_means
+  rich_models$period_status_means,
+  shark_models$period_status_means,
+  reef_models$period_status_means
 )
 
 model_errors <- bind_rows(
   abund_models$model_errors,
-  rich_models$model_errors
+  rich_models$model_errors,
+  shark_models$model_errors,
+  reef_models$model_errors
 )
 
 # Check any models that failed
