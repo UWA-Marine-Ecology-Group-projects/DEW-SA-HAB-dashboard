@@ -863,7 +863,7 @@ shannon_diversity_samples <- combined_count %>%
   
   dplyr::group_by(region, sample, period) %>%
   mutate(p = n / sum(n)) %>%
-  summarise(
+  dplyr::summarise(
     shannon = -sum(p * log(p)),
     .groups = "drop"
   ) %>%

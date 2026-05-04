@@ -193,33 +193,8 @@ make_overall_impact_gauge <- function(region_name) {
   
   message(region_name)
   
-  # ---- Overall impact ----
-  overall_status <- hab_data$overall_impact |>
-    dplyr::filter(region == region_name) |>
-    dplyr::pull(overall_impact) %>%
-    dplyr::glimpse()
-  
-  p0 <- if (identical(overall_status, "Surveys incomplete") ||
-            length(overall_status) == 0 ||
-            is.na(overall_status)) {
-    
-    no_data_plot("Overall impact")
-    
-  } else {
-    p0 <-   half_donut_with_dial(
-      values = c(1, 1, 1),
-      mode   = "absolute",
-      status = overall_status
-    ) +
-      ggtitle("Overall impact") +
-      theme(
-        plot.title = element_text(hjust = 0.5, face = "bold.italic", size = 16),
-        plot.margin = margin(2, 2, 2, 2)
-      )
-  }
-  
-  # Final layout
-  (p0)
+  p1 <- get_metric_plot("shannon_diversity",        "Shannon diversity index",          chosen_region = region_name)
+  p1
 }
 
 make_impact_gauges <- function(region_name) {
@@ -255,11 +230,12 @@ make_impact_gauges <- function(region_name) {
   p4 <- get_metric_plot("reef_associated_richness", "Reef associated species richness", chosen_region = region_name)
   p5 <- get_metric_plot("fish_200_abundance",       "Fish > 200 mm abundance",          chosen_region = region_name)
   p6 <- get_metric_plot("thamnaconus_degeni",       "Bluefin leatherjacket displacement*",          chosen_region = region_name)
-  p7 <- get_metric_plot("shannon_diversity",        "Shannon diversity index",          chosen_region = region_name)
+  # p7 <- get_metric_plot("shannon_diversity",        "Shannon diversity index",          chosen_region = region_name)
   
   # Final layout
   (p1 | p2 | p3) /
-    (p4 | p5 | p6 | p7)
+    (p4 | p5 | p6 #p7
+     )
 }
 
 # ---- output id helpers -------------------------------------------------------
@@ -3318,28 +3294,31 @@ server <- function(input, output, session) {
       dplyr::filter(reporting_name == location_name) |>
       dplyr::pull(overall_impact)
     
-    # p0 <- if (length(overall_status) == 0 || is.na(overall_status) ||
-    #           identical(overall_status, "Surveys incomplete")) {
-    #   no_data_plot("Overall impact")
-    # } else {
-    #   half_donut_with_dial(values = c(1, 1, 1), mode = "absolute", status = overall_status) +
-    #     ggtitle("Overall impact") +
-    #     theme(
-    #       plot.title  = element_text(hjust = 0.5, face = "bold.italic", size = 16),
-    #       plot.margin = margin(2, 2, 2, 2)
-    #     )
-    # }
-    # 
     p1 <- get_metric_plot_location("species_richness",         "Species richness",                 chosen_location = location_name)
     p2 <- get_metric_plot_location("total_abundance",          "Total abundance",                  chosen_location = location_name)
     p3 <- get_metric_plot_location("shark_ray_richness",       "Shark and ray richness",           chosen_location = location_name)
     p4 <- get_metric_plot_location("reef_associated_richness", "Reef associated species richness", chosen_location = location_name)
     p5 <- get_metric_plot_location("fish_200_abundance",       "Fish > 200 mm abundance",          chosen_location = location_name)
     p6 <- get_metric_plot_location("degeni_impacts",           "Bluefin leatherjacket displacement*",          chosen_location = location_name)
-    p7 <- get_metric_plot_location("shannon_diversity",        "Shannon diversity",          chosen_location = location_name)
+    # p7 <- get_metric_plot_location("shannon_diversity",        "Shannon diversity",          chosen_location = location_name)
     
-    (p1 | p2 | p3) / (p4 | p5 | p6 | p7)
+    (p1 | p2 | p3) / (p4 | p5 | p6 #| 
+                        #p7
+                        )
   }
+  
+  make_overall_impact_gauge_location <- function(location_name) {
+    
+    message(location_name)
+    
+    p1 <- get_metric_plot_location("shannon_diversity",        "Shannon diversity index",          chosen_location = location_name)
+    p1
+  }
+  
+  output$location_overall_impact_gauge <- renderPlot({
+    req(input$location)
+    make_overall_impact_gauge_location(input$location)
+  })
   
   output$location_impact_gauges <- renderPlot({
     req(input$location)

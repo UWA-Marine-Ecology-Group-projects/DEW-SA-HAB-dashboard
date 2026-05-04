@@ -696,6 +696,10 @@ nav_panel(
                 style = "float:right; margin-top:-2px;"
               )
             ),
+            
+            
+            spinnerPlotOutput("location_overall_impact_gauge", height = 180),  # was: plotOutput(...)
+            h6("Algal bloom impact on:"),
             spinnerPlotOutput("location_impact_gauges", height = 350)
           ),
           

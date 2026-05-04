@@ -67,7 +67,7 @@ ga.get.campaign.list(API_USER_TOKEN, process_campaign_object,
                      q = ga.query.workgroup("SA_HAB"))
 
 ga.get.campaign.list(API_USER_TOKEN, process_campaign_object,
-                     q = ga.query.workgroup("Test_Monitoring"))
+                     q = ga.query.workgroup("HAB_impact_DEW"))
 
 # This has a bug:
 expected_names <- c(
@@ -129,7 +129,7 @@ metadata <- ga.list.files("_Metadata.csv") %>% # list all files ending in "_Meta
   glimpse()
 
 unique(metadata$project) %>% sort() # 4 projects
-unique(metadata$campaignid)  %>% sort() # 44 campaigns 
+unique(metadata$campaignid)  %>% sort() # 53 campaigns 
 unique(metadata$location)
 unique(metadata$sample)
 
