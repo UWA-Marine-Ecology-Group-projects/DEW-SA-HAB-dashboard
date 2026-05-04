@@ -207,7 +207,7 @@ combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(metho
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
                                # bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")
 ) %>%
-  select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length, status, reporting_location, reporting_sanctuary, reporting_name) %>%
+  select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length, status, reporting_location, reporting_sanctuary, reporting_name, site) %>%
   dplyr::mutate(year = as.numeric(str_sub(date, 1, 4))) %>%
   dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
   dplyr::filter(!is.na(region))
