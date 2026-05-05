@@ -1964,10 +1964,46 @@ server <- function(input, output, session) {
     input = input
   )
   
+  # REEF_ASSOCIATED ----
+  reef_associated_richness_main_raw <- reactive({
+    req(input$region)
+    
+    hab_data$reef_associated_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
   
+  reef_associated_richness_main_results <- reactive({
+    req(input$region)
+    
+    hab_data$reef_associated_richness_summary %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  reef_associated_richness_status_raw <- reactive({
+    req(input$region)
+    
+    hab_data$reef_associated_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  reef_associated_richness_status_results <- reactive({
+    reef_associated_richness_status_raw() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        n = sum(!is.na(n_species_sample)),
+        .groups = "drop"
+      )
+  })
   
   # REEF-ASSOCIATED: main plot -----
-  output$em_plot_reef_associated_richness_main <- renderPlot({
+  reef_associated_richness_main_plot <- reactive({
+    
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "reef_associated_richness")
@@ -2058,103 +2094,141 @@ server <- function(input, output, session) {
         )
       
     }
+    
+  })
+  
+  
+  output$em_plot_reef_associated_richness_main <- renderPlot({
+    
+    reef_associated_richness_main_plot()
+    
   })   |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "reef_associated_richness")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "reef_associated_richness")]])
   
   # REEF-ASSOCIATED: status plot ---------------
+  reef_associated_richness_status_plot <- reactive({
+     
+     req(input$region)
+     
+     show_box <- metric_plot_type(input, "em", "reef_associated_richness")
+     
+     if (show_box) {
+       
+       df <- hab_data$reef_associated_richness_samples %>%
+         dplyr::filter(region == input$region)
+       
+       df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+       
+       ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+         geom_boxplot(
+           width = 0.6,
+           outlier.shape = NA,
+           alpha = 0.85,
+           colour = "black"
+         ) +
+         
+         # ⬇️ Add this
+         geom_point(
+           stat = "summary",
+           fun = "mean",
+           shape = 21,
+           size = 3,
+           fill = "white",
+           colour = "black"
+         ) +
+         
+         geom_jitter(
+           aes(colour = period),
+           width = 0.15,
+           height = 0,      # <— prevents any vertical jitter
+           alpha = 0.35,
+           size = 1.2
+         ) +
+         facet_wrap(~ status, nrow = 1) +
+         scale_fill_manual(values = metric_period_cols) +
+         scale_color_manual(values = metric_period_cols) +
+         labs(
+           x = NULL,
+           y = metric_y_lab[["reef_associated_richness"]],
+           subtitle = paste(input$region, "— Reef-associated species richness per sample by status")
+         ) +
+         theme_minimal(base_size = 16) +
+         theme(
+           legend.position  = "none",
+           panel.grid.minor = element_blank()
+         )
+       
+     } else {
+       
+       df <- hab_data$reef_associated_richness_samples %>%
+         dplyr::filter(region == input$region) %>%
+         dplyr::group_by(period, status) %>%
+         dplyr::summarise(
+           mean = mean(n_species_sample, na.rm = TRUE),
+           se   = sd(n_species_sample, na.rm = TRUE) /
+             sqrt(sum(!is.na(n_species_sample))),
+           .groups = "drop"
+         )
+       
+       df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+       
+       ggplot(df, aes(x = period, y = mean, fill = period)) +
+         geom_col(
+           width  = 0.6,
+           colour = "black",
+           alpha  = 0.85
+         ) +
+         geom_errorbar(
+           aes(ymin = mean - se, ymax = mean + se),
+           width = 0.2,
+           linewidth = 0.6
+         ) +
+         facet_wrap(~ status, nrow = 1) +
+         scale_fill_manual(values = metric_period_cols) +
+         labs(
+           x = NULL,
+           y = metric_y_lab[["reef_associated_richness"]],
+           subtitle = paste(input$region, "— Average reef-associated species richness per sample by status")
+         ) +
+         theme_minimal(base_size = 16) +
+         theme(
+           legend.position  = "none",
+           panel.grid.minor = element_blank()
+         )
+     }
+     
+   })
+  
   output$em_plot_reef_associated_richness_status <- renderPlot({
-    req(input$region)
-    
-    show_box <- metric_plot_type(input, "em", "reef_associated_richness")
-    
-    if (show_box) {
-      
-      df <- hab_data$reef_associated_richness_samples %>%
-        dplyr::filter(region == input$region)
-      
-      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-      
-      ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
-        geom_boxplot(
-          width = 0.6,
-          outlier.shape = NA,
-          alpha = 0.85,
-          colour = "black"
-        ) +
-        
-        # ⬇️ Add this
-        geom_point(
-          stat = "summary",
-          fun = "mean",
-          shape = 21,
-          size = 3,
-          fill = "white",
-          colour = "black"
-        ) +
-        
-        geom_jitter(
-          aes(colour = period),
-          width = 0.15,
-          height = 0,      # <— prevents any vertical jitter
-          alpha = 0.35,
-          size = 1.2
-        ) +
-        facet_wrap(~ status, nrow = 1) +
-        scale_fill_manual(values = metric_period_cols) +
-        scale_color_manual(values = metric_period_cols) +
-        labs(
-          x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = paste(input$region, "— Reef-associated species richness per sample by status")
-        ) +
-        theme_minimal(base_size = 16) +
-        theme(
-          legend.position  = "none",
-          panel.grid.minor = element_blank()
-        )
-      
-    } else {
-      
-      df <- hab_data$reef_associated_richness_samples %>%
-        dplyr::filter(region == input$region) %>%
-        dplyr::group_by(period, status) %>%
-        dplyr::summarise(
-          mean = mean(n_species_sample, na.rm = TRUE),
-          se   = sd(n_species_sample, na.rm = TRUE) /
-            sqrt(sum(!is.na(n_species_sample))),
-          .groups = "drop"
-        )
-      
-      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-      
-      ggplot(df, aes(x = period, y = mean, fill = period)) +
-        geom_col(
-          width  = 0.6,
-          colour = "black",
-          alpha  = 0.85
-        ) +
-        geom_errorbar(
-          aes(ymin = mean - se, ymax = mean + se),
-          width = 0.2,
-          linewidth = 0.6
-        ) +
-        facet_wrap(~ status, nrow = 1) +
-        scale_fill_manual(values = metric_period_cols) +
-        labs(
-          x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = paste(input$region, "— Average reef-associated species richness per sample by status")
-        ) +
-        theme_minimal(base_size = 16) +
-        theme(
-          legend.position  = "none",
-          panel.grid.minor = element_blank()
-        )
-    }
+    reef_associated_richness_status_plot()
   })    |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "reef_associated_richness")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "reef_associated_richness")]])
+  
+  # Downloads ----
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "reef_associated_richness",
+    plot_id = "main",
+    results_reactive = reef_associated_richness_main_results,
+    raw_reactive = reef_associated_richness_main_raw,
+    plot_reactive = reef_associated_richness_main_plot,
+    input = input
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "reef_associated_richness",
+    plot_id = "status",
+    results_reactive = reef_associated_richness_status_results,
+    raw_reactive = reef_associated_richness_status_raw,
+    plot_reactive = reef_associated_richness_status_plot,
+    input = input
+  )
+  
   
   # LARGE FISH: main plot ------------
   output$em_plot_fish_200_abundance_main <- renderPlot({
