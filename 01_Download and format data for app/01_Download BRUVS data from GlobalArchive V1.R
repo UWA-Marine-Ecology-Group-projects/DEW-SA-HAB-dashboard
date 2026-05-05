@@ -7,7 +7,7 @@
 
 ### Please forward any updates and improvements to tim.langlois@uwa.edu.au & brooke.gibbons@uwa.edu.au or raise an issue in the "globalarchive-query" GitHub repository
 
-# rm(list=ls()) # Clear memory
+rm(list=ls()) # Clear memory
 
 ## Load Libraries ----
 # To connect to GlobalArchive
@@ -129,7 +129,7 @@ metadata <- ga.list.files("_Metadata.csv") %>% # list all files ending in "_Meta
   glimpse()
 
 unique(metadata$project) %>% sort() # 4 projects
-unique(metadata$campaignid)  %>% sort() # 53 campaigns 
+unique(metadata$campaignid)  %>% sort() # 54 campaigns 
 unique(metadata$location)
 unique(metadata$sample)
 

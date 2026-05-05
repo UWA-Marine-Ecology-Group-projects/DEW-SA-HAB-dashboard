@@ -398,53 +398,6 @@ metric_plot_with_downloads <- function(prefix, data_id, plot_id) {
   )
 }
 
-add_metric_downloads <- function(
-    output,
-    prefix,
-    data_id,
-    plot_id,
-    results_reactive,
-    raw_reactive,
-    plot_reactive
-) {
-  
-  results_id <- paste(prefix, "download", data_id, plot_id, "results", sep = "_")
-  raw_id     <- paste(prefix, "download", data_id, plot_id, "raw", sep = "_")
-  plot_dl_id <- paste(prefix, "download", data_id, plot_id, "plot", sep = "_")
-  
-  output[[results_id]] <- downloadHandler(
-    filename = function() {
-      paste(prefix, data_id, plot_id, "results", Sys.Date(), "csv", sep = ".")
-    },
-    content = function(file) {
-      readr::write_csv(results_reactive(), file)
-    }
-  )
-  
-  output[[raw_id]] <- downloadHandler(
-    filename = function() {
-      paste(prefix, data_id, plot_id, "raw_data", Sys.Date(), "csv", sep = ".")
-    },
-    content = function(file) {
-      readr::write_csv(raw_reactive(), file)
-    }
-  )
-  
-  output[[plot_dl_id]] <- downloadHandler(
-    filename = function() {
-      paste(prefix, data_id, plot_id, "plot", Sys.Date(), "png", sep = ".")
-    },
-    content = function(file) {
-      ggplot2::ggsave(
-        filename = file,
-        plot = plot_reactive(),
-        width = 8,
-        height = 6,
-        dpi = 300
-      )
-    }
-  )
-}
 
 plot_cell <- function(id, width = "120px", height = "120px") {
   div(
@@ -453,57 +406,92 @@ plot_cell <- function(id, width = "120px", height = "120px") {
   )
 }
 
-# plot_stacked_species <- function(
-#     plot_df,
-#     other_labels,
-#     selected_name,
-#     period_order = c("Pre-bloom", "Bloom")
-# ) {
+# add_metric_downloads <- function(output, prefix, data_id, plot_id,
+#                                  results_reactive, raw_reactive, input) {
 #   
-#   df <- plot_df %>%
-#     dplyr::filter(group_name == selected_name) %>%
-#     dplyr::mutate(
-#       period_name = factor(period_name, levels = period_order),
-#       species_plot = forcats::fct_relevel(species_plot, "Other", after = Inf)
-#     )
+#   results_id <- paste(prefix, "download", data_id, plot_id, "results", sep = "_")
+#   raw_id     <- paste(prefix, "download", data_id, plot_id, "raw", sep = "_")
 #   
-#   labels_df <- other_labels %>%
-#     dplyr::filter(group_name == selected_name) %>%
-#     dplyr::left_join(
-#       df %>%
-#         dplyr::filter(species_plot == "Other") %>%
-#         dplyr::select(group_name, period_name, percent),
-#       by = c("group_name", "period_name")
-#     ) %>%
-#     dplyr::mutate(ypos = percent / 2)
+#   output[[results_id]] <- downloadHandler(
+#     filename = function() {
+#       paste0(data_id, "_", plot_id, "_results_", input$region, "_", Sys.Date(), ".csv")
+#     },
+#     content = function(file) {
+#       readr::write_csv(results_reactive(), file)
+#     }
+#   )
 #   
-#   ggplot2::ggplot(df, ggplot2::aes(x = period_name, y = percent, fill = species_plot)) +
-#     ggplot2::geom_col(width = 0.75, colour = "black") +
-#     ggplot2::geom_text(
-#       data = labels_df,
-#       ggplot2::aes(x = period_name, y = ypos, label = label),
-#       inherit.aes = FALSE,
-#       fontface = "bold",
-#       size = 4
-#     ) +
-#     ggplot2::scale_y_continuous(
-#       labels = scales::label_percent(scale = 1),
-#       limits = c(0, 100),
-#       expand = ggplot2::expansion(mult = c(0, 0.02))
-#     ) +
-#     ggplot2::labs(
-#       x = NULL,
-#       y = "Percentage of observations",
-#       fill = NULL
-#     ) +
-#     ggplot2::theme_minimal(base_size = 15) +
-#     ggplot2::theme(
-#       panel.grid = ggplot2::element_blank(),
-#       axis.text.x = ggplot2::element_text(size = 13),
-#       legend.text = ggplot2::element_text(face = "italic"),
-#       legend.position = "right"
-#     )
+#   output[[raw_id]] <- downloadHandler(
+#     filename = function() {
+#       paste0(data_id, "_", plot_id, "_raw_", input$region, "_", Sys.Date(), ".csv")
+#     },
+#     content = function(file) {
+#       readr::write_csv(raw_reactive(), file)
+#     }
+#   )
+#   
+#   plot_id_full <- paste(prefix, "download", data_id, plot_id, "plot", sep = "_")
+#   
+#   output[[plot_id_full]] <- downloadHandler(
+#     filename = function() {
+#       paste0(data_id, "_", plot_id, "_", input$region, "_", Sys.Date(), ".png")
+#     },
+#     content = function(file) {
+#       
+#       p <- plot_reactive()  # ← IMPORTANT: you need a reactive that returns the ggplot
+#       
+#       ggplot2::ggsave(
+#         filename = file,
+#         plot = p,
+#         width = 8,
+#         height = 5,
+#         dpi = 300
+#       )
+#     }
+#   )
 # }
+
+add_metric_downloads <- function(output, prefix, data_id, plot_id,
+                                 results_reactive, raw_reactive, plot_reactive,
+                                 input) {
+  
+  results_id <- paste(prefix, "download", data_id, plot_id, "results", sep = "_")
+  raw_id     <- paste(prefix, "download", data_id, plot_id, "raw", sep = "_")
+  plot_id_full <- paste(prefix, "download", data_id, plot_id, "plot", sep = "_")
+  
+  output[[results_id]] <- downloadHandler(
+    filename = function() {
+      paste0(data_id, "_", plot_id, "_results_", input$region, "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      readr::write_csv(results_reactive(), file)
+    }
+  )
+  
+  output[[raw_id]] <- downloadHandler(
+    filename = function() {
+      paste0(data_id, "_", plot_id, "_raw_", input$region, "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      readr::write_csv(raw_reactive(), file)
+    }
+  )
+  
+  output[[plot_id_full]] <- downloadHandler(
+    filename = function() {
+      paste0(data_id, "_", plot_id, "_plot_", input$region, "_", Sys.Date(), ".png")
+    },
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = plot_reactive(),
+        width = 8,
+        height = 5,
+        dpi = 300
+      )
+    }
+  )
+}
 
 plot_stacked_species <- function(
     plot_df,
@@ -1292,46 +1280,61 @@ server <- function(input, output, session) {
     isTRUE(input[[metric_plot_type_input_id(prefix, data_id)]])
   }
   
+  # RICHNESS --------------------
+  
+  richness_main_raw <- reactive({
+    req(input$region)
+    
+    hab_data$species_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  richness_main_results <- reactive({
+    req(input$region)
+    
+    hab_data$species_richness_summary %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  richness_status_raw <- reactive({
+    req(input$region)
+    
+    hab_data$species_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  richness_status_results <- reactive({
+    richness_status_raw() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        n = sum(!is.na(n_species_sample)),
+        .groups = "drop"
+      )
+  })
+  
+  
   # RICHNESS: main plot --------------------
-  output$em_plot_richness_main <- renderPlot({
+  richness_main_plot <- reactive({
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "richness")
     
     if (show_box) {
-      df <- hab_data$species_richness_samples %>%
-        dplyr::filter(region == input$region)
-      
-      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-      
-      mean_se <- hab_data$species_richness_summary %>%
-        dplyr::filter(region == input$region)
+      df <- richness_main_raw()
+      mean_se <- richness_main_results()
       
       ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
-        # boxplot (median + IQR + whiskers)
-        geom_boxplot(
-          width = 0.6,
-          outlier.shape = NA,
-          alpha = 0.85,
-          colour = "black"
-        ) +
-        # raw points
-        geom_jitter(
-          aes(colour = period),
-          width = 0.15,
-          height = 0,      # <— prevents any vertical jitter
-          alpha = 0.35,
-          size = 1.2
-        ) +
-        # mean ± SE
+        geom_boxplot(width = 0.6, outlier.shape = NA, alpha = 0.85, colour = "black") +
+        geom_jitter(aes(colour = period), width = 0.15, height = 0, alpha = 0.35, size = 1.2) +
         geom_pointrange(
           data = mean_se,
-          aes(
-            x    = period,
-            y    = mean,
-            ymin = mean - se,
-            ymax = mean + se
-          ),
+          aes(x = period, y = mean, ymin = mean - se, ymax = mean + se),
           inherit.aes = FALSE,
           colour = "black",
           linewidth = 0.6
@@ -1344,44 +1347,29 @@ server <- function(input, output, session) {
           subtitle = input$region
         ) +
         theme_minimal(base_size = 16) +
-        theme(
-          legend.position  = "none",
-          panel.grid.minor = element_blank()
-        )
+        theme(legend.position = "none", panel.grid.minor = element_blank())
       
     } else {
-      
-      df <- hab_data$species_richness_summary %>%
-        dplyr::filter(region == input$region)
-      
-      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      df <- richness_main_results()
       
       ggplot(df, aes(x = period, y = mean, fill = period)) +
-        # mean bar
-        geom_col(
-          width  = 0.6,
-          colour = "black",
-          alpha  = 0.85
-        ) +
-        # # mean ± SE
-        geom_errorbar(
-          aes(ymin = mean - se, ymax = mean + se),
-          width = 0.2,
-          linewidth = 0.6
-        ) +
+        geom_col(width = 0.6, colour = "black", alpha = 0.85) +
+        geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.2, linewidth = 0.6) +
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
           y = metric_y_lab[["richness"]],
-          subtitle = paste(input$region, ": Average species richness per sample")
+          subtitle = paste0(input$region, ": Average species richness per sample")
         ) +
-        # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
-        theme(
-          legend.position  = "none",        # both bars already coloured by period
-          panel.grid.minor = element_blank()
-        )
+        theme(legend.position = "none", panel.grid.minor = element_blank())
     }
+  })
+  
+  
+  
+  output$em_plot_richness_main <- renderPlot({
+    richness_main_plot()
   })  |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "richness")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "richness")]])
@@ -1430,7 +1418,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["richness"]],
-          subtitle = paste(input$region, "— Species richness per sample by status")
+          subtitle = paste0(input$region, ": Species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -1468,7 +1456,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["richness"]],
-          subtitle = paste(input$region, "— Average species richness per sample by status")
+          subtitle = paste0(input$region, ": Average species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -1480,6 +1468,27 @@ server <- function(input, output, session) {
   }) |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "richness")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "richness")]])
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "richness",
+    plot_id = "main",
+    results_reactive = richness_main_results,
+    raw_reactive = richness_main_raw,
+    plot_reactive = richness_main_plot,
+    input = input
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "richness",
+    plot_id = "status",
+    results_reactive = richness_status_results,
+    raw_reactive = richness_status_raw,
+    input = input
+  )
   
   # TOTAL ABUNDANCE: main plot ------------
   output$em_plot_total_abundance_main <- renderPlot({

@@ -1442,10 +1442,6 @@ species_palette["Other"] <- "grey70"
 # Combined data
 hab_data <- structure(
   list(
-    # 
-    # # Temporary scores from googlesheet
-    # scores = scores,
-    
     # Summary Text
     regions_summaries = regions_summaries,
     locations_summaries = locations_summaries,
@@ -1528,4 +1524,50 @@ hab_data <- structure(
   ), class = "data")
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))
+
+# Combined data
+downloads <- structure(
+  list(
+    # Top Species
+    region_top_species_average = region_top_species_average,
+    location_top_species_average = location_top_species_average,
+    
+    # Species Richness
+    species_richness_samples = species_richness_samples,
+    species_richness_summary = species_richness_summary,
+    species_richness_summary_location = species_richness_summary_location,
+    species_richness_summary_location_status = species_richness_summary_location_status,
+    
+    # Total Abundance
+    total_abundance_samples = total_abundance_samples,
+    total_abundance_summary = total_abundance_summary,
+    total_abundance_summary_location = total_abundance_summary_location,
+    total_abundance_summary_location_status = total_abundance_summary_location_status,
+    
+    # Trophic Groups
+    trophic_groups_samples = trophic_groups_samples,
+    trophic_groups_summary = trophic_groups_summary,
+    trophic_groups_summary_location = trophic_groups_summary_location,
+    # trophic_groups_summary_location_status = trophic_groups_summary_location_status,
+    
+    # Shark and Ray Richness
+    shark_ray_richness_samples = shark_ray_richness_samples,
+    shark_ray_richness_summary = shark_ray_richness_summary,
+    shark_ray_richness_summary_location = shark_ray_richness_summary_location,
+    shark_ray_richness_summary_location_status = shark_ray_richness_summary_location_status,
+    
+    # Shannon Diversity
+    shannon_diversity_samples = shannon_diversity_samples,
+    shannon_diversity_summary = shannon_diversity_summary,
+    shannon_diversity_summary_location = shannon_diversity_summary_location,
+    shannon_diversity_summary_location_status = shannon_diversity_summary_location_status,
+    
+    # % of assemblage
+    species_stacked = species_stacked$plot_df,
+    location_species_stacked = location_species_stacked$plot_df
+    
+  ), class = "data")
+
+save(downloads, file = here::here("app_data/downloads.Rdata"))
+
 

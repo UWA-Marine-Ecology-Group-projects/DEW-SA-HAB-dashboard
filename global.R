@@ -35,6 +35,7 @@ load("app_data/values.Rdata")
 load("app_data/dataframes.Rdata")
 load("app_data/plots.Rdata")
 load("app_data/hab_data.Rdata")
+load("app_data/downloads.Rdata")
 
 # List of campaigns ----
 campaigns <- unique((hab_data$hab_combined_metadata)$campaignid) %>% sort()
