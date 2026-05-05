@@ -881,7 +881,7 @@ shannon_diversity_summary <- shannon_diversity_samples %>%
   ) %>%
   ungroup()
 
-shannon_impacts <- shannon_diversity_summary %>%
+shannon_diversity_impacts <- shannon_diversity_summary %>%
   dplyr::select(-se) %>%
   tidyr::complete(region, period) %>%
   tidyr::pivot_wider(names_from = period, values_from = mean) %>%
@@ -902,7 +902,7 @@ impact_data <- bind_rows(species_richness_impacts,
                          reef_associated_richness_impacts,
                          fish_200_abundance_impacts,
                          degeni_impacts,
-                         shannon_impacts
+                         shannon_diversity_impacts
 )
 
 overall_impact <- impact_data %>%
@@ -1506,6 +1506,10 @@ hab_data <- structure(
     fish_200_abundance_samples = fish_200_abundance_samples,
     fish_200_abundance_summary = fish_200_abundance_summary,
     fish_200_abundance_summary_location = fish_200_abundance_summary_location,
+    
+    shannon_diversity_samples = shannon_diversity_samples,
+    shannon_diversity_summary = shannon_diversity_summary,
+    shannon_diversity_summary_location = shannon_diversity_summary_location,
     
     trophic_groups_summary = trophic_groups_summary,
     trophic_groups_summary_location = trophic_groups_summary_location,

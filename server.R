@@ -2084,7 +2084,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = paste(input$region, ": Average reef associated species richness per sample")
+          subtitle = paste0(input$region, ": Average reef associated species richness per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -2151,7 +2151,7 @@ server <- function(input, output, session) {
          labs(
            x = NULL,
            y = metric_y_lab[["reef_associated_richness"]],
-           subtitle = paste(input$region, "— Reef-associated species richness per sample by status")
+           subtitle = paste0(input$region, ": Reef-associated species richness per sample by status")
          ) +
          theme_minimal(base_size = 16) +
          theme(
@@ -2189,7 +2189,7 @@ server <- function(input, output, session) {
          labs(
            x = NULL,
            y = metric_y_lab[["reef_associated_richness"]],
-           subtitle = paste(input$region, "— Average reef-associated species richness per sample by status")
+           subtitle = paste0(input$region, ": Average reef-associated species richness per sample by status")
          ) +
          theme_minimal(base_size = 16) +
          theme(
@@ -2229,9 +2229,45 @@ server <- function(input, output, session) {
     input = input
   )
   
+  # LARGE FISH -----
+  fish_200_abundance_main_raw <- reactive({
+    req(input$region)
+    
+    hab_data$fish_200_abundance_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  fish_200_abundance_main_results <- reactive({
+    req(input$region)
+    
+    hab_data$fish_200_abundance_summary %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  fish_200_abundance_status_raw <- reactive({
+    req(input$region)
+    
+    hab_data$fish_200_abundance_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  fish_200_abundance_status_results <- reactive({
+    fish_200_abundance_status_raw() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(total_abundance_sample, na.rm = TRUE),
+        se = sd(total_abundance_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(total_abundance_sample))),
+        n = sum(!is.na(total_abundance_sample)),
+        .groups = "drop"
+      )
+  })
   
   # LARGE FISH: main plot ------------
-  output$em_plot_fish_200_abundance_main <- renderPlot({
+  fish_200_abundance_main_plot <- reactive({
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "fish_200_abundance")
@@ -2307,7 +2343,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = paste(input$region, "— Average total abundance per sample")
+          subtitle = paste0(input$region, ": Average total abundance per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -2316,12 +2352,20 @@ server <- function(input, output, session) {
           panel.grid.minor = element_blank()
         )
     }
+    
+  })
+  
+  output$em_plot_fish_200_abundance_main <- renderPlot({
+    
+    fish_200_abundance_main_plot()
+    
   })     |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "fish_200_abundance")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "fish_200_abundance")]])
   
   # ---------- LARGE FISH: status plot --------------------
-  output$em_plot_fish_200_abundance_status <- renderPlot({
+  fish_200_abundance_status_plot <- reactive({
+    
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "fish_200_abundance")
@@ -2363,7 +2407,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = paste(input$region, "— Large fish (>200 mm) abundance per sample by status")
+          subtitle = paste0(input$region, ": Large fish (>200 mm) abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -2402,7 +2446,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = paste(input$region, "— Average large fish (>200 mm) abundance per sample by status")
+          subtitle = paste0(input$region, ": Average large fish (>200 mm) abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -2411,9 +2455,307 @@ server <- function(input, output, session) {
         )
       
     }
+    
+  })
+  
+  output$em_plot_fish_200_abundance_status <- renderPlot({
+    
+    fish_200_abundance_status_plot()
+    
   })     |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "fish_200_abundance")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "fish_200_abundance")]])
+  
+  # Downloads -----
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "fish_200_abundance",
+    plot_id = "main",
+    results_reactive = fish_200_abundance_main_results,
+    raw_reactive = fish_200_abundance_main_raw,
+    plot_reactive = fish_200_abundance_main_plot,
+    input = input
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "fish_200_abundance",
+    plot_id = "status",
+    results_reactive = fish_200_abundance_status_results,
+    raw_reactive = fish_200_abundance_status_raw,
+    plot_reactive = fish_200_abundance_status_plot,
+    input = input
+  )
+  
+  # SHANNON DIVERSITY -------
+  
+  shannon_diversity_main_raw <- reactive({
+    req(input$region)
+    
+    hab_data$shannon_diversity_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  shannon_diversity_main_results <- reactive({
+    req(input$region)
+    
+    hab_data$shannon_diversity_summary %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  shannon_diversity_status_raw <- reactive({
+    req(input$region)
+    
+    hab_data$shannon_diversity_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  shannon_diversity_status_results <- reactive({
+    shannon_diversity_status_raw() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(shannon , na.rm = TRUE),
+        se = sd(shannon , na.rm = TRUE) /
+          sqrt(sum(!is.na(shannon ))),
+        n = sum(!is.na(shannon )),
+        .groups = "drop"
+      )
+  })
+  
+  # SHARK & RAYS: main plot -----
+  shannon_diversity_main_plot <- reactive({
+    
+    req(input$region)
+    
+    show_box <- metric_plot_type(input, "em", "shannon_diversity")
+    
+    if (show_box) {
+      
+      df <- hab_data$shannon_diversity_samples %>%
+        dplyr::filter(region == input$region)
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      mean_se <- hab_data$shannon_diversity_summary %>%
+        dplyr::filter(region == input$region)
+      
+      ggplot(df, aes(x = period, y = shannon, fill = period)) +
+        # boxplot (median + IQR + whiskers)
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        # raw points
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        # mean ± SE
+        geom_pointrange(
+          data = mean_se,
+          aes(
+            x    = period,
+            y    = mean,
+            ymin = mean - se,
+            ymax = mean + se
+          ),
+          inherit.aes = FALSE,
+          colour = "black",
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["shannon_diversity"]],
+          subtitle = input$region
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      df <- hab_data$shannon_diversity_summary %>%
+        dplyr::filter(region == input$region)
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        # mean bar
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        # # mean ± SE
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["shannon_diversity"]],
+          subtitle = paste0(input$region, ": Average shannon diversity per sample")
+        ) +
+        # facet_wrap(~ zone) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",        # both bars already coloured by period
+          panel.grid.minor = element_blank()
+        )
+    }
+    
+  })
+  
+  
+  output$em_plot_shannon_diversity_main <- renderPlot({
+    
+    shannon_diversity_main_plot()
+    
+  })  |>
+    bindCache(input$region, input[[metric_plot_type_input_id("em", "shannon_diversity")]]) |>
+    bindEvent(input$region, input[[metric_plot_type_input_id("em", "shannon_diversity")]])
+  
+  # SHARK & RAYS: status plot -----
+  
+  shannon_diversity_status_plot <- reactive({
+    
+    req(input$region)
+    
+    show_box <- metric_plot_type(input, "em", "shannon_diversity")
+    
+    if (show_box) {
+      df <- hab_data$shannon_diversity_samples %>%
+        dplyr::filter(region == input$region)
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      ggplot(df, aes(x = period, y = shannon, fill = period)) +
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        
+        # ⬇️ Add this
+        geom_point(
+          stat = "summary",
+          fun = "mean",
+          shape = 21,
+          size = 3,
+          fill = "white",
+          colour = "black"
+        ) +
+        
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["shannon_diversity"]],
+          subtitle = paste0(input$region, ": shannon diversity per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      df <- hab_data$shannon_diversity_samples %>%
+        dplyr::filter(region == input$region) %>%
+        dplyr::group_by(period, status) %>%
+        dplyr::summarise(
+          mean = mean(shannon, na.rm = TRUE),
+          se   = sd(shannon, na.rm = TRUE) /
+            sqrt(sum(!is.na(shannon))),
+          .groups = "drop"
+        )
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["shannon_diversity"]],
+          subtitle = paste0(input$region, ": Average shannon diversity per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+    }
+    
+  })
+  
+  output$em_plot_shannon_diversity_status <- renderPlot({
+    
+    shannon_diversity_status_plot()
+    
+  })  |>
+    bindCache(input$region, input[[metric_plot_type_input_id("em", "shark_ray_richness")]]) |>
+    bindEvent(input$region, input[[metric_plot_type_input_id("em", "shark_ray_richness")]])
+  
+  # Downloads ----
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "shannon_diversity",
+    plot_id = "main",
+    results_reactive = shannon_diversity_main_results,
+    raw_reactive = shannon_diversity_main_raw,
+    plot_reactive = shannon_diversity_main_plot,
+    input = input
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "shannon_diversity",
+    plot_id = "status",
+    results_reactive = shannon_diversity_status_results,
+    raw_reactive = shannon_diversity_status_raw,
+    plot_reactive = shannon_diversity_status_plot,
+    input = input
+  )
   
   # ---------- Trophic Groups: two plots ------------
   output$em_plot_trophic_main <- renderPlot({
