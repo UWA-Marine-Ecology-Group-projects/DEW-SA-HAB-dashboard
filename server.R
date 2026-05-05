@@ -38,13 +38,7 @@ base_map <- function(max_zoom = 20, current_zoom = 6) {
       title = "Australian Marine Park Zones",
       position = "bottomleft",
       group = "Australian Marine Parks"
-    ) #|>
-  # addLayersControl(
-  #   overlayGroups = c("Australian Marine Parks", "State Marine Parks"#, "Sampling locations"
-  #                     ),
-  #   options = layersControlOptions(collapsed = FALSE),
-  #   position = "topright"
-  # )
+    ) 
 }
 
 # viridis colours for depth using full domain for consistent legend
@@ -277,16 +271,9 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         tagList(
           layout_columns(
             col_widths = c(6, 6),
-            # metric_plotOutput(prefix, data_id, "main"),
             metric_plot_with_downloads(prefix, data_id, "main"),
-            # metric_plotOutput(prefix, data_id, "status")
             metric_plot_with_downloads(prefix, data_id, "status")
           )
-          # layout_columns(
-          #   col_widths = c(6, 6),
-          #   metric_plotOutput(prefix, data_id, "main_years"),
-          #   metric_plotOutput(prefix, data_id, "status_years")
-          # )
         )
       },
       
@@ -294,8 +281,8 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         tagList(
           layout_columns(
             col_widths = c(6, 6),
-            metric_plotOutput(prefix, data_id, "main"),
-            metric_plotOutput(prefix, data_id, "status")
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "status")
           )
         )
       },
@@ -304,8 +291,8 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         tagList(
           layout_columns(
             col_widths = c(6, 6),
-            metric_plotOutput(prefix, data_id, "main"),
-            metric_plotOutput(prefix, data_id, "status")
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "status")
           )
         )
       },
@@ -314,8 +301,8 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         tagList(
           layout_columns(
             col_widths = c(6, 6),
-            metric_plotOutput(prefix, data_id, "main"),
-            metric_plotOutput(prefix, data_id, "status")
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "status")
           )
         )
       },
@@ -324,8 +311,8 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         tagList(
           layout_columns(
             col_widths = c(6, 6),
-            metric_plotOutput(prefix, data_id, "main"),
-            metric_plotOutput(prefix, data_id, "status")
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "status")
           )
         )
       },
@@ -334,13 +321,13 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         tagList(
           layout_columns(
             col_widths = c(6, 6),
-            metric_plotOutput(prefix, data_id, "main"),
-            metric_plotOutput(prefix, data_id, "status")
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "status")
           ),
           layout_columns(
             col_widths = c(6, 6),
-            metric_plotOutput(prefix, data_id, "main_years"),
-            metric_plotOutput(prefix, data_id, "status_years")
+            metric_plot_with_downloads(prefix, data_id, "main_years"),
+            metric_plot_with_downloads(prefix, data_id, "status_years")
           )
         )
       },
@@ -405,51 +392,6 @@ plot_cell <- function(id, width = "120px", height = "120px") {
     plotOutput(id, width = width, height = height)
   )
 }
-
-# add_metric_downloads <- function(output, prefix, data_id, plot_id,
-#                                  results_reactive, raw_reactive, input) {
-#   
-#   results_id <- paste(prefix, "download", data_id, plot_id, "results", sep = "_")
-#   raw_id     <- paste(prefix, "download", data_id, plot_id, "raw", sep = "_")
-#   
-#   output[[results_id]] <- downloadHandler(
-#     filename = function() {
-#       paste0(data_id, "_", plot_id, "_results_", input$region, "_", Sys.Date(), ".csv")
-#     },
-#     content = function(file) {
-#       readr::write_csv(results_reactive(), file)
-#     }
-#   )
-#   
-#   output[[raw_id]] <- downloadHandler(
-#     filename = function() {
-#       paste0(data_id, "_", plot_id, "_raw_", input$region, "_", Sys.Date(), ".csv")
-#     },
-#     content = function(file) {
-#       readr::write_csv(raw_reactive(), file)
-#     }
-#   )
-#   
-#   plot_id_full <- paste(prefix, "download", data_id, plot_id, "plot", sep = "_")
-#   
-#   output[[plot_id_full]] <- downloadHandler(
-#     filename = function() {
-#       paste0(data_id, "_", plot_id, "_", input$region, "_", Sys.Date(), ".png")
-#     },
-#     content = function(file) {
-#       
-#       p <- plot_reactive()  # ← IMPORTANT: you need a reactive that returns the ggplot
-#       
-#       ggplot2::ggsave(
-#         filename = file,
-#         plot = p,
-#         width = 8,
-#         height = 5,
-#         dpi = 300
-#       )
-#     }
-#   )
-# }
 
 add_metric_downloads <- function(output, prefix, data_id, plot_id,
                                  results_reactive, raw_reactive, plot_reactive,
@@ -1487,11 +1429,51 @@ server <- function(input, output, session) {
     plot_id = "status",
     results_reactive = richness_status_results,
     raw_reactive = richness_status_raw,
+    plot_reactive = richness_status_plot,
     input = input
   )
   
   # TOTAL ABUNDANCE: main plot ------------
-  output$em_plot_total_abundance_main <- renderPlot({
+  
+  total_abundance_main_raw <- reactive({
+    req(input$region)
+    
+    hab_data$total_abundance_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  total_abundance_main_results <- reactive({
+    req(input$region)
+    
+    hab_data$total_abundance_summary %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  total_abundance_status_raw <- reactive({
+    req(input$region)
+    
+    hab_data$total_abundance_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  total_abundance_status_results <- reactive({
+    total_abundance_status_raw() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(total_abundance_sample, na.rm = TRUE),
+        se = sd(total_abundance_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(total_abundance_sample))),
+        n = sum(!is.na(total_abundance_sample)),
+        .groups = "drop"
+      )
+  })
+  
+  # TOTAL ABUNDANCE: main plot ------------
+  total_abundance_main_plot <- reactive({
+  
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "total_abundance")
@@ -1499,11 +1481,9 @@ server <- function(input, output, session) {
     if (show_box) {
       
       # Filter for this region
-      df <- hab_data$total_abundance_samples %>%
-        dplyr::filter(region == input$region)
+      df <- total_abundance_main_raw()
       
-      mean_se <- hab_data$total_abundance_summary %>%
-        dplyr::filter(region == input$region)
+      mean_se <- total_abundance_main_results()
       
       # Order periods
       df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
@@ -1545,8 +1525,7 @@ server <- function(input, output, session) {
       
     } else {
       
-      df <- hab_data$total_abundance_summary %>%
-        dplyr::filter(region == input$region)
+      df <- total_abundance_main_results()
       
       # Order periods
       df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
@@ -1575,8 +1554,11 @@ server <- function(input, output, session) {
           legend.position  = "none",
           panel.grid.minor = element_blank()
         )
-      
     }
+  })
+  
+  output$em_plot_total_abundance_main <- renderPlot({
+    total_abundance_main_plot()
   })  |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]])
@@ -1676,6 +1658,32 @@ server <- function(input, output, session) {
   })  |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]])
+  
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "total_abundance",
+    plot_id = "main",
+    results_reactive = total_abundance_main_results,
+    raw_reactive = total_abundance_main_raw,
+    plot_reactive = total_abundance_main_plot,
+    input = input
+  )
+  
+  # add_metric_downloads(
+  #   output,
+  #   prefix = "em",
+  #   data_id = "total_abundance",
+  #   plot_id = "status",
+  #   results_reactive = total_abundance_status_results,
+  #   raw_reactive = total_abundance_status_raw,
+  #   # plot_reactive = total_abundance_main_plot,
+  #   input = input
+  # )
+  
+  
+  
   
   # SHARK & RAYS: main plot -----
   output$em_plot_shark_ray_richness_main <- renderPlot({
