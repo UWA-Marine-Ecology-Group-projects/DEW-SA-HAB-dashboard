@@ -393,17 +393,68 @@ plot_cell <- function(id, width = "120px", height = "120px") {
   )
 }
 
+# add_metric_downloads <- function(output, prefix, data_id, plot_id,
+#                                  results_reactive, raw_reactive, plot_reactive,
+#                                  input) {
+#   
+#   results_id <- paste(prefix, "download", data_id, plot_id, "results", sep = "_")
+#   raw_id     <- paste(prefix, "download", data_id, plot_id, "raw", sep = "_")
+#   plot_id_full <- paste(prefix, "download", data_id, plot_id, "plot", sep = "_")
+#   
+#   output[[results_id]] <- downloadHandler(
+#     filename = function() {
+#       paste0(data_id, "_", plot_id, "_results_", input$region, "_", Sys.Date(), ".csv")
+#     },
+#     content = function(file) {
+#       readr::write_csv(results_reactive(), file)
+#     }
+#   )
+#   
+#   output[[raw_id]] <- downloadHandler(
+#     filename = function() {
+#       paste0(data_id, "_", plot_id, "_raw_", input$region, "_", Sys.Date(), ".csv")
+#     },
+#     content = function(file) {
+#       readr::write_csv(raw_reactive(), file)
+#     }
+#   )
+#   
+#   output[[plot_id_full]] <- downloadHandler(
+#     filename = function() {
+#       paste0(data_id, "_", plot_id, "_plot_", input$region, "_", Sys.Date(), ".png")
+#     },
+#     content = function(file) {
+#       ggplot2::ggsave(
+#         filename = file,
+#         plot = plot_reactive(),
+#         width = 8,
+#         height = 5,
+#         dpi = 300
+#       )
+#     }
+#   )
+# }
 add_metric_downloads <- function(output, prefix, data_id, plot_id,
                                  results_reactive, raw_reactive, plot_reactive,
-                                 input) {
+                                 download_label_reactive) {
   
   results_id <- paste(prefix, "download", data_id, plot_id, "results", sep = "_")
   raw_id     <- paste(prefix, "download", data_id, plot_id, "raw", sep = "_")
   plot_id_full <- paste(prefix, "download", data_id, plot_id, "plot", sep = "_")
   
+  clean_label <- function(x) {
+    x |>
+      stringr::str_replace_all("[^A-Za-z0-9]+", "_") |>
+      stringr::str_replace_all("^_|_$", "")
+  }
+  
   output[[results_id]] <- downloadHandler(
     filename = function() {
-      paste0(data_id, "_", plot_id, "_results_", input$region, "_", Sys.Date(), ".csv")
+      paste0(
+        data_id, "_", plot_id, "_results_",
+        clean_label(download_label_reactive()),
+        "_", Sys.Date(), ".csv"
+      )
     },
     content = function(file) {
       readr::write_csv(results_reactive(), file)
@@ -412,7 +463,11 @@ add_metric_downloads <- function(output, prefix, data_id, plot_id,
   
   output[[raw_id]] <- downloadHandler(
     filename = function() {
-      paste0(data_id, "_", plot_id, "_raw_", input$region, "_", Sys.Date(), ".csv")
+      paste0(
+        data_id, "_", plot_id, "_raw_",
+        clean_label(download_label_reactive()),
+        "_", Sys.Date(), ".csv"
+      )
     },
     content = function(file) {
       readr::write_csv(raw_reactive(), file)
@@ -421,7 +476,11 @@ add_metric_downloads <- function(output, prefix, data_id, plot_id,
   
   output[[plot_id_full]] <- downloadHandler(
     filename = function() {
-      paste0(data_id, "_", plot_id, "_plot_", input$region, "_", Sys.Date(), ".png")
+      paste0(
+        data_id, "_", plot_id, "_plot_",
+        clean_label(download_label_reactive()),
+        "_", Sys.Date(), ".png"
+      )
     },
     content = function(file) {
       ggplot2::ggsave(
@@ -434,6 +493,7 @@ add_metric_downloads <- function(output, prefix, data_id, plot_id,
     }
   )
 }
+
 
 plot_stacked_species <- function(
     plot_df,
@@ -1417,6 +1477,8 @@ server <- function(input, output, session) {
     bindCache(input$region, input[[metric_plot_type_input_id("em", "richness")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "richness")]])
   
+  # Downloads ----
+  
   add_metric_downloads(
     output,
     prefix = "em",
@@ -1425,7 +1487,7 @@ server <- function(input, output, session) {
     results_reactive = richness_main_results,
     raw_reactive = richness_main_raw,
     plot_reactive = richness_main_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   add_metric_downloads(
@@ -1436,7 +1498,7 @@ server <- function(input, output, session) {
     results_reactive = richness_status_results,
     raw_reactive = richness_status_raw,
     plot_reactive = richness_status_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   # TOTAL ABUNDANCE ------------
@@ -1682,7 +1744,7 @@ server <- function(input, output, session) {
     results_reactive = total_abundance_main_results,
     raw_reactive = total_abundance_main_raw,
     plot_reactive = total_abundance_main_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   add_metric_downloads(
@@ -1693,7 +1755,7 @@ server <- function(input, output, session) {
     results_reactive = total_abundance_status_results,
     raw_reactive = total_abundance_status_raw,
     plot_reactive = total_abundance_status_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   
@@ -1950,7 +2012,7 @@ server <- function(input, output, session) {
     results_reactive = shark_ray_richness_main_results,
     raw_reactive = shark_ray_richness_main_raw,
     plot_reactive = shark_ray_richness_main_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   add_metric_downloads(
@@ -1961,7 +2023,7 @@ server <- function(input, output, session) {
     results_reactive = shark_ray_richness_status_results,
     raw_reactive = shark_ray_richness_status_raw,
     plot_reactive = shark_ray_richness_status_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   # REEF_ASSOCIATED ----
@@ -2215,7 +2277,7 @@ server <- function(input, output, session) {
     results_reactive = reef_associated_richness_main_results,
     raw_reactive = reef_associated_richness_main_raw,
     plot_reactive = reef_associated_richness_main_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   add_metric_downloads(
@@ -2226,7 +2288,7 @@ server <- function(input, output, session) {
     results_reactive = reef_associated_richness_status_results,
     raw_reactive = reef_associated_richness_status_raw,
     plot_reactive = reef_associated_richness_status_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   # LARGE FISH -----
@@ -2476,7 +2538,7 @@ server <- function(input, output, session) {
     results_reactive = fish_200_abundance_main_results,
     raw_reactive = fish_200_abundance_main_raw,
     plot_reactive = fish_200_abundance_main_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   add_metric_downloads(
@@ -2487,7 +2549,7 @@ server <- function(input, output, session) {
     results_reactive = fish_200_abundance_status_results,
     raw_reactive = fish_200_abundance_status_raw,
     plot_reactive = fish_200_abundance_status_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   # SHANNON DIVERSITY -------
@@ -2743,7 +2805,7 @@ server <- function(input, output, session) {
     results_reactive = shannon_diversity_main_results,
     raw_reactive = shannon_diversity_main_raw,
     plot_reactive = shannon_diversity_main_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   add_metric_downloads(
@@ -2754,7 +2816,7 @@ server <- function(input, output, session) {
     results_reactive = shannon_diversity_status_results,
     raw_reactive = shannon_diversity_status_raw,
     plot_reactive = shannon_diversity_status_plot,
-    input = input
+    download_label_reactive = reactive(input$region)
   )
   
   # ---------- Trophic Groups: two plots ------------
@@ -4227,137 +4289,210 @@ server <- function(input, output, session) {
     bindCache(input$location) |>
     bindEvent(input$location)
   
-  # ---------- RICHNESS: detail plot ---------------------
-  output$loc_plot_richness_detail <- renderPlot({
+  # RICHNESS (LOCATION) --------------------
+  richness_main_raw_location <- reactive({
     req(input$location)
     
-    df <- hab_data$species_richness_summary_location %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
-    ggplot(df, aes(x = period, y = mean, fill = period)) +
-      # mean bar
-      geom_col(
-        width  = 0.6,
-        colour = "black",
-        alpha  = 0.85
-      ) +
-      # # mean ± SE
-      geom_errorbar(
-        aes(ymin = mean - se, ymax = mean + se),
-        width = 0.2,
-        linewidth = 0.6
-      ) +
-      scale_fill_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,
-        y = metric_y_lab[["richness"]],
-        subtitle = paste(input$location, ": Average species richness per sample")
-      ) +
-      # facet_wrap(~ zone) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "none",        # both bars already coloured by period
-        panel.grid.minor = element_blank()
-      )
-  }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
-  
-  # ---------- RICHNESS: main boxplot by Status --------------------
-  output$loc_plot_richness_main_status <- renderPlot({
-    req(input$location)
-    
-    df <- hab_data$species_richness_samples %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
-    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
-      geom_boxplot(
-        width = 0.6,
-        outlier.shape = NA,
-        alpha = 0.85,
-        colour = "black"
-      ) +
-      
-      # ⬇️ Add this
-      geom_point(
-        stat = "summary",
-        fun = "mean",
-        shape = 21,
-        size = 3,
-        fill = "white",
-        colour = "black"
-      ) +
-      
-      geom_jitter(
-        aes(colour = period),
-        width = 0.15,
-        height = 0,      # <— prevents any vertical jitter
-        alpha = 0.35,
-        size = 1.2
-      ) +
-      facet_wrap(~ status, nrow = 1) +
-      scale_fill_manual(values = metric_period_cols) +
-      scale_color_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,
-        y = metric_y_lab[["richness"]],
-        subtitle = paste(input$location, "— Species richness per sample by status")
-      ) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "none",
-        panel.grid.minor = element_blank()
-      )
-  }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
-  
-  # ---------- RICHNESS: detail barplot by Status ------------------
-  output$loc_plot_richness_detail_status <- renderPlot({
-    req(input$location)
-    
-    df <- hab_data$species_richness_samples %>%
+    hab_data$species_richness_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  richness_main_results_location <- reactive({
+    req(input$location)
+    
+    hab_data$species_richness_summary_location %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  richness_status_results_location <- reactive({
+    richness_main_raw_location() %>%
       dplyr::group_by(period, status) %>%
       dplyr::summarise(
         mean = mean(n_species_sample, na.rm = TRUE),
-        se   = sd(n_species_sample, na.rm = TRUE) /
+        se = sd(n_species_sample, na.rm = TRUE) /
           sqrt(sum(!is.na(n_species_sample))),
+        n = sum(!is.na(n_species_sample)),
         .groups = "drop"
       )
+  })
+  
+  # RICHNESS (LOCATION): main plot --------------------
+  richness_main_plot_location <- reactive({
+    req(input$region)
     
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+    show_box <- metric_plot_type(input, "loc", "richness")
     
-    ggplot(df, aes(x = period, y = mean, fill = period)) +
-      geom_col(
-        width  = 0.6,
-        colour = "black",
-        alpha  = 0.85
-      ) +
-      geom_errorbar(
-        aes(ymin = mean - se, ymax = mean + se),
-        width = 0.2,
-        linewidth = 0.6
-      ) +
-      facet_wrap(~ status, nrow = 1) +
-      scale_fill_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,
-        y = metric_y_lab[["richness"]],
-        subtitle = paste(input$location, "— Average species richness per sample by status")
-      ) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "none",
-        panel.grid.minor = element_blank()
-      )
+    if (show_box) {
+      df <- richness_main_raw_location()
+      mean_se <- richness_main_results_location()
+      
+      ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+        geom_boxplot(width = 0.6, outlier.shape = NA, alpha = 0.85, colour = "black") +
+        geom_jitter(aes(colour = period), width = 0.15, height = 0, alpha = 0.35, size = 1.2) +
+        geom_pointrange(
+          data = mean_se,
+          aes(x = period, y = mean, ymin = mean - se, ymax = mean + se),
+          inherit.aes = FALSE,
+          colour = "black",
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["richness"]],
+          subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank())
+      
+    } else {
+      df <- richness_main_results_location()
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        geom_col(width = 0.6, colour = "black", alpha = 0.85) +
+        geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.2, linewidth = 0.6) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["richness"]],
+          subtitle = paste0(input$location, ": Average species richness per sample")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank())
+    }
+  })
+  
+  output$loc_plot_richness_main <- renderPlot({
+    richness_main_plot_location()
+  })  |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "richness")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "richness")]])
+  
+  
+  # RICHNESS:  status plot --------------------
+  richness_status_plot_location <- reactive({
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "richness")
+    
+    if (show_box) {
+      
+      df <- richness_main_raw_location()
+      
+      ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        
+        # ⬇️ Add this
+        geom_point(
+          stat = "summary",
+          fun = "mean",
+          shape = 21,
+          size = 3,
+          fill = "white",
+          colour = "black"
+        ) +
+        
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["richness"]],
+          subtitle = paste0(input$location, ": Species richness per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      df <- richness_status_results_location()
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["richness"]],
+          subtitle = paste0(input$location, ": Average species richness per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    }
+  })
+  
+  output$loc_plot_richness_status <- renderPlot({
+    
+    richness_status_plot_location()
+    
   }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "richness")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "richness")]])
+  
+  # Downloads ----
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "richness",
+    plot_id = "main",
+    results_reactive = richness_main_results_location,
+    raw_reactive = richness_main_raw_location,
+    plot_reactive = richness_main_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "richness",
+    plot_id = "status",
+    results_reactive = richness_status_results_location,
+    raw_reactive = richness_main_raw_location,
+    plot_reactive = richness_status_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
   
   # ---------- TOTAL ABUNDANCE: two plots ------------
   output$loc_plot_total_abundance_main <- renderPlot({
