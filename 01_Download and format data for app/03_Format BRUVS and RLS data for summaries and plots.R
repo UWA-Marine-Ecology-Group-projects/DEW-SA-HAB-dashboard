@@ -745,7 +745,9 @@ shark_ray_richness_samples <- all_bruv_samples %>%
     by = c("region", "period", "sample", "status")
   ) %>%
   tidyr::replace_na(list(n_species_sample = 0)) %>%
-  dplyr::filter(!is.na(region))
+  dplyr::filter(!is.na(region)) %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs")
 
 # 4. Summarise by region + period
 shark_ray_richness_summary <- shark_ray_richness_samples %>%
@@ -1500,6 +1502,7 @@ hab_data <- structure(
     shark_ray_richness_summary_location = shark_ray_richness_summary_location,
     
     reef_associated_richness_samples = reef_associated_richness_samples,
+    # reef_associated_richness_samples_location = reef_associated_richness_samples_location,
     reef_associated_richness_summary = reef_associated_richness_summary,
     reef_associated_richness_summary_location = reef_associated_richness_summary_location,
     
@@ -1556,6 +1559,7 @@ downloads <- structure(
     
     # Shark and Ray Richness
     shark_ray_richness_samples = shark_ray_richness_samples,
+    shark_ray_richness_samples_location = shark_ray_richness_samples_location,
     shark_ray_richness_summary = shark_ray_richness_summary,
     shark_ray_richness_summary_location = shark_ray_richness_summary_location,
     shark_ray_richness_summary_location_status = shark_ray_richness_summary_location_status,
