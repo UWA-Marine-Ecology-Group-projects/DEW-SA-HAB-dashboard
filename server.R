@@ -351,8 +351,8 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
       {
         layout_columns(
           col_widths = c(6, 6),
-          metric_plotOutput(prefix, data_id, "main"),
-          metric_plotOutput(prefix, data_id, "status")
+          metric_plot_with_downloads(prefix, data_id, "main"),
+          metric_plot_with_downloads(prefix, data_id, "status")
         )
       }
     )
@@ -1317,7 +1317,7 @@ server <- function(input, output, session) {
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "richness")]])
   
   # RICHNESS:  status plot --------------------
-  output$em_plot_richness_status <- renderPlot({
+  richness_status_plot <- reactive({
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "richness")
@@ -1407,6 +1407,12 @@ server <- function(input, output, session) {
         )
       
     }
+  })
+  
+  output$em_plot_richness_status <- renderPlot({
+    
+    richness_status_plot()
+    
   }) |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "richness")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "richness")]])
@@ -1433,8 +1439,7 @@ server <- function(input, output, session) {
     input = input
   )
   
-  # TOTAL ABUNDANCE: main plot ------------
-  
+  # TOTAL ABUNDANCE ------------
   total_abundance_main_raw <- reactive({
     req(input$region)
     
@@ -1546,7 +1551,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["total_abundance"]],
-          subtitle = paste(input$region, "— Average total abundance per sample")
+          subtitle = paste0(input$region, ": Average total abundance per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -1564,7 +1569,8 @@ server <- function(input, output, session) {
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]])
   
   # TOTAL ABUNDANCE: status plot ------------
-  output$em_plot_total_abundance_status <- renderPlot({
+  total_abundance_status_plot <- reactive({
+    
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "total_abundance")
@@ -1607,7 +1613,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["total_abundance"]],
-          subtitle = paste(input$region, "— Total abundance per sample by status")
+          subtitle = paste0(input$region, ": Total abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -1645,8 +1651,8 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["total_abundance"]],
-          subtitle = paste(input$region,
-                           "— Average total abundance per sample by status")
+          subtitle = paste0(input$region,
+                            ": Average total abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -1655,11 +1661,19 @@ server <- function(input, output, session) {
         )
       
     }
+    
+  })
+  
+  
+  output$em_plot_total_abundance_status <- renderPlot({
+    
+    total_abundance_status_plot()
+
   })  |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]])
   
-  
+  # Downloads ----
   add_metric_downloads(
     output,
     prefix = "em",
@@ -1671,22 +1685,59 @@ server <- function(input, output, session) {
     input = input
   )
   
-  # add_metric_downloads(
-  #   output,
-  #   prefix = "em",
-  #   data_id = "total_abundance",
-  #   plot_id = "status",
-  #   results_reactive = total_abundance_status_results,
-  #   raw_reactive = total_abundance_status_raw,
-  #   # plot_reactive = total_abundance_main_plot,
-  #   input = input
-  # )
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "total_abundance",
+    plot_id = "status",
+    results_reactive = total_abundance_status_results,
+    raw_reactive = total_abundance_status_raw,
+    plot_reactive = total_abundance_status_plot,
+    input = input
+  )
   
   
+  # SHARK & RAYS -------
   
+  shark_ray_richness_main_raw <- reactive({
+    req(input$region)
+    
+    hab_data$shark_ray_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  shark_ray_richness_main_results <- reactive({
+    req(input$region)
+    
+    hab_data$shark_ray_richness_summary %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  shark_ray_richness_status_raw <- reactive({
+    req(input$region)
+    
+    hab_data$shark_ray_richness_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  shark_ray_richness_status_results <- reactive({
+    shark_ray_richness_status_raw() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        n = sum(!is.na(n_species_sample)),
+        .groups = "drop"
+      )
+  })
   
   # SHARK & RAYS: main plot -----
-  output$em_plot_shark_ray_richness_main <- renderPlot({
+  shark_ray_richness_main_plot <- reactive({
+    
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "shark_ray_richness")
@@ -1767,7 +1818,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["sharks_rays"]],
-          subtitle = paste(input$region, ": Average shark and ray species richness per sample")
+          subtitle = paste0(input$region, ": Average shark and ray species richness per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -1776,12 +1827,22 @@ server <- function(input, output, session) {
           panel.grid.minor = element_blank()
         )
     }
+    
+  })
+  
+  
+  output$em_plot_shark_ray_richness_main <- renderPlot({
+    
+    shark_ray_richness_main_plot()
+    
   })  |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "shark_ray_richness")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "shark_ray_richness")]])
   
   # SHARK & RAYS: status plot -----
-  output$em_plot_shark_ray_richness_status <- renderPlot({
+  
+  shark_ray_richness_status_plot <- reactive({
+    
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "shark_ray_richness")
@@ -1861,7 +1922,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["sharks_rays"]],
-          subtitle = paste(input$region, "— Average shark & ray species richness per sample by status")
+          subtitle = paste0(input$region, ": Average shark & ray species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -1869,9 +1930,41 @@ server <- function(input, output, session) {
           panel.grid.minor = element_blank()
         )
     }
+    
+  })
+  
+  output$em_plot_shark_ray_richness_status <- renderPlot({
+   
+    shark_ray_richness_status_plot()
+    
   })  |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "shark_ray_richness")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "shark_ray_richness")]])
+  
+  # Downloads ----
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "shark_ray_richness",
+    plot_id = "main",
+    results_reactive = shark_ray_richness_main_results,
+    raw_reactive = shark_ray_richness_main_raw,
+    plot_reactive = shark_ray_richness_main_plot,
+    input = input
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "shark_ray_richness",
+    plot_id = "status",
+    results_reactive = shark_ray_richness_status_results,
+    raw_reactive = shark_ray_richness_status_raw,
+    plot_reactive = shark_ray_richness_status_plot,
+    input = input
+  )
+  
+  
   
   # REEF-ASSOCIATED: main plot -----
   output$em_plot_reef_associated_richness_main <- renderPlot({
