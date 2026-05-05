@@ -4372,7 +4372,7 @@ server <- function(input, output, session) {
     bindEvent(input$location, input[[metric_plot_type_input_id("loc", "richness")]])
   
   
-  # RICHNESS:  status plot --------------------
+  # RICHNESS (LOCATION):  status plot --------------------
   richness_status_plot_location <- reactive({
     req(input$location)
     
@@ -4483,7 +4483,234 @@ server <- function(input, output, session) {
     download_label_reactive = reactive(input$location)
   )
   
+  # TOTAL ABUNDANCE ------------
+  total_abundance_main_raw_location <- reactive({
+    req(input$location)
+    
+    hab_data$total_abundance_samples %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
   
+  total_abundance_main_results_location <- reactive({
+    req(input$location)
+    
+    hab_data$total_abundance_summary_location %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  total_abundance_status_results_location <- reactive({
+    total_abundance_main_raw_location() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(total_abundance_sample, na.rm = TRUE),
+        se = sd(total_abundance_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(total_abundance_sample))),
+        n = sum(!is.na(total_abundance_sample)),
+        .groups = "drop"
+      )
+  })
+  
+  # TOTAL ABUNDANCE: main plot ------------
+  total_abundance_main_plot_location <- reactive({
+    
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "total_abundance")
+    
+    if (show_box) {
+      
+      # Filter for this region
+      df <- total_abundance_main_raw_location()
+      mean_se <- total_abundance_main_results_location()
+      
+      ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        geom_pointrange(
+          data = mean_se,
+          aes(x = period, y = mean,
+              ymin = mean - se, ymax = mean + se),
+          inherit.aes = FALSE,
+          colour = "black",
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["total_abundance"]],
+          subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      df <- total_abundance_main_results_location()
+      
+      ggplot(df,
+             aes(x = period, y = mean, fill = period)) +
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["total_abundance"]],
+          subtitle = paste0(input$location, ": Average total abundance per sample")
+        ) +
+        # facet_wrap(~ zone) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+    }
+  })
+  
+  output$loc_plot_total_abundance_main <- renderPlot({
+    total_abundance_main_plot_location()
+  })  |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "total_abundance")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "total_abundance")]])
+  
+  # TOTAL ABUNDANCE: status plot ------------
+  total_abundance_status_plot_location <- reactive({
+    
+    req(input$region)
+    
+    show_box <- metric_plot_type(input, "loc", "total_abundance")
+    
+    if (show_box) {
+      
+      df <- total_abundance_main_raw_location()
+      
+      ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        
+        # ⬇️ Add this
+        geom_point(
+          stat = "summary",
+          fun = "mean",
+          shape = 21,
+          size = 3,
+          fill = "white",
+          colour = "black"
+        ) +
+        
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["total_abundance"]],
+          subtitle = paste0(input$location, ": Total abundance per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+    } else {
+      
+      df <- total_abundance_status_results_location()
+      
+      ggplot(df,
+             aes(x = period, y = mean, fill = period)) +
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["total_abundance"]],
+          subtitle = paste0(input$location,
+                            ": Average total abundance per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    }
+    
+  })
+  
+  
+  output$loc_plot_total_abundance_status <- renderPlot({
+    
+    total_abundance_status_plot_location()
+    
+  })  |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "total_abundance")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "total_abundance")]])
+  
+  # Downloads ----
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "total_abundance",
+    plot_id = "main",
+    results_reactive = total_abundance_main_results_location,
+    raw_reactive = total_abundance_main_raw_location,
+    plot_reactive = total_abundance_main_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "total_abundance",
+    plot_id = "status",
+    results_reactive = total_abundance_status_results_location,
+    raw_reactive = total_abundance_main_raw_location,
+    plot_reactive = total_abundance_status_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
   
   
   
@@ -4494,245 +4721,245 @@ server <- function(input, output, session) {
   
 
   
-  # ---------- TOTAL ABUNDANCE: two plots ------------
-  output$loc_plot_total_abundance_main <- renderPlot({
-    req(input$location)
-    
-    # Filter for this region
-    df <- hab_data$total_abundance_samples %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    mean_se <- hab_data$total_abundance_summary_location %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    # Order periods
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
-    ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
-      geom_boxplot(
-        width = 0.6,
-        outlier.shape = NA,
-        alpha = 0.85,
-        colour = "black"
-      ) +
-      geom_jitter(
-        aes(colour = period),
-        width = 0.15,
-        height = 0,      # <— prevents any vertical jitter
-        alpha = 0.35,
-        size = 1.2
-      ) +
-      geom_pointrange(
-        data = mean_se,
-        aes(x = period, y = mean,
-            ymin = mean - se, ymax = mean + se),
-        inherit.aes = FALSE,
-        colour = "black",
-        linewidth = 0.6
-      ) +
-      scale_fill_manual(values = metric_period_cols) +
-      scale_color_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,
-        y = metric_y_lab[["total_abundance"]],
-        subtitle = input$location
-      ) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "none",
-        panel.grid.minor = element_blank()
-      )
-  }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
-  
-  output$loc_plot_total_abundance_detail <- renderPlot({
-    req(input$location)
-    
-    df <- hab_data$total_abundance_summary_location %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    # Order periods
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
-    ggplot(df,
-           aes(x = period, y = mean, fill = period)) +
-      geom_col(
-        width  = 0.6,
-        colour = "black",
-        alpha  = 0.85
-      ) +
-      geom_errorbar(
-        aes(ymin = mean - se, ymax = mean + se),
-        width = 0.2,
-        linewidth = 0.6
-      ) +
-      scale_fill_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,
-        y = metric_y_lab[["total_abundance"]],
-        subtitle = paste(input$location, "— Average total abundance per sample")
-      ) +
-      # facet_wrap(~ zone) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "none",
-        panel.grid.minor = element_blank()
-      )
-  }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
-  
-  output$loc_plot_total_abundance_main_status <- renderPlot({
-    req(input$location)
-    
-    df <- hab_data$total_abundance_samples %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
-    ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
-      geom_boxplot(
-        width = 0.6,
-        outlier.shape = NA,
-        alpha = 0.85,
-        colour = "black"
-      ) +
-      
-      # ⬇️ Add this
-      geom_point(
-        stat = "summary",
-        fun = "mean",
-        shape = 21,
-        size = 3,
-        fill = "white",
-        colour = "black"
-      ) +
-      
-      geom_jitter(
-        aes(colour = period),
-        width = 0.15,
-        height = 0,      # <— prevents any vertical jitter
-        alpha = 0.35,
-        size = 1.2
-      ) +
-      facet_wrap(~ status, nrow = 1) +
-      scale_fill_manual(values = metric_period_cols) +
-      scale_color_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,
-        y = metric_y_lab[["total_abundance"]],
-        subtitle = paste(input$location, "— Total abundance per sample by status")
-      ) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "none",
-        panel.grid.minor = element_blank()
-      )
-  }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
-  
-  output$loc_plot_total_abundance_detail_status <- renderPlot({
-    req(input$location)
-    
-    df <- hab_data$total_abundance_samples %>%
-      dplyr::filter(reporting_name == input$location) %>%
-      dplyr::group_by(period, status) %>%
-      dplyr::summarise(
-        mean = mean(total_abundance_sample, na.rm = TRUE),
-        se   = sd(total_abundance_sample, na.rm = TRUE) /
-          sqrt(sum(!is.na(total_abundance_sample))),
-        .groups = "drop"
-      )
-    
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
-    ggplot(df,
-           aes(x = period, y = mean, fill = period)) +
-      geom_col(
-        width  = 0.6,
-        colour = "black",
-        alpha  = 0.85
-      ) +
-      geom_errorbar(
-        aes(ymin = mean - se, ymax = mean + se),
-        width = 0.2,
-        linewidth = 0.6
-      ) +
-      facet_wrap(~ status, nrow = 1) +
-      scale_fill_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,
-        y = metric_y_lab[["total_abundance"]],
-        subtitle = paste(input$location,
-                         "— Average total abundance per sample by status")
-      ) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "none",
-        panel.grid.minor = element_blank()
-      )
-  }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
-  
-  # Shark and Rays -----
-  output$loc_plot_shark_ray_richness_main <- renderPlot({
-    req(input$location)
-    
-    df <- hab_data$shark_ray_richness_samples_location %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    
-    mean_se <- hab_data$shark_ray_richness_summary_location %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
-      # boxplot (median + IQR + whiskers)
-      geom_boxplot(
-        width = 0.6,
-        outlier.shape = NA,
-        alpha = 0.85,
-        colour = "black"
-      ) +
-      # raw points
-      geom_jitter(
-        aes(colour = period),
-        width = 0.15,
-        height = 0,      # <— prevents any vertical jitter
-        alpha = 0.35,
-        size = 1.2
-      ) +
-      # mean ± SE
-      geom_pointrange(
-        data = mean_se,
-        aes(
-          x    = period,
-          y    = mean,
-          ymin = mean - se,
-          ymax = mean + se
-        ),
-        inherit.aes = FALSE,
-        colour = "black",
-        linewidth = 0.6
-      ) +
-      scale_fill_manual(values = metric_period_cols) +
-      scale_color_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,
-        y = metric_y_lab[["sharks_rays"]],
-        subtitle = input$location
-      ) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "none",
-        panel.grid.minor = element_blank()
-      )
-  }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
+  # # ---------- TOTAL ABUNDANCE: two plots ------------
+  # output$loc_plot_total_abundance_main <- renderPlot({
+  #   req(input$location)
+  #   
+  #   # Filter for this region
+  #   df <- hab_data$total_abundance_samples %>%
+  #     dplyr::filter(reporting_name == input$location)
+  #   
+  #   mean_se <- hab_data$total_abundance_summary_location %>%
+  #     dplyr::filter(reporting_name == input$location)
+  #   
+  #   # Order periods
+  #   df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+  #   
+  #   ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
+  #     geom_boxplot(
+  #       width = 0.6,
+  #       outlier.shape = NA,
+  #       alpha = 0.85,
+  #       colour = "black"
+  #     ) +
+  #     geom_jitter(
+  #       aes(colour = period),
+  #       width = 0.15,
+  #       height = 0,      # <— prevents any vertical jitter
+  #       alpha = 0.35,
+  #       size = 1.2
+  #     ) +
+  #     geom_pointrange(
+  #       data = mean_se,
+  #       aes(x = period, y = mean,
+  #           ymin = mean - se, ymax = mean + se),
+  #       inherit.aes = FALSE,
+  #       colour = "black",
+  #       linewidth = 0.6
+  #     ) +
+  #     scale_fill_manual(values = metric_period_cols) +
+  #     scale_color_manual(values = metric_period_cols) +
+  #     labs(
+  #       x = NULL,
+  #       y = metric_y_lab[["total_abundance"]],
+  #       subtitle = input$location
+  #     ) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(
+  #       legend.position  = "none",
+  #       panel.grid.minor = element_blank()
+  #     )
+  # }) |>
+  #   bindCache(input$location) |>
+  #   bindEvent(input$location)
+  # 
+  # output$loc_plot_total_abundance_detail <- renderPlot({
+  #   req(input$location)
+  #   
+  #   df <- hab_data$total_abundance_summary_location %>%
+  #     dplyr::filter(reporting_name == input$location)
+  #   
+  #   # Order periods
+  #   df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+  #   
+  #   ggplot(df,
+  #          aes(x = period, y = mean, fill = period)) +
+  #     geom_col(
+  #       width  = 0.6,
+  #       colour = "black",
+  #       alpha  = 0.85
+  #     ) +
+  #     geom_errorbar(
+  #       aes(ymin = mean - se, ymax = mean + se),
+  #       width = 0.2,
+  #       linewidth = 0.6
+  #     ) +
+  #     scale_fill_manual(values = metric_period_cols) +
+  #     labs(
+  #       x = NULL,
+  #       y = metric_y_lab[["total_abundance"]],
+  #       subtitle = paste(input$location, "— Average total abundance per sample")
+  #     ) +
+  #     # facet_wrap(~ zone) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(
+  #       legend.position  = "none",
+  #       panel.grid.minor = element_blank()
+  #     )
+  # }) |>
+  #   bindCache(input$location) |>
+  #   bindEvent(input$location)
+  # 
+  # output$loc_plot_total_abundance_main_status <- renderPlot({
+  #   req(input$location)
+  #   
+  #   df <- hab_data$total_abundance_samples %>%
+  #     dplyr::filter(reporting_name == input$location)
+  #   
+  #   df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+  #   
+  #   ggplot(df, aes(x = period, y = total_abundance_sample, fill = period)) +
+  #     geom_boxplot(
+  #       width = 0.6,
+  #       outlier.shape = NA,
+  #       alpha = 0.85,
+  #       colour = "black"
+  #     ) +
+  #     
+  #     # ⬇️ Add this
+  #     geom_point(
+  #       stat = "summary",
+  #       fun = "mean",
+  #       shape = 21,
+  #       size = 3,
+  #       fill = "white",
+  #       colour = "black"
+  #     ) +
+  #     
+  #     geom_jitter(
+  #       aes(colour = period),
+  #       width = 0.15,
+  #       height = 0,      # <— prevents any vertical jitter
+  #       alpha = 0.35,
+  #       size = 1.2
+  #     ) +
+  #     facet_wrap(~ status, nrow = 1) +
+  #     scale_fill_manual(values = metric_period_cols) +
+  #     scale_color_manual(values = metric_period_cols) +
+  #     labs(
+  #       x = NULL,
+  #       y = metric_y_lab[["total_abundance"]],
+  #       subtitle = paste(input$location, "— Total abundance per sample by status")
+  #     ) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(
+  #       legend.position  = "none",
+  #       panel.grid.minor = element_blank()
+  #     )
+  # }) |>
+  #   bindCache(input$location) |>
+  #   bindEvent(input$location)
+  # 
+  # output$loc_plot_total_abundance_detail_status <- renderPlot({
+  #   req(input$location)
+  #   
+  #   df <- hab_data$total_abundance_samples %>%
+  #     dplyr::filter(reporting_name == input$location) %>%
+  #     dplyr::group_by(period, status) %>%
+  #     dplyr::summarise(
+  #       mean = mean(total_abundance_sample, na.rm = TRUE),
+  #       se   = sd(total_abundance_sample, na.rm = TRUE) /
+  #         sqrt(sum(!is.na(total_abundance_sample))),
+  #       .groups = "drop"
+  #     )
+  #   
+  #   df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+  #   
+  #   ggplot(df,
+  #          aes(x = period, y = mean, fill = period)) +
+  #     geom_col(
+  #       width  = 0.6,
+  #       colour = "black",
+  #       alpha  = 0.85
+  #     ) +
+  #     geom_errorbar(
+  #       aes(ymin = mean - se, ymax = mean + se),
+  #       width = 0.2,
+  #       linewidth = 0.6
+  #     ) +
+  #     facet_wrap(~ status, nrow = 1) +
+  #     scale_fill_manual(values = metric_period_cols) +
+  #     labs(
+  #       x = NULL,
+  #       y = metric_y_lab[["total_abundance"]],
+  #       subtitle = paste(input$location,
+  #                        "— Average total abundance per sample by status")
+  #     ) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(
+  #       legend.position  = "none",
+  #       panel.grid.minor = element_blank()
+  #     )
+  # }) |>
+  #   bindCache(input$location) |>
+  #   bindEvent(input$location)
+  # 
+  # # Shark and Rays -----
+  # output$loc_plot_shark_ray_richness_main <- renderPlot({
+  #   req(input$location)
+  #   
+  #   df <- hab_data$shark_ray_richness_samples_location %>%
+  #     dplyr::filter(reporting_name == input$location)
+  #   
+  #   df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+  #   
+  #   mean_se <- hab_data$shark_ray_richness_summary_location %>%
+  #     dplyr::filter(reporting_name == input$location)
+  #   
+  #   ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+  #     # boxplot (median + IQR + whiskers)
+  #     geom_boxplot(
+  #       width = 0.6,
+  #       outlier.shape = NA,
+  #       alpha = 0.85,
+  #       colour = "black"
+  #     ) +
+  #     # raw points
+  #     geom_jitter(
+  #       aes(colour = period),
+  #       width = 0.15,
+  #       height = 0,      # <— prevents any vertical jitter
+  #       alpha = 0.35,
+  #       size = 1.2
+  #     ) +
+  #     # mean ± SE
+  #     geom_pointrange(
+  #       data = mean_se,
+  #       aes(
+  #         x    = period,
+  #         y    = mean,
+  #         ymin = mean - se,
+  #         ymax = mean + se
+  #       ),
+  #       inherit.aes = FALSE,
+  #       colour = "black",
+  #       linewidth = 0.6
+  #     ) +
+  #     scale_fill_manual(values = metric_period_cols) +
+  #     scale_color_manual(values = metric_period_cols) +
+  #     labs(
+  #       x = NULL,
+  #       y = metric_y_lab[["sharks_rays"]],
+  #       subtitle = input$location
+  #     ) +
+  #     theme_minimal(base_size = 16) +
+  #     theme(
+  #       legend.position  = "none",
+  #       panel.grid.minor = element_blank()
+  #     )
+  # }) |>
+  #   bindCache(input$location) |>
+  #   bindEvent(input$location)
   
   # ---------- shark_ray: detail plot ---------------------
   output$loc_plot_shark_ray_richness_detail <- renderPlot({
