@@ -4830,7 +4830,6 @@ server <- function(input, output, session) {
     
   })
   
-  
   output$loc_plot_shark_ray_richness_main <- renderPlot({
     
     shark_ray_richness_main_plot_location()
@@ -4951,7 +4950,242 @@ server <- function(input, output, session) {
     download_label_reactive = reactive(input$location)
   )
   
+  # REEF_ASSOCIATED ----
+  reef_associated_richness_main_raw_location <- reactive({
+    req(input$location)
+    
+    hab_data$reef_associated_richness_samples %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
   
+  reef_associated_richness_main_results_location <- reactive({
+    req(input$location)
+    
+    hab_data$reef_associated_richness_summary_location %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  reef_associated_richness_status_results_location <- reactive({
+    reef_associated_richness_main_raw_location() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se = sd(n_species_sample, na.rm = TRUE) /
+          sqrt(sum(!is.na(n_species_sample))),
+        n = sum(!is.na(n_species_sample)),
+        .groups = "drop"
+      )
+  })
+  
+  # REEF-ASSOCIATED: main plot -----
+  reef_associated_richness_main_plot_location <- reactive({
+    
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "reef_associated_richness")
+    
+    if (show_box) {
+      
+      df <- reef_associated_richness_main_raw_location()
+      
+      mean_se <- reef_associated_richness_main_results_location()
+      
+      ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+        # boxplot (median + IQR + whiskers)
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        # raw points
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        # mean ± SE
+        geom_pointrange(
+          data = mean_se,
+          aes(
+            x    = period,
+            y    = mean,
+            ymin = mean - se,
+            ymax = mean + se
+          ),
+          inherit.aes = FALSE,
+          colour = "black",
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["reef_associated_richness"]],
+          subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      df <- reef_associated_richness_main_results_location()
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        # mean bar
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        # # mean ± SE
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["reef_associated_richness"]],
+          subtitle = paste0(input$location, ": Average reef associated species richness per sample")
+        ) +
+        # facet_wrap(~ zone) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",        # both bars already coloured by period
+          panel.grid.minor = element_blank()
+        )
+      
+    }
+    
+  })
+  
+  
+  output$loc_plot_reef_associated_richness_main <- renderPlot({
+    
+    reef_associated_richness_main_plot_location()
+    
+  })   |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "reef_associated_richness")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "reef_associated_richness")]])
+  
+  # REEF-ASSOCIATED: status plot ---------------
+  reef_associated_richness_status_plot_location <- reactive({
+    
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "reef_associated_richness")
+    
+    if (show_box) {
+      
+      df <- reef_associated_richness_main_raw_location()
+      
+      ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        
+        # ⬇️ Add this
+        geom_point(
+          stat = "summary",
+          fun = "mean",
+          shape = 21,
+          size = 3,
+          fill = "white",
+          colour = "black"
+        ) +
+        
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["reef_associated_richness"]],
+          subtitle = paste0(input$location, ": Reef-associated species richness per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      df <- reef_associated_richness_status_results_location()
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["reef_associated_richness"]],
+          subtitle = paste0(input$location, ": Average reef-associated species richness per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+    }
+    
+  })
+  
+  output$loc_plot_reef_associated_richness_status <- renderPlot({
+    reef_associated_richness_status_plot_location()
+  })    |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "reef_associated_richness")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "reef_associated_richness")]])
+  
+  # Downloads ----
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "reef_associated_richness",
+    plot_id = "main",
+    results_reactive = reef_associated_richness_main_results_location,
+    raw_reactive = reef_associated_richness_main_raw_location,
+    plot_reactive = reef_associated_richness_main_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "reef_associated_richness",
+    plot_id = "status",
+    results_reactive = reef_associated_richness_status_results_location,
+    raw_reactive = reef_associated_richness_main_raw_location,
+    plot_reactive = reef_associated_richness_status_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
   
   
   # ---------- Trophic Groups: two plots ------------
