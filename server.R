@@ -4012,7 +4012,6 @@ server <- function(input, output, session) {
       dplyr::summarise(
         average = mean(average, na.rm = TRUE),
         se      = sqrt(sum(se^2, na.rm = TRUE)),  # rough pooled SE
-        .groups = "drop"
       )
     
     # Top N species within the focal period
@@ -4245,6 +4244,78 @@ server <- function(input, output, session) {
       facet_status   = input$location_species_facet
     )
   })
+  
+  # Downloads -----
+  
+  location_common_results <- reactive({
+    
+    req(input$location)
+    
+    hab_data$location_top_species_average |> 
+      dplyr::filter(reporting_name == input$location)
+    
+  })
+  
+  location_common_results_name <- reactive({
+    
+    req(input$location)
+    
+    paste("Common_species", input$location, sep = "_")
+    
+  })
+  
+  output$location_common_download_results <- downloadHandler(
+    filename = function() {
+      paste0(location_common_results_name(), "_average_abundances", "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      readr::write_csv(location_common_results(), file)
+    }
+  )
+  
+  
+  location_common_plots <- reactive({
+    req(input$location)
+    p1 <- make_top10_plot_location(
+      location_name  = input$location,
+      focal_period   = "Pre-bloom",
+      title_lab      = "Most common species pre-bloom",
+      number_species = input$location_number_species,
+      split_status   = input$location_species_status,
+      facet_status   = input$location_species_facet
+    )
+    
+    p2 <- make_top10_plot_location(
+      location_name  = input$location,
+      focal_period   = "Bloom",
+      title_lab      = "Most common species post-bloom",
+      number_species = input$location_number_species,
+      split_status   = input$location_species_status,
+      facet_status   = input$location_species_facet
+    )
+    
+    p1 + p2
+    
+  })
+  
+  output$location_common_download_plot <- downloadHandler(
+    filename = function() {
+      paste0(location_common_results_name(), "_most_common_species_plots", "_", Sys.Date(), ".png"
+      )
+    },
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = location_common_plots(),
+        width = 16,
+        height = 5,
+        dpi = 300
+      )
+    }
+  )
+  
+  
+  
   
   
   output$location_tabset <- renderUI({

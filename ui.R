@@ -761,7 +761,35 @@ nav_panel(
               "location_species_facet",
               "Facet by status",
               FALSE
-            )
+            ),
+            
+            
+              downloadButton(
+                outputId = "location_common_download_results",
+                label = "Download average abundances"
+              ),
+            
+              br(),
+            
+              # downloadButton(
+              #   outputId = "location_common_download_raw",
+              #   label = "Download raw data"
+              # ),
+            
+            br(),
+              
+              downloadButton(
+                outputId = "location_common_download_plot",
+                label = "Download plots"
+              ),
+            
+            # downloadButton(
+            #   outputId = "location_common_download_bloom_plot",
+            #   label = "Download Bloom plot"
+            # )
+            
+            
+            
           ),
           
           layout_columns(
@@ -774,7 +802,10 @@ nav_panel(
                 color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
+              
+
             ),
+            
             div(
               class = "plot-full-wrapper",
               withSpinner(
