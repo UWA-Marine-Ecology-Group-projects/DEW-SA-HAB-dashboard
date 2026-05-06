@@ -3364,6 +3364,75 @@ server <- function(input, output, session) {
     )
   })
   
+  # Downloads -----
+  
+  region_common_results <- reactive({
+    
+    req(input$region)
+    
+    hab_data$region_top_species_average |> 
+      dplyr::filter(region == input$region)
+    
+  })
+  
+  region_common_results_name <- reactive({
+    
+    req(input$region)
+    
+    paste("Common_species", input$region, sep = "_")
+    
+  })
+  
+  output$region_common_download_results <- downloadHandler(
+    filename = function() {
+      paste0(region_common_results_name(), "_average_abundances", "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      readr::write_csv(region_common_results(), file)
+    }
+  )
+  
+  
+  region_common_plots <- reactive({
+    req(input$region)
+    p1 <- make_top10_plot(
+      region_name  = input$region,
+      focal_period   = "Pre-bloom",
+      title_lab      = "Most common species pre-bloom",
+      number_species = input$region_number_species,
+      split_status   = input$region_species_status,
+      facet_status   = input$region_species_facet
+    )
+    
+    p2 <- make_top10_plot(
+      region_name  = input$region,
+      focal_period   = "Bloom",
+      title_lab      = "Most common species post-bloom",
+      number_species = input$region_number_species,
+      split_status   = input$region_species_status,
+      facet_status   = input$region_species_facet
+    )
+    
+    p1 + p2
+    
+  })
+  
+  output$region_common_download_plot <- downloadHandler(
+    filename = function() {
+      paste0(region_common_results_name(), "_most_common_species_plots", "_", Sys.Date(), ".png"
+      )
+    },
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = region_common_plots(),
+        width = 16,
+        height = 5,
+        dpi = 300
+      )
+    }
+  )
+  
   
   # ---- Survey progress: filtered to selected reporting region --------------
   

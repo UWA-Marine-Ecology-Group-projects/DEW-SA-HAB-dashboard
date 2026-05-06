@@ -604,7 +604,21 @@ nav_panel(
               "region_species_facet",
               "Facet by status",
               FALSE
-            )
+            ),
+            
+            
+            downloadButton(
+              outputId = "region_common_download_results",
+              label = "Download average abundances"
+            ),
+            
+            br(),
+            br(),
+            
+            downloadButton(
+              outputId = "region_common_download_plot",
+              label = "Download plots"
+            ),
           ),
           
           layout_columns(
@@ -764,29 +778,18 @@ nav_panel(
             ),
             
             
-              downloadButton(
-                outputId = "location_common_download_results",
-                label = "Download average abundances"
-              ),
-            
-              br(),
-            
-              # downloadButton(
-              #   outputId = "location_common_download_raw",
-              #   label = "Download raw data"
-              # ),
+            downloadButton(
+              outputId = "location_common_download_results",
+              label = "Download average abundances"
+            ),
             
             br(),
-              
-              downloadButton(
-                outputId = "location_common_download_plot",
-                label = "Download plots"
-              ),
+            br(),
             
-            # downloadButton(
-            #   outputId = "location_common_download_bloom_plot",
-            #   label = "Download Bloom plot"
-            # )
+            downloadButton(
+              outputId = "location_common_download_plot",
+              label = "Download plots"
+            ),
             
             
             
@@ -803,7 +806,7 @@ nav_panel(
                 type = 6
               )
               
-
+              
             ),
             
             div(
