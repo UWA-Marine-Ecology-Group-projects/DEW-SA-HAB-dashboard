@@ -273,12 +273,12 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
             metric_plot_with_downloads(prefix, data_id, "status")
-
+            
           ),
           layout_columns(
             col_widths = c(12),
             metric_plot_with_downloads(prefix, data_id, "year")
-        )
+          )
         )
       },
       
@@ -2832,7 +2832,7 @@ server <- function(input, output, session) {
     show_box <- metric_plot_type(input, "em", "trophic")
     
     if (show_box) {
-
+      
       
       # Filter for this region
       df <- hab_data$trophic_groups_samples %>%
@@ -2922,8 +2922,8 @@ server <- function(input, output, session) {
         ) +
         theme_minimal(base_size = 16) +
         theme(panel.grid.minor = element_blank())
-      }
-    })   |>
+    }
+  })   |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "trophic")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "trophic")]])
   
@@ -4481,21 +4481,18 @@ server <- function(input, output, session) {
   
   richness_summary_year_location <- reactive({
     hab_data$species_richness_samples %>%
-    dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
-    dplyr::filter(reporting_name == input$location) %>%
+      dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
+      dplyr::filter(reporting_name == input$location) %>%
       group_by(campaignid) %>%
-      mutate(
-        campaign_date = min(date),
-        # campaign_label = format(min(date), "%Y-%m")
-      ) %>%
+      mutate(campaign_date = min(date)) %>%
       ungroup() %>%
-    dplyr::group_by(reporting_name, campaign_date, campaignid, period) %>%
-    dplyr::summarise(
-      mean = mean(n_species_sample, na.rm = TRUE),
-      se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
-      num  = dplyr::n(),
-      .groups = "drop"
-    )
+      dplyr::group_by(reporting_name, campaign_date, campaignid, period) %>%
+      dplyr::summarise(
+        mean = mean(n_species_sample, na.rm = TRUE),
+        se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
+        num  = dplyr::n(),
+        .groups = "drop"
+      )
   })
   
   
@@ -6132,7 +6129,7 @@ server <- function(input, output, session) {
   }) 
   
   
-
+  
   # server.R
   campaign_table <- reactive({
     data.frame(
