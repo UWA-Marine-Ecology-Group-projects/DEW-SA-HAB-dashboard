@@ -787,7 +787,8 @@ reef_associated_richness_samples <- combined_count %>%
   dplyr::distinct(genus, species) %>%
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
-  dplyr::filter(!is.na(region))
+  dplyr::filter(!is.na(region)) %>%
+  left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date))
 
 reef_associated_richness_summary <- reef_associated_richness_samples %>%
   dplyr::group_by(region, period) %>%
@@ -825,7 +826,8 @@ fish_200_abundance_samples <- combined_length %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
   tidyr::replace_na(list(total_abundance_sample = 0))  %>%
   dplyr::filter(!is.na(region)) %>%
-  semi_join(successful_length_drops)
+  semi_join(successful_length_drops) %>%
+  left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date))
 
 fish_200_abundance_summary <- fish_200_abundance_samples %>%
   dplyr::group_by(region, period) %>%
@@ -871,7 +873,8 @@ shannon_diversity_samples <- combined_count %>%
   ) %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
-  replace_na(list(n_species_sample = 0))
+  replace_na(list(n_species_sample = 0)) %>%
+  left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date))
 
 shannon_diversity_summary <- shannon_diversity_samples %>%
   dplyr::group_by(region, period) %>%
@@ -1105,14 +1108,16 @@ shark_ray_richness_nonzero_loc <- combined_count %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period, status, sample) %>%
   dplyr::distinct(genus, species) %>%
-  dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop")
+  dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
+  ungroup()
 
 shark_ray_richness_samples_location <- all_bruv_samples_loc %>%
   dplyr::left_join(
     shark_ray_richness_nonzero_loc,
     by = c("reporting_name", "period", "sample", "status")
   ) %>%
-  tidyr::replace_na(list(n_species_sample = 0))
+  tidyr::replace_na(list(n_species_sample = 0)) %>%
+  left_join(bruv_metadata %>% select(sample, campaignid, date))
 
 shark_ray_richness_summary_location <- shark_ray_richness_samples_location %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1573,51 +1578,51 @@ hab_data <- structure(
   ), class = "data")
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))
-
-# Combined data
-downloads <- structure(
-  list(
-    # Top Species
-    region_top_species_average = region_top_species_average,
-    location_top_species_average = location_top_species_average,
-    
-    # Species Richness
-    species_richness_samples = species_richness_samples,
-    species_richness_summary = species_richness_summary,
-    species_richness_summary_location = species_richness_summary_location,
-    species_richness_summary_location_status = species_richness_summary_location_status,
-    
-    # Total Abundance
-    total_abundance_samples = total_abundance_samples,
-    total_abundance_summary = total_abundance_summary,
-    total_abundance_summary_location = total_abundance_summary_location,
-    total_abundance_summary_location_status = total_abundance_summary_location_status,
-    
-    # Trophic Groups
-    trophic_groups_samples = trophic_groups_samples,
-    trophic_groups_summary = trophic_groups_summary,
-    trophic_groups_summary_location = trophic_groups_summary_location,
-    # trophic_groups_summary_location_status = trophic_groups_summary_location_status,
-    
-    # Shark and Ray Richness
-    shark_ray_richness_samples = shark_ray_richness_samples,
-    shark_ray_richness_samples_location = shark_ray_richness_samples_location,
-    shark_ray_richness_summary = shark_ray_richness_summary,
-    shark_ray_richness_summary_location = shark_ray_richness_summary_location,
-    shark_ray_richness_summary_location_status = shark_ray_richness_summary_location_status,
-    
-    # Shannon Diversity
-    shannon_diversity_samples = shannon_diversity_samples,
-    shannon_diversity_summary = shannon_diversity_summary,
-    shannon_diversity_summary_location = shannon_diversity_summary_location,
-    shannon_diversity_summary_location_status = shannon_diversity_summary_location_status,
-    
-    # % of assemblage
-    species_stacked = species_stacked$plot_df,
-    location_species_stacked = location_species_stacked$plot_df
-    
-  ), class = "data")
-
-save(downloads, file = here::here("app_data/downloads.Rdata"))
+# 
+# # Combined data
+# downloads <- structure(
+#   list(
+#     # Top Species
+#     region_top_species_average = region_top_species_average,
+#     location_top_species_average = location_top_species_average,
+#     
+#     # Species Richness
+#     species_richness_samples = species_richness_samples,
+#     species_richness_summary = species_richness_summary,
+#     species_richness_summary_location = species_richness_summary_location,
+#     species_richness_summary_location_status = species_richness_summary_location_status,
+#     
+#     # Total Abundance
+#     total_abundance_samples = total_abundance_samples,
+#     total_abundance_summary = total_abundance_summary,
+#     total_abundance_summary_location = total_abundance_summary_location,
+#     total_abundance_summary_location_status = total_abundance_summary_location_status,
+#     
+#     # Trophic Groups
+#     trophic_groups_samples = trophic_groups_samples,
+#     trophic_groups_summary = trophic_groups_summary,
+#     trophic_groups_summary_location = trophic_groups_summary_location,
+#     # trophic_groups_summary_location_status = trophic_groups_summary_location_status,
+#     
+#     # Shark and Ray Richness
+#     shark_ray_richness_samples = shark_ray_richness_samples,
+#     shark_ray_richness_samples_location = shark_ray_richness_samples_location,
+#     shark_ray_richness_summary = shark_ray_richness_summary,
+#     shark_ray_richness_summary_location = shark_ray_richness_summary_location,
+#     shark_ray_richness_summary_location_status = shark_ray_richness_summary_location_status,
+#     
+#     # Shannon Diversity
+#     shannon_diversity_samples = shannon_diversity_samples,
+#     shannon_diversity_summary = shannon_diversity_summary,
+#     shannon_diversity_summary_location = shannon_diversity_summary_location,
+#     shannon_diversity_summary_location_status = shannon_diversity_summary_location_status,
+#     
+#     # % of assemblage
+#     species_stacked = species_stacked$plot_df,
+#     location_species_stacked = location_species_stacked$plot_df
+#     
+#   ), class = "data")
+# 
+# save(downloads, file = here::here("app_data/downloads.Rdata"))
 
 
