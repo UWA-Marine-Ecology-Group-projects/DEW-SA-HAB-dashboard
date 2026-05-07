@@ -2818,7 +2818,7 @@ server <- function(input, output, session) {
     download_label_reactive = reactive(input$region)
   )
   
-  # ---------- Trophic Groups: two plots ------------
+  # ---------- Trophic Groups  ------------
   
   trophic_main_plot <- reactive({
     
@@ -5808,213 +5808,234 @@ server <- function(input, output, session) {
   
   
   # ---------- Trophic Groups: two plots ------------
-  output$loc_plot_trophic_main <- renderPlot({
+  trophic_main_plot_location <- reactive({
+    
     req(input$location)
     
-    # Filter for this region
-    df <- hab_data$trophic_groups_samples %>%
-      dplyr::filter(reporting_name == input$location)
+    show_box <- metric_plot_type(input, "loc", "trophic")
     
-    mean_se <- hab_data$trophic_groups_summary %>%
-      dplyr::filter(reporting_name == input$location)
-    
-    # Order periods
-    df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-    mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
-    
-    # (Optional) order diet groups if you want a specific order
-    diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
-    df$diet <- factor(df$diet, levels = diet_levels)
-    mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
-    
-    dodge <- position_dodge(width = 0.75)
-    
-    ggplot(df, aes(x = diet, y = n_individuals_sample, fill = period)) +
-      geom_boxplot(
-        position = dodge,
-        width = 0.6,
-        outlier.shape = NA,
-        alpha = 0.85,
-        colour = "black"
-      ) +
-      geom_jitter(
-        aes(colour = period),
-        position = position_jitterdodge(
-          jitter.width  = 0.15,
-          jitter.height = 0,
-          dodge.width   = 0.75
-        ),
-        alpha = 0.35,
-        size = 1.2
-      ) +
-      geom_pointrange(
-        data = mean_se,
-        aes(
-          x    = diet,
-          y    = mean,
-          ymin = mean - se,
-          ymax = mean + se,
-          group = period,
-          colour = period
-        ),
-        position = dodge,
-        inherit.aes = FALSE,
-        linewidth = 0.6
-      ) +
-      scale_fill_manual(values = metric_period_cols) +
-      scale_color_manual(values = metric_period_cols) +
-      labs(
-        x = NULL,  # or "Diet group"
-        y = metric_y_lab[["fish_200_abundance"]],
-        subtitle = input$location
-      ) +
-      theme_minimal(base_size = 16) +
-      theme(
-        legend.position  = "top",
-        panel.grid.minor = element_blank()
-      )
-  }) |>
-    bindCache(input$location) |>
-    bindEvent(input$location)
-  # 
-  # # ---------- Trophic Groups: stacked composition plot ------------
-  # 
-  # output$em_plot_trophic_stack <- renderPlot({
-  #   req(input$region#, input$trophic_stack_scale
-  #   )
-  #   
-  #   diet_levels <- names(diet_cols)
-  #   
-  #   # Start from the SUMMARY table (means per sample)
-  #   mean_se <- hab_data$trophic_groups_richness_summary %>%
-  #     dplyr::filter(region == input$region) %>%
-  #     dplyr::mutate(
-  #       period = factor(period, levels = c("Pre-bloom", "Bloom")),
-  #       diet   = factor(diet,   levels = diet_levels)
-  #     )
-  #   
-  #   # -------- COUNT VIEW (mean-based) --------
-  #   ggplot(mean_se, aes(x = period, y = mean, fill = diet)) +
-  #     geom_col(position = "stack") +
-  #     scale_y_continuous(labels = scales::comma) +
-  #     scale_fill_manual(values = diet_cols, drop = FALSE) +
-  #     labs(
-  #       x        = NULL,
-  #       y        = "Mean no. species per sample",
-  #       fill     = "Diet group",
-  #       subtitle = input$region
-  #     ) +
-  #     theme_minimal(base_size = 16) +
-  #     theme(panel.grid.minor = element_blank())
-  #   # }
-  # }) |>
-  #   bindCache(input$region, input$trophic_stack_scale) |>
-  #   bindEvent(input$region, input$trophic_stack_scale)
-  # 
-  # output$em_plot_trophic_main_status <- renderPlot({
-  #   req(input$region)
-  #   
-  #   # Filter for this region
-  #   df <- hab_data$trophic_groups_samples %>%
-  #     dplyr::filter(region == input$region)
-  #   
-  #   mean_se <- hab_data$trophic_groups_summary %>%
-  #     dplyr::filter(region == input$region)
-  #   
-  #   # Order periods
-  #   df$period     <- factor(df$period,     levels = c("Pre-bloom", "Bloom"))
-  #   mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
-  #   
-  #   # Diet ordering
-  #   diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
-  #   df$diet     <- factor(df$diet,     levels = diet_levels)
-  #   mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
-  #   
-  #   dodge <- position_dodge(width = 0.75)
-  #   
-  #   ggplot(df, aes(x = diet, y = n_individuals_sample, fill = period)) +
-  #     geom_boxplot(
-  #       position = dodge,
-  #       width = 0.6,
-  #       outlier.shape = NA,
-  #       alpha = 0.85,
-  #       colour = "black"
-  #     ) +
-  #     geom_jitter(
-  #       aes(colour = period),
-  #       position = position_jitterdodge(
-  #         jitter.width  = 0.15,
-  #         jitter.height = 0,
-  #         dodge.width   = 0.75
-  #       ),
-  #       alpha = 0.35,
-  #       size = 1.2
-  #     ) +
-  #     geom_pointrange(
-  #       data = mean_se,
-  #       aes(
-  #         x    = diet,
-  #         y    = mean,
-  #         ymin = mean - se,
-  #         ymax = mean + se,
-  #         group = period,
-  #         colour = period
-  #       ),
-  #       inherit.aes = FALSE,
-  #       position = dodge,
-  #       linewidth = 0.6
-  #     ) +
-  #     scale_fill_manual(values = metric_period_cols) +
-  #     scale_colour_manual(values = metric_period_cols) +
-  #     labs(
-  #       x = NULL,
-  #       y = metric_y_lab[["fish_200_abundance"]],
-  #       subtitle = input$region
-  #     ) +
-  #     facet_wrap(~ status) +
-  #     theme_minimal(base_size = 16) +
-  #     theme(
-  #       legend.position = "top",
-  #       panel.grid.minor = element_blank()
-  #     )
-  # }) |>
-  #   bindCache(input$region) |>
-  #   bindEvent(input$region)
-  # 
-  # output$em_plot_trophic_stack_status <- renderPlot({
-  #   req(input$region#, input$trophic_stack_scale
-  #   )
-  #   
-  #   diet_levels <- names(diet_cols)
-  #   
-  #   # Start from the SUMMARY table (means per sample)
-  #   mean_se <- hab_data$trophic_groups_richness_summary_status %>%
-  #     dplyr::filter(region == input$region) %>%
-  #     dplyr::mutate(
-  #       period = factor(period, levels = c("Pre-bloom", "Bloom")),
-  #       diet   = factor(diet,   levels = diet_levels)
-  #     )
-  #   
-  #   # -------- COUNT VIEW (mean-based) --------
-  #   ggplot(mean_se, aes(x = period, y = mean, fill = diet)) +
-  #     geom_col(position = "stack") +
-  #     scale_y_continuous(labels = scales::comma) +
-  #     scale_fill_manual(values = diet_cols, drop = FALSE) +
-  #     labs(
-  #       x        = NULL,
-  #       y        = "Mean no. species per sample",
-  #       fill     = "Diet group",
-  #       subtitle = input$region
-  #     ) +
-  #     facet_wrap(~ status) +
-  #     theme_minimal(base_size = 16) +
-  #     theme(panel.grid.minor = element_blank())
-  #   # }
-  # }) |>
-  #   bindCache(input$region, input$trophic_stack_scale) |>
-  #   bindEvent(input$region, input$trophic_stack_scale)
-  # 
+    if (show_box) {
+      
+      # Filter for this location
+      df <- hab_data$trophic_groups_samples %>%
+        dplyr::filter(reporting_name == input$location)
+      
+      mean_se <- hab_data$trophic_groups_summary_location %>%
+        dplyr::filter(reporting_name == input$location)
+      
+      # Order periods
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
+      
+      # (Optional) order diet groups if you want a specific order
+      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+      df$diet <- factor(df$diet, levels = diet_levels)
+      mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
+      
+      dodge <- position_dodge(width = 0.75)
+      
+      ggplot(df, aes(x = diet, y = n_individuals_sample, fill = period)) +
+        geom_boxplot(
+          position = dodge,
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        geom_jitter(
+          aes(colour = period),
+          position = position_jitterdodge(
+            jitter.width  = 0.15,
+            jitter.height = 0,
+            dodge.width   = 0.75
+          ),
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        geom_pointrange(
+          data = mean_se,
+          aes(
+            x    = diet,
+            y    = mean,
+            ymin = mean - se,
+            ymax = mean + se,
+            group = period,
+            colour = period
+          ),
+          position = dodge,
+          inherit.aes = FALSE,
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,  # or "Diet group"
+          y = metric_y_lab[["fish_200_abundance"]],
+          subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "top",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      diet_levels <- names(diet_cols)
+      
+      # Start from the SUMMARY table (means per sample)
+      mean_se <- hab_data$trophic_groups_summary_location %>%
+        dplyr::filter(reporting_name == input$location) %>%
+        dplyr::mutate(
+          period = factor(period, levels = c("Pre-bloom", "Bloom")),
+          diet   = factor(diet,   levels = diet_levels)
+        )
+      
+      # -------- COUNT VIEW (mean-based) --------
+      ggplot(mean_se, aes(x = period, y = mean, fill = diet)) +
+        geom_col(position = "stack") +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_manual(values = diet_cols, drop = FALSE) +
+        labs(
+          x        = NULL,
+          y        = "Mean no. species per sample",
+          fill     = "Diet group",
+          subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(panel.grid.minor = element_blank())
+    }
+  })   |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "trophic")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "trophic")]])
   
+  
+  output$loc_plot_trophic_main <- renderPlot({
+    
+    trophic_main_plot_location()
+    
+  }) 
+  
+  trophic_status_results_location <- reactive({
+    hab_data$trophic_groups_samples %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::group_by(period, status, diet) %>%
+      dplyr::summarise(
+        mean = mean(n_individuals_sample , na.rm = TRUE),
+        se = sd(n_individuals_sample , na.rm = TRUE) /
+          sqrt(sum(!is.na(n_individuals_sample ))),
+        n = sum(!is.na(n_individuals_sample )),
+        .groups = "drop"
+      )
+  })
+  
+  trophic_status_plot_location <- reactive({
+    
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "trophic")
+    
+    if (show_box) {
+      
+      # Filter for this location
+      df <- hab_data$trophic_groups_samples %>%
+        dplyr::filter(reporting_name == input$location)
+      
+      mean_se <- trophic_status_results_location()
+      
+      # Order periods
+      df$period     <- factor(df$period,     levels = c("Pre-bloom", "Bloom"))
+      mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
+      
+      # Diet ordering
+      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+      df$diet     <- factor(df$diet,     levels = diet_levels)
+      mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
+      
+      dodge <- position_dodge(width = 0.75)
+      
+      ggplot(df, aes(x = diet, y = n_individuals_sample, fill = period)) +
+        geom_boxplot(
+          position = dodge,
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        geom_jitter(
+          aes(colour = period),
+          position = position_jitterdodge(
+            jitter.width  = 0.15,
+            jitter.height = 0,
+            dodge.width   = 0.75
+          ),
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        geom_pointrange(
+          data = mean_se,
+          aes(
+            x    = diet,
+            y    = mean,
+            ymin = mean - se,
+            ymax = mean + se,
+            group = period,
+            colour = period
+          ),
+          inherit.aes = FALSE,
+          position = dodge,
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_colour_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["fish_200_abundance"]],
+          subtitle = input$location
+        ) +
+        facet_wrap(~ status) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position = "top",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      diet_levels <- names(diet_cols)
+      
+      # Start from the SUMMARY table (means per sample)
+      mean_se <- trophic_status_results_location() %>%
+        dplyr::mutate(
+          period = factor(period, levels = c("Pre-bloom", "Bloom")),
+          diet   = factor(diet,   levels = diet_levels)
+        )
+      
+      # -------- COUNT VIEW (mean-based) --------
+      ggplot(mean_se, aes(x = period, y = mean, fill = diet)) +
+        geom_col(position = "stack") +
+        scale_y_continuous(labels = scales::comma) +
+        scale_fill_manual(values = diet_cols, drop = FALSE) +
+        labs(
+          x        = NULL,
+          y        = "Mean no. species per sample",
+          fill     = "Diet group",
+          subtitle = input$location
+        ) +
+        facet_wrap(~ status) +
+        theme_minimal(base_size = 16) +
+        theme(panel.grid.minor = element_blank())
+    }
+  })
+  
+  output$loc_plot_trophic_status <- renderPlot({
+    
+    trophic_status_plot_location()
+    
+  }) 
+  
+  
+
   # server.R
   campaign_table <- reactive({
     data.frame(
