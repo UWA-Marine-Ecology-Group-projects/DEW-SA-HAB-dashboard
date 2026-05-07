@@ -573,11 +573,31 @@ nav_panel(
         card_header("Stacked abundance plots"),
         full_screen = TRUE,
         
+        layout_sidebar(
+          sidebar = div(
+            
+            downloadButton(
+              outputId = "region_stacked_download_results",
+              label = "Download assemblage percentages"
+            ),
+            
+            br(),
+            br(),
+            
+            downloadButton(
+              outputId = "region_stacked_download_plot",
+              label = "Download plot"
+            ),
+            
+            
+            
+          ),
+        
         withSpinner(
           plotOutput("region_stacked_plot", height = "550px"),
           color = getOption("spinner.color", default = "#0D576E"),
           type = 6
-        )
+        ))
       ),
       
       card(

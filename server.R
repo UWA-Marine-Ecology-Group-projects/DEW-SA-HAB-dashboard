@@ -229,7 +229,7 @@ make_impact_gauges <- function(region_name) {
   # Final layout
   (p1 | p2 | p3) /
     (p4 | p5 | p6 #p7
-     )
+    )
 }
 
 # ---- output id helpers -------------------------------------------------------
@@ -1213,24 +1213,24 @@ server <- function(input, output, session) {
     
     # add points (no curly block after a pipe)
     # if (has_leafgl()) {
-      # m <- leafgl::addGlPoints(
-      #   m, 
-      #   data = pts, 
-      #   fillColor = method_cols[pts$method], 
-      #   weight = 1, 
-      #   popup = pts$popup, 
-      #   group = "Sampling locations", pane = "points"
-      # )
+    # m <- leafgl::addGlPoints(
+    #   m, 
+    #   data = pts, 
+    #   fillColor = method_cols[pts$method], 
+    #   weight = 1, 
+    #   popup = pts$popup, 
+    #   group = "Sampling locations", pane = "points"
+    # )
     # } else {
-      m <- addCircleMarkers(
-        m, data = pts, radius = 6, fillColor = "#004DA7", fillOpacity = 1,
-        weight = 1, color = "black", popup = pts$popup,
-        group = "Sampling locations", options = pathOptions(pane = "points")
-      )
+    m <- addCircleMarkers(
+      m, data = pts, radius = 6, fillColor = "#004DA7", fillOpacity = 1,
+      weight = 1, color = "black", popup = pts$popup,
+      group = "Sampling locations", options = pathOptions(pane = "points")
+    )
     # }
-      
-      
-      
+    
+    
+    
     
     addLegend(m,
               "topright",
@@ -1540,7 +1540,7 @@ server <- function(input, output, session) {
   
   # TOTAL ABUNDANCE: main plot ------------
   total_abundance_main_plot <- reactive({
-  
+    
     req(input$region)
     
     show_box <- metric_plot_type(input, "em", "total_abundance")
@@ -1730,7 +1730,7 @@ server <- function(input, output, session) {
   output$em_plot_total_abundance_status <- renderPlot({
     
     total_abundance_status_plot()
-
+    
   })  |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]]) |>
     bindEvent(input$region, input[[metric_plot_type_input_id("em", "total_abundance")]])
@@ -1996,7 +1996,7 @@ server <- function(input, output, session) {
   })
   
   output$em_plot_shark_ray_richness_status <- renderPlot({
-   
+    
     shark_ray_richness_status_plot()
     
   })  |>
@@ -2170,97 +2170,97 @@ server <- function(input, output, session) {
   
   # REEF-ASSOCIATED: status plot ---------------
   reef_associated_richness_status_plot <- reactive({
-     
-     req(input$region)
-     
-     show_box <- metric_plot_type(input, "em", "reef_associated_richness")
-     
-     if (show_box) {
-       
-       df <- hab_data$reef_associated_richness_samples %>%
-         dplyr::filter(region == input$region)
-       
-       df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-       
-       ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
-         geom_boxplot(
-           width = 0.6,
-           outlier.shape = NA,
-           alpha = 0.85,
-           colour = "black"
-         ) +
-         
-         # ⬇️ Add this
-         geom_point(
-           stat = "summary",
-           fun = "mean",
-           shape = 21,
-           size = 3,
-           fill = "white",
-           colour = "black"
-         ) +
-         
-         geom_jitter(
-           aes(colour = period),
-           width = 0.15,
-           height = 0,      # <— prevents any vertical jitter
-           alpha = 0.35,
-           size = 1.2
-         ) +
-         facet_wrap(~ status, nrow = 1) +
-         scale_fill_manual(values = metric_period_cols) +
-         scale_color_manual(values = metric_period_cols) +
-         labs(
-           x = NULL,
-           y = metric_y_lab[["reef_associated_richness"]],
-           subtitle = paste0(input$region, ": Reef-associated species richness per sample by status")
-         ) +
-         theme_minimal(base_size = 16) +
-         theme(
-           legend.position  = "none",
-           panel.grid.minor = element_blank()
-         )
-       
-     } else {
-       
-       df <- hab_data$reef_associated_richness_samples %>%
-         dplyr::filter(region == input$region) %>%
-         dplyr::group_by(period, status) %>%
-         dplyr::summarise(
-           mean = mean(n_species_sample, na.rm = TRUE),
-           se   = sd(n_species_sample, na.rm = TRUE) /
-             sqrt(sum(!is.na(n_species_sample))),
-           .groups = "drop"
-         )
-       
-       df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
-       
-       ggplot(df, aes(x = period, y = mean, fill = period)) +
-         geom_col(
-           width  = 0.6,
-           colour = "black",
-           alpha  = 0.85
-         ) +
-         geom_errorbar(
-           aes(ymin = mean - se, ymax = mean + se),
-           width = 0.2,
-           linewidth = 0.6
-         ) +
-         facet_wrap(~ status, nrow = 1) +
-         scale_fill_manual(values = metric_period_cols) +
-         labs(
-           x = NULL,
-           y = metric_y_lab[["reef_associated_richness"]],
-           subtitle = paste0(input$region, ": Average reef-associated species richness per sample by status")
-         ) +
-         theme_minimal(base_size = 16) +
-         theme(
-           legend.position  = "none",
-           panel.grid.minor = element_blank()
-         )
-     }
-     
-   })
+    
+    req(input$region)
+    
+    show_box <- metric_plot_type(input, "em", "reef_associated_richness")
+    
+    if (show_box) {
+      
+      df <- hab_data$reef_associated_richness_samples %>%
+        dplyr::filter(region == input$region)
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      ggplot(df, aes(x = period, y = n_species_sample, fill = period)) +
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        
+        # ⬇️ Add this
+        geom_point(
+          stat = "summary",
+          fun = "mean",
+          shape = 21,
+          size = 3,
+          fill = "white",
+          colour = "black"
+        ) +
+        
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["reef_associated_richness"]],
+          subtitle = paste0(input$region, ": Reef-associated species richness per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+      
+    } else {
+      
+      df <- hab_data$reef_associated_richness_samples %>%
+        dplyr::filter(region == input$region) %>%
+        dplyr::group_by(period, status) %>%
+        dplyr::summarise(
+          mean = mean(n_species_sample, na.rm = TRUE),
+          se   = sd(n_species_sample, na.rm = TRUE) /
+            sqrt(sum(!is.na(n_species_sample))),
+          .groups = "drop"
+        )
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["reef_associated_richness"]],
+          subtitle = paste0(input$region, ": Average reef-associated species richness per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank()
+        )
+    }
+    
+  })
   
   output$em_plot_reef_associated_richness_status <- renderPlot({
     reef_associated_richness_status_plot()
@@ -3959,8 +3959,8 @@ server <- function(input, output, session) {
     # p7 <- get_metric_plot_location("shannon_diversity",        "Shannon diversity",          chosen_location = location_name)
     
     (p1 | p2 | p3) / (p4 | p5 | p6 #| 
-                        #p7
-                        )
+                      #p7
+    )
   }
   
   make_overall_impact_gauge_location <- function(location_name) {
@@ -4868,7 +4868,7 @@ server <- function(input, output, session) {
       dplyr::filter(reporting_name == input$location) %>%
       dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
   })
-
+  
   shark_ray_richness_status_results_location <- reactive({
     shark_ray_richness_main_raw_location() %>%
       dplyr::group_by(period, status) %>%
@@ -6017,21 +6017,14 @@ server <- function(input, output, session) {
   })
   
   # Stacked plots -----
-  output$region_stacked_plot <- renderPlot({
+  
+  
+  region_stacked <- reactive({
+    
     req(input$region)
-    
-    print(input$region)
-    
-    print(
-      hab_data$species_stacked$plot_df %>%
-        dplyr::distinct(group_name) %>%
-        dplyr::filter(stringr::str_detect(group_name, "Windara"))
-    )
     
     df_check <- hab_data$species_stacked$plot_df %>%
       dplyr::filter(group_name == input$region)
-    
-    print(df_check)
     
     validate(
       need(nrow(df_check) > 0, paste("No stacked plot data for:", input$region))
@@ -6043,7 +6036,54 @@ server <- function(input, output, session) {
       selected_name = input$region,
       palette = hab_data$species_palette
     )
+    
   })
+  
+  output$region_stacked_plot <- renderPlot({
+    region_stacked()
+  })
+  
+  region_stacked_name <- reactive({
+    
+    req(input$region)
+    
+    paste("Stacked_assemblage", input$region, sep = "_")
+    
+  })
+  
+  region_stacked_results <- reactive({
+    req(input$region)
+    
+    df_check <- hab_data$species_stacked$plot_df %>%
+      dplyr::filter(group_name == input$region)
+    
+  })
+  
+  output$region_stacked_download_results <- downloadHandler(
+    filename = function() {
+      paste0(region_stacked_name(), "_percentage_of_observations", "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      readr::write_csv(region_stacked_results(), file)
+    }
+  )
+  
+  output$region_stacked_download_plot <- downloadHandler(
+    filename = function() {
+      paste0(region_stacked_name(), "_stacked_assemblage_plots", "_", Sys.Date(), ".png"
+      )
+    },
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = region_stacked(),
+        width = 8,
+        height = 5,
+        dpi = 300
+      )
+    }
+  )
+  
   
   # Download location stacked plots and data -----
   location_stacked_name <- reactive({
@@ -6094,8 +6134,6 @@ server <- function(input, output, session) {
     req(input$location)
     
     df_check <- location_stacked_results()
-    
-    print(df_check)
     
     validate(
       need(nrow(df_check) > 0, paste("No stacked plot data for:", input$location))
