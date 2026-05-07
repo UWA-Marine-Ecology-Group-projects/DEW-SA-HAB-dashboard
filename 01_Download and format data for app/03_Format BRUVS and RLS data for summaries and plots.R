@@ -675,7 +675,7 @@ total_abundance_impacts <- total_abundance_summary %>%
   )) %>%
   mutate(impact_metric = "total_abundance")
 
-# Total abundance ----
+# Degeni ----
 degeni_samples <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
@@ -698,7 +698,7 @@ degeni_summary <- degeni_samples %>%
   ) %>%
   ungroup()
 
-# Calculate Impacts for Total Abundance ----
+# Calculate Impacts for Degeni ----
 degeni_impacts <- degeni_summary %>%
   dplyr::select(-se) %>%
   tidyr::complete(region, period) %>%
@@ -1055,6 +1055,48 @@ total_abundance_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
+# Degeni ----
+degeni_summary_location <- degeni_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) /
+      sqrt(sum(!is.na(total_abundance_sample))),
+    .groups = "drop"
+  ) %>%
+  ungroup()
+
+# Calculate Impacts for Degeni ----
+degeni_impacts_location <- calc_impacts(
+  summary_df = degeni_summary_location,
+  group_col  = reporting_name,
+  metric_id  = "thamnaconus_degeni"
+)
+
+degeni_summary_location_status <- degeni_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
+    .groups = "drop"
+  )
+
+degeni_impacts_location_status <- calc_impacts_status(
+  summary_df = degeni_summary_location_status,
+  group_col  = reporting_name,
+  status_col = status,
+  metric_id  = "thamnaconus_degeni")  %>%
+  dplyr::select(reporting_name, status, impact_metric, percentage_change) %>%
+  tidyr::pivot_wider(
+    names_from  = status,
+    values_from = percentage_change,
+    names_prefix = "change_"
+  ) %>%
+  CheckEM::clean_names() %>%
+  glimpse()
+
 shark_ray_richness_nonzero_loc <- combined_count %>%
   dplyr::filter(count > 0, method %in% "BRUVs") %>%
   dplyr::left_join(species_list) %>%
@@ -1229,7 +1271,8 @@ impact_data_location <- dplyr::bind_rows(
   shark_ray_richness_impacts_location,
   reef_associated_richness_impacts_location,
   fish_200_abundance_impacts_location,
-  shannon_diversity_impacts_location
+  shannon_diversity_impacts_location,
+  degeni_impacts_location,
 )
 
 overall_impact_location <- impact_data_location %>%
@@ -1251,7 +1294,8 @@ impact_data_location_status <- bind_rows(
   shark_ray_richness_impacts_location_status,
   reef_associated_richness_impacts_location_status,
   fish_200_abundance_impacts_location_status,
-  shannon_diversity_impacts_location_status
+  shannon_diversity_impacts_location_status,
+  degeni_impacts_location_status
 )
 
 sanity_table_location <- combined_metadata %>%
@@ -1262,8 +1306,6 @@ sanity_table_location <- combined_metadata %>%
   sf::st_drop_geometry() %>%
   ungroup() %>%
   pivot_wider(names_from = period, values_from = number_of_deployments)
-
-
 
 ## Stacked bar plots -----
 format_stacked_species_data <- function(
