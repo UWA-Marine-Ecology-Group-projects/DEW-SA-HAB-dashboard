@@ -273,7 +273,12 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
             metric_plot_with_downloads(prefix, data_id, "status")
-          )
+
+          ),
+          layout_columns(
+            col_widths = c(12),
+            metric_plot_with_downloads(prefix, data_id, "year")
+        )
         )
       },
       
@@ -4445,7 +4450,13 @@ server <- function(input, output, session) {
     
     hab_data$species_richness_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      group_by(campaignid) %>%
+      mutate(
+        campaign_date = min(date),
+        # campaign_label = format(min(date), "%Y-%m")
+      ) %>%
+      ungroup()
   })
   
   richness_main_results_location <- reactive({
@@ -4468,9 +4479,29 @@ server <- function(input, output, session) {
       )
   })
   
+  richness_summary_year_location <- reactive({
+    hab_data$species_richness_samples %>%
+    dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
+    dplyr::filter(reporting_name == input$location) %>%
+      group_by(campaignid) %>%
+      mutate(
+        campaign_date = min(date),
+        # campaign_label = format(min(date), "%Y-%m")
+      ) %>%
+      ungroup() %>%
+    dplyr::group_by(reporting_name, campaign_date, campaignid, period) %>%
+    dplyr::summarise(
+      mean = mean(n_species_sample, na.rm = TRUE),
+      se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
+      num  = dplyr::n(),
+      .groups = "drop"
+    )
+  })
+  
+  
   # RICHNESS (LOCATION): main plot --------------------
   richness_main_plot_location <- reactive({
-    req(input$region)
+    req(input$location)
     
     show_box <- metric_plot_type(input, "loc", "richness")
     
@@ -4602,9 +4633,75 @@ server <- function(input, output, session) {
     }
   })
   
+  # RICHNESS (LOCATION): Year plot --------------------
+  richness_year_plot_location <- reactive({
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "richness")
+    
+    if (show_box) {
+      
+      df <- richness_main_raw_location()
+      mean_se <- richness_summary_year_location()
+      
+      df$campaign_date <- as.Date(df$campaign_date)
+      mean_se$campaign_date <- as.Date(mean_se$campaign_date)
+      
+      ggplot(df, aes(x = campaign_date, y = n_species_sample, group = campaignid,  fill = period)) +
+        geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
+        geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["richness"]],
+          subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank())
+      
+    } else {
+      
+      df <- richness_summary_year_location() %>%
+        dplyr::mutate(campaign_date = as.Date(campaign_date))
+      
+      ggplot(df, aes(x = campaign_date, y = mean, group = campaignid, fill = period)) +
+        geom_col(width = 100, colour = "black", alpha = 0.85) +
+        geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
+        scale_x_date(
+          date_labels = "%Y",
+          date_breaks = "1 year"
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["richness"]],
+          subtitle = paste0(input$location, ": Average species richness per sample")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank())
+    }
+  })
+  
+  
+  output$loc_plot_richness_main <- renderPlot({
+    richness_main_plot_location()
+  })  |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "richness")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "richness")]])
+  
   output$loc_plot_richness_status <- renderPlot({
     
     richness_status_plot_location()
+    
+  }) |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "richness")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "richness")]])
+  
+  output$loc_plot_richness_year <- renderPlot({
+    
+    richness_year_plot_location()
     
   }) |>
     bindCache(input$location, input[[metric_plot_type_input_id("loc", "richness")]]) |>
@@ -4750,7 +4847,7 @@ server <- function(input, output, session) {
   # TOTAL ABUNDANCE (LOCATION): status plot ------------
   total_abundance_status_plot_location <- reactive({
     
-    req(input$region)
+    req(input$location)
     
     show_box <- metric_plot_type(input, "loc", "total_abundance")
     
