@@ -6045,19 +6045,55 @@ server <- function(input, output, session) {
     )
   })
   
-  output$location_stacked_plot <- renderPlot({
+  # Download location stacked plots and data -----
+  location_stacked_name <- reactive({
+    
     req(input$location)
     
-    print(input$location)
+    paste("Stacked_assemblage", input$location, sep = "_")
     
-    print(
-      hab_data$location_species_stacked$plot_df %>%
-        dplyr::distinct(group_name) %>%
-        dplyr::filter(stringr::str_detect(group_name, "Windara"))
-    )
+  })
+  
+  location_stacked_results <- reactive({
+    req(input$location)
     
     df_check <- hab_data$location_species_stacked$plot_df %>%
       dplyr::filter(group_name == input$location)
+    
+  })
+  
+  output$location_stacked_download_results <- downloadHandler(
+    filename = function() {
+      paste0(location_stacked_name(), "_percentage_of_observations", "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      readr::write_csv(location_stacked_results(), file)
+    }
+  )
+  
+  output$location_stacked_download_plot <- downloadHandler(
+    filename = function() {
+      paste0(location_stacked_name(), "_stacked_assemblage_plots", "_", Sys.Date(), ".png"
+      )
+    },
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = location_stacked(),
+        width = 8,
+        height = 5,
+        dpi = 300
+      )
+    }
+  )
+  
+  # Location stacked plot ----
+  
+  location_stacked <- reactive({
+    
+    req(input$location)
+    
+    df_check <- location_stacked_results()
     
     print(df_check)
     
@@ -6071,6 +6107,11 @@ server <- function(input, output, session) {
       selected_name = input$location,
       palette = hab_data$species_palette
     )
+    
+  })
+  
+  output$location_stacked_plot <- renderPlot({
+    location_stacked()
   })
   
   
