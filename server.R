@@ -331,6 +331,10 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
             metric_plot_with_downloads(prefix, data_id, "status")
+          ),
+          layout_columns(
+            col_widths = c(12),
+            metric_plot_with_downloads(prefix, data_id, "year")
           )
         )
       },
@@ -343,9 +347,8 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
             metric_plot_with_downloads(prefix, data_id, "status")
           ),
           layout_columns(
-            col_widths = c(6, 6),
-            metric_plot_with_downloads(prefix, data_id, "main_years"),
-            metric_plot_with_downloads(prefix, data_id, "status_years")
+            col_widths = c(12),
+            metric_plot_with_downloads(prefix, data_id, "year")
           )
         )
       },
@@ -367,11 +370,15 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       # default: 2 plots
       {
-        layout_columns(
+        div(layout_columns(
           col_widths = c(6, 6),
           metric_plot_with_downloads(prefix, data_id, "main"),
           metric_plot_with_downloads(prefix, data_id, "status")
-        )
+        ),
+        layout_columns(
+          col_widths = c(12),
+          metric_plot_with_downloads(prefix, data_id, "year")
+        ))
       }
     )
   )
@@ -4351,7 +4358,9 @@ server <- function(input, output, session) {
     req(input$location)
     
     hab_data$location_top_species_average |> 
-      dplyr::filter(reporting_name == input$location)
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(average = as.numeric(average)) %>%
+      dplyr::mutate(se = as.numeric(se))
     
   })
   
@@ -5890,6 +5899,67 @@ server <- function(input, output, session) {
   })     |>
     bindCache(input$location, input[[metric_plot_type_input_id("loc", "fish_200_abundance")]]) |>
     bindEvent(input$location, input[[metric_plot_type_input_id("loc", "fish_200_abundance")]])
+  
+  # LARGE FISH: Year plot ---------------
+  reef_associated_richness_year_plot_location <- reactive({
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "reef_associated_richness")
+    
+    if (show_box) {
+      
+      df <- reef_associated_richness_main_raw_location()
+      mean_se <- reef_associated_richness_summary_year_location()
+      
+      df$campaign_date <- as.Date(df$campaign_date)
+      mean_se$campaign_date <- as.Date(mean_se$campaign_date)
+      
+      ggplot(df, aes(x = campaign_date, y = n_species_sample, group = campaignid,  fill = period)) +
+        geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
+        geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["reef_associated_richness"]],
+          subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank())
+      
+    } else {
+      
+      df <- reef_associated_richness_summary_year_location() %>%
+        dplyr::mutate(campaign_date = as.Date(campaign_date))
+      
+      ggplot(df, aes(x = campaign_date, y = mean, group = campaignid, fill = period)) +
+        geom_col(width = 100, colour = "black", alpha = 0.85) +
+        geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
+        scale_x_date(
+          date_labels = "%Y",
+          date_breaks = "1 year"
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["reef_associated_richness"]],
+          subtitle = paste0(input$location, ": Average reef associated species richness per sample")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank())
+    }
+  })
+  
+  
+  output$loc_plot_reef_associated_richness_year <- renderPlot({
+    
+    reef_associated_richness_year_plot_location()
+    
+  }) |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "reef_associated_richness")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "reef_associated_richness")]])
+  
   
   # Downloads -----
   
