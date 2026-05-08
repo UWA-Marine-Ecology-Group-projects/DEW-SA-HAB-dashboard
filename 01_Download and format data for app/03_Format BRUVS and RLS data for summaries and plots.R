@@ -161,11 +161,17 @@ rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
   dplyr::mutate(sample = as.character(sample)) %>%
   glimpse()
 
-bruv_count <- readRDS("data/raw/sa_count_bruv.RDS")
-rls_count <- readRDS("data/raw/sa_count_rls.RDS")
+bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
 
-bruv_length <- readRDS("data/raw/sa_length_bruv.RDS")
-rls_length <- readRDS("data/raw/sa_length_rls.RDS")
+rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
+
+bruv_length <- readRDS("data/raw/sa_length_bruv.RDS") %>%
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
+
+rls_length <- readRDS("data/raw/sa_length_rls.RDS") %>%
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
 
 # Start to format data ----
 # Fix sanctuary locations in the BRUV metadata ----
