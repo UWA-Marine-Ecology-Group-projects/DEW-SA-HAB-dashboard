@@ -269,6 +269,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
       metric_id,
       richness = {
         tagList(
+          h4("Species richness"),
           layout_columns(
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
@@ -284,6 +285,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       total_abundance = {
         tagList(
+          h4("Total abundance"),
           layout_columns(
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
@@ -298,6 +300,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       shark_ray_richness = {
         tagList(
+          h4("Shark and ray richness"),
           layout_columns(
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
@@ -313,6 +316,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       reef_associated_richness = {
         tagList(
+          h4("Reef associated species richness"),
           layout_columns(
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
@@ -327,6 +331,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       shannon_diversity = {
         tagList(
+          h4("Shannon diversity index"),
           layout_columns(
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
@@ -341,6 +346,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       fish_200_abundance = {
         tagList(
+          h4("Fish greater than 200mm abundance"),
           layout_columns(
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
@@ -355,16 +361,12 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       trophic = {
         tagList(
+          h4("Abundance by trophic level"),
           layout_columns(
             col_widths = c(6, 6),
             metric_plotOutput(prefix, "trophic", "main"),
             metric_plotOutput(prefix, "trophic", "status")
-          )#,
-          # layout_columns(
-          #   col_widths = c(6, 6),
-          #   metric_plotOutput(prefix, "trophic", "status"),
-          #   metric_plotOutput(prefix, "trophic", "stack_status")
-          # )
+          )
         )
       },
 
@@ -3162,23 +3164,9 @@ server <- function(input, output, session) {
     # ---- Data prep ----
     df_raw <- hab_data$region_top_species_average |>
       dplyr::filter(region == region_name)
-    
-    # Tidy spaces in status if present
-    if ("status" %in% names(df_raw)) {
-      df_raw$status <- trimws(df_raw$status)
-    }
-    
-    # For choosing top species, collapse over status
-    df_for_top <- df_raw |>
-      dplyr::group_by(region, period, display_name) |>
-      dplyr::summarise(
-        average = mean(average, na.rm = TRUE),
-        se      = sqrt(sum(se^2, na.rm = TRUE)),  # rough pooled SE
-        .groups = "drop"
-      )
-    
+
     # Top N species within the focal period
-    top_species <- df_for_top |>
+    top_species <- df_raw |>
       dplyr::filter(period == focal_period) |>
       dplyr::slice_max(order_by = average,
                        n = number_species,
@@ -3187,10 +3175,11 @@ server <- function(input, output, session) {
     
     # Data for plotting: either split by status or averaged across status
     if (split_status) {
-      plot_df <- df_raw |>
-        dplyr::filter(display_name %in% top_species)
+      plot_df <- hab_data$region_top_species_average_status |>
+        dplyr::filter(display_name %in% top_species) %>%
+        dplyr::filter(region == region_name)
     } else {
-      plot_df <- df_for_top |>
+      plot_df <- df_raw |>
         dplyr::filter(display_name %in% top_species)
     }
     
@@ -3206,11 +3195,6 @@ server <- function(input, output, session) {
         label = paste0("*", sci, "*<br>(", common, ")")
       )
     
-    # Period order: focal period first
-    # plot_df$period <- factor(
-    #   plot_df$period,
-    #   levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
-    # )
     # Period order: ALWAYS Pre-bloom then Bloom
     plot_df$period <- factor(plot_df$period, levels = c("Pre-bloom", "Bloom"))
     
@@ -3236,6 +3220,7 @@ server <- function(input, output, session) {
       
       # Build combined period:status variable
       plot_df <- plot_df |>
+        glimpse()%>%
         dplyr::mutate(
           period_status = interaction(period, status, sep = ": ", drop = TRUE)
         )
@@ -4115,11 +4100,6 @@ server <- function(input, output, session) {
     df_raw <- hab_data$location_top_species_average |>
       dplyr::filter(reporting_name == location_name)
     
-    # Tidy spaces in status if present
-    if ("status" %in% names(df_raw)) {
-      df_raw$status <- trimws(df_raw$status)
-    }
-    
     # For choosing top species, collapse over status
     df_for_top <- df_raw |>
       dplyr::group_by(reporting_name, period, display_name) |>
@@ -4138,10 +4118,11 @@ server <- function(input, output, session) {
     
     # Data for plotting: either split by status or averaged across status
     if (split_status) {
-      plot_df <- df_raw |>
+      plot_df <- hab_data$location_top_species_average_status |>
+        dplyr::filter(reporting_name == location_name) %>% 
         dplyr::filter(display_name %in% top_species)
     } else {
-      plot_df <- df_for_top |>
+      plot_df <- df_raw |>
         dplyr::filter(display_name %in% top_species)
     }
     
@@ -4156,12 +4137,6 @@ server <- function(input, output, session) {
       dplyr::mutate(
         label = paste0("*", sci, "*<br>(", common, ")")
       )
-    
-    # # Period order: focal period first
-    # plot_df$period <- factor(
-    #   plot_df$period,
-    #   levels = c(focal_period, setdiff(c("Pre-bloom", "Bloom"), focal_period))
-    # )
     
     # Period order: ALWAYS Pre-bloom then Bloom
     plot_df$period <- factor(plot_df$period, levels = c("Pre-bloom", "Bloom"))
