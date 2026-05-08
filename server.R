@@ -370,16 +370,16 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       # default: 2 plots
       {
-        # div(
+        div(
           layout_columns(
           col_widths = c(6, 6),
           metric_plot_with_downloads(prefix, data_id, "main"),
           metric_plot_with_downloads(prefix, data_id, "status")
-        )#,
-        # layout_columns(
-        #   col_widths = c(12),
-        #   metric_plot_with_downloads(prefix, data_id, "year")
-        # ))
+        ),
+        layout_columns(
+          col_widths = c(12),
+          metric_plot_with_downloads(prefix, data_id, "year")
+        ))
       }
     )
   )
@@ -4571,8 +4571,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["richness"]],
-          subtitle = input$location
+          y = metric_y_lab[["richness"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -4586,8 +4586,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["richness"]],
-          subtitle = paste0(input$location, ": Average species richness per sample")
+          y = metric_y_lab[["richness"]]#,
+          # subtitle = paste0(input$location, ": Average species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -4642,7 +4642,7 @@ server <- function(input, output, session) {
         labs(
           x = NULL,
           y = metric_y_lab[["richness"]],
-          subtitle = paste0(input$location, ": Species richness per sample by status")
+          # subtitle = paste0(input$location, ": Species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -4669,8 +4669,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["richness"]],
-          subtitle = paste0(input$location, ": Average species richness per sample by status")
+          y = metric_y_lab[["richness"]]#,
+          # subtitle = paste0(input$location, ": Average species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -4703,8 +4703,8 @@ server <- function(input, output, session) {
         scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
         labs(
           x = NULL,
-          y = metric_y_lab[["richness"]],
-          subtitle = input$location
+          y = metric_y_lab[["richness"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -4724,8 +4724,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["richness"]],
-          subtitle = paste0(input$location, ": Average species richness per sample")
+          y = metric_y_lab[["richness"]]#,
+          # subtitle = paste0(input$location, ": Average species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -4865,8 +4865,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["total_abundance"]],
-          subtitle = input$location
+          y = metric_y_lab[["total_abundance"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -4893,8 +4893,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["total_abundance"]],
-          subtitle = paste0(input$location, ": Average total abundance per sample")
+          y = metric_y_lab[["total_abundance"]]#,
+          # subtitle = paste0(input$location, ": Average total abundance per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -4952,8 +4952,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["total_abundance"]],
-          subtitle = paste0(input$location, ": Total abundance per sample by status")
+          y = metric_y_lab[["total_abundance"]]#,
+          # subtitle = paste0(input$location, ": Total abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -4980,9 +4980,9 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["total_abundance"]],
-          subtitle = paste0(input$location,
-                            ": Average total abundance per sample by status")
+          y = metric_y_lab[["total_abundance"]]#,
+          # subtitle = paste0(input$location,
+                            # ": Average total abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5025,8 +5025,8 @@ server <- function(input, output, session) {
         scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
         labs(
           x = NULL,
-          y = metric_y_lab[["total_abundance"]],
-          subtitle = input$location
+          y = metric_y_lab[["total_abundance"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -5046,8 +5046,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["total_abundance"]],
-          subtitle = paste0(input$location, ": Average total abundance per sample")
+          y = metric_y_lab[["total_abundance"]]#,
+          # subtitle = paste0(input$location, ": Average total abundance per sample")
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -5181,8 +5181,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["sharks_rays"]],
-          subtitle = input$location
+          y = metric_y_lab[["sharks_rays"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5210,8 +5210,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["sharks_rays"]],
-          subtitle = paste0(input$location, ": Average shark and ray species richness per sample")
+          y = metric_y_lab[["sharks_rays"]]#,
+          # subtitle = paste0(input$location, ": Average shark and ray species richness per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -5272,8 +5272,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["sharks_rays"]],
-          subtitle = paste(input$location, "— Shark & ray species richness per sample by status")
+          y = metric_y_lab[["sharks_rays"]]#,
+          # subtitle = paste(input$location, "— Shark & ray species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5300,8 +5300,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["sharks_rays"]],
-          subtitle = paste0(input$location, ": Average shark & ray species richness per sample by status")
+          y = metric_y_lab[["sharks_rays"]]#,
+          # subtitle = paste0(input$location, ": Average shark & ray species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5342,8 +5342,8 @@ server <- function(input, output, session) {
         scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
         labs(
           x = NULL,
-          y = metric_y_lab[["sharks_rays"]],
-          subtitle = input$location
+          y = metric_y_lab[["sharks_rays"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -5363,8 +5363,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["sharks_rays"]],
-          subtitle = paste0(input$location, ": Average shark and ray species richness per sample")
+          y = metric_y_lab[["sharks_rays"]]#,
+          # subtitle = paste0(input$location, ": Average shark and ray species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -5496,8 +5496,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = input$location
+          y = metric_y_lab[["reef_associated_richness"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5525,8 +5525,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = paste0(input$location, ": Average reef associated species richness per sample")
+          y = metric_y_lab[["reef_associated_richness"]]#,
+          # subtitle = paste0(input$location, ": Average reef associated species richness per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -5589,8 +5589,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = paste0(input$location, ": Reef-associated species richness per sample by status")
+          y = metric_y_lab[["reef_associated_richness"]]#,
+          # subtitle = paste0(input$location, ": Reef-associated species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5617,8 +5617,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = paste0(input$location, ": Average reef-associated species richness per sample by status")
+          y = metric_y_lab[["reef_associated_richness"]]#,
+          # subtitle = paste0(input$location, ": Average reef-associated species richness per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5657,11 +5657,13 @@ server <- function(input, output, session) {
         scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = input$location
+          y = metric_y_lab[["reef_associated_richness"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", 
+              panel.grid.minor = element_blank(),           
+              panel.grid.major = element_blank())
       
     } else {
       
@@ -5678,11 +5680,13 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = paste0(input$location, ": Average reef associated species richness per sample")
+          y = metric_y_lab[["reef_associated_richness"]]#,
+          # subtitle = paste0(input$location, ": Average reef associated species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", 
+              panel.grid.minor = element_blank(),           
+              panel.grid.major = element_blank())
     }
   })
   
@@ -5789,8 +5793,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = input$location
+          y = metric_y_lab[["fish_200_abundance"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5817,8 +5821,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = paste0(input$location, ": Average total abundance per sample")
+          y = metric_y_lab[["fish_200_abundance"]]#,
+          # subtitle = paste0(input$location, ": Average total abundance per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -5878,8 +5882,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = paste0(input$location, ": Large fish (>200 mm) abundance per sample by status")
+          y = metric_y_lab[["fish_200_abundance"]]#,
+          # subtitle = paste0(input$location, ": Large fish (>200 mm) abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5907,8 +5911,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = paste0(input$location, ": Average large fish (>200 mm) abundance per sample by status")
+          y = metric_y_lab[["fish_200_abundance"]]#,
+          # subtitle = paste0(input$location, ": Average large fish (>200 mm) abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5950,8 +5954,8 @@ server <- function(input, output, session) {
         scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = input$location
+          y = metric_y_lab[["reef_associated_richness"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -5971,8 +5975,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]],
-          subtitle = paste0(input$location, ": Average reef associated species richness per sample")
+          y = metric_y_lab[["reef_associated_richness"]]#,
+          # subtitle = paste0(input$location, ": Average reef associated species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -6091,8 +6095,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["shannon_diversity"]],
-          subtitle = input$location
+          y = metric_y_lab[["shannon_diversity"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -6120,8 +6124,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["shannon_diversity"]],
-          subtitle = paste0(input$location, ": Average shannon diversity per sample")
+          y = metric_y_lab[["shannon_diversity"]]#,
+          # subtitle = paste0(input$location, ": Average shannon diversity per sample")
         ) +
         # facet_wrap(~ zone) +
         theme_minimal(base_size = 16) +
@@ -6183,8 +6187,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["shannon_diversity"]],
-          subtitle = paste0(input$location, ": shannon diversity per sample by status")
+          y = metric_y_lab[["shannon_diversity"]]#,
+          # subtitle = paste0(input$location, ": shannon diversity per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -6211,8 +6215,8 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["shannon_diversity"]],
-          subtitle = paste0(input$location, ": Average shannon diversity per sample by status")
+          y = metric_y_lab[["shannon_diversity"]]#,
+          # subtitle = paste0(input$location, ": Average shannon diversity per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -6318,8 +6322,8 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,  # or "Diet group"
-          y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = input$location
+          y = metric_y_lab[["fish_200_abundance"]]#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -6347,8 +6351,8 @@ server <- function(input, output, session) {
         labs(
           x        = NULL,
           y        = "Mean no. species per sample",
-          fill     = "Diet group",
-          subtitle = input$location
+          fill     = "Diet group"#,
+          # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
         theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
@@ -6438,8 +6442,8 @@ server <- function(input, output, session) {
         scale_colour_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]],
-          subtitle = input$location
+          y = metric_y_lab[["fish_200_abundance"]]#,
+          # subtitle = input$location
         ) +
         facet_wrap(~ status) +
         theme_minimal(base_size = 16) +
@@ -6467,8 +6471,8 @@ server <- function(input, output, session) {
         labs(
           x        = NULL,
           y        = "Mean no. species per sample",
-          fill     = "Diet group",
-          subtitle = input$location
+          fill     = "Diet group"#,
+          # subtitle = input$location
         ) +
         facet_wrap(~ status) +
         theme_minimal(base_size = 16) +
