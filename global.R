@@ -445,7 +445,7 @@ diet_cols <- c(
   "Herbivore"    = "#59a89c",  # bluish green
   "Omnivore"     = "#f0c571",  # warm grey / taupe
   "Planktivore"  = "#082a54",  # deep blue
-  "Diet missing" = "#cecece"   # neutral grey
+  "Diet unknown" = "#cecece"   # neutral grey
 )
 
 # ---- Plot output ID builder (prefix-aware) ----------------------------------

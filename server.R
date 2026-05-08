@@ -359,7 +359,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
             col_widths = c(6, 6),
             metric_plotOutput(prefix, "trophic", "main"),
             metric_plotOutput(prefix, "trophic", "status")
-          ),
+          )#,
           # layout_columns(
           #   col_widths = c(6, 6),
           #   metric_plotOutput(prefix, "trophic", "status"),
@@ -370,15 +370,16 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 
       # default: 2 plots
       {
-        div(layout_columns(
+        # div(
+          layout_columns(
           col_widths = c(6, 6),
           metric_plot_with_downloads(prefix, data_id, "main"),
           metric_plot_with_downloads(prefix, data_id, "status")
-        ),
-        layout_columns(
-          col_widths = c(12),
-          metric_plot_with_downloads(prefix, data_id, "year")
-        ))
+        )#,
+        # layout_columns(
+        #   col_widths = c(12),
+        #   metric_plot_with_downloads(prefix, data_id, "year")
+        # ))
       }
     )
   )
@@ -1375,7 +1376,9 @@ server <- function(input, output, session) {
           subtitle = input$region
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", 
+              panel.grid.minor = element_blank(),
+              panel.grid.major = element_blank())
       
     } else {
       df <- richness_main_results()
@@ -1390,7 +1393,10 @@ server <- function(input, output, session) {
           subtitle = paste0(input$region, ": Average species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", 
+              
+              panel.grid.minor = element_blank(),           
+              panel.grid.major = element_blank())
     }
   })
   
@@ -1451,7 +1457,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -1489,7 +1495,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     }
@@ -1613,7 +1619,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -1645,7 +1651,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
   })
@@ -1706,7 +1712,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     } else {
       
@@ -1745,7 +1751,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     }
@@ -1879,7 +1885,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -1912,7 +1918,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",        # both bars already coloured by period
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -1977,7 +1983,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -2015,7 +2021,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -2145,7 +2151,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -2178,7 +2184,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",        # both bars already coloured by period
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     }
@@ -2244,7 +2250,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -2282,7 +2288,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -2404,7 +2410,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -2437,7 +2443,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -2500,7 +2506,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -2539,7 +2545,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     }
@@ -2671,7 +2677,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -2704,7 +2710,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",        # both bars already coloured by period
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -2769,7 +2775,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -2807,7 +2813,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -2867,7 +2873,7 @@ server <- function(input, output, session) {
       mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
       
       # (Optional) order diet groups if you want a specific order
-      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet unknown")
       df$diet <- factor(df$diet, levels = diet_levels)
       mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
       
@@ -2915,7 +2921,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "top",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -2942,7 +2948,7 @@ server <- function(input, output, session) {
           subtitle = input$region
         ) +
         theme_minimal(base_size = 16) +
-        theme(panel.grid.minor = element_blank())
+        theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })   |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "trophic")]]) |>
@@ -2975,7 +2981,7 @@ server <- function(input, output, session) {
       mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
       
       # Diet ordering
-      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet unknown")
       df$diet     <- factor(df$diet,     levels = diet_levels)
       mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
       
@@ -3024,7 +3030,8 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position = "top",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank()
         )
       
     } else {
@@ -3052,7 +3059,8 @@ server <- function(input, output, session) {
         ) +
         facet_wrap(~ status) +
         theme_minimal(base_size = 16) +
-        theme(panel.grid.minor = element_blank())
+        theme(panel.grid.minor = element_blank(),
+              panel.grid.major = element_blank())
     }
   })
   
@@ -3574,7 +3582,7 @@ server <- function(input, output, session) {
           theme(
             legend.position  = "bottom",
             plot.subtitle    = element_text(margin = margin(b = 6)),
-            panel.grid.minor = element_blank()
+            panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
           )
       }) |>
         bindCache(input$mp_park, id) |>
@@ -3610,7 +3618,7 @@ server <- function(input, output, session) {
           theme(
             legend.position  = "bottom",
             plot.subtitle    = element_text(margin = margin(b = 6)),
-            panel.grid.minor = element_blank()
+            panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
           )
         
         if (id == "func_groups") {
@@ -4364,6 +4372,17 @@ server <- function(input, output, session) {
     
   })
   
+  location_common_results_status <- reactive({
+    
+    req(input$location)
+    
+    hab_data$location_top_species_average_status |> 
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(average = as.numeric(average)) %>%
+      dplyr::mutate(se = as.numeric(se))
+    
+  })
+  
   location_common_results_name <- reactive({
     
     req(input$location)
@@ -4378,6 +4397,15 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       readr::write_csv(location_common_results(), file)
+    }
+  )
+  
+  output$location_common_download_results_status <- downloadHandler(
+    filename = function() {
+      paste0(location_common_results_name(), "_status_average_abundances", "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      readr::write_csv(location_common_results_status(), file)
     }
   )
   
@@ -4462,7 +4490,7 @@ server <- function(input, output, session) {
       scale_color_manual(values = metric_period_cols) +
       labs(x = NULL, y = metric_y_lab[["richness"]], subtitle = input$location) +
       theme_minimal(base_size = 16) +
-      theme(legend.position = "none", panel.grid.minor = element_blank())
+      theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
   }) |>
     bindCache(input$location) |>
     bindEvent(input$location)
@@ -4547,7 +4575,7 @@ server <- function(input, output, session) {
           subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
       
     } else {
       df <- richness_main_results_location()
@@ -4562,7 +4590,7 @@ server <- function(input, output, session) {
           subtitle = paste0(input$location, ": Average species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })
   
@@ -4619,7 +4647,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -4647,7 +4675,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     }
@@ -4679,7 +4707,7 @@ server <- function(input, output, session) {
           subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
       
     } else {
       
@@ -4700,7 +4728,7 @@ server <- function(input, output, session) {
           subtitle = paste0(input$location, ": Average species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })
   
@@ -4843,7 +4871,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -4872,7 +4900,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
   })
@@ -4930,7 +4958,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     } else {
       
@@ -4959,7 +4987,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     }
@@ -5001,7 +5029,7 @@ server <- function(input, output, session) {
           subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
       
     } else {
       
@@ -5022,7 +5050,7 @@ server <- function(input, output, session) {
           subtitle = paste0(input$location, ": Average total abundance per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })
   
@@ -5159,7 +5187,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -5189,7 +5217,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",        # both bars already coloured by period
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -5250,7 +5278,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -5278,7 +5306,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -5318,7 +5346,7 @@ server <- function(input, output, session) {
           subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
       
     } else {
       
@@ -5339,7 +5367,7 @@ server <- function(input, output, session) {
           subtitle = paste0(input$location, ": Average shark and ray species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })
   
@@ -5474,7 +5502,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -5504,7 +5532,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",        # both bars already coloured by period
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     }
@@ -5567,7 +5595,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -5595,7 +5623,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -5633,7 +5661,7 @@ server <- function(input, output, session) {
           subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
       
     } else {
       
@@ -5654,7 +5682,7 @@ server <- function(input, output, session) {
           subtitle = paste0(input$location, ": Average reef associated species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })
   
@@ -5767,7 +5795,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -5796,7 +5824,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -5856,7 +5884,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -5885,7 +5913,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     }
@@ -5926,7 +5954,7 @@ server <- function(input, output, session) {
           subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
       
     } else {
       
@@ -5947,7 +5975,7 @@ server <- function(input, output, session) {
           subtitle = paste0(input$location, ": Average reef associated species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })
   
@@ -6069,7 +6097,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -6099,7 +6127,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",        # both bars already coloured by period
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -6161,7 +6189,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -6189,7 +6217,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
     }
     
@@ -6248,7 +6276,7 @@ server <- function(input, output, session) {
       mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
       
       # (Optional) order diet groups if you want a specific order
-      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet unknown")
       df$diet <- factor(df$diet, levels = diet_levels)
       mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
       
@@ -6296,7 +6324,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "top",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -6323,7 +6351,7 @@ server <- function(input, output, session) {
           subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(panel.grid.minor = element_blank())
+        theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })   |>
     bindCache(input$location, input[[metric_plot_type_input_id("loc", "trophic")]]) |>
@@ -6368,7 +6396,7 @@ server <- function(input, output, session) {
       mean_se$period <- factor(mean_se$period, levels = c("Pre-bloom", "Bloom"))
       
       # Diet ordering
-      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet missing")
+      diet_levels <- c("Carnivore", "Herbivore", "Omnivore", "Planktivore", "Diet unknown")
       df$diet     <- factor(df$diet,     levels = diet_levels)
       mean_se$diet <- factor(mean_se$diet, levels = diet_levels)
       
@@ -6417,7 +6445,7 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position = "top",
-          panel.grid.minor = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
         )
       
     } else {
@@ -6444,7 +6472,7 @@ server <- function(input, output, session) {
         ) +
         facet_wrap(~ status) +
         theme_minimal(base_size = 16) +
-        theme(panel.grid.minor = element_blank())
+        theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
     }
   })
   

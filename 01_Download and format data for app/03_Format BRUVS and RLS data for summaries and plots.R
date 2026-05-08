@@ -423,7 +423,7 @@ region_top_species_average <- combined_count %>%
     display_name = paste0(genus, " ", species, " (", common_name, ")")
   )
 
-location_top_species_average <- combined_count %>%
+location_top_species_average_status <- combined_count %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::mutate(genus = dplyr::if_else(genus %in% "Unknown", family, genus)) %>%
@@ -461,6 +461,44 @@ location_top_species_average <- combined_count %>%
     display_name = paste0(genus, " ", species, " (", common_name, ")")
   )
 
+location_top_species_average <- combined_count %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::mutate(genus = dplyr::if_else(genus %in% "Unknown", family, genus)) %>%
+  # keep region/period/status here so we don't have to join later
+  dplyr::select(
+    campaignid, sample, reporting_name, period,
+    genus, species, genus_species, count
+  ) %>%
+  tidyr::complete(
+    tidyr::nesting(campaignid, sample, reporting_name, period),
+    tidyr::nesting(genus, species, genus_species)
+  ) %>%
+  dplyr::filter(!is.na(species)) %>%
+  tidyr::replace_na(list(count = 0)) %>%
+  dplyr::group_by(reporting_name, period, genus, species, genus_species) %>%
+  dplyr::summarise(
+    average = mean(count, na.rm = TRUE),
+    se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
+    .groups = "drop"
+  ) %>%
+  dplyr::left_join(
+    dew_species %>% dplyr::select(genus_species, common_name),
+    by = "genus_species"
+  ) %>%
+  dplyr::left_join(
+    species_list,
+    by = c("genus", "species")
+  ) %>%
+  dplyr::select(
+    genus, species, common_name, australian_common_name,
+    average, se, reporting_name, period
+  ) %>%
+  dplyr::mutate(
+    common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
+    display_name = paste0(genus, " ", species, " (", common_name, ")")
+  )
+
 trophic_groups_samples <- combined_count %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
@@ -477,7 +515,7 @@ trophic_groups_samples <- combined_count %>%
   dplyr::filter(!is.na(species)) %>%
   tidyr::replace_na(list(count = 0)) %>%
   dplyr::left_join(dew_species) %>%
-  dplyr::mutate(diet = if_else(diet %in% c("NA", NA), "Diet missing", diet)) %>%
+  dplyr::mutate(diet = if_else(diet %in% c("NA", NA), "Diet unknown", diet)) %>%
   dplyr::group_by(campaignid, sample, region, period, status, diet, reporting_name) %>%
   dplyr::summarise(n_individuals_sample = sum(count))
 
@@ -530,7 +568,7 @@ trophic_groups_richness_samples <- combined_count %>%
   dplyr::filter(!is.na(species)) %>%
   tidyr::replace_na(list(count = 0)) %>%
   dplyr::left_join(dew_species) %>%
-  dplyr::mutate(diet = if_else(diet %in% c("NA", NA), "Diet missing", diet)) %>%
+  dplyr::mutate(diet = if_else(diet %in% c("NA", NA), "Diet unknown", diet)) %>%
   dplyr::group_by(campaignid, sample, region, period, status, diet) %>%
   dplyr::filter(count > 0) %>%
   dplyr::distinct(genus, species) %>% # removed family due to inconsistencies
@@ -1525,6 +1563,7 @@ hab_data <- structure(
     region_top_species_average = region_top_species_average,
     
     location_top_species_average = location_top_species_average,
+    location_top_species_average_status = location_top_species_average_status,
     
     impact_data = impact_data,
     overall_impact = overall_impact,

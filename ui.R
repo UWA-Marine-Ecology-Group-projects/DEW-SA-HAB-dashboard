@@ -828,6 +828,14 @@ nav_panel(
             br(),
             
             downloadButton(
+              outputId = "location_common_download_results_status",
+              label = "Download average abundances with status"
+            ),
+            
+            br(),
+            br(),
+            
+            downloadButton(
               outputId = "location_common_download_plot",
               label = "Download plots"
             ),
