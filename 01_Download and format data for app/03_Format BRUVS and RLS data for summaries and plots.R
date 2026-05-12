@@ -61,8 +61,16 @@ locations_shp <- st_read("data/spatial/Locations_SZ_groupings.shp") %>%
   dplyr::mutate(reporting_name = paste(reporting_location, "-", reporting_sanctuary, "Sanctuary Zone", sep = " ")) |>
   dplyr::mutate(reporting_name = str_replace_all(reporting_name, " - NA Sanctuary Zone", ""))
 
+locations_shp <- st_read("data/spatial/Locations_12_05_26.shp") %>%
+  dplyr::rename(reporting_location = LocationNa, reporting_sanctuary = SanctuaryZ) %>%
+  dplyr::select(-c(Shape_Leng, Shape_Area)) %>%
+  dplyr::mutate(reporting_name = paste(reporting_location, "-", reporting_sanctuary, "Sanctuary Zone", sep = " ")) |>
+  dplyr::mutate(reporting_name = str_replace_all(reporting_name, " - NA Sanctuary Zone", ""))
+
 # Ensure WGS84 for Leaflet 
 locations_shp <- st_transform(locations_shp, 4326)  # TODO put this in a shapefile list
+
+plot(locations_shp)
 
 # Read in state marineparks ----
 state_mp <- read_sf("data/spatial/CONSERVATION_StateMarineParkNW_Zoning_GDA94.shp") %>%
