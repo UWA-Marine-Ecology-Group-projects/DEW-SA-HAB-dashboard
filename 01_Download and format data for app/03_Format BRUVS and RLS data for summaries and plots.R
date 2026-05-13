@@ -1517,6 +1517,28 @@ location_species_stacked <- format_stacked_species_data(
   top_n = 5
 )
 
+# Split Bloom into campaign stacked plot -----
+combined_count_new_periods <- combined_count %>% filter(method == "BRUVs") %>%
+  left_join(combined_metadata %>% 
+              dplyr::select(campaignid, sample)) %>%
+  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  dplyr::mutate(period_split = case_when(
+    period %in% "Bloom" ~ paste(period, timing),
+    .default = period
+  ))
+
+unique(combined_count_new_periods$period_split)
+
+location_species_stacked_split <- format_stacked_species_data(
+  df = combined_count_new_periods %>% filter(method == "BRUVs"),
+  group_var = reporting_name,
+  period_var = period_split,
+  top_n = 5
+)
+
+test <- location_species_stacked_split$plot_df
+
+
 MASTER_COLOURS <- readRDS("sasha example/master_species_colours.rds")
 
 build_species_palette <- function(species_vec, dew_species, colour_pool) {
@@ -1558,7 +1580,8 @@ build_species_palette <- function(species_vec, dew_species, colour_pool) {
 all_species <- unique(
   c(
     species_stacked$plot_df$species_plot,
-    location_species_stacked$plot_df$species_plot
+    location_species_stacked$plot_df$species_plot,
+    location_species_stacked_split$plot_df$species_plot
   )
 )
 
@@ -1583,6 +1606,12 @@ species_palette["Other"] <- "grey70"
 #   plot_df = location_species_stacked$plot_df,
 #   other_labels = location_species_stacked$other_labels,
 #   selected_name = "Windara Reef - Windara Shell fish Reef Sanctuary Zone"
+# )
+
+# plot_stacked_species(
+#   plot_df = location_species_stacked_split$plot_df,
+#   other_labels = location_species_stacked_split$other_labels,
+#   selected_name = "Glenelg"
 # )
 
 # hab_metric_change_location <- impact_data_location %>%
