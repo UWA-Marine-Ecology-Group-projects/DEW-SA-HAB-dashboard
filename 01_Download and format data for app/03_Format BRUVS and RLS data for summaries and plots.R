@@ -419,6 +419,7 @@ region_top_species_average <- combined_count %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
+    n_samples_present = sum(count > 0, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::left_join(
@@ -431,7 +432,7 @@ region_top_species_average <- combined_count %>%
   ) %>%
   dplyr::select(
     family, genus, species, common_name, australian_common_name,
-    average, se, region, period
+    average, se, n_samples_present, region, period
   ) %>%
   dplyr::mutate(
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
@@ -458,6 +459,7 @@ region_top_species_average_status <- combined_count %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
+    n_samples_present = sum(count > 0, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::left_join(
@@ -470,7 +472,7 @@ region_top_species_average_status <- combined_count %>%
   ) %>%
   dplyr::select(
     family, genus, species, common_name, australian_common_name,
-    average, se, region, period, status
+    average, se, n_samples_present, region, period, status
   ) %>%
   dplyr::mutate(
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
@@ -497,6 +499,7 @@ location_top_species_average_status <- combined_count %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
+    n_samples_present = sum(count > 0, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::left_join(
@@ -509,7 +512,7 @@ location_top_species_average_status <- combined_count %>%
   ) %>%
   dplyr::select(
     family, genus, species, common_name, australian_common_name,
-    average, se, reporting_name, period, status
+    average, se, n_samples_present, reporting_name, period, status
   ) %>%
   dplyr::mutate(
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
@@ -536,6 +539,7 @@ location_top_species_average <- combined_count %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
+    n_samples_present = sum(count > 0, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::left_join(
@@ -548,12 +552,21 @@ location_top_species_average <- combined_count %>%
   ) %>%
   dplyr::select(
     family, genus, species, common_name, australian_common_name,
-    average, se, reporting_name, period
+    average, se, n_samples_present, reporting_name, period
   ) %>%
   dplyr::mutate(
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
     display_name = paste0(genus, " ", species, " (", common_name, ")")
   )
+
+test_duplicates <- dew_species %>%
+  group_by(genus_species) %>%
+  dplyr::summarise(n = n())
+
+test_duplicates <- location_top_species_average %>%
+  group_by(family, genus, species, common_name, australian_common_name,
+           reporting_name, period) %>%
+  dplyr::summarise(n = n())
 
 trophic_groups_samples <- combined_count %>%
   full_join(combined_metadata) %>%
