@@ -403,18 +403,19 @@ region_top_species_average <- combined_count %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::mutate(genus = dplyr::if_else(genus %in% "Unknown", family, genus)) %>%
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
   # keep region/period/status here so we don't have to join later
   dplyr::select(
     campaignid, sample, region, period,
-    genus, species, genus_species, count
+    family, genus, species, genus_species, count
   ) %>%
   tidyr::complete(
     tidyr::nesting(campaignid, sample, region, period),
-    tidyr::nesting(genus, species, genus_species)
+    tidyr::nesting(family, genus, species, genus_species)
   ) %>%
   dplyr::filter(!is.na(species)) %>%
   tidyr::replace_na(list(count = 0)) %>%
-  dplyr::group_by(region, period, genus, species, genus_species) %>%
+  dplyr::group_by(region, period, family, genus, species, genus_species) %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
@@ -426,10 +427,10 @@ region_top_species_average <- combined_count %>%
   ) %>%
   dplyr::left_join(
     species_list,
-    by = c("genus", "species")
+    by = c("family", "genus", "species")
   ) %>%
   dplyr::select(
-    genus, species, common_name, australian_common_name,
+    family, genus, species, common_name, australian_common_name,
     average, se, region, period
   ) %>%
   dplyr::mutate(
@@ -441,18 +442,19 @@ region_top_species_average_status <- combined_count %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::mutate(genus = dplyr::if_else(genus %in% "Unknown", family, genus)) %>%
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
   # keep region/period/status here so we don't have to join later
   dplyr::select(
     campaignid, sample, region, period, status,
-    genus, species, genus_species, count
+    genus, species, family, genus_species, count
   ) %>%
   tidyr::complete(
     tidyr::nesting(campaignid, sample, region, period, status),
-    tidyr::nesting(genus, species, genus_species)
+    tidyr::nesting(family, genus, species, genus_species)
   ) %>%
   dplyr::filter(!is.na(species)) %>%
   tidyr::replace_na(list(count = 0)) %>%
-  dplyr::group_by(region, period, status, genus, species, genus_species) %>%
+  dplyr::group_by(region, period, status, family, genus, species, genus_species) %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
@@ -464,10 +466,10 @@ region_top_species_average_status <- combined_count %>%
   ) %>%
   dplyr::left_join(
     species_list,
-    by = c("genus", "species")
+    by = c("family", "genus", "species")
   ) %>%
   dplyr::select(
-    genus, species, common_name, australian_common_name,
+    family, genus, species, common_name, australian_common_name,
     average, se, region, period, status
   ) %>%
   dplyr::mutate(
@@ -479,18 +481,19 @@ location_top_species_average_status <- combined_count %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::mutate(genus = dplyr::if_else(genus %in% "Unknown", family, genus)) %>%
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
   # keep region/period/status here so we don't have to join later
   dplyr::select(
     campaignid, sample, reporting_name, period, status,
-    genus, species, genus_species, count
+    family, genus, species, genus_species, count
   ) %>%
   tidyr::complete(
     tidyr::nesting(campaignid, sample, reporting_name, period, status),
-    tidyr::nesting(genus, species, genus_species)
+    tidyr::nesting(family, genus, species, genus_species)
   ) %>%
   dplyr::filter(!is.na(species)) %>%
   tidyr::replace_na(list(count = 0)) %>%
-  dplyr::group_by(reporting_name, period, status, genus, species, genus_species) %>%
+  dplyr::group_by(reporting_name, period, status, family, genus, species, genus_species) %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
@@ -502,10 +505,10 @@ location_top_species_average_status <- combined_count %>%
   ) %>%
   dplyr::left_join(
     species_list,
-    by = c("genus", "species")
+    by = c("family", "genus", "species")
   ) %>%
   dplyr::select(
-    genus, species, common_name, australian_common_name,
+    family, genus, species, common_name, australian_common_name,
     average, se, reporting_name, period, status
   ) %>%
   dplyr::mutate(
@@ -517,18 +520,19 @@ location_top_species_average <- combined_count %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::mutate(genus = dplyr::if_else(genus %in% "Unknown", family, genus)) %>%
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
   # keep region/period/status here so we don't have to join later
   dplyr::select(
     campaignid, sample, reporting_name, period,
-    genus, species, genus_species, count
+    family, genus, species, genus_species, count
   ) %>%
   tidyr::complete(
     tidyr::nesting(campaignid, sample, reporting_name, period),
-    tidyr::nesting(genus, species, genus_species)
+    tidyr::nesting(family, genus, species, genus_species)
   ) %>%
   dplyr::filter(!is.na(species)) %>%
   tidyr::replace_na(list(count = 0)) %>%
-  dplyr::group_by(reporting_name, period, genus, species, genus_species) %>%
+  dplyr::group_by(reporting_name, period, family, genus, species, genus_species) %>%
   dplyr::summarise(
     average = mean(count, na.rm = TRUE),
     se      = sd(count, na.rm = TRUE) / sqrt(sum(!is.na(count))),
@@ -540,10 +544,10 @@ location_top_species_average <- combined_count %>%
   ) %>%
   dplyr::left_join(
     species_list,
-    by = c("genus", "species")
+    by = c("family", "genus", "species")
   ) %>%
   dplyr::select(
-    genus, species, common_name, australian_common_name,
+    family, genus, species, common_name, australian_common_name,
     average, se, reporting_name, period
   ) %>%
   dplyr::mutate(

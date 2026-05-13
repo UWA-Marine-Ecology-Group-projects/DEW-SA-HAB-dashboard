@@ -71,6 +71,14 @@ commonwealth.mp <- readRDS("app_data/spatial/commonwealth.mp.RDS") %>%
 
 state_mp <- readRDS("app_data/spatial/sa_state_mp.RDS")
 
+clean_number <- function(x) {
+  if (is.numeric(x)) {
+    x
+  } else {
+    readr::parse_number(as.character(x))
+  }
+}
+
 # state_mp  <- rmapshaper::ms_simplify(state_mp, keep = 0.5, keep_shapes = TRUE)
 # commonwealth.mp <- rmapshaper::ms_simplify(commonwealth.mp, keep = 0.5, keep_shapes = TRUE)
 

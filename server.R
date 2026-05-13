@@ -3401,7 +3401,13 @@ server <- function(input, output, session) {
     req(input$region)
     
     hab_data$region_top_species_average |> 
-      dplyr::filter(region == input$region)
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(
+        average = clean_number(average),
+        se = clean_number(se)
+      ) %>%
+      dplyr::mutate(average = round(average, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3)) 
     
   })
   
@@ -4341,9 +4347,13 @@ server <- function(input, output, session) {
     req(input$location)
     
     hab_data$location_top_species_average |> 
-      dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(average = as.numeric(average)) %>%
-      dplyr::mutate(se = as.numeric(se))
+      dplyr::filter(reporting_name == input$location)  %>%
+      dplyr::mutate(
+        average = clean_number(average),
+        se = clean_number(se)
+      )  %>%
+      dplyr::mutate(average = round(average, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3)) 
     
   })
   
@@ -4353,8 +4363,12 @@ server <- function(input, output, session) {
     
     hab_data$location_top_species_average_status |> 
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(average = as.numeric(average)) %>%
-      dplyr::mutate(se = as.numeric(se))
+      dplyr::mutate(
+        average = clean_number(average),
+        se = clean_number(se)
+      )  %>%
+      dplyr::mutate(average = round(average, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3)) 
     
   })
   
@@ -4490,7 +4504,9 @@ server <- function(input, output, session) {
     
     hab_data$species_richness_summary_location %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   richness_status_results_location <- reactive({
@@ -4502,7 +4518,9 @@ server <- function(input, output, session) {
           sqrt(sum(!is.na(n_species_sample))),
         n = sum(!is.na(n_species_sample)),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   richness_summary_year_location <- reactive({
@@ -4518,7 +4536,9 @@ server <- function(input, output, session) {
         se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
         num  = dplyr::n(),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   
@@ -4770,7 +4790,9 @@ server <- function(input, output, session) {
     
     hab_data$total_abundance_summary_location %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   total_abundance_status_results_location <- reactive({
@@ -4782,7 +4804,9 @@ server <- function(input, output, session) {
           sqrt(sum(!is.na(total_abundance_sample))),
         n = sum(!is.na(total_abundance_sample)),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   total_abundance_summary_year_location <- reactive({
@@ -4798,7 +4822,9 @@ server <- function(input, output, session) {
         se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
         num  = dplyr::n(),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   # TOTAL ABUNDANCE (LOCATION): main plot ------------
@@ -5078,7 +5104,9 @@ server <- function(input, output, session) {
     
     hab_data$shark_ray_richness_summary_location %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   shark_ray_richness_status_results_location <- reactive({
@@ -5090,7 +5118,9 @@ server <- function(input, output, session) {
           sqrt(sum(!is.na(n_species_sample))),
         n = sum(!is.na(n_species_sample)),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   
@@ -5107,7 +5137,9 @@ server <- function(input, output, session) {
         se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
         num  = dplyr::n(),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   # SHARK & RAYS: main plot -----
@@ -5394,7 +5426,9 @@ server <- function(input, output, session) {
     
     hab_data$reef_associated_richness_summary_location %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   reef_associated_richness_status_results_location <- reactive({
@@ -5406,7 +5440,9 @@ server <- function(input, output, session) {
           sqrt(sum(!is.na(n_species_sample))),
         n = sum(!is.na(n_species_sample)),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   reef_associated_richness_summary_year_location <- reactive({
@@ -5422,7 +5458,9 @@ server <- function(input, output, session) {
         se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
         num  = dplyr::n(),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   # REEF-ASSOCIATED: main plot -----
@@ -5714,7 +5752,9 @@ server <- function(input, output, session) {
     
     hab_data$fish_200_abundance_summary_location %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   fish_200_abundance_status_results_location <- reactive({
@@ -5726,7 +5766,9 @@ server <- function(input, output, session) {
           sqrt(sum(!is.na(total_abundance_sample))),
         n = sum(!is.na(total_abundance_sample)),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   # LARGE FISH: main plot ------------
@@ -6001,7 +6043,9 @@ server <- function(input, output, session) {
       dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
       group_by(campaignid) %>%
       mutate(campaign_date = min(date)) %>%
-      ungroup()
+      ungroup() %>%
+      dplyr::mutate(shannon = round(shannon, digits = 3))
+    
   })
   
   shannon_diversity_main_results_location <- reactive({
@@ -6009,7 +6053,9 @@ server <- function(input, output, session) {
     
     hab_data$shannon_diversity_summary_location %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   shannon_diversity_status_results_location <- reactive({
@@ -6021,7 +6067,9 @@ server <- function(input, output, session) {
           sqrt(sum(!is.na(shannon ))),
         n = sum(!is.na(shannon )),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
   })
   
   # SHANNON DIVERSITY: main plot -----
@@ -6514,7 +6562,12 @@ server <- function(input, output, session) {
     req(input$region)
     
     df_check <- hab_data$species_stacked$plot_df %>%
-      dplyr::filter(group_name == input$region)
+      dplyr::filter(group_name == input$region) %>%
+      dplyr::mutate(
+        total_count = clean_number(total_count),
+        percent = clean_number(percent)
+      ) %>%
+      dplyr::mutate(percent = round(percent, digits = 3))
     
   })
   
@@ -6557,7 +6610,12 @@ server <- function(input, output, session) {
     req(input$location)
     
     df_check <- hab_data$location_species_stacked$plot_df %>%
-      dplyr::filter(group_name == input$location)
+      dplyr::filter(group_name == input$location)  %>%
+      dplyr::mutate(
+        total_count = clean_number(total_count),
+        percent = clean_number(percent)
+      ) %>%
+      dplyr::mutate(percent = round(percent, digits = 3))
     
   })
   
@@ -6566,7 +6624,7 @@ server <- function(input, output, session) {
       paste0(location_stacked_name(), "_percentage_of_observations", "_", Sys.Date(), ".csv")
     },
     content = function(file) {
-      readr::write_csv(location_stacked_results(), file)
+      readr::write_excel_csv(location_stacked_results(), file)
     }
   )
   
