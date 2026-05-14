@@ -766,7 +766,7 @@ nav_panel(
         
         layout_sidebar(
           sidebar = div(
-            # h6(strong("Downloads:")),
+            h6(strong("Pre-bloom vs. Bloom:")),
             
             downloadButton(
               outputId = "location_stacked_download_results",
@@ -778,6 +778,23 @@ nav_panel(
             
             downloadButton(
               outputId = "location_stacked_download_plot",
+              label = "Download plot"
+            ),
+            
+            br(),
+            br(),
+            h6(strong("Split bloom plots:")),
+            
+            downloadButton(
+              outputId = "location_stacked_download_results_split",
+              label = "Download assemblage percentages"
+            ),
+            
+            br(),
+            br(),
+            
+            downloadButton(
+              outputId = "location_stacked_download_plot_split",
               label = "Download plot"
             ),
             

@@ -6716,5 +6716,30 @@ server <- function(input, output, session) {
     location_stacked_split()
   })
   
+  output$location_stacked_download_results_split <- downloadHandler(
+    filename = function() {
+      paste0(location_stacked_name(), "_percentage_of_observations_split", "_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      readr::write_excel_csv(location_stacked_results_split(), file)
+    }
+  )
+  
+  output$location_stacked_download_plot_split <- downloadHandler(
+    filename = function() {
+      paste0(location_stacked_name(), "_stacked_assemblage_plots_split", "_", Sys.Date(), ".png"
+      )
+    },
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = location_stacked_split(),
+        width = 8,
+        height = 5,
+        dpi = 300
+      )
+    }
+  )
+  
   
 }
