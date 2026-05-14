@@ -485,6 +485,13 @@ region_top_species_average_status <- combined_count %>%
     display_name = paste0(genus, " ", species, " (", common_name, ")")
   )
 
+location_number_samples_status <- combined_metadata %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(total_n_of_samples_for_period = n()) %>%
+  ungroup() %>%
+  glimpse()
+
 location_top_species_average_status <- combined_count %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
@@ -523,7 +530,16 @@ location_top_species_average_status <- combined_count %>%
   dplyr::mutate(
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
     display_name = paste0(genus, " ", species, " (", common_name, ")")
-  )
+  ) %>%
+  left_join(location_number_samples_status)
+
+location_number_samples <- combined_metadata %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(total_n_of_samples_for_period = n()) %>%
+  ungroup() %>%
+  glimpse()
+  
 
 location_top_species_average <- combined_count %>%
   full_join(combined_metadata) %>%
@@ -563,7 +579,8 @@ location_top_species_average <- combined_count %>%
   dplyr::mutate(
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
     display_name = paste0(genus, " ", species, " (", common_name, ")")
-  )
+  ) %>%
+  left_join(location_number_samples)
 
 test_duplicates <- dew_species %>%
   group_by(genus_species) %>%
