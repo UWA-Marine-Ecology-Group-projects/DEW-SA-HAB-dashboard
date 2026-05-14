@@ -592,12 +592,12 @@ nav_panel(
             
             
           ),
-        
-        withSpinner(
-          plotOutput("region_stacked_plot", height = "550px"),
-          color = getOption("spinner.color", default = "#0D576E"),
-          type = 6
-        ))
+          
+          withSpinner(
+            plotOutput("region_stacked_plot", height = "550px"),
+            color = getOption("spinner.color", default = "#0D576E"),
+            type = 6
+          ))
       ),
       
       card(
@@ -784,12 +784,21 @@ nav_panel(
             
             
           ),
-        withSpinner(
-          plotOutput("location_stacked_plot", height = "550px"),
-          color = getOption("spinner.color", default = "#0D576E"),
-          type = 6
+          
+          layout_columns(
+            col_widths = c(5, 7),
+            withSpinner(
+              plotOutput("location_stacked_plot", height = "550px"),
+              color = getOption("spinner.color", default = "#0D576E"),
+              type = 6
+            ),
+            
+            withSpinner(
+              plotOutput("location_stacked_plot_split", height = "550px"),
+              color = getOption("spinner.color", default = "#0D576E"),
+              type = 6
+            ))
         )
-)
       ),
       
       card(

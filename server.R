@@ -532,6 +532,14 @@ plot_stacked_species <- function(
     period_order = c("Pre-bloom", "Bloom")
 ) {
   
+  dat <- plot_df%>%
+    dplyr::filter(group_name == selected_name)
+  
+  period_order <- c(
+    "Pre-bloom",
+    sort(setdiff(unique(dat$period_name), "Pre-bloom"))
+  )
+  
   df <- plot_df %>%
     dplyr::filter(group_name == selected_name) %>%
     dplyr::mutate(
@@ -6667,6 +6675,45 @@ server <- function(input, output, session) {
   
   output$location_stacked_plot <- renderPlot({
     location_stacked()
+  })
+  
+  
+  # Location stacked plot split by bloom----
+  
+  location_stacked_results_split <- reactive({
+    req(input$location)
+    
+    df_check <- hab_data$location_species_stacked_split$plot_df %>%
+      dplyr::filter(group_name == input$location)  %>%
+      dplyr::mutate(
+        total_count = clean_number(total_count),
+        percent = clean_number(percent)
+      ) %>%
+      dplyr::mutate(percent = round(percent, digits = 3))
+    
+  })
+  
+  location_stacked_split <- reactive({
+    
+    req(input$location)
+    
+    df_check <- location_stacked_results_split()
+    
+    validate(
+      need(nrow(df_check) > 0, paste("No stacked plot data for:", input$location))
+    )
+    
+    plot_stacked_species(
+      plot_df = hab_data$location_species_stacked_split$plot_df,
+      other_labels = hab_data$location_species_stacked_split$other_labels,
+      selected_name = input$location,
+      palette = hab_data$species_palette
+    )
+    
+  })
+  
+  output$location_stacked_plot_split <- renderPlot({
+    location_stacked_split()
   })
   
   

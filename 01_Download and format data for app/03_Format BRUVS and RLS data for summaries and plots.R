@@ -99,6 +99,7 @@ saveRDS(sa_state_mp, "app_data/spatial/sa_state_mp.RDS") # TODO put this in a sh
 # summary_sheet <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0ganthAWa8TTcfG-eZtIObRM45k/edit?gid=0#gid=0"
 # 
 # regions_summaries <- read_sheet(summary_sheet, sheet = "region_summary_text")
+# 2
 # locations_summaries <- read_sheet(summary_sheet, sheet = "location_summary_text")
 # 
 # write_csv(regions_summaries, "data/lookups/SA-HAB-Summary Text - region_summary_text.csv")
@@ -144,6 +145,11 @@ fish_species <- species_list %>%
 # write_csv(dew_species, "data/lookups/SA-HAB-Functional Traits.csv")
 
 dew_species <- read_csv("data/lookups/SA-HAB-Functional Traits.csv")
+
+duplicates <- dew_species %>%
+  dplyr::group_by(genus_species) %>%
+  dplyr::summarise(n = n()) %>%
+  dplyr::filter(n > 1)
 
 # TODO brooke to check species names in here e.g. spp, and spelling
 
@@ -566,7 +572,8 @@ test_duplicates <- dew_species %>%
 test_duplicates <- location_top_species_average %>%
   group_by(family, genus, species, common_name, australian_common_name,
            reporting_name, period) %>%
-  dplyr::summarise(n = n())
+  dplyr::summarise(n = n()) %>%
+  dplyr::filter(n > 1)
 
 trophic_groups_samples <- combined_count %>%
   full_join(combined_metadata) %>%
@@ -1608,11 +1615,14 @@ species_palette["Other"] <- "grey70"
 #   selected_name = "Windara Reef - Windara Shell fish Reef Sanctuary Zone"
 # )
 
-# plot_stacked_species(
-#   plot_df = location_species_stacked_split$plot_df,
-#   other_labels = location_species_stacked_split$other_labels,
-#   selected_name = "Glenelg"
-# )
+test <- location_species_stacked_split$plot_df
+
+plot_stacked_species(
+  plot_df = location_species_stacked_split$plot_df,
+  other_labels = location_species_stacked_split$other_labels,
+  selected_name = "Glenelg",
+  hab_data$species_palette
+)
 
 # hab_metric_change_location <- impact_data_location %>%
 #   dplyr::transmute(
@@ -1711,7 +1721,9 @@ hab_data <- structure(
     
     species_stacked = species_stacked,
     location_species_stacked = location_species_stacked,
-    species_palette = species_palette
+    species_palette = species_palette,
+    
+    location_species_stacked_split = location_species_stacked_split
     
   ), class = "data")
 
