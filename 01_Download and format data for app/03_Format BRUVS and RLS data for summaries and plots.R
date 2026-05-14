@@ -1615,14 +1615,14 @@ species_palette["Other"] <- "grey70"
 #   selected_name = "Windara Reef - Windara Shell fish Reef Sanctuary Zone"
 # )
 
-test <- location_species_stacked_split$plot_df
-
-plot_stacked_species(
-  plot_df = location_species_stacked_split$plot_df,
-  other_labels = location_species_stacked_split$other_labels,
-  selected_name = "Glenelg",
-  hab_data$species_palette
-)
+# test <- location_species_stacked_split$plot_df
+# 
+# plot_stacked_species(
+#   plot_df = location_species_stacked_split$plot_df,
+#   other_labels = location_species_stacked_split$other_labels,
+#   selected_name = "Glenelg",
+#   hab_data$species_palette
+# )
 
 # hab_metric_change_location <- impact_data_location %>%
 #   dplyr::transmute(
