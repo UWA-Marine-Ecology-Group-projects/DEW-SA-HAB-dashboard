@@ -162,9 +162,18 @@ bruv_metadata <- readRDS("data/raw/sa_metadata_bruv.RDS") %>%
   dplyr::mutate(sample = as.character(sample)) %>%
   dplyr::glimpse() %>%
   dplyr::mutate(year = str_sub(date, 1, 4)) %>%
-  dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
+  # dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
+  dplyr::mutate(
+    period = if_else(
+      as.Date(date) < as.Date("2025-03-01"),
+      "Pre-bloom",
+      "Bloom"
+    )
+  ) %>%
   dplyr::filter(successful_count %in% "Yes") %>%
   dplyr::mutate(status = if_else(status %in% "No-Take", "No-take", status))
+
+summary(bruv_metadata)
 
 # unique(bruv_metadata$year) %>% sort()
 
@@ -229,7 +238,15 @@ combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(metho
 ) %>%
   select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length, status, reporting_location, reporting_sanctuary, reporting_name, site) %>%
   dplyr::mutate(year = as.numeric(str_sub(date, 1, 4))) %>%
-  dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
+  # dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
+  dplyr::mutate(
+    period = if_else(
+      as.Date(date) < as.Date("2025-03-01"),
+      "Pre-bloom",
+      "Bloom"
+    )
+  ) %>%
+  
   dplyr::filter(!is.na(region))
 
 unique(combined_metadata$period)
