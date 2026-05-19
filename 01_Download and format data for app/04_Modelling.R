@@ -22,7 +22,7 @@ metadata <- hab_data$hab_combined_metadata %>%
 unique(metadata$method)
 
 glimpse(hab_data)
-unique(metadata$region)
+unique(metadata$reporting_name)
 
 # -----------------------------
 # 1. Prepare data
@@ -34,7 +34,7 @@ prep_metric_data <- function(df, response_col) {
       !is.na(.data[[response_col]]),
       !is.na(period),
       !is.na(status),
-      !is.na(region),
+      !is.na(reporting_name),
       !is.na(year),
       !is.na(sample)
     ) %>%
@@ -48,47 +48,61 @@ prep_metric_data <- function(df, response_col) {
 
 abund_dat <- prep_metric_data(
   hab_data$total_abundance_samples,
-  "total_abundance_sample"
-) %>%
-  filter(region %in% c("Adelaide Metro", 
-   "Western Spencer Gulf",
-   "Upper Gulf St Vincent"
-                       ))
+  "total_abundance_sample") %>%
+  # filter(reporting_name %in% c("Aldinga - Aldinga Reef Sanctuary Zone",
+  #                              "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
+  #                              "O'Sullivan",
+  #                              "Sponge Gardens - Sponge Gardens Sanctuary Zone",
+  #                              "Glenelg",
+  #                              "Boston Bay")) %>%
+  glimpse()
+
+unique(abund_dat$reporting_name)
 
 rich_dat <- prep_metric_data(
   hab_data$species_richness_samples,
   "n_species_sample"
-) %>%
-  filter(region %in% c("Adelaide Metro", 
-    "Western Spencer Gulf",
-    "Upper Gulf St Vincent"
-                       ))
+)  %>%
+  filter(reporting_name %in% c("Aldinga - Aldinga Reef Sanctuary Zone",
+                               "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
+                               "O'Sullivan",
+                               "Sponge Gardens - Sponge Gardens Sanctuary Zone",
+                               "Glenelg",
+                               "Boston Bay"))%>%
+  glimpse()
 
 shark_dat <- prep_metric_data(
   hab_data$shark_ray_richness_samples %>% left_join(metadata),
   "n_species_sample"
-) %>%
-  filter(region %in% c("Adelaide Metro", 
-                       "Western Spencer Gulf",
-                       "Upper Gulf St Vincent"
-  ))
+)  %>%
+  filter(reporting_name %in% c("Aldinga - Aldinga Reef Sanctuary Zone",
+                               "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
+                               "O'Sullivan",
+                               "Sponge Gardens - Sponge Gardens Sanctuary Zone",
+                               "Glenelg",
+                               "Boston Bay"))%>%
+  glimpse()
 
 reef_dat <- prep_metric_data(
-  hab_data$shark_ray_richness_samples %>% left_join(metadata),
+  hab_data$reef_associated_richness_samples %>% left_join(metadata),
   "n_species_sample"
-) %>%
-  filter(region %in% c("Adelaide Metro", 
-                       "Western Spencer Gulf",
-                       "Upper Gulf St Vincent"
-  ))
+)  %>%
+  filter(reporting_name %in% c("Aldinga - Aldinga Reef Sanctuary Zone",
+                               "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
+                               "O'Sullivan",
+                               "Sponge Gardens - Sponge Gardens Sanctuary Zone",
+                               "Glenelg",
+                               "Boston Bay"))%>%
+  glimpse()
 
 unique(abund_dat$site)
+unique(abund_dat$uwa_site_code)
 
 # -----------------------------
-# 2. Fit one region model
+# 2. Fit one reporting_name model
 # -----------------------------
 
-fit_one_region <- function(df,
+fit_one_reporting_name <- function(df,
                                    response_col,
                                    metric_name,
                                    use_site = FALSE) {
@@ -96,20 +110,20 @@ fit_one_region <- function(df,
   # Skip areas without enough data
   if (
     nrow(df) < 20 ||
-    n_distinct(df$Period) < 2 ||
-    n_distinct(df$Status) < 2 ||
-    n_distinct(df$year) < 2
+    n_distinct(df$Period) < 1 ||
+    n_distinct(df$Status) < 1 ||
+    n_distinct(df$year) < 1
   ) {
     stop("Not enough data to fit model")
   }
   
-  area_region <- df %>%
-    distinct(region) %>%
-    pull(region) %>%
+  area_reporting_name <- df %>%
+    distinct(reporting_name) %>%
+    pull(reporting_name) %>%
     first()
   
   rand_effects <- if (use_site) {
-    "(1 | site) + (1 | year)"
+    "(1 | uwa_site_code) + (1 | year)"
   } else {
     "(1 | year)"
   }
@@ -151,7 +165,7 @@ fit_one_region <- function(df,
     as.data.frame() %>%
     as_tibble() %>%
     mutate(
-      region = area_region,
+      reporting_name = area_reporting_name,
       metric = metric_name,
       model_used = model_used,
       summary_type = "Period averaged over Status"
@@ -165,7 +179,7 @@ fit_one_region <- function(df,
     as.data.frame() %>%
     as_tibble() %>%
     mutate(
-      region = area_region,
+      reporting_name = area_reporting_name,
       metric = metric_name,
       model_used = model_used,
       summary_type = "Period by Status"
@@ -186,26 +200,26 @@ fit_one_region <- function(df,
 run_metric_models <- function(df, response_col, metric_name, use_site = FALSE) {
   
   split_dat <- df %>%
-    group_by(region) %>%
+    group_by(reporting_name) %>%
     group_split()
   
-  names(split_dat) <- map_chr(split_dat, ~ unique(.x$region))
+  names(split_dat) <- map_chr(split_dat, ~ unique(.x$reporting_name))
   
-  with_progress({
+  # with_progress({
     
-    p <- progressor(
-      steps = length(split_dat)
-    )
+    # p <- progressor(
+    #   steps = length(split_dat)
+    # )
     
     model_outputs <- map(
       split_dat,
       ~ {
-        area_name <- unique(.x$region)
+        area_name <- unique(.x$reporting_name)
         
-        p(message = paste("Fitting", metric_name, "for", area_name))
+        # p(message = paste("Fitting", metric_name, "for", area_name))
         
         safely(
-          fit_one_region
+          fit_one_reporting_name
         )(
           .x,
           response_col,
@@ -214,7 +228,7 @@ run_metric_models <- function(df, response_col, metric_name, use_site = FALSE) {
         )
       }
     )
-  })
+  # })
   
   period_means <- map_dfr(
     model_outputs,
@@ -231,7 +245,7 @@ run_metric_models <- function(df, response_col, metric_name, use_site = FALSE) {
     ~ {
       if (!is.null(.x$error)) {
         tibble(
-          region = .y,
+          reporting_name = .y,
           metric = metric_name,
           error = .x$error$message
         )
@@ -257,7 +271,7 @@ abund_models <- run_metric_models(
   abund_dat,
   response_col = "total_abundance_sample",
   metric_name = "Total abundance",
-  use_site = FALSE
+  use_site = TRUE
 )
 
 rich_models <- run_metric_models(
@@ -311,14 +325,31 @@ model_errors <- bind_rows(
 model_errors
 
 # Plot 1: Pre-bloom vs Bloom for all areas
+# shared colours for pre/post everywhere
+metric_period_cols <- c(
+  "Pre-bloom"  = "#072759",  # same blue
+  "Bloom" = "#e88e98"   # same orange
+)
+
 ggplot(period_results, aes(x = Period, y = response)) +
   geom_point(size = 2) +
   geom_errorbar(
     aes(ymin = response - SE, ymax = response + SE),
     width = 0.15
   ) +
-  facet_wrap(metric ~ region, scales = "free_y") +
+  facet_wrap(metric ~ reporting_name, scales = "free_y") +
   theme_bw()
+
+# Trying to make it look like the dashboard ----
+ggplot(period_results, aes(x = Period, y = response, fill = Period)) +
+  geom_col(width = 0.6, colour = "black", alpha = 0.85) +
+  geom_errorbar(aes(ymin = response - SE, ymax = response + SE), width = 0.2, linewidth = 0.6) +
+  scale_fill_manual(values = metric_period_cols) +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none", 
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank()) +
+  facet_wrap(metric ~ reporting_name, scales = "free_y")
 
 # Plot 2: Pre-bloom vs Bloom by Fished vs No-take
 ggplot(period_status_results, aes(x = Period, y = response, colour = Status)) +
@@ -331,5 +362,5 @@ ggplot(period_status_results, aes(x = Period, y = response, colour = Status)) +
     position = position_dodge(width = 0.3),
     width = 0.15
   ) +
-  facet_wrap(metric ~ region, scales = "free_y") +
+  facet_wrap(metric ~ reporting_name, scales = "free_y") +
   theme_bw()

@@ -43,6 +43,20 @@ locations_shp <- st_transform(locations_shp, 4326)  # TODO put this in a shapefi
 
 # plot(locations_shp)
 
+# Sites shapefile ----
+sites_shp <- st_read("data/spatial/Groupings_15_05_26.shp") %>%
+  # dplyr::rename(reporting_location = LocationNa, reporting_sanctuary = SanctuaryZ) %>%
+  # dplyr::mutate(reporting_name = paste(reporting_location, "-", reporting_sanctuary, "Sanctuary Zone", sep = " ")) |>
+  # dplyr::mutate(reporting_name = str_replace_all(reporting_name, " - NA Sanctuary Zone", "")) %>%
+  dplyr::mutate(uwa_site_code = row_number()) %>%
+  dplyr::select(uwa_site_code) %>%
+  glimpse()
+
+# plot(sites_shp)
+
+# Ensure WGS84 for Leaflet 
+sites_shp <- st_transform(sites_shp, 4326)  # TODO put this in a shapefile list
+
 # Read in state marineparks ----
 state_mp <- read_sf("data/spatial/CONSERVATION_StateMarineParkNW_Zoning_GDA94.shp") %>%
   clean_names() %>%
@@ -190,20 +204,23 @@ unique(rls_metadata_locs$location)
 # Add reporting regions to the metadata ----
 reporting_regions <- st_transform(regions_shp, st_crs(state_mp))
 reporting_locations <- st_transform(locations_shp, st_crs(state_mp))
+reporting_sites <- st_transform(sites_shp, st_crs(state_mp))
 
 rls_metadata_with_regions <- st_join(rls_metadata_locs, reporting_regions) %>%
   st_join(reporting_locations) %>%
+  st_join(reporting_sites) %>%
   glimpse()
 
 bruv_metadata_with_regions <- st_join(bruv_metadata_locs, reporting_regions) %>%
   st_join(reporting_locations) %>%
+  st_join(reporting_sites) %>%
   glimpse()
 
 combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
                                # bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")
 ) %>%
-  select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length, status, reporting_location, reporting_sanctuary, reporting_name, site) %>%
+  select(campaignid, sample, date, location, region, geometry, depth_m, method, successful_count, successful_length, status, reporting_location, reporting_sanctuary, reporting_name, site, uwa_site_code) %>%
   dplyr::mutate(year = as.numeric(str_sub(date, 1, 4))) %>%
   # dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
   dplyr::mutate(
