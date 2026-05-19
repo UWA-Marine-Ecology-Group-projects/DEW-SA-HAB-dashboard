@@ -241,12 +241,12 @@ table.hab-table thead th {
 
 /* Stripe colours applied to CELLS (td/th), not tr */
 table.hab-table tbody tr > * {
-  background-color: #d7e1e1 !important;   /* odd rows */
+  background-color: #E7EFEF !important;   /* odd rows */
   color: #0b1f24 !important;
 }
 
 table.hab-table tbody tr:nth-child(even) > * {
-  background-color: #80A9A9 !important;   /* even rows */
+  background-color: #C7DADA !important;   /* even rows */
 }
 
 /* Optional: tidy borders */
@@ -737,41 +737,10 @@ nav_panel(
             spinnerPlotOutput("location_impact_gauges", height = 350)
           ),
           
-          # card(
-          #   card_header(
-          #     div(
-          #       "Percentage change compared to pre-bloom levels",
-          #       style = "display:inline-block;"
-          #     ),
-          #     div(
-          #       actionLink(
-          #         inputId = "open_info_table_location",
-          #         label = NULL,
-          #         icon = icon("circle-info")
-          #       ),
-          #       style = "float:right; margin-top:-2px;"
-          #     )
-          #   ),
-          #   card_body(
-          #     spinnerUiOutput("location_change_table")
-          #   )
-          # )
-          
+  
           navset_card_tab(
-            header = div(
-              div(
-                "Percentage change compared to pre-bloom levels",
-                style = "display:inline-block;"
-              ),
-              div(
-                actionLink(
-                  inputId = "open_info_table_location",
-                  label = NULL,
-                  icon = icon("circle-info")
-                ),
-                style = "float:right; margin-top:-2px;"
-              )
-            ),
+            
+            title = "Percentage change compared to pre-bloom levels",
             
             nav_panel(
               "Overall Bloom",
@@ -781,6 +750,16 @@ nav_panel(
             nav_panel(
               "Split Bloom Periods",
               spinnerUiOutput("location_change_table_split")
+            ),
+            
+            # nav_spacer(),
+            
+            nav_item(
+              actionLink(
+                inputId = "open_info_table_location",
+                label = NULL,
+                icon = icon("circle-info")
+              )
             )
           )
           

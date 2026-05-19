@@ -1176,6 +1176,28 @@ server <- function(input, output, session) {
     )
   })
   
+  observeEvent(input$open_info_table_location, {
+    showModal(
+      modalDialog(
+        title = "Metric definitions",
+        tableOutput("indicator_table"),
+        easyClose = TRUE,
+        footer = NULL
+      )
+    )
+  })
+  
+  observeEvent(input$open_info_pointers_location, {
+    showModal(
+      modalDialog(
+        title = "Impact assessment",
+        tableOutput("pointer_table"),
+        easyClose = TRUE,
+        footer = NULL
+      )
+    )
+  })
+  
   # Pointer plots----
   # Pointer plots: overall + 5 indicators in one figure ------------------------
   output$impact_gauges <- renderPlot({
@@ -3107,7 +3129,7 @@ server <- function(input, output, session) {
     # # Colour rules
     # colours <- ifelse(
     #   num <= -50, "#EB5757",
-    #   ifelse(num <= -20, "#F2C94C", "#3B7EA1")
+    #   ifelse(num <= -20, "#D4A017", "#3B7EA1")
     # )
     # Colour rules (default + special-case one metric)
     special_metric <- "Bluefin leatherjacket displacement*"
@@ -3116,16 +3138,16 @@ server <- function(input, output, session) {
       df$Metric == special_metric,
       # Special rule (based on magnitude, regardless of sign)
       ifelse(abs(num) < 120, "#3B7EA1",
-             ifelse(abs(num) <= 150, "#F2C94C", "#EB5757")),
+             ifelse(abs(num) <= 150, "#D4A017", "#EB5757")),
       # Default rule (your existing thresholds; uses signed num)
       ifelse(num <= -50, "#EB5757",
-             ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+             ifelse(num <= -20, "#D4A017", "#3B7EA1"))
     )
     
     # Build formatted column
     out <- rep("", length(vals))
     out[has_num] <- sprintf(
-      "<span style='color:%s'>%s %s%%</span>",
+      "<span style='color:%s; font-weight:700;'>%s %s%%</span>",
       colours[has_num],
       arrows[has_num],
       scales::number(abs(num[has_num]), accuracy = 1)
@@ -4050,11 +4072,11 @@ server <- function(input, output, session) {
       
       arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
       colours <- ifelse(num <= -50, "#EB5757",
-                        ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+                        ifelse(num <= -20, "#D4A017", "#3B7EA1"))
       
       out <- rep("", length(vals_chr))
       out[has_num] <- sprintf(
-        "<span style='color:%s'>%s %s%%</span>",
+        "<span style='color:%s; font-weight:700;'>%s %s%%</span>",
         colours[has_num],
         arrows[has_num],
         scales::number(abs(num[has_num]), accuracy = 1)
@@ -4118,12 +4140,12 @@ server <- function(input, output, session) {
       
       arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
       colours <- ifelse(num <= -50, "#EB5757",
-                        ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+                        ifelse(num <= -20, "#D4A017", "#3B7EA1"))
       
       out <- rep("", length(vals_chr))
       
       out[has_num] <- sprintf(
-        "<span style='color:%s'>%s %s%%</span>",
+        "<span style='color:%s; font-weight:700;'>%s %s%%</span>",
         colours[has_num],
         arrows[has_num],
         scales::number(abs(num[has_num]), accuracy = 1)
@@ -4180,7 +4202,7 @@ server <- function(input, output, session) {
   #     
   #     arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
   #     colours <- ifelse(num <= -50, "#EB5757",
-  #                       ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+  #                       ifelse(num <= -20, "#D4A017", "#3B7EA1"))
   #     
   #     out <- rep("", length(vals_chr))
   #     out[has_num] <- sprintf(
