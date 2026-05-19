@@ -737,8 +737,28 @@ nav_panel(
             spinnerPlotOutput("location_impact_gauges", height = 350)
           ),
           
-          card(
-            card_header(
+          # card(
+          #   card_header(
+          #     div(
+          #       "Percentage change compared to pre-bloom levels",
+          #       style = "display:inline-block;"
+          #     ),
+          #     div(
+          #       actionLink(
+          #         inputId = "open_info_table_location",
+          #         label = NULL,
+          #         icon = icon("circle-info")
+          #       ),
+          #       style = "float:right; margin-top:-2px;"
+          #     )
+          #   ),
+          #   card_body(
+          #     spinnerUiOutput("location_change_table")
+          #   )
+          # )
+          
+          navset_card_tab(
+            header = div(
               div(
                 "Percentage change compared to pre-bloom levels",
                 style = "display:inline-block;"
@@ -752,10 +772,19 @@ nav_panel(
                 style = "float:right; margin-top:-2px;"
               )
             ),
-            card_body(
+            
+            nav_panel(
+              "Overall Bloom",
               spinnerUiOutput("location_change_table")
+            ),
+            
+            nav_panel(
+              "Split Bloom Periods",
+              spinnerUiOutput("location_change_table_split")
             )
           )
+          
+          
         )
       ),
       

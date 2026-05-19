@@ -17,35 +17,6 @@ library(readr)
 
 sf_use_s2(FALSE)
 
-# Theme for plotting ----
-# ggplot_theme <- 
-#   ggplot2::theme_bw() +
-#   ggplot2::theme( # use theme_get() to see available options
-#     panel.grid = ggplot2::element_blank(),
-#     panel.border = ggplot2::element_blank(),
-#     axis.line = ggplot2::element_line(colour = "black"),
-#     panel.grid.major = ggplot2::element_blank(),
-#     panel.grid.minor = ggplot2::element_blank(),
-#     legend.background = ggplot2::element_blank(),
-#     legend.key = ggplot2::element_blank(), # switch off the rectangle around symbols in the legend
-#     legend.text = ggplot2::element_text(size = 12),
-#     legend.title = ggplot2::element_blank(),
-#     # legend.position = "top",
-#     text = ggplot2::element_text(size = 12),
-#     strip.text.y = ggplot2::element_text(size = 12, angle = 0),
-#     axis.title.x = ggplot2::element_text(vjust = 0.3, size = 12),
-#     axis.title.y = ggplot2::element_text(vjust = 0.6, angle = 90, size = 12),
-#     axis.text.y = ggplot2::element_text(size = 12),
-#     axis.text.x = ggplot2::element_text(size = 12, angle = 90, vjust = 0.5, hjust=1),
-#     axis.line.x = ggplot2::element_line(colour = "black", size = 0.5, linetype = "solid"),
-#     axis.line.y = ggplot2::element_line(colour = "black", size = 0.5, linetype = "solid"),
-#     strip.background = ggplot2::element_blank(),
-#     
-#     strip.text = ggplot2::element_text(size = 14, angle = 0),
-#     
-#     plot.title = ggplot2::element_text(color = "black", size = 12, face = "bold.italic")
-#   )
-
 # Shapefiles ----
 # Reporting regions -----
 regions_shp <- st_read("data/spatial/Reporting_regions_30102025.shp", quiet = TRUE) %>%
@@ -70,7 +41,7 @@ locations_shp <- st_read("data/spatial/Locations_12_05_26.shp") %>%
 # Ensure WGS84 for Leaflet 
 locations_shp <- st_transform(locations_shp, 4326)  # TODO put this in a shapefile list
 
-plot(locations_shp)
+# plot(locations_shp)
 
 # Read in state marineparks ----
 state_mp <- read_sf("data/spatial/CONSERVATION_StateMarineParkNW_Zoning_GDA94.shp") %>%
@@ -113,10 +84,6 @@ locations_summaries <- read_csv("data/lookups/SA-HAB-Summary Text - location_sum
 # ---- Color mapping ----
 # TODO move this to global instead of here, is very quick to load
 ordered_levels <- c("High", "Medium", "Low")
-
-# pal_vals <- c(  "High" = "#E74C3C",   # red
-#                 "Medium"      = "#febf26",   # orange
-#                 "Low" = "#3b9243" )   # dark green)
 
 pal_vals <- c(  "High" = "#EB5757",   # red
                 "Medium"      = "#F2C94C",   # orange
@@ -293,7 +260,7 @@ hab_number_rls_deployments <- combined_metadata %>%
 # Number of fish -----
 bruv_count_regions <- bruv_count %>%
   left_join(combined_metadata) %>%
-  dplyr::select(sample, family, genus, species, region, count, period, reporting_location, reporting_sanctuary, reporting_name) %>%
+  dplyr::select(campaignid, sample, family, genus, species, region, count, period, reporting_location, reporting_sanctuary, reporting_name) %>%
   dplyr::mutate(method = "BRUVs") %>%
   semi_join(combined_metadata) %>%
   ungroup()
@@ -461,6 +428,11 @@ region_top_species_average <- combined_count %>%
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
     display_name = paste0(genus, " ", species, " (", common_name, ")")
   )
+
+duplicates_metadata <- combined_metadata %>%
+  dplyr::group_by(campaignid, sample) %>%
+  dplyr::summarise(n = n()) %>%
+  dplyr::filter(n > 1)
 
 region_top_species_average_status <- combined_count %>%
   full_join(combined_metadata) %>%
@@ -931,7 +903,7 @@ reef_associated_richness_samples <- combined_count %>%
   dplyr::mutate(functional_group %in% "reef-associated") %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
   tidyr::replace_na(list(count = 0)) %>%
-  dplyr::group_by(region, period, status, sample, reporting_name) %>%
+  dplyr::group_by(campaignid, region, period, status, sample, reporting_name) %>%
   dplyr::distinct(genus, species) %>%
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
@@ -968,7 +940,7 @@ fish_200_abundance_samples <- combined_length %>%
   dplyr::mutate(count = as.numeric(count), length = as.numeric(length)) %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(length > 200) %>%
-  dplyr::group_by(region, period, sample, reporting_name) %>%
+  dplyr::group_by(region, period, campaignid, sample, reporting_name) %>%
   dplyr::summarise(total_abundance_sample = sum(count)) %>%
   ungroup() %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
@@ -1009,7 +981,7 @@ shannon_diversity_samples <- combined_count %>%
   dplyr::filter(!genus %in% "Unknown") %>% # TODO check sasha's script to see if this is different
   dplyr::filter(!species %in% "spp") %>%
   
-  dplyr::group_by(region, period, sample, family, genus, species) %>%
+  dplyr::group_by(region, period, campaignid, sample, family, genus, species) %>%
   
   dplyr::summarise(n = sum(count), .groups = "drop") %>%
   
@@ -1084,7 +1056,7 @@ overall_impact <- impact_data %>%
 all_bruv_samples_loc <- combined_metadata %>%
   sf::st_drop_geometry() %>%
   dplyr::filter(method %in% "BRUVs") %>%
-  dplyr::select(reporting_name, period, sample, status) %>%
+  dplyr::select(reporting_name, period, campaignid, sample, status) %>%
   dplyr::distinct() %>%
   dplyr::filter(!is.na(reporting_name))
 
@@ -1127,6 +1099,7 @@ calc_impacts_status <- function(summary_df, group_col, status_col = status, metr
     )
 }
 
+# Species Richness - Location ----
 species_richness_summary_location <- species_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
   dplyr::group_by(reporting_name, period) %>%
@@ -1143,6 +1116,7 @@ species_richness_impacts_location <- calc_impacts(
   metric_id  = "species_richness"
 )
 
+# Species Richness - Location x Status ----
 species_richness_summary_location_status <- species_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
   dplyr::group_by(reporting_name, period, status) %>%
@@ -1167,7 +1141,56 @@ species_richness_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
+# Species Richness - Location x Split bloom ----
+species_richness_summary_location_split <- species_richness_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>% 
+  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  dplyr::mutate(period = case_when(
+    period %in% "Bloom" ~ paste(period, timing),
+    .default = period
+  )) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
 
+calc_impacts_split <- function(summary_df, group_col, metric_id) {
+  group_col <- rlang::enquo(group_col)
+  
+  pre_bloom_df <- summary_df %>%
+    dplyr::filter(period == "Pre-bloom") %>%
+    dplyr::select(!!group_col, pre_bloom = mean)
+  
+  bloom_df <- summary_df %>%
+    dplyr::filter(stringr::str_detect(period, "^Bloom")) %>%
+    dplyr::select(!!group_col, bloom_period = period, bloom = mean)
+  
+  bloom_df %>%
+    dplyr::left_join(pre_bloom_df, by = rlang::as_name(group_col)) %>%
+    dplyr::mutate(
+      percentage = bloom / pre_bloom * 100,
+      impact = dplyr::case_when(
+        is.na(pre_bloom) | is.na(bloom) ~ "Surveys incomplete",
+        percentage > 80                 ~ "Low",
+        percentage >= 50 & percentage <= 80 ~ "Medium",
+        percentage < 50                 ~ "High",
+        TRUE                            ~ "Surveys incomplete"
+      ),
+      impact_metric = metric_id
+    )
+}
+
+species_richness_impacts_location_split <- calc_impacts_split(
+  summary_df = species_richness_summary_location_split,
+  group_col  = reporting_name,
+  metric_id  = "species_richness"
+)
+
+
+# Total Abundance - Location ----
 total_abundance_summary_location <- total_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1183,6 +1206,7 @@ total_abundance_impacts_location <- calc_impacts(
   metric_id  = "total_abundance"
 )
 
+# Total Abundance - Location x Status ----
 total_abundance_summary_location_status <- total_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period, status) %>%
@@ -1206,7 +1230,29 @@ total_abundance_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
-# Degeni ----
+# Total Abundance - Location x Split bloom ----
+total_abundance_summary_location_split <- total_abundance_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>% 
+  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  dplyr::mutate(period = case_when(
+    period %in% "Bloom" ~ paste(period, timing),
+    .default = period
+  )) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
+
+total_abundance_impacts_location_split <- calc_impacts_split(
+  summary_df = total_abundance_summary_location_split,
+  group_col  = reporting_name,
+  metric_id  = "total_abundance"
+)
+
+# Degeni - Location ----
 degeni_summary_location <- degeni_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1225,6 +1271,7 @@ degeni_impacts_location <- calc_impacts(
   metric_id  = "thamnaconus_degeni"
 )
 
+# Degeni - Location x status ----
 degeni_summary_location_status <- degeni_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period, status) %>%
@@ -1248,13 +1295,36 @@ degeni_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
+# Degeni - Location x Split bloom ----
+degeni_summary_location_split <- degeni_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>% 
+  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  dplyr::mutate(period = case_when(
+    period %in% "Bloom" ~ paste(period, timing),
+    .default = period
+  )) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
+
+degeni_impacts_location_split <- calc_impacts_split(
+  summary_df = degeni_summary_location_split,
+  group_col  = reporting_name,
+  metric_id  = "thamnaconus_degeni"
+)
+
+# Shark and Ray - Location ----
 shark_ray_richness_nonzero_loc <- combined_count %>%
   dplyr::filter(count > 0, method %in% "BRUVs") %>%
   dplyr::left_join(species_list) %>%
   dplyr::left_join(combined_metadata %>% sf::st_drop_geometry()) %>%  # sample should identify the deployment
   dplyr::filter(class %in% "Elasmobranchii") %>%
   dplyr::filter(!is.na(reporting_name)) %>%
-  dplyr::group_by(reporting_name, period, status, sample) %>%
+  dplyr::group_by(reporting_name, period, status, campaignid, sample) %>%
   dplyr::distinct(genus, species) %>%
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup()
@@ -1262,7 +1332,7 @@ shark_ray_richness_nonzero_loc <- combined_count %>%
 shark_ray_richness_samples_location <- all_bruv_samples_loc %>%
   dplyr::left_join(
     shark_ray_richness_nonzero_loc,
-    by = c("reporting_name", "period", "sample", "status")
+    by = c("reporting_name", "period", "sample", "status", "campaignid")
   ) %>%
   tidyr::replace_na(list(n_species_sample = 0)) %>%
   left_join(bruv_metadata %>% select(sample, campaignid, date))
@@ -1281,6 +1351,7 @@ shark_ray_richness_impacts_location <- calc_impacts(
   metric_id  = "shark_ray_richness"
 )
 
+# Shark and Ray - Location x status ----
 shark_ray_richness_summary_location_status <- shark_ray_richness_samples_location %>%
   dplyr::group_by(reporting_name, period, status) %>%
   dplyr::summarise(
@@ -1303,6 +1374,29 @@ shark_ray_richness_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
+# shark_ray_richness - Location x Split bloom ----
+shark_ray_richness_summary_location_split <- shark_ray_richness_samples_location %>%
+  dplyr::filter(!is.na(reporting_name)) %>% 
+  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  dplyr::mutate(period = case_when(
+    period %in% "Bloom" ~ paste(period, timing),
+    .default = period
+  )) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
+
+shark_ray_richness_impacts_location_split <- calc_impacts_split(
+  summary_df = shark_ray_richness_summary_location_split,
+  group_col  = reporting_name,
+  metric_id  = "shark_ray_richness"
+)
+
+# Reef associated - Location ----
 reef_associated_richness_summary_location <- reef_associated_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1318,6 +1412,7 @@ reef_associated_richness_impacts_location <- calc_impacts(
   metric_id  = "reef_associated_richness"
 )
 
+# Reef associated  - Location x Status ----
 reef_associated_richness_summary_location_status <- reef_associated_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period, status) %>%
@@ -1341,6 +1436,28 @@ reef_associated_richness_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
+# reef_associated_richness - Location x Split bloom ----
+reef_associated_richness_summary_location_split <- reef_associated_richness_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>% 
+  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  dplyr::mutate(period = case_when(
+    period %in% "Bloom" ~ paste(period, timing),
+    .default = period
+  )) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(n_species_sample, na.rm = TRUE),
+    se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
+
+reef_associated_richness_impacts_location_split <- calc_impacts_split(
+  summary_df = reef_associated_richness_summary_location_split,
+  group_col  = reporting_name,
+  metric_id  = "reef_associated_richness")
+
+# Fish 200 - Location ----
 fish_200_abundance_summary_location <- fish_200_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1356,6 +1473,7 @@ fish_200_abundance_impacts_location <- calc_impacts(
   metric_id  = "fish_200_abundance"
 )
 
+# Fish 200 - Location x Status ----
 fish_200_abundance_summary_location_status <- fish_200_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period, status) %>%
@@ -1379,7 +1497,28 @@ fish_200_abundance_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
-# Shannon diversity location -----
+# fish_200_abundance - Location x Split bloom ----
+fish_200_abundance_summary_location_split <- fish_200_abundance_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>% 
+  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  dplyr::mutate(period = case_when(
+    period %in% "Bloom" ~ paste(period, timing),
+    .default = period
+  )) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(total_abundance_sample, na.rm = TRUE),
+    se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
+
+fish_200_abundance_impacts_location_split <- calc_impacts_split(
+  summary_df = fish_200_abundance_summary_location_split,
+  group_col  = reporting_name,
+  metric_id  = "fish_200_abundance")
+
+# Shannon diversity - location -----
 shannon_diversity_summary_location <- shannon_diversity_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1395,6 +1534,7 @@ shannon_diversity_impacts_location <- calc_impacts(
   metric_id  = "shannon_diversity"
 )
 
+# Shannon diversity - location x status -----
 shannon_diversity_summary_location_status <- shannon_diversity_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period, status) %>%
@@ -1418,6 +1558,28 @@ shannon_diversity_impacts_location_status <- calc_impacts_status(
   CheckEM::clean_names() %>%
   glimpse()
 
+# shannon_diversity - Location x Split bloom ----
+shannon_diversity_summary_location_split <- shannon_diversity_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>% 
+  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  dplyr::mutate(period = case_when(
+    period %in% "Bloom" ~ paste(period, timing),
+    .default = period
+  )) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(shannon, na.rm = TRUE),
+    se   = sd(shannon, na.rm = TRUE) / sqrt(sum(!is.na(shannon))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
+
+shannon_diversity_impacts_location_split <- calc_impacts_split(
+  summary_df = shannon_diversity_summary_location_split,
+  group_col  = reporting_name,
+  metric_id  = "shannon_diversity")
+
+# combine all together ----
 impact_data_location <- dplyr::bind_rows(
   species_richness_impacts_location,
   total_abundance_impacts_location,
@@ -1428,6 +1590,17 @@ impact_data_location <- dplyr::bind_rows(
   degeni_impacts_location,
 )
 
+impact_data_location_split <- dplyr::bind_rows(
+  species_richness_impacts_location_split,
+  total_abundance_impacts_location_split,
+  shark_ray_richness_impacts_location_split,
+  reef_associated_richness_impacts_location_split,
+  fish_200_abundance_impacts_location_split,
+  shannon_diversity_impacts_location_split,
+  degeni_impacts_location_split,
+)
+
+# overall impact ----
 overall_impact_location <- impact_data_location %>%
   dplyr::group_by(reporting_name) %>%
   dplyr::summarise(percentage = mean(percentage, na.rm = TRUE), .groups = "drop") %>%
@@ -1441,6 +1614,7 @@ overall_impact_location <- impact_data_location %>%
     )
   )
 
+# combine all status together ----
 impact_data_location_status <- bind_rows(
   species_richness_impacts_location_status,
   total_abundance_impacts_location_status,
@@ -1637,37 +1811,6 @@ species_palette <- build_species_palette(
 # Add "Other"
 species_palette["Other"] <- "grey70"
 
-# plot_stacked_species(
-#   plot_df = species_stacked$plot_df,
-#   other_labels = species_stacked$other_labels,
-#   selected_name = "Adelaide Metro"
-# )
-
-# plot_stacked_species(
-#   plot_df = location_species_stacked$plot_df,
-#   other_labels = location_species_stacked$other_labels,
-#   selected_name = "Windara Reef - Windara Shell fish Reef Sanctuary Zone"
-# )
-
-# test <- location_species_stacked_split$plot_df
-# 
-# plot_stacked_species(
-#   plot_df = location_species_stacked_split$plot_df,
-#   other_labels = location_species_stacked_split$other_labels,
-#   selected_name = "Glenelg",
-#   hab_data$species_palette
-# )
-
-# hab_metric_change_location <- impact_data_location %>%
-#   dplyr::transmute(
-#     reporting_name,
-#     impact_metric,
-#     percentage_change = dplyr::case_when(
-#       is.na(percentage) ~ "Surveys incomplete",
-#       TRUE ~ as.character(round(percentage - 100, 1))  # e.g. +20 means 120% of pre
-#     )
-#   )
-
 # Combined data
 hab_data <- structure(
   list(
@@ -1712,6 +1855,8 @@ hab_data <- structure(
     overall_impact = overall_impact,
     
     impact_data_location = impact_data_location,
+    impact_data_location_split = impact_data_location_split,
+    
     overall_impact_location = overall_impact_location,
     impact_data_location_status = impact_data_location_status,
     # hab_metric_change_location = hab_metric_change_location,
@@ -1762,51 +1907,3 @@ hab_data <- structure(
   ), class = "data")
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))
-# 
-# # Combined data
-# downloads <- structure(
-#   list(
-#     # Top Species
-#     region_top_species_average = region_top_species_average,
-#     location_top_species_average = location_top_species_average,
-#     
-#     # Species Richness
-#     species_richness_samples = species_richness_samples,
-#     species_richness_summary = species_richness_summary,
-#     species_richness_summary_location = species_richness_summary_location,
-#     species_richness_summary_location_status = species_richness_summary_location_status,
-#     
-#     # Total Abundance
-#     total_abundance_samples = total_abundance_samples,
-#     total_abundance_summary = total_abundance_summary,
-#     total_abundance_summary_location = total_abundance_summary_location,
-#     total_abundance_summary_location_status = total_abundance_summary_location_status,
-#     
-#     # Trophic Groups
-#     trophic_groups_samples = trophic_groups_samples,
-#     trophic_groups_summary = trophic_groups_summary,
-#     trophic_groups_summary_location = trophic_groups_summary_location,
-#     # trophic_groups_summary_location_status = trophic_groups_summary_location_status,
-#     
-#     # Shark and Ray Richness
-#     shark_ray_richness_samples = shark_ray_richness_samples,
-#     shark_ray_richness_samples_location = shark_ray_richness_samples_location,
-#     shark_ray_richness_summary = shark_ray_richness_summary,
-#     shark_ray_richness_summary_location = shark_ray_richness_summary_location,
-#     shark_ray_richness_summary_location_status = shark_ray_richness_summary_location_status,
-#     
-#     # Shannon Diversity
-#     shannon_diversity_samples = shannon_diversity_samples,
-#     shannon_diversity_summary = shannon_diversity_summary,
-#     shannon_diversity_summary_location = shannon_diversity_summary_location,
-#     shannon_diversity_summary_location_status = shannon_diversity_summary_location_status,
-#     
-#     # % of assemblage
-#     species_stacked = species_stacked$plot_df,
-#     location_species_stacked = location_species_stacked$plot_df
-#     
-#   ), class = "data")
-# 
-# save(downloads, file = here::here("app_data/downloads.Rdata"))
-
-

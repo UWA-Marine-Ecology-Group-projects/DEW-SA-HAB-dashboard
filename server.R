@@ -4093,6 +4093,132 @@ server <- function(input, output, session) {
     
   })
   
+  output$location_change_table_split <- renderUI({
+    req(input$location)
+    
+    df <- hab_metric_change_location_split |>
+      dplyr::filter(reporting_name == input$location) |>
+      dplyr::select(
+        Metric = impact_metric,
+        Period = bloom_period,
+        percentage_change
+      ) |>
+      tidyr::pivot_wider(
+        names_from = Period,
+        values_from = percentage_change
+      )
+    
+    fmt_change <- function(vals) {
+      vals_chr <- as.character(vals)
+      
+      is_incomplete <- grepl("Surveys incomplete", vals_chr, ignore.case = TRUE) | is.na(vals_chr)
+      
+      num <- suppressWarnings(as.numeric(vals_chr))
+      has_num <- !is.na(num) & !is_incomplete
+      
+      arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
+      colours <- ifelse(num <= -50, "#EB5757",
+                        ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+      
+      out <- rep("", length(vals_chr))
+      
+      out[has_num] <- sprintf(
+        "<span style='color:%s'>%s %s%%</span>",
+        colours[has_num],
+        arrows[has_num],
+        scales::number(abs(num[has_num]), accuracy = 1)
+      )
+      
+      out[is_incomplete] <- "<em>Surveys incomplete</em>"
+      
+      out
+    }
+    
+    period_cols <- setdiff(names(df), "Metric")
+    
+    tags$table(
+      class = "table table-sm hab-table",
+      
+      tags$thead(
+        tags$tr(
+          tags$th("Metric"),
+          lapply(period_cols, tags$th)
+        )
+      ),
+      
+      tags$tbody(
+        lapply(seq_len(nrow(df)), function(i) {
+          tags$tr(
+            tags$td(df$Metric[i]),
+            lapply(period_cols, function(col) {
+              tags$td(HTML(fmt_change(df[[col]][i])))
+            })
+          )
+        })
+      )
+    )
+  })
+  
+  # output$location_change_table_split <- renderUI({
+  #   req(input$location)
+  #   
+  #   df <- hab_metric_change_location_split |>
+  #     dplyr::filter(reporting_name == input$location) |>
+  #     dplyr::select(
+  #       Metric = impact_metric,
+  #       Period = bloom_period,
+  #       'Change Overall'= percentage_change
+  #     )
+  #   
+  #   fmt_change <- function(vals) {
+  #     vals_chr <- as.character(vals)
+  #     
+  #     is_incomplete <- grepl("Surveys incomplete", vals_chr, ignore.case = TRUE) | is.na(vals_chr)
+  #     
+  #     num <- suppressWarnings(as.numeric(vals_chr))
+  #     has_num <- !is.na(num) & !is_incomplete
+  #     
+  #     arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
+  #     colours <- ifelse(num <= -50, "#EB5757",
+  #                       ifelse(num <= -20, "#F2C94C", "#3B7EA1"))
+  #     
+  #     out <- rep("", length(vals_chr))
+  #     out[has_num] <- sprintf(
+  #       "<span style='color:%s'>%s %s%%</span>",
+  #       colours[has_num],
+  #       arrows[has_num],
+  #       scales::number(abs(num[has_num]), accuracy = 1)
+  #     )
+  #     out[is_incomplete] <- "<em>Surveys incomplete</em>"
+  #     out
+  #   }
+  #   
+  #   out_overall <- fmt_change(df$`Change Overall`)
+  #   
+  #   tags$table(
+  #     class = "table table-sm hab-table",
+  #     
+  #     tags$thead(
+  #       tags$tr(
+  #         tags$th("Metric"),
+  #         tags$th("Period"),
+  #         tags$th("Change Overall")
+  #       )
+  #     ),
+  #     
+  #     tags$tbody(
+  #       lapply(seq_len(nrow(df)), function(i) {
+  #         tags$tr(
+  #           tags$td(df$Metric[i]),
+  #           tags$td(df$Period[i]),
+  #           tags$td(HTML(out_overall[i]))
+  #         )
+  #       })
+  #     )
+  #   )
+  #   
+  # })
+  
   make_top10_plot_location <- function(location_name,
                                        focal_period = c("Pre-bloom", "Bloom"),
                                        title_lab = "Common species",

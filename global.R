@@ -302,6 +302,23 @@ hab_metric_change_location <- hab_data$impact_data_location %>%
     impact_metric %in% "shannon_diversity" ~ "Shannon diversity index"
   ))
 
+hab_metric_change_location_split <- hab_data$impact_data_location_split %>%
+  mutate(
+    percentage = (bloom / pre_bloom) * 100,
+    percentage_change = (bloom - pre_bloom) / pre_bloom * 100
+  ) %>%
+  dplyr::mutate(percentage_change = if_else(is.na(percentage_change), "Surveys incomplete", as.character(percentage_change)))  %>%
+  # left_join(hab_data$impact_data_location_status) %>%
+  dplyr::mutate(impact_metric = case_when(
+    impact_metric %in% "species_richness" ~ "Species richness",
+    impact_metric %in% "total_abundance" ~ "Total abundance",
+    impact_metric %in% "shark_ray_richness" ~ "Shark and ray richness",
+    impact_metric %in% "reef_associated_richness" ~ "Reef associated species richness",
+    impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance",
+    impact_metric %in% "thamnaconus_degeni" ~ "Bluefin leatherjacket displacement*",
+    impact_metric %in% "shannon_diversity" ~ "Shannon diversity index"
+  ))
+
 # unique(hab_metric_change$impact_metric)
 
 # Helper: map % complete -> value_box colour
