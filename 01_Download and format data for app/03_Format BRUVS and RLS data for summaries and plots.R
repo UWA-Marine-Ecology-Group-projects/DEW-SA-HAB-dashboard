@@ -143,6 +143,7 @@ bruv_metadata <- readRDS("data/raw/sa_metadata_bruv.RDS") %>%
   dplyr::mutate(sample = as.character(sample)) %>%
   dplyr::glimpse() %>%
   dplyr::mutate(year = str_sub(date, 1, 4)) %>%
+  dplyr::mutate(date = as.Date(date)) %>%
   # dplyr::mutate(period = if_else(year > 2024, "Bloom", "Pre-bloom")) %>%
   dplyr::mutate(
     period = if_else(
@@ -163,6 +164,7 @@ unique(bruv_metadata$location) %>% sort()
 rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
   dplyr::rename(date = survey_date, sample = survey_id) %>%
   dplyr::mutate(sample = as.character(sample)) %>%
+  dplyr::mutate(date = as.Date(date)) %>%
   glimpse()
 
 bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
@@ -239,6 +241,40 @@ unique(combined_metadata$successful_length)
 
 successful_length_drops <- combined_metadata %>%
   dplyr::filter(successful_length %in% "Yes")
+
+bruv_sampling_days <- combined_metadata %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  dplyr::group_by(campaignid, date) %>%
+  dplyr::summarise(number_deployments_date = n())
+
+# Create lookup table
+campaign_lookup <- bruv_sampling_days %>%
+  sf::st_drop_geometry() %>%
+  dplyr::mutate(date = as.Date(date)) %>%
+  dplyr::arrange(campaignid, date) %>%
+  dplyr::group_by(campaignid) %>%
+  dplyr::mutate(
+    days_since_previous = as.numeric(date - dplyr::lag(date)),
+    new_event = is.na(days_since_previous) | days_since_previous > 14,
+    event_number = cumsum(new_event)
+  ) %>%
+  dplyr::group_by(campaignid, event_number) %>%
+  dplyr::mutate(
+    start_date = min(date),
+    new_campaignid = paste0(campaignid, "_", format(start_date, "%Y%m%d"))
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(campaignid, date, event_number, start_date) %>%
+  dplyr::mutate(start_month = str_sub(start_date, 1, 7)) %>%
+  dplyr::distinct()
+
+campaign_lookup %>%
+  distinct(campaignid, event_number, start_date) %>%
+  arrange(campaignid, event_number)
+
+combined_metadata <- combined_metadata %>%
+  dplyr::mutate(date = as.Date(date)) %>%
+  left_join(campaign_lookup)
 
 # combined length ----
 # bruv_length_regions_post <- bruv_length %>%
@@ -590,7 +626,8 @@ location_top_species_average <- combined_count %>%
 
 test_duplicates <- dew_species %>%
   group_by(genus_species) %>%
-  dplyr::summarise(n = n())
+  dplyr::summarise(n = n()) %>%
+  dplyr::filter(n > 1)
 
 test_duplicates <- location_top_species_average %>%
   group_by(family, genus, species, common_name, australian_common_name,
@@ -925,7 +962,8 @@ reef_associated_richness_samples <- combined_count %>%
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
   dplyr::filter(!is.na(region)) %>%
-  left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date))
+  left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date)) %>%
+  left_join(combined_metadata)
 
 reef_associated_richness_summary <- reef_associated_richness_samples %>%
   dplyr::group_by(region, period) %>%
@@ -1161,9 +1199,10 @@ species_richness_impacts_location_status <- calc_impacts_status(
 # Species Richness - Location x Split bloom ----
 species_richness_summary_location_split <- species_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>% 
-  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  
+  # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_", remove = FALSE) %>%
   dplyr::mutate(period = case_when(
-    period %in% "Bloom" ~ paste(period, timing),
+    period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   )) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1173,6 +1212,9 @@ species_richness_summary_location_split <- species_richness_samples %>%
     num  = dplyr::n(),
     .groups = "drop"
   )
+
+unique(species_richness_summary_location_split$period) %>% sort()
+
 
 calc_impacts_split <- function(summary_df, group_col, metric_id) {
   group_col <- rlang::enquo(group_col)
@@ -1250,9 +1292,9 @@ total_abundance_impacts_location_status <- calc_impacts_status(
 # Total Abundance - Location x Split bloom ----
 total_abundance_summary_location_split <- total_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>% 
-  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
   dplyr::mutate(period = case_when(
-    period %in% "Bloom" ~ paste(period, timing),
+    period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   )) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1315,9 +1357,9 @@ degeni_impacts_location_status <- calc_impacts_status(
 # Degeni - Location x Split bloom ----
 degeni_summary_location_split <- degeni_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>% 
-  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
   dplyr::mutate(period = case_when(
-    period %in% "Bloom" ~ paste(period, timing),
+    period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   )) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1352,7 +1394,8 @@ shark_ray_richness_samples_location <- all_bruv_samples_loc %>%
     by = c("reporting_name", "period", "sample", "status", "campaignid")
   ) %>%
   tidyr::replace_na(list(n_species_sample = 0)) %>%
-  left_join(bruv_metadata %>% select(sample, campaignid, date))
+  left_join(bruv_metadata %>% select(sample, campaignid, date)) %>%
+  left_join(combined_metadata)
 
 shark_ray_richness_summary_location <- shark_ray_richness_samples_location %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1394,9 +1437,9 @@ shark_ray_richness_impacts_location_status <- calc_impacts_status(
 # shark_ray_richness - Location x Split bloom ----
 shark_ray_richness_summary_location_split <- shark_ray_richness_samples_location %>%
   dplyr::filter(!is.na(reporting_name)) %>% 
-  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
   dplyr::mutate(period = case_when(
-    period %in% "Bloom" ~ paste(period, timing),
+    period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   )) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1456,9 +1499,9 @@ reef_associated_richness_impacts_location_status <- calc_impacts_status(
 # reef_associated_richness - Location x Split bloom ----
 reef_associated_richness_summary_location_split <- reef_associated_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>% 
-  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
   dplyr::mutate(period = case_when(
-    period %in% "Bloom" ~ paste(period, timing),
+    period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   )) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1517,9 +1560,9 @@ fish_200_abundance_impacts_location_status <- calc_impacts_status(
 # fish_200_abundance - Location x Split bloom ----
 fish_200_abundance_summary_location_split <- fish_200_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>% 
-  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
   dplyr::mutate(period = case_when(
-    period %in% "Bloom" ~ paste(period, timing),
+    period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   )) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1578,9 +1621,9 @@ shannon_diversity_impacts_location_status <- calc_impacts_status(
 # shannon_diversity - Location x Split bloom ----
 shannon_diversity_summary_location_split <- shannon_diversity_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>% 
-  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+  # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
   dplyr::mutate(period = case_when(
-    period %in% "Bloom" ~ paste(period, timing),
+    period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   )) %>%
   dplyr::group_by(reporting_name, period) %>%
@@ -1752,10 +1795,10 @@ location_species_stacked <- format_stacked_species_data(
 # Split Bloom into campaign stacked plot -----
 combined_count_new_periods <- combined_count %>% filter(method == "BRUVs") %>%
   left_join(combined_metadata %>% 
-              dplyr::select(campaignid, sample)) %>%
-  tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
+              dplyr::select(campaignid, sample, start_month)) %>%
+  # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
   dplyr::mutate(period_split = case_when(
-    period %in% "Bloom" ~ paste(period, timing),
+    period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   ))
 

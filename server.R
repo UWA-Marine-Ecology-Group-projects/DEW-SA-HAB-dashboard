@@ -4646,13 +4646,12 @@ server <- function(input, output, session) {
     
     hab_data$species_richness_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
-      group_by(campaignid) %>%
-      mutate(
-        campaign_date = min(date),
-        # campaign_label = format(min(date), "%Y-%m")
-      ) %>%
-      ungroup()
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) #%>%
+      # group_by(campaignid) %>%
+      # mutate(
+      #   campaign_date = min(date),
+      # ) %>%
+      # ungroup()
   })
   
   richness_main_results_location <- reactive({
@@ -4683,10 +4682,10 @@ server <- function(input, output, session) {
     hab_data$species_richness_samples %>%
       dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
       dplyr::filter(reporting_name == input$location) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup() %>%
-      dplyr::group_by(reporting_name, campaign_date, campaignid, period) %>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup() %>%
+      dplyr::group_by(reporting_name, start_date, campaignid, period) %>%
       dplyr::summarise(
         mean = mean(n_species_sample, na.rm = TRUE),
         se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
@@ -4843,10 +4842,10 @@ server <- function(input, output, session) {
       df <- richness_main_raw_location()
       mean_se <- richness_summary_year_location()
       
-      df$campaign_date <- as.Date(df$campaign_date)
-      mean_se$campaign_date <- as.Date(mean_se$campaign_date)
+      df$start_date <- as.Date(df$start_date)
+      mean_se$start_date <- as.Date(mean_se$start_date)
       
-      ggplot(df, aes(x = campaign_date, y = n_species_sample, group = campaignid,  fill = period)) +
+      ggplot(df, aes(x = start_date, y = n_species_sample, group = campaignid,  fill = period)) +
         geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
         geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
         scale_fill_manual(values = metric_period_cols) +
@@ -4863,9 +4862,9 @@ server <- function(input, output, session) {
     } else {
       
       df <- richness_summary_year_location() %>%
-        dplyr::mutate(campaign_date = as.Date(campaign_date))
+        dplyr::mutate(start_date = as.Date(start_date))
       
-      ggplot(df, aes(x = campaign_date, y = mean, group = campaignid, fill = period)) +
+      ggplot(df, aes(x = start_date, y = mean, group = campaignid, fill = period)) +
         geom_col(width = 100, colour = "black", alpha = 0.85) +
         geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
         scale_x_date(
@@ -4935,10 +4934,10 @@ server <- function(input, output, session) {
     
     hab_data$total_abundance_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup()
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) #%>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup()
   })
   
   total_abundance_main_results_location <- reactive({
@@ -4969,10 +4968,10 @@ server <- function(input, output, session) {
     hab_data$total_abundance_samples %>%
       dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
       dplyr::filter(reporting_name == input$location) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup() %>%
-      dplyr::group_by(reporting_name, campaign_date, campaignid, period) %>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup() %>%
+      dplyr::group_by(reporting_name, start_date, campaignid, period) %>%
       dplyr::summarise(
         mean = mean(total_abundance_sample, na.rm = TRUE),
         se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
@@ -5171,10 +5170,10 @@ server <- function(input, output, session) {
       df <- total_abundance_main_raw_location()
       mean_se <- total_abundance_summary_year_location()
       
-      df$campaign_date <- as.Date(df$campaign_date)
-      mean_se$campaign_date <- as.Date(mean_se$campaign_date)
+      df$start_date <- as.Date(df$start_date)
+      mean_se$start_date <- as.Date(mean_se$start_date)
       
-      ggplot(df, aes(x = campaign_date, y = total_abundance_sample, group = campaignid,  fill = period)) +
+      ggplot(df, aes(x = start_date, y = total_abundance_sample, group = campaignid,  fill = period)) +
         geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
         geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
         scale_fill_manual(values = metric_period_cols) +
@@ -5191,9 +5190,9 @@ server <- function(input, output, session) {
     } else {
       
       df <- total_abundance_summary_year_location() %>%
-        dplyr::mutate(campaign_date = as.Date(campaign_date))
+        dplyr::mutate(start_date = as.Date(start_date))
       
-      ggplot(df, aes(x = campaign_date, y = mean, group = campaignid, fill = period)) +
+      ggplot(df, aes(x = start_date, y = mean, group = campaignid, fill = period)) +
         geom_col(width = 100, colour = "black", alpha = 0.85) +
         geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
         scale_x_date(
@@ -5249,10 +5248,10 @@ server <- function(input, output, session) {
     
     hab_data$shark_ray_richness_samples_location %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup()
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) #%>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup()
   })
   
   shark_ray_richness_main_results_location <- reactive({
@@ -5284,10 +5283,10 @@ server <- function(input, output, session) {
     hab_data$shark_ray_richness_samples_location %>%
       dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
       dplyr::filter(reporting_name == input$location) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup() %>%
-      dplyr::group_by(reporting_name, campaign_date, campaignid, period) %>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup() %>%
+      dplyr::group_by(reporting_name, start_date, campaignid, period) %>%
       dplyr::summarise(
         mean = mean(n_species_sample, na.rm = TRUE),
         se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
@@ -5494,10 +5493,10 @@ server <- function(input, output, session) {
       df <- shark_ray_richness_main_raw_location()
       mean_se <- shark_ray_richness_summary_year_location()
       
-      df$campaign_date <- as.Date(df$campaign_date)
-      mean_se$campaign_date <- as.Date(mean_se$campaign_date)
+      df$start_date <- as.Date(df$start_date)
+      mean_se$start_date <- as.Date(mean_se$start_date)
       
-      ggplot(df, aes(x = campaign_date, y = n_species_sample, group = campaignid,  fill = period)) +
+      ggplot(df, aes(x = start_date, y = n_species_sample, group = campaignid,  fill = period)) +
         geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
         geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
         scale_fill_manual(values = metric_period_cols) +
@@ -5514,9 +5513,9 @@ server <- function(input, output, session) {
     } else {
       
       df <- shark_ray_richness_summary_year_location() %>%
-        dplyr::mutate(campaign_date = as.Date(campaign_date))
+        dplyr::mutate(start_date = as.Date(start_date))
       
-      ggplot(df, aes(x = campaign_date, y = mean, group = campaignid, fill = period)) +
+      ggplot(df, aes(x = start_date, y = mean, group = campaignid, fill = period)) +
         geom_col(width = 100, colour = "black", alpha = 0.85) +
         geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
         scale_x_date(
@@ -5571,10 +5570,10 @@ server <- function(input, output, session) {
     
     hab_data$reef_associated_richness_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup()
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))# %>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup()
   })
   
   reef_associated_richness_main_results_location <- reactive({
@@ -5605,10 +5604,10 @@ server <- function(input, output, session) {
     hab_data$reef_associated_richness_samples %>%
       dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
       dplyr::filter(reporting_name == input$location) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup() %>%
-      dplyr::group_by(reporting_name, campaign_date, campaignid, period) %>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup() %>%
+      dplyr::group_by(reporting_name, start_date, campaignid, period) %>%
       dplyr::summarise(
         mean = mean(n_species_sample, na.rm = TRUE),
         se   = sd(n_species_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_species_sample))),
@@ -5815,10 +5814,10 @@ server <- function(input, output, session) {
       df <- reef_associated_richness_main_raw_location()
       mean_se <- reef_associated_richness_summary_year_location()
       
-      df$campaign_date <- as.Date(df$campaign_date)
-      mean_se$campaign_date <- as.Date(mean_se$campaign_date)
+      df$start_date <- as.Date(df$start_date)
+      mean_se$start_date <- as.Date(mean_se$start_date)
       
-      ggplot(df, aes(x = campaign_date, y = n_species_sample, group = campaignid,  fill = period)) +
+      ggplot(df, aes(x = start_date, y = n_species_sample, group = campaignid,  fill = period)) +
         geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
         geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
         scale_fill_manual(values = metric_period_cols) +
@@ -5837,9 +5836,9 @@ server <- function(input, output, session) {
     } else {
       
       df <- reef_associated_richness_summary_year_location() %>%
-        dplyr::mutate(campaign_date = as.Date(campaign_date))
+        dplyr::mutate(start_date = as.Date(start_date))
       
-      ggplot(df, aes(x = campaign_date, y = mean, group = campaignid, fill = period)) +
+      ggplot(df, aes(x = start_date, y = mean, group = campaignid, fill = period)) +
         geom_col(width = 100, colour = "black", alpha = 0.85) +
         geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
         scale_x_date(
@@ -5897,10 +5896,10 @@ server <- function(input, output, session) {
     
     hab_data$fish_200_abundance_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup()
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))# %>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup()
   })
   
   fish_200_abundance_main_results_location <- reactive({
@@ -6116,10 +6115,10 @@ server <- function(input, output, session) {
       df <- reef_associated_richness_main_raw_location()
       mean_se <- reef_associated_richness_summary_year_location()
       
-      df$campaign_date <- as.Date(df$campaign_date)
-      mean_se$campaign_date <- as.Date(mean_se$campaign_date)
+      df$start_date <- as.Date(df$start_date)
+      mean_se$start_date <- as.Date(mean_se$start_date)
       
-      ggplot(df, aes(x = campaign_date, y = n_species_sample, group = campaignid,  fill = period)) +
+      ggplot(df, aes(x = start_date, y = n_species_sample, group = campaignid,  fill = period)) +
         geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
         geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
         scale_fill_manual(values = metric_period_cols) +
@@ -6136,9 +6135,9 @@ server <- function(input, output, session) {
     } else {
       
       df <- reef_associated_richness_summary_year_location() %>%
-        dplyr::mutate(campaign_date = as.Date(campaign_date))
+        dplyr::mutate(start_date = as.Date(start_date))
       
-      ggplot(df, aes(x = campaign_date, y = mean, group = campaignid, fill = period)) +
+      ggplot(df, aes(x = start_date, y = mean, group = campaignid, fill = period)) +
         geom_col(width = 100, colour = "black", alpha = 0.85) +
         geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
         scale_x_date(
@@ -6197,9 +6196,9 @@ server <- function(input, output, session) {
     hab_data$shannon_diversity_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
       dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
-      group_by(campaignid) %>%
-      mutate(campaign_date = min(date)) %>%
-      ungroup() %>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup() %>%
       dplyr::mutate(shannon = round(shannon, digits = 3))
     
   })
