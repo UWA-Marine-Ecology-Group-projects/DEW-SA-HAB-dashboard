@@ -3004,7 +3004,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Average no. species per sample",
+          y        = "Average no. species",
           fill     = "Diet group"#,
           #subtitle = input$region
         ) +
@@ -3114,7 +3114,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Average no. species per sample",
+          y        = "Average no. species",
           fill     = "Diet group"#,
           #subtitle = input$region
         ) +
@@ -6557,7 +6557,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Average no. species per sample",
+          y        = "Average no. species",
           fill     = "Diet group"#,
           # subtitle = input$location
         ) +
@@ -6677,7 +6677,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Average no. species per sample",
+          y        = "Average no. species",
           fill     = "Diet group"#,
           # subtitle = input$location
         ) +
