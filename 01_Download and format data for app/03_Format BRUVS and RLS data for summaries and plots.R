@@ -166,7 +166,7 @@ rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
   glimpse()
 
 bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
-  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) 
 
 rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))

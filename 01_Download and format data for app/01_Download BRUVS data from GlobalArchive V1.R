@@ -209,30 +209,12 @@ count <- bind_rows(points_maxn, counts_single) %>%
     genus %in% "Portunus" & species %in% "pelagicus" ~ "armatus",    
     .default = species
   )) %>%
-  
-  dplyr::mutate(genus_species = paste(genus, species)) %>%
   glimpse()
 
 # Test which species are missing ----
 # Read in DEWs sheet ----
 # dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
 dew_species <- read_csv("data/lookups/SA-HAB-Functional Traits.csv")
-
-# Find which ones are missing ----
-unique_species <- count %>%
-  
-  distinct(family, genus, species, genus_species) %>%
-  glimpse()
-
-missing_from_list <- anti_join(unique_species, dew_species)
-
-# # Add to google sheet
-to_add <- missing_from_list %>%
-  select(genus_species)
-
-# sheet_append("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing", to_add)
-# 
-# 
 
 # Synoynms -----
 # TODO - brooke to figure out if she needs to do this or not - not sure why in 3rd person
@@ -244,7 +226,55 @@ count_with_syn <- dplyr::left_join(count, CheckEM::aus_synonyms) %>%
   mutate(species = case_when(
     genus == "Portunus" & species == "pelagicus" ~ "armatus",    
     .default =  species)) %>%
-  dplyr::mutate(scientific = paste(family, genus, species)) 
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+  
+  dplyr::mutate(genus = if_else(species %in% "australiensis", "Ovalipes", genus)) %>%
+  dplyr::mutate(family = if_else(species %in% "australiensis", "Ovalipidae", family)) %>%
+  
+  dplyr::mutate(family = if_else(genus %in% "Acanthaluteres", "Monacanthidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Dinolestes", "Dinolestidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Heteroscarus", "Labridae", family)) %>%
+  
+  
+  dplyr::mutate(family = if_else(genus %in% "Chelmonops", "Chaetodontidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Upeneichthys", "Mullidae", family)) %>%
+  
+  dplyr::mutate(family = if_else(genus %in% "Sepioteuthis", "Loliginidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Sepioteuthis", "Loliginidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Guinusia", "Plagusiidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Engraulis", "Engraulidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Eubalichthys", "Monacanthidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Portunus", "Portunidae", family)) %>%
+  
+  dplyr::filter(!family %in% c("Unknown", "Nil")) %>%
+  
+  dplyr::mutate(scientific = paste(family, genus, species)) %>%
+  dplyr::mutate(genus_species = paste(genus, species))
+
+
+# Find which ones are missing ----
+unique_species <- count_with_syn %>%
+  distinct(family, genus, species, genus_species) %>%
+  glimpse()
+
+missing_from_list <- anti_join(unique_species, dew_species)
+
+# # Add to google sheet
+to_add <- missing_from_list %>%
+  select(genus_species)
+
+missing_from_lh <- anti_join(unique_species, CheckEM::australia_life_history) %>%
+  dplyr::filter(!family == genus) %>%
+  left_join(count_with_syn) 
+
+dup_families <- count_with_syn %>%
+  distinct(family, genus, species) %>%
+  group_by(genus, species) %>%
+  dplyr::summarise(n = n())
+
+# write_csv(missing_from_lh, "incorrect_families.csv")
+
+# sheet_append("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing", to_add)
 
 # Test which metadata files do not have a match in count
 missing_metadata <- anti_join(count, metadata) # TODO chase these up with Sasha if they are being used
@@ -293,7 +323,37 @@ length_with_syn <- dplyr::left_join(gen_length, CheckEM::aus_synonyms) %>%
   dplyr::mutate(species = ifelse(!is.na(species_correct), species_correct, species)) %>%
   dplyr::mutate(family = ifelse(!is.na(family_correct), family_correct, family)) %>%
   dplyr::select(-c(family_correct, genus_correct, species_correct)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+  
+  dplyr::mutate(genus = if_else(species %in% "australiensis", "Ovalipes", genus)) %>%
+  dplyr::mutate(family = if_else(species %in% "australiensis", "Ovalipidae", family)) %>%
+  mutate(species = case_when(
+    genus == "Portunus" & species == "pelagicus" ~ "armatus",    
+    .default =  species)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+  
+  dplyr::mutate(genus = if_else(species %in% "australiensis", "Ovalipes", genus)) %>%
+  dplyr::mutate(family = if_else(species %in% "australiensis", "Ovalipidae", family)) %>%
+  
+  dplyr::mutate(family = if_else(genus %in% "Acanthaluteres", "Monacanthidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Dinolestes", "Dinolestidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Heteroscarus", "Labridae", family)) %>%
+  
+  
+  dplyr::mutate(family = if_else(genus %in% "Chelmonops", "Chaetodontidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Upeneichthys", "Mullidae", family)) %>%
+  
+  dplyr::mutate(family = if_else(genus %in% "Sepioteuthis", "Loliginidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Sepioteuthis", "Loliginidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Guinusia", "Plagusiidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Engraulis", "Engraulidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Eubalichthys", "Monacanthidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Portunus", "Portunidae", family)) %>%
+  
+  dplyr::filter(!family %in% c("Unknown", "Nil")) %>%
   dplyr::mutate(scientific = paste(family, genus, species))
+
+names(length_with_syn)
 
 ## Save length files ----
 write.csv(length_with_syn, "data/raw/sa_length_bruv.csv", row.names = FALSE)

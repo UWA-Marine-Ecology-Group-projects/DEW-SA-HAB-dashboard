@@ -1,0 +1,27 @@
+family,genus,species,genus_species,project,campaignid,sample,frame,count,scientific
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,ADP_R2_A,88590,2,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,ADP_R5_A,105299,1,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,GTR_R2_A,123531,1,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,GTR_R3_A,46336,2,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,GTR_R5_A,147860,2,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,NTR_R4_A,5624,1,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,NTR_R6_A,139759,1,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,PNR_R3_A,21366,1,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,SR_R2_A,102777,1,Pomacanthidae Chelmonops curiosus
+Pomacanthidae,Chelmonops,curiosus,Chelmonops curiosus,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,SR_R8_A,181945,1,Pomacanthidae Chelmonops curiosus
+Mugilidae,Upeneichthys,vlamingii,Upeneichthys vlamingii,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,ADP_R6_A,43440,1,Mugilidae Upeneichthys vlamingii
+Littorinidae,Sepioteuthis,australis,Sepioteuthis australis,Flinders University BRUVS assessment,2015-04_Desal.BRUVS_monoBRUVS,SR_R1_A,75397,1,Littorinidae Sepioteuthis australis
+Sesarmidae,Guinusia,chabrus,Guinusia chabrus,Algae Bloom monitoring,2025-10_VictorHarbor_BRUVS,5M_3_2510,NA,1,Sesarmidae Guinusia chabrus
+Sesarmidae,Guinusia,chabrus,Guinusia chabrus,Algae Bloom monitoring,2025-10_VictorHarbor_BRUVS,VHSI01_2510,NA,1,Sesarmidae Guinusia chabrus
+Sesarmidae,Guinusia,chabrus,Guinusia chabrus,Algae Bloom monitoring,2025-10_VictorHarbor_BRUVS,VHSI03_2510,NA,2,Sesarmidae Guinusia chabrus
+Sesarmidae,Guinusia,chabrus,Guinusia chabrus,Algae Bloom monitoring,2025-10_VictorHarbor_BRUVS,VHSI04_2510,NA,2,Sesarmidae Guinusia chabrus
+Sesarmidae,Guinusia,chabrus,Guinusia chabrus,Algae Bloom monitoring,2025-12_Carrickalinga_BRUVS,CANI01_2512,NA,1,Sesarmidae Guinusia chabrus
+Sesarmidae,Guinusia,chabrus,Guinusia chabrus,Algae Bloom monitoring,2025-12_RapidHead_BRUVS,RHCI01_2512,NA,2,Sesarmidae Guinusia chabrus
+Clupeidae,Engraulis,australis,Engraulis australis,Algae Bloom monitoring,2025-10_Windara_BRUVS,WISC08_2510,NA,12,Clupeidae Engraulis australis
+Balistidae,Eubalichthys,cyanoura,Eubalichthys cyanoura,Algae Bloom monitoring,2025-11_DangerousReef_BRUVS,DRCI04_2511,NA,1,Balistidae Eubalichthys cyanoura
+Balistidae,Eubalichthys,cyanoura,Eubalichthys cyanoura,Algae Bloom monitoring,2025-11_DangerousReef_BRUVS,DRCI12_2511,NA,1,Balistidae Eubalichthys cyanoura
+Balistidae,Eubalichthys,cyanoura,Eubalichthys cyanoura,Algae Bloom monitoring,2025-11_OSullivan_BRUVS,PN_I02_2511,NA,1,Balistidae Eubalichthys cyanoura
+Balistidae,Eubalichthys,cyanoura,Eubalichthys cyanoura,Algae Bloom monitoring,2025-11_OSullivan_BRUVS,WB_002_2511,NA,1,Balistidae Eubalichthys cyanoura
+Parthenopidae,Portunus,armatus,Portunus armatus,Algae Bloom monitoring,2026-02_CuttlefishCoast_BRUVS,CUSB06_2602,NA,5,Parthenopidae Portunus armatus
+Octopodidae,Octopus,bunurong,Octopus bunurong,Flinders University BRUVS assessment,2024-11_BostonBay_monoBRUVS,BB_S2_R7_2411,NA,1,Octopodidae Octopus bunurong
+Acanthuridae,Upeneichthys,vlamingii,Upeneichthys vlamingii,Flinders University BRUVS assessment,2025-02_Aldinga_BRUVS,ARSO01_2502,NA,3,Acanthuridae Upeneichthys vlamingii
