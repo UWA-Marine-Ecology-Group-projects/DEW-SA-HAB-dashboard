@@ -46,15 +46,21 @@ prep_metric_data <- function(df, response_col) {
     )
 }
 
+unique((hab_data$total_abundance_samples)$reporting_name)
+
 abund_dat <- prep_metric_data(
   hab_data$total_abundance_samples,
   "total_abundance_sample") %>%
-  filter(reporting_name %in% c("Aldinga - Aldinga Reef Sanctuary Zone",
-                               "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
-                               "O'Sullivan",
-                               "Sponge Gardens - Sponge Gardens Sanctuary Zone",
-                               "Glenelg",
-                               "Boston Bay")) %>%
+  # filter(reporting_name %in% c("Aldinga - Aldinga Reef Sanctuary Zone",
+  #                              "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
+  #                              "O'Sullivan",
+  #                              "Sponge Gardens - Sponge Gardens Sanctuary Zone",
+  #                              "Carrickalinga - Carrickalinga Cliffs Sanctuary Zone" 
+  #                              # "Glenelg",
+  #                              # "Boston Bay"
+  #                              )) %>%
+  
+  dplyr::filter(!reporting_name %in% c(NA, "Glenelg", "Boston Bay")) %>%
   glimpse()
 
 unique(abund_dat$reporting_name)
@@ -79,8 +85,8 @@ shark_dat <- prep_metric_data(
                                "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
                                "O'Sullivan",
                                "Sponge Gardens - Sponge Gardens Sanctuary Zone",
-                               "Glenelg",
-                               "Boston Bay"))%>%
+                               # "Glenelg",
+                               # "Boston Bay"))%>%
   glimpse()
 
 reef_dat <- prep_metric_data(
@@ -264,7 +270,7 @@ run_metric_models <- function(df, response_col, metric_name, use_site = FALSE) {
 }
 
 # -----------------------------
-# 4. Run both metrics
+# 4. Run metrics
 # -----------------------------
 
 abund_models <- run_metric_models(
@@ -301,24 +307,24 @@ reef_models <- run_metric_models(
 
 period_results <- bind_rows(
   abund_models$period_means,
-  rich_models$period_means,
-  shark_models$period_means,
-  reef_models$period_means
+  # rich_models$period_means,
+  # shark_models$period_means,
+  # reef_models$period_means
   
 )
 
 period_status_results <- bind_rows(
   abund_models$period_status_means,
-  rich_models$period_status_means,
-  shark_models$period_status_means,
-  reef_models$period_status_means
+  # rich_models$period_status_means,
+  # shark_models$period_status_means,
+  # reef_models$period_status_means
 )
 
 model_errors <- bind_rows(
   abund_models$model_errors,
-  rich_models$model_errors,
-  shark_models$model_errors,
-  reef_models$model_errors
+  # rich_models$model_errors,
+  # shark_models$model_errors,
+  # reef_models$model_errors
 )
 
 # Check any models that failed
