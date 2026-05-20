@@ -6717,8 +6717,15 @@ server <- function(input, output, session) {
     
     # (p1 | p2 )/ (p3  | p4 ) / ( p5 | p6 ) + plot_annotation(tag_levels = 'A')
     
-    wrap_plots((p1 | p2 )/ (p3  | p4 ) / ( p5 | p6 )) +
-      plot_layout(guides = "collect") &
+    (
+      wrap_plots(
+        (p1 | p2) /
+          (p3 | p4) /
+          (p5 | p6)
+      ) +
+        plot_annotation(tag_levels = "A") +
+        plot_layout(guides = "collect")
+    ) &
       theme(
         legend.position = "bottom",
         legend.text = element_text(size = 10),
