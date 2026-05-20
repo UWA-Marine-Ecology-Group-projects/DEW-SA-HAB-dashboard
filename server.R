@@ -364,8 +364,20 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
           h4("Abundance by trophic level"),
           layout_columns(
             col_widths = c(6, 6),
-            metric_plotOutput(prefix, "trophic", "main"),
-            metric_plotOutput(prefix, "trophic", "status")
+            # metric_plotOutput(prefix, "trophic", "main"),
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "status")
+          )
+        )
+      },
+      
+      combined = {
+        tagList(
+          h4("Combined plot"),
+          layout_columns(
+            col_widths = c(12),
+            # metric_plotOutput(prefix, "trophic", "main"),
+            combined_plot_with_downloads(prefix, data_id, "main")
           )
         )
       },
@@ -405,6 +417,22 @@ metric_plot_with_downloads <- function(prefix, data_id, plot_id) {
         outputId = paste(prefix, "download", data_id, plot_id, "raw", sep = "_"),
         label = "Download raw data"
       ),
+      
+      downloadButton(
+        outputId = paste(prefix, "download", data_id, plot_id, "plot", sep = "_"),
+        label = "Download plot"
+      )
+    )
+  )
+}
+
+combined_plot_with_downloads <- function(prefix, data_id, plot_id) {
+  
+  tagList(
+    metric_plotOutput(prefix, data_id, plot_id, height = 800),
+    
+    layout_columns(
+      col_widths = c(12),
       
       downloadButton(
         outputId = paste(prefix, "download", data_id, plot_id, "plot", sep = "_"),
@@ -465,7 +493,8 @@ plot_cell <- function(id, width = "120px", height = "120px") {
 # }
 add_metric_downloads <- function(output, prefix, data_id, plot_id,
                                  results_reactive, raw_reactive, plot_reactive,
-                                 download_label_reactive) {
+                                 download_label_reactive, width = 8,
+                                 height = 5) {
   
   results_id <- paste(prefix, "download", data_id, plot_id, "results", sep = "_")
   raw_id     <- paste(prefix, "download", data_id, plot_id, "raw", sep = "_")
@@ -515,8 +544,8 @@ add_metric_downloads <- function(output, prefix, data_id, plot_id,
       ggplot2::ggsave(
         filename = file,
         plot = plot_reactive(),
-        width = 8,
-        height = 5,
+        width = width,
+        height = height,
         dpi = 300
       )
     }
@@ -2975,7 +3004,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Mean no. species per sample",
+          y        = "Average no. species per sample",
           fill     = "Diet group"#,
           #subtitle = input$region
         ) +
@@ -3085,7 +3114,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Mean no. species per sample",
+          y        = "Average no. species per sample",
           fill     = "Diet group"#,
           #subtitle = input$region
         ) +
@@ -5965,7 +5994,7 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]]#,
+          y = metric_y_lab[["large_fish"]]#,
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
@@ -5993,7 +6022,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]]#,
+          y = metric_y_lab[["large_fish"]]#,
           # subtitle = paste0(input$location, ": Average total abundance per sample")
         ) +
         # facet_wrap(~ zone) +
@@ -6054,7 +6083,7 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]]#,
+          y = metric_y_lab[["large_fish"]]#,
           # subtitle = paste0(input$location, ": Large fish (>200 mm) abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
@@ -6083,7 +6112,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["fish_200_abundance"]]#,
+          y = metric_y_lab[["large_fish"]]#,
           # subtitle = paste0(input$location, ": Average large fish (>200 mm) abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
@@ -6528,7 +6557,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Mean no. species per sample",
+          y        = "Average no. species per sample",
           fill     = "Diet group"#,
           # subtitle = input$location
         ) +
@@ -6648,7 +6677,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Mean no. species per sample",
+          y        = "Average no. species per sample",
           fill     = "Diet group"#,
           # subtitle = input$location
         ) +
@@ -6664,7 +6693,62 @@ server <- function(input, output, session) {
     
   }) 
   
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "trophic",
+    plot_id = "main",
+    results_reactive = trophic_results_location,
+    raw_reactive = trophic_results_location,
+    plot_reactive = trophic_main_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
   
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "trophic",
+    plot_id = "status",
+    results_reactive = trophic_results_location,
+    raw_reactive = trophic_results_location,
+    plot_reactive = trophic_status_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
+  
+  
+  # COMBINED PLOT ----
+  # SHANNON DIVERSITY: main plot -----
+  loc_plot_combined_main <- reactive({
+    
+    p1 <- shannon_diversity_main_plot_location()
+    p2 <- richness_main_plot_location()
+    p3 <- shark_ray_richness_main_plot_location()
+    p4 <- reef_associated_richness_main_plot_location()
+    p5 <- fish_200_abundance_main_plot_location()
+    p6 <- trophic_main_plot_location()
+    
+    (p1 | p2 )/ (p3  | p4 ) / ( p5 | p6 ) + plot_annotation(tag_levels = 'A')
+  })
+  
+  output$loc_plot_combined_main <- renderPlot({
+    
+    loc_plot_combined_main()
+    
+  }) 
+  
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "combined",
+    plot_id = "main",
+    results_reactive = shannon_diversity_main_results_location,
+    raw_reactive = shannon_diversity_main_raw_location,
+    plot_reactive = loc_plot_combined_main,
+    download_label_reactive = reactive(input$location),
+    height = 10
+  )
+  
+  # Tables -----
   
   # server.R
   campaign_table <- reactive({

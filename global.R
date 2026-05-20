@@ -223,20 +223,21 @@ metric_defs <- c(
   
   # cti           = "Community temperature index",
   # func_groups   = "Abundance by functional group",
-  trophic       = "Abundance by trophic level"
+  trophic       = "Abundance by trophic level",
+  combined = "Combined plots"
 )
 
 metric_y_lab <- list(
-  richness      = "No. species",
-  total_abundance = "No. individuals",
+  richness      = "Average species richness",
+  total_abundance = "Average total abundance",
   
-  sharks_rays = "No. species",
-  reef_associated_richness   = "No. species",
+  sharks_rays = "Average shark and ray\nspecies richness",
+  reef_associated_richness   = "Average reef associated\nspecies richness",
   
-  shannon_diversity = "Shannon diversity index",
+  shannon_diversity = "Average shannon\n diversity index",
   
-  large_fish    = "No. individuals",
-  trophic       = "No. individuals"
+  large_fish    = "Average number of fish\n larger than 200 mm",
+  trophic       = "Avergae number of\n individuals"
 )
 
 # shared colours for pre/post everywhere

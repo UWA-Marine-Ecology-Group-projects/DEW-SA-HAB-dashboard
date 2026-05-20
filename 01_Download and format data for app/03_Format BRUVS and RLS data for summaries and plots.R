@@ -153,7 +153,8 @@ bruv_metadata <- readRDS("data/raw/sa_metadata_bruv.RDS") %>%
     )
   ) %>%
   dplyr::filter(successful_count %in% "Yes") %>%
-  dplyr::mutate(status = if_else(status %in% "No-Take", "No-take", status))
+  dplyr::mutate(status = if_else(status %in% "No-Take", "No-take", status)) %>%
+  dplyr::filter(!campaignid %in% "202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")
 
 summary(bruv_metadata)
 
@@ -168,13 +169,15 @@ rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
   glimpse()
 
 bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
-  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) 
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
+  dplyr::filter(!campaignid %in% "202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")
 
 rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
 
 bruv_length <- readRDS("data/raw/sa_length_bruv.RDS") %>%
-  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+  dplyr::filter(!campaignid %in% "202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")
 
 rls_length <- readRDS("data/raw/sa_length_rls.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
