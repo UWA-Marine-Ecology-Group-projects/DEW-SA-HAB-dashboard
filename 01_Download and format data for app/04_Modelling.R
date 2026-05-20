@@ -49,12 +49,12 @@ prep_metric_data <- function(df, response_col) {
 abund_dat <- prep_metric_data(
   hab_data$total_abundance_samples,
   "total_abundance_sample") %>%
-  # filter(reporting_name %in% c("Aldinga - Aldinga Reef Sanctuary Zone",
-  #                              "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
-  #                              "O'Sullivan",
-  #                              "Sponge Gardens - Sponge Gardens Sanctuary Zone",
-  #                              "Glenelg",
-  #                              "Boston Bay")) %>%
+  filter(reporting_name %in% c("Aldinga - Aldinga Reef Sanctuary Zone",
+                               "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone",
+                               "O'Sullivan",
+                               "Sponge Gardens - Sponge Gardens Sanctuary Zone",
+                               "Glenelg",
+                               "Boston Bay")) %>%
   glimpse()
 
 unique(abund_dat$reporting_name)

@@ -228,17 +228,21 @@ metric_defs <- c(
 )
 
 metric_y_lab <- list(
-  richness      = "Average species richness",
-  total_abundance = "Average total abundance",
+  richness      = "Avg. species richness",
+  total_abundance = "Avg. total abundance",
   
-  sharks_rays = "Average shark and ray\nspecies richness",
-  reef_associated_richness   = "Average reef associated\nspecies richness",
+  sharks_rays = "Avg. shark and ray\nspecies richness",
+  reef_associated_richness   = "Avg. reef associated\nspecies richness",
   
-  shannon_diversity = "Average shannon\n diversity index",
+  shannon_diversity = "Avg. shannon\n diversity index",
   
-  large_fish    = "Average number of fish\n larger than 200 mm",
-  trophic       = "Avergae number of\n individuals"
+  large_fish    = "Avg. no. of fish > 200 mm",
+  trophic       = "Avg. no. of\n individuals"
 )
+
+plot_theme <- theme(
+  axis.line.x = element_line(color = "black", linewidth = 0.5),
+  axis.line.y = element_line(color = "black", linewidth = 0.5))
 
 # shared colours for pre/post everywhere
 metric_period_cols <- c(

@@ -626,7 +626,8 @@ plot_stacked_species <- function(
       axis.text.x = ggplot2::element_text(size = 13),
       legend.text = ggplot2::element_text(face = "italic"),
       legend.position = "right"
-    )
+    ) + plot_theme + 
+    scale_y_continuous(expand = expansion(mult = c(0, 0)))
 }
 
 # ------------------------------ server ---------------------------------------
@@ -1439,7 +1440,8 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", 
               panel.grid.minor = element_blank(),
-              panel.grid.major = element_blank())
+              panel.grid.major = element_blank()) +
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       df <- richness_main_results()
@@ -1457,7 +1459,8 @@ server <- function(input, output, session) {
         theme(legend.position = "none", 
               
               panel.grid.minor = element_blank(),           
-              panel.grid.major = element_blank())
+              panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -1519,7 +1522,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -1557,7 +1561,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     }
   })
@@ -1681,7 +1686,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -1713,7 +1719,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -1774,7 +1781,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     } else {
       
       df <- hab_data$total_abundance_samples %>%
@@ -1813,7 +1821,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     }
     
@@ -1947,7 +1956,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -1980,7 +1990,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",        # both bars already coloured by period
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -2045,7 +2056,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -2083,7 +2095,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -2213,7 +2226,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -2246,7 +2260,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",        # both bars already coloured by period
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     }
     
@@ -2312,7 +2327,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -2350,7 +2366,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -2472,7 +2489,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -2505,7 +2523,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -2568,7 +2587,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -2607,7 +2627,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     }
     
@@ -2739,7 +2760,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -2772,7 +2794,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",        # both bars already coloured by period
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -2837,7 +2860,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -2875,7 +2899,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -2983,7 +3008,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "top",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -3009,7 +3035,8 @@ server <- function(input, output, session) {
           #subtitle = input$region
         ) +
         theme_minimal(base_size = 16) +
-        theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })   |>
     bindCache(input$region, input[[metric_plot_type_input_id("em", "trophic")]]) |>
@@ -3093,7 +3120,8 @@ server <- function(input, output, session) {
           legend.position = "top",
           panel.grid.minor = element_blank(),
           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -3121,7 +3149,8 @@ server <- function(input, output, session) {
         facet_wrap(~ status) +
         theme_minimal(base_size = 16) +
         theme(panel.grid.minor = element_blank(),
-              panel.grid.major = element_blank())
+              panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -3328,7 +3357,8 @@ server <- function(input, output, session) {
           title = title_lab,
           fill  = NULL
         ) +
-        scale_fill_manual(values = combo_cols)
+        scale_fill_manual(values = combo_cols)+
+        plot_theme #+ scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       # =======================================
@@ -3385,7 +3415,8 @@ server <- function(input, output, session) {
             title = title_lab,
             fill  = NULL
           ) +
-          scale_fill_manual(values = combo_cols)
+          scale_fill_manual(values = combo_cols)+
+          plot_theme #+ scale_y_continuous(expand = expansion(mult = c(0, 0)))
         
       } else {
         # NOT split, NOT facet → original 2-colour period-only plot
@@ -3413,7 +3444,8 @@ server <- function(input, output, session) {
             title = title_lab,
             fill  = NULL
           ) +
-          scale_fill_manual(values = period_cols)
+          scale_fill_manual(values = period_cols)+
+          plot_theme #+ scale_y_continuous(expand = expansion(mult = c(0, 0)))
       }
     }
     
@@ -3717,51 +3749,6 @@ server <- function(input, output, session) {
   sanitize.text.function = function(x) x
   )
   
-  # make_top10_plot_location <- function(location,
-  #                                focal_period = c("Pre-bloom", "Bloom"),
-  #                                number_species) {
-  #   
-  #   focal_period <- match.arg(focal_period)
-  #   
-  #   df <- mp_species_counts |>
-  #     dplyr::filter(park == park_name)
-  #   
-  #   top_species <- df |>
-  #     dplyr::filter(period == focal_period) |>
-  #     dplyr::slice_max(order_by = average, n = number_species, with_ties = FALSE) |>
-  #     dplyr::pull(species)
-  #   
-  #   plot_df <- df |>
-  #     dplyr::filter(display_name %in% top_species)
-  #   
-  #   order_df <- plot_df |>
-  #     dplyr::filter(period == focal_period) |>
-  #     dplyr::arrange(average)
-  #   
-  #   plot_df$display_name <- factor(plot_df$display_name, levels = order_df$display_name)
-  #   
-  #   ggplot(plot_df, aes(x = average, y = display_name), fill = period) +
-  #     scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
-  #     geom_col(position = "dodge") +
-  #     labs(x = "Count", y = NULL) +
-  #     scale_fill_manual(values = c("Pre-bloom" = "#0c3978",
-  #                                  "Bloom" = "#f89f00")) +
-  #     theme_minimal(base_size = 16) +
-  #     theme(
-  #       legend.position = "bottom"
-  #     )
-  # }
-  # 
-  # output$location_common_pre <- renderPlot({
-  #   req(input$location)
-  #   make_top10_plot_location(input$mp_park, focal_period = "Pre-bloom", number_species = input$locationnumberspecies)
-  # })
-  # 
-  # output$location_common_post <- renderPlot({
-  #   req(input$location)
-  #   make_top10_plot_location(input$mp_park, focal_period = "Bloom", number_species = input$locationnumberspecies)
-  # })
-  # 
   # ---- Survey progress for marine parks ------------------------------------
   
   mp_survey_row <- reactive({
@@ -4210,66 +4197,6 @@ server <- function(input, output, session) {
     )
   })
   
-  # output$location_change_table_split <- renderUI({
-  #   req(input$location)
-  #   
-  #   df <- hab_metric_change_location_split |>
-  #     dplyr::filter(reporting_name == input$location) |>
-  #     dplyr::select(
-  #       Metric = impact_metric,
-  #       Period = bloom_period,
-  #       'Change Overall'= percentage_change
-  #     )
-  #   
-  #   fmt_change <- function(vals) {
-  #     vals_chr <- as.character(vals)
-  #     
-  #     is_incomplete <- grepl("Surveys incomplete", vals_chr, ignore.case = TRUE) | is.na(vals_chr)
-  #     
-  #     num <- suppressWarnings(as.numeric(vals_chr))
-  #     has_num <- !is.na(num) & !is_incomplete
-  #     
-  #     arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
-  #     colours <- ifelse(num <= -50, "#EB5757",
-  #                       ifelse(num <= -20, "#D4A017", "#3B7EA1"))
-  #     
-  #     out <- rep("", length(vals_chr))
-  #     out[has_num] <- sprintf(
-  #       "<span style='color:%s'>%s %s%%</span>",
-  #       colours[has_num],
-  #       arrows[has_num],
-  #       scales::number(abs(num[has_num]), accuracy = 1)
-  #     )
-  #     out[is_incomplete] <- "<em>Surveys incomplete</em>"
-  #     out
-  #   }
-  #   
-  #   out_overall <- fmt_change(df$`Change Overall`)
-  #   
-  #   tags$table(
-  #     class = "table table-sm hab-table",
-  #     
-  #     tags$thead(
-  #       tags$tr(
-  #         tags$th("Metric"),
-  #         tags$th("Period"),
-  #         tags$th("Change Overall")
-  #       )
-  #     ),
-  #     
-  #     tags$tbody(
-  #       lapply(seq_len(nrow(df)), function(i) {
-  #         tags$tr(
-  #           tags$td(df$Metric[i]),
-  #           tags$td(df$Period[i]),
-  #           tags$td(HTML(out_overall[i]))
-  #         )
-  #       })
-  #     )
-  #   )
-  #   
-  # })
-  
   make_top10_plot_location <- function(location_name,
                                        focal_period = c("Pre-bloom", "Bloom"),
                                        title_lab = "Common species",
@@ -4498,7 +4425,8 @@ server <- function(input, output, session) {
       theme(
         legend.position = "bottom",
         axis.text.y     = ggtext::element_markdown(size = 12)
-      )
+      )+
+      plot_theme #+ scale_y_continuous(expand = expansion(mult = c(0, 0)))
   }
   
   output$location_common_pre <- renderPlot({
@@ -4617,16 +4545,12 @@ server <- function(input, output, session) {
       ggplot2::ggsave(
         filename = file,
         plot = location_common_plots(),
-        width = 16,
-        height = 5,
+        width = 12,
+        height = 6,
         dpi = 300
       )
     }
   )
-  
-  
-  
-  
   
   output$location_tabset <- renderUI({
     req(input$location)
@@ -4664,7 +4588,8 @@ server <- function(input, output, session) {
       scale_color_manual(values = metric_period_cols) +
       labs(x = NULL, y = metric_y_lab[["richness"]], subtitle = input$location) +
       theme_minimal(base_size = 16) +
-      theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+      theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+      plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
   }) |>
     bindCache(input$location) |>
     bindEvent(input$location)
@@ -4754,7 +4679,8 @@ server <- function(input, output, session) {
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       df <- richness_main_results_location()
@@ -4769,7 +4695,8 @@ server <- function(input, output, session) {
           # subtitle = paste0(input$location, ": Average species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -4826,7 +4753,8 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(
           legend.position  = "none",
-          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()+
+            plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
         )
       
     } else {
@@ -4855,7 +4783,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     }
   })
@@ -4886,7 +4815,8 @@ server <- function(input, output, session) {
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -4907,7 +4837,8 @@ server <- function(input, output, session) {
           # subtitle = paste0(input$location, ": Average species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -5057,7 +4988,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -5086,7 +5018,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -5144,7 +5077,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     } else {
       
       df <- total_abundance_status_results_location()
@@ -5173,7 +5107,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     }
     
@@ -5214,7 +5149,8 @@ server <- function(input, output, session) {
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -5235,7 +5171,8 @@ server <- function(input, output, session) {
           # subtitle = paste0(input$location, ": Average total abundance per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -5379,7 +5316,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -5409,7 +5347,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",        # both bars already coloured by period
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -5470,7 +5409,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -5498,7 +5438,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -5537,7 +5478,8 @@ server <- function(input, output, session) {
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -5558,7 +5500,8 @@ server <- function(input, output, session) {
           # subtitle = paste0(input$location, ": Average shark and ray species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -5700,7 +5643,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -5730,7 +5674,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",        # both bars already coloured by period
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     }
     
@@ -5793,7 +5738,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -5821,7 +5767,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -5860,7 +5807,8 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", 
               panel.grid.minor = element_blank(),           
-              panel.grid.major = element_blank())
+              panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -5883,7 +5831,8 @@ server <- function(input, output, session) {
         theme_minimal(base_size = 16) +
         theme(legend.position = "none", 
               panel.grid.minor = element_blank(),           
-              panel.grid.major = element_blank())
+              panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -6001,7 +5950,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -6030,7 +5980,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -6090,7 +6041,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -6119,7 +6071,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     }
     
@@ -6159,7 +6112,8 @@ server <- function(input, output, session) {
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -6180,7 +6134,8 @@ server <- function(input, output, session) {
           # subtitle = paste0(input$location, ": Average reef associated species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
-        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -6309,7 +6264,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -6339,7 +6295,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",        # both bars already coloured by period
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -6401,7 +6358,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -6429,7 +6387,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "none",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
     
   })
@@ -6536,7 +6495,8 @@ server <- function(input, output, session) {
         theme(
           legend.position  = "top",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -6562,7 +6522,25 @@ server <- function(input, output, session) {
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
-        theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        # theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+        # theme_minimal(base_size = 16) +
+        theme(
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(),
+          
+          legend.position = "bottom",
+          legend.direction = "horizontal",
+          
+          # smaller legend
+          legend.title = element_text(size = 12),
+          legend.text  = element_text(size = 10),
+          
+          # smaller keys and spacing
+          legend.key.size = unit(0.7, "cm"),
+          legend.spacing.x = unit(0.2, "cm")
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })   |>
     bindCache(input$location, input[[metric_plot_type_input_id("loc", "trophic")]]) |>
@@ -6657,7 +6635,8 @@ server <- function(input, output, session) {
         theme(
           legend.position = "top",
           panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
-        )
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
       
     } else {
       
@@ -6683,7 +6662,8 @@ server <- function(input, output, session) {
         ) +
         facet_wrap(~ status) +
         theme_minimal(base_size = 16) +
-        theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())
+        theme(panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
     }
   })
   
@@ -6720,14 +6700,31 @@ server <- function(input, output, session) {
   # SHANNON DIVERSITY: main plot -----
   loc_plot_combined_main <- reactive({
     
-    p1 <- shannon_diversity_main_plot_location()
-    p2 <- richness_main_plot_location()
-    p3 <- shark_ray_richness_main_plot_location()
-    p4 <- reef_associated_richness_main_plot_location()
-    p5 <- fish_200_abundance_main_plot_location()
-    p6 <- trophic_main_plot_location()
+    plot_theme <- theme(
+      axis.line.x = element_line(color = "black", linewidth = 0.5),
+      axis.line.y = element_line(color = "black", linewidth = 0.5))
     
-    (p1 | p2 )/ (p3  | p4 ) / ( p5 | p6 ) + plot_annotation(tag_levels = 'A')
+    p1 <- shannon_diversity_main_plot_location() +
+      theme(axis.text.x = element_blank())+ plot_theme +  scale_y_continuous(expand = expansion(mult = c(0, 0))) + theme(legend.title = element_blank())
+    p2 <- richness_main_plot_location() +
+      theme(axis.text.x = element_blank()) +plot_theme +  scale_y_continuous(expand = expansion(mult = c(0, 0)))+ theme(legend.title = element_blank())
+    p3 <- shark_ray_richness_main_plot_location() +
+      theme(axis.text.x = element_blank())+ plot_theme +  scale_y_continuous(expand = expansion(mult = c(0, 0)))+ theme(legend.title = element_blank())
+    p4 <- reef_associated_richness_main_plot_location() +
+      theme(axis.text.x = element_blank())+ plot_theme +  scale_y_continuous(expand = expansion(mult = c(0, 0)))+ theme(legend.title = element_blank())
+    p5 <- fish_200_abundance_main_plot_location()+ plot_theme +  scale_y_continuous(expand = expansion(mult = c(0, 0)))+ theme(legend.title = element_blank())
+    p6 <- trophic_main_plot_location() + plot_theme +  scale_y_continuous(expand = expansion(mult = c(0, 0)))
+    
+    # (p1 | p2 )/ (p3  | p4 ) / ( p5 | p6 ) + plot_annotation(tag_levels = 'A')
+    
+    wrap_plots((p1 | p2 )/ (p3  | p4 ) / ( p5 | p6 )) +
+      plot_layout(guides = "collect") &
+      theme(
+        legend.position = "bottom",
+        legend.text = element_text(size = 10),
+        legend.key.size = unit(0.6, "cm"),
+        legend.spacing.x = unit(0.1, "cm")
+      )
   })
   
   output$loc_plot_combined_main <- renderPlot({
