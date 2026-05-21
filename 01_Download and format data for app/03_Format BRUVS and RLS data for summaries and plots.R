@@ -329,7 +329,9 @@ rls_count_regions_pre <- rls_count %>%
   semi_join(combined_metadata)
 
 combined_count <- bind_rows(bruv_count_regions, rls_count_regions_pre) %>%
-  dplyr::mutate(genus_species = paste(genus, species)) 
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Unknown", family, genus)) %>%
+  dplyr::mutate(genus_species = paste(genus, species))
 
 hab_number_of_fish <- combined_count %>%
   semi_join(fish_species) %>%
@@ -1795,8 +1797,12 @@ location_species_stacked <- format_stacked_species_data(
   top_n = 5
 )
 
+test <- location_species_stacked$plot_df
+
 # Split Bloom into campaign stacked plot -----
-combined_count_new_periods <- combined_count %>% filter(method == "BRUVs") %>%
+combined_count_new_periods <- combined_count %>% 
+  filter(method == "BRUVs") %>%
+  dplyr::mutate(genus = if_else(genus %in% "Unknown", family, genus)) %>%
   left_join(combined_metadata %>% 
               dplyr::select(campaignid, sample, start_month)) %>%
   # tidyr::separate(campaignid, into = c("timing", "extra"), sep = "_") %>%
