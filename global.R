@@ -237,7 +237,7 @@ metric_y_lab <- list(
   shannon_diversity = "Avg. shannon\n diversity index",
   
   large_fish    = "Avg. no. of fish > 200 mm",
-  trophic       = "Avg. no. of\n individuals"
+  trophic       = "Avg. no. of individuals"
 )
 
 plot_theme <- theme(

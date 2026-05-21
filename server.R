@@ -6488,7 +6488,7 @@ server <- function(input, output, session) {
         scale_color_manual(values = metric_period_cols) +
         labs(
           x = NULL,  # or "Diet group"
-          y = metric_y_lab[["fish_200_abundance"]]#,
+          y = metric_y_lab[["trophic"]]#,
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
@@ -6517,7 +6517,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = diet_cols, drop = FALSE) +
         labs(
           x        = NULL,
-          y        = "Average no. species",
+          y        = metric_y_lab[["trophic"]],
           fill     = "Diet group"#,
           # subtitle = input$location
         ) +
