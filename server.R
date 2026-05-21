@@ -267,6 +267,19 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
     # Your existing layout(s)
     switch(
       metric_id,
+      
+      combined = {
+        tagList(
+          h4("Combined plot"),
+          layout_columns(
+            col_widths = c(12),
+            # metric_plotOutput(prefix, "trophic", "main"),
+            combined_plot_with_downloads(prefix, data_id, "main"),
+            combined_plot_with_downloads(prefix, data_id, "year")
+          )
+        )
+      },
+      
       richness = {
         tagList(
           h4("Species richness"),
@@ -367,20 +380,15 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
             # metric_plotOutput(prefix, "trophic", "main"),
             metric_plot_with_downloads(prefix, data_id, "main"),
             metric_plot_with_downloads(prefix, data_id, "status")
+          ),
+          layout_columns(
+            col_widths = c(12),
+            metric_plot_with_downloads(prefix, data_id, "year")
           )
         )
       },
       
-      combined = {
-        tagList(
-          h4("Combined plot"),
-          layout_columns(
-            col_widths = c(12),
-            # metric_plotOutput(prefix, "trophic", "main"),
-            combined_plot_with_downloads(prefix, data_id, "main")
-          )
-        )
-      },
+
 
       # default: 2 plots
       {
@@ -5874,10 +5882,7 @@ server <- function(input, output, session) {
     
     hab_data$fish_200_abundance_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
-      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))# %>%
-      # group_by(campaignid) %>%
-      # mutate(campaign_date = min(date)) %>%
-      # ungroup()
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
   })
   
   fish_200_abundance_main_results_location <- reactive({
@@ -5898,6 +5903,21 @@ server <- function(input, output, session) {
         se = sd(total_abundance_sample, na.rm = TRUE) /
           sqrt(sum(!is.na(total_abundance_sample))),
         n = sum(!is.na(total_abundance_sample)),
+        .groups = "drop"
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
+  })
+  
+  fish_200_abundance_summary_year_location <- reactive({
+    hab_data$fish_200_abundance_samples %>%
+      dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::group_by(reporting_name, start_date, campaignid, period) %>%
+      dplyr::summarise(
+        mean = mean(total_abundance_sample, na.rm = TRUE),
+        se   = sd(total_abundance_sample, na.rm = TRUE) / sqrt(sum(!is.na(total_abundance_sample))),
+        num  = dplyr::n(),
         .groups = "drop"
       ) %>%
       dplyr::mutate(mean = round(mean, digits = 3)) %>%
@@ -6087,20 +6107,20 @@ server <- function(input, output, session) {
     bindEvent(input$location, input[[metric_plot_type_input_id("loc", "fish_200_abundance")]])
   
   # LARGE FISH: Year plot ---------------
-  reef_associated_richness_year_plot_location <- reactive({
+  fish_200_abundance_year_plot_location <- reactive({
     req(input$location)
     
-    show_box <- metric_plot_type(input, "loc", "reef_associated_richness")
+    show_box <- metric_plot_type(input, "loc", "fish_200_abundance")
     
     if (show_box) {
       
-      df <- reef_associated_richness_main_raw_location()
-      mean_se <- reef_associated_richness_summary_year_location()
+      df <- fish_200_abundance_main_raw_location()
+      mean_se <- fish_200_abundance_summary_year_location()
       
       df$start_date <- as.Date(df$start_date)
       mean_se$start_date <- as.Date(mean_se$start_date)
       
-      ggplot(df, aes(x = start_date, y = n_species_sample, group = campaignid,  fill = period)) +
+      ggplot(df, aes(x = start_date, y = total_abundance_sample, group = campaignid,  fill = period)) +
         geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
         geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
         scale_fill_manual(values = metric_period_cols) +
@@ -6108,7 +6128,7 @@ server <- function(input, output, session) {
         scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]]#,
+          y = metric_y_lab[["large_fish"]]#,
           # subtitle = input$location
         ) +
         theme_minimal(base_size = 16) +
@@ -6117,7 +6137,7 @@ server <- function(input, output, session) {
       
     } else {
       
-      df <- reef_associated_richness_summary_year_location() %>%
+      df <- fish_200_abundance_summary_year_location() %>%
         dplyr::mutate(start_date = as.Date(start_date))
       
       ggplot(df, aes(x = start_date, y = mean, group = campaignid, fill = period)) +
@@ -6130,7 +6150,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = metric_period_cols) +
         labs(
           x = NULL,
-          y = metric_y_lab[["reef_associated_richness"]]#,
+          y = metric_y_lab[["large_fish"]]#,
           # subtitle = paste0(input$location, ": Average reef associated species richness per sample")
         ) +
         theme_minimal(base_size = 16) +
@@ -6140,13 +6160,13 @@ server <- function(input, output, session) {
   })
   
   
-  output$loc_plot_reef_associated_richness_year <- renderPlot({
+  output$loc_plot_fish_200_abundance_year <- renderPlot({
     
-    reef_associated_richness_year_plot_location()
+    fish_200_abundance_year_plot_location()
     
   }) |>
-    bindCache(input$location, input[[metric_plot_type_input_id("loc", "reef_associated_richness")]]) |>
-    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "reef_associated_richness")]])
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "fish_200_abundance")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "fish_200_abundance")]])
   
   
   # Downloads -----
@@ -6205,6 +6225,21 @@ server <- function(input, output, session) {
         se = sd(shannon , na.rm = TRUE) /
           sqrt(sum(!is.na(shannon ))),
         n = sum(!is.na(shannon )),
+        .groups = "drop"
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
+  })
+  
+  shannon_diversity_summary_year_location <- reactive({
+    hab_data$shannon_diversity_samples %>%
+      dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::group_by(reporting_name, start_date, campaignid, period) %>%
+      dplyr::summarise(
+        mean = mean(shannon, na.rm = TRUE),
+        se   = sd(shannon, na.rm = TRUE) / sqrt(sum(!is.na(shannon))),
+        num  = dplyr::n(),
         .groups = "drop"
       ) %>%
       dplyr::mutate(mean = round(mean, digits = 3)) %>%
@@ -6423,6 +6458,69 @@ server <- function(input, output, session) {
     plot_reactive = shannon_diversity_status_plot_location,
     download_label_reactive = reactive(input$location)
   )
+  
+  # SHANNON DIVERSITY: Year plot ---------------
+  shannon_diversity_year_plot_location <- reactive({
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "shannon_diversity")
+    
+    if (show_box) {
+      
+      df <- shannon_diversity_main_raw_location()
+      mean_se <- shannon_diversity_summary_year_location()
+      
+      df$start_date <- as.Date(df$start_date)
+      mean_se$start_date <- as.Date(mean_se$start_date)
+      
+      ggplot(df, aes(x = start_date, y = shannon, group = campaignid,  fill = period)) +
+        geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
+        geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["shannon_diversity"]]#,
+          # subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+      
+    } else {
+      
+      df <- shannon_diversity_summary_year_location() %>%
+        dplyr::mutate(start_date = as.Date(start_date))
+      
+      ggplot(df, aes(x = start_date, y = mean, group = campaignid, fill = period)) +
+        geom_col(width = 100, colour = "black", alpha = 0.85) +
+        geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
+        scale_x_date(
+          date_labels = "%Y",
+          date_breaks = "1 year"
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["shannon_diversity"]]#,
+          # subtitle = paste0(input$location, ": Average reef associated species richness per sample")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+    }
+  })
+  
+  
+  output$loc_plot_shannon_diversity_year <- renderPlot({
+    
+    shannon_diversity_year_plot_location()
+    
+  }) |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "shannon_diversity")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "shannon_diversity")]])
+  
   
   
   # ---------- Trophic Groups: two plots ------------
@@ -6695,9 +6793,73 @@ server <- function(input, output, session) {
     download_label_reactive = reactive(input$location)
   )
   
+  # Trophic group by year -----
+  trophic_group_summary_year_location <- reactive({
+    hab_data$trophic_groups_samples %>%
+      dplyr::filter(!is.na(reporting_name)) %>%
+      left_join(hab_data$hab_combined_metadata) %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::group_by(reporting_name, start_date, campaignid, period, diet) %>%
+      dplyr::summarise(
+        mean = mean(n_individuals_sample, na.rm = TRUE),
+        se   = sd(n_individuals_sample, na.rm = TRUE) / sqrt(sum(!is.na(n_individuals_sample))),
+        num  = dplyr::n(),
+        .groups = "drop"
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
+  })
   
+  # diet_levels <- names(diet_cols)
+  
+  # ---------- Trophic Groups: two plots ------------
+  trophic_year_plot_location <- reactive({
+    
+    diet_levels <- names(diet_cols)
+    
+    mean_se <- trophic_group_summary_year_location() %>%
+      dplyr::mutate(
+        period = factor(period, levels = c("Pre-bloom", "Bloom")),
+        diet   = factor(diet, levels = diet_levels)
+      )
+    
+    ggplot(mean_se, aes(x = start_date, y = mean, fill = diet)) +
+      geom_col(position = "stack", width = 100) +
+      scale_fill_manual(values = diet_cols, drop = FALSE) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[["trophic"]],
+        fill = "Diet group"
+      ) +
+      theme_minimal(base_size = 16) +
+      guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+      theme(
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.title = element_text(size = 12),
+        legend.text  = element_text(size = 10),
+        legend.key.size = unit(0.7, "cm"),
+        legend.spacing.x = unit(0.2, "cm")
+      ) +
+      plot_theme +
+      scale_y_continuous(
+        labels = scales::comma,
+        expand = expansion(mult = c(0, 0))
+      )
+  }) |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "trophic")]])
+  
+  
+  output$loc_plot_trophic_year <- renderPlot({
+    trophic_year_plot_location()
+  })
+  
+  # Start from the SUMMARY table (means per sample)
+
   # COMBINED PLOT ----
-  # SHANNON DIVERSITY: main plot -----
+  # main ----
   loc_plot_combined_main <- reactive({
     
     plot_theme <- theme(
@@ -6748,6 +6910,84 @@ server <- function(input, output, session) {
     results_reactive = shannon_diversity_main_results_location,
     raw_reactive = shannon_diversity_main_raw_location,
     plot_reactive = loc_plot_combined_main,
+    download_label_reactive = reactive(input$location),
+    height = 10
+  )
+  
+  # By year ----
+  loc_plot_combined_year <- reactive({
+    
+    plot_theme <- theme(
+      axis.line.x = element_line(color = "black", linewidth = 0.5),
+      axis.line.y = element_line(color = "black", linewidth = 0.5),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+    
+    p1 <- shannon_diversity_year_plot_location() +
+      # theme(axis.text.x = element_blank())+
+      plot_theme +
+      # scale_y_continuous(expand = expansion(mult = c(0, 0))) +
+      theme(legend.title = element_blank())
+    
+    p2 <- richness_year_plot_location() +
+      # theme(axis.text.x = element_blank()) +
+      plot_theme +  
+      # scale_y_continuous(expand = expansion(mult = c(0, 0)))+ 
+      theme(legend.title = element_blank())
+    
+    p3 <- shark_ray_richness_year_plot_location() +
+      # theme(axis.text.x = element_blank())+ 
+      plot_theme +  
+      # scale_y_continuous(expand = expansion(mult = c(0, 0)))+ 
+      theme(legend.title = element_blank())
+    
+    p4 <- reef_associated_richness_year_plot_location() +
+      # theme(axis.text.x = element_blank())+ 
+      plot_theme +  
+      # scale_y_continuous(expand = expansion(mult = c(0, 0)))+ 
+      theme(legend.title = element_blank())
+   
+     p5 <- fish_200_abundance_year_plot_location()+ 
+      plot_theme +  
+      # scale_y_continuous(expand = expansion(mult = c(0, 0)))+ 
+       theme(legend.title = element_blank())
+
+    p6 <- trophic_year_plot_location() +
+      plot_theme +
+      scale_y_continuous(expand = expansion(mult = c(0, 0)))
+    
+    # (p2 )/ (p3  | p4 ) / ( p5) + plot_annotation(tag_levels = 'A')
+    
+    (
+      wrap_plots(
+        (p1 | p2) /
+          (p3 | p4) /
+          (p5 | p6)
+      ) +
+        plot_annotation(tag_levels = "A") +
+        plot_layout(guides = "collect")
+    ) &
+      theme(
+        legend.position = "bottom",
+        legend.text = element_text(size = 10),
+        legend.key.size = unit(0.6, "cm"),
+        legend.spacing.x = unit(0.1, "cm")
+      )
+  })
+  
+  output$loc_plot_combined_year <- renderPlot({
+    
+    loc_plot_combined_year()
+    
+  }) 
+  
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "combined",
+    plot_id = "year",
+    results_reactive = shannon_diversity_main_results_location,
+    raw_reactive = shannon_diversity_main_raw_location,
+    plot_reactive = loc_plot_combined_year,
     download_label_reactive = reactive(input$location),
     height = 10
   )
