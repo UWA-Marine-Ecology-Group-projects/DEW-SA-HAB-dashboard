@@ -863,214 +863,7 @@ for (region in reporting_regions_status) {
   )
 }
 
-# # Loop through regions
-# plot_theme <- theme(
-#   axis.line.x = element_line(color = "black", linewidth = 0.5),
-#   axis.line.y = element_line(color = "black", linewidth = 0.5),
-#   legend.position = "none", 
-#   panel.grid.minor = element_blank(),
-#   panel.grid.major = element_blank())
-# 
-# for (region in reporting_regions) {
-#   
-#   message("Plotting: ", region)
-#   
-#   plot_df <- period_results %>%
-#     filter(reporting_name == region) %>%
-#     dplyr::mutate(
-#       Period = factor(Period, levels = c("Pre-bloom", "Bloom"))
-#     )
-#   
-#   p <- ggplot(
-#     plot_df,
-#     aes(x = Period, y = response, fill = Period)
-#   ) +
-#     geom_col(
-#       width = 0.6,
-#       colour = "black",
-#       alpha = 0.85
-#     ) +
-#     geom_errorbar(
-#       aes(
-#         ymin = response - SE,
-#         ymax = response + SE
-#       ),
-#       width = 0.2,
-#       linewidth = 0.6
-#     ) +
-#     scale_fill_manual(values = metric_period_cols) +
-#     theme_minimal(base_size = 16) +
-#     theme(
-#       legend.position = "none",
-#       panel.grid.minor = element_blank(),
-#       panel.grid.major = element_blank()
-#     ) +
-#     facet_wrap(~ metric, scales = "free_y", ncol = 2) +
-#     labs(
-#       title = region#,
-#       # x = NULL,
-#       # y = NULL
-#     )+
-#     theme_minimal(base_size = 16) +
-#     plot_theme
-#   
-#   # Safe filename
-#   safe_name <- region %>%
-#     stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
-#     stringr::str_replace_all("_$", "")
-#   
-#   # Save plot
-#   ggsave(
-#     filename = file.path(
-#       "plots/period_results",
-#       paste0(safe_name, ".png")
-#     ),
-#     plot = p,
-#     width = 5,
-#     height = 8,
-#     dpi = 300
-#   )
-#   
-# }
-
-for (region in reporting_regions) {
-  
-  message("Plotting: ", region)
-  
-  plot_df <- period_results %>%
-    filter(reporting_name == region) %>%
-    mutate(
-      Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
-      metric_id = recode(metric, !!!metric_lookup)
-    )
-  
-  plots <- purrr::map2(
-    metric_order,
-    LETTERS[seq_along(metric_order)],
-    ~ plot_one_metric(plot_df, .x, .y)
-  )
-  
-  p <- wrap_plots(plots, ncol = 2) +
-    plot_annotation(title = region) &
-    theme(
-      plot.title = element_text(size = 18, hjust = 0.5)
-    )
-  
-  safe_name <- region %>%
-    stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
-    stringr::str_replace_all("_$", "")
-  
-  ggsave(
-    filename = file.path("plots/period_results", paste0(safe_name, ".png")),
-    plot = p,
-    width = 8,
-    height = 10,
-    dpi = 300
-  )
-}
-
-# Create output folder
-dir.create("plots/period_status_results",
-           recursive = TRUE,
-           showWarnings = FALSE)
-
-# Get unique reporting regions
-reporting_regions <- unique(period_status_results$reporting_name)
-
-# Loop through regions
-for (region in reporting_regions) {
-  
-  message("Plotting: ", region)
-  
-  plot_df <- period_status_results %>%
-    filter(reporting_name == region)
-  
-  p <- ggplot(
-    plot_df,
-    aes(
-      x = Period,
-      y = response,
-      colour = Status,
-      group = Status
-    )
-  ) +
-    geom_point(
-      position = position_dodge(width = 0.3),
-      size = 3
-    ) +
-    # geom_line(
-    #   position = position_dodge(width = 0.3),
-    #   linewidth = 0.8
-    # ) +
-    geom_errorbar(
-      aes(
-        ymin = response - SE,
-        ymax = response + SE
-      ),
-      position = position_dodge(width = 0.3),
-      width = 0.15,
-      linewidth = 0.6
-    ) +
-    facet_wrap(~ metric, scales = "free_y") +
-    theme_bw(base_size = 16) +
-    theme(
-      panel.grid.minor = element_blank(),
-      panel.grid.major = element_blank(),
-      strip.background = element_rect(fill = "grey90"),
-      legend.position = "bottom"
-    ) +
-    labs(
-      title = region,
-      x = NULL,
-      y = NULL
-    )
-  
-  # Safe filename
-  safe_name <- region %>%
-    stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
-    stringr::str_replace_all("_$", "")
-  
-  # Save plot
-  ggsave(
-    filename = file.path(
-      "plots/period_status_results",
-      paste0(safe_name, ".png")
-    ),
-    plot = p,
-    width = 12,
-    height = 8,
-    dpi = 300
-  )
-  
-}
-
-
-
-newdat <- expand.grid(
-  year_scaled = seq(
-    min(df$year_scaled),
-    max(df$year_scaled),
-    length.out = 100
-  ),
-  Status = unique(df$Status)
-)
-
-newdat$pred <- predict(
-  trend_model,
-  newdata = newdat,
-  type = "response",
-  re.form = NA
-)
-
-
 # MODELLING BY YEAR ----
-library(dplyr)
-library(purrr)
-library(glmmTMB)
-library(emmeans)
-library(ggplot2)
-library(tibble)
-library(stringr)
 
 # -----------------------------
 # 1. Prepare data with numeric year
@@ -1087,8 +880,9 @@ prep_metric_data_year <- function(df, response_col) {
     ) %>%
     mutate(
       Status = factor(status, levels = c("Fished", "No-take")),
-      year = as.numeric(as.character(year)),
-      year_scaled = as.numeric(scale(year)),
+      # year = as.numeric(as.character(year)),
+      # year_scaled = as.numeric(scale(year)),
+      year = factor(year),
       site = factor(sample)
     )
 }
@@ -1112,6 +906,16 @@ reef_dat <- prep_metric_data_year(
   hab_data$reef_associated_richness_samples %>% left_join(metadata),
   "n_species_sample"
 )
+
+shannon_dat <- prep_metric_data_year(
+  hab_data$shannon_diversity_samples %>% left_join(metadata),
+  "shannon")  %>%
+  glimpse()
+
+fish_200_dat <- prep_metric_data_year(
+  hab_data$fish_200_abundance_samples %>% left_join(metadata),
+  "total_abundance_sample")  %>%
+  glimpse()
 
 # -----------------------------
 # 2. Fit one reporting region using year as fixed effect
@@ -1143,9 +947,9 @@ fit_one_reporting_name_year <- function(df,
   }
   
   fixed_effects <- if (has_two_status) {
-    "year_scaled * Status"
+    "year * Status"
   } else {
-    "year_scaled"
+    "year"
   }
   
   rhs <- if (!is.null(rand_effects)) {
@@ -1193,7 +997,7 @@ fit_one_reporting_name_year <- function(df,
     )
   }
   
-  newdat$year_scaled <- (newdat$year - year_mean) / year_sd
+  newdat$year <- (newdat$year - year_mean) / year_sd
   
   pred <- predict(
     model,
@@ -1392,34 +1196,59 @@ reef_year_models <- run_metric_year_models(
   output_dir = "model_outputs_year/reef_associated_richness"
 )
 
+shannon_year_models <- run_metric_year_models(
+  shannon_dat,
+  response_col = "shannon",
+  metric_name = "Shannon Diversity",
+  use_site = FALSE,
+  output_dir = "model_outputs_year/shannon"
+)
+
+fish_200_year_models <- run_metric_year_models(
+  fish_200_dat,
+  response_col = "total_abundance_sample",
+  metric_name = "Abundance > 200 mm",
+  use_site = FALSE,
+  output_dir = "model_outputs_year/shannon"
+)
+
 # -----------------------------
 # 5. Combine predictions
 # -----------------------------
+
 
 year_predictions <- bind_rows(
   abund_year_models$predictions,
   rich_year_models$predictions,
   shark_year_models$predictions,
-  reef_year_models$predictions
+  reef_year_models$predictions,
+  shannon_year_models$predictions,
+  fish_200_year_models$predictions
 )
 
 year_model_errors <- bind_rows(
   abund_year_models$model_errors,
   rich_year_models$model_errors,
   shark_year_models$model_errors,
-  reef_year_models$model_errors
+  reef_year_models$model_errors,
+  shannon_year_models$model_errors,
+  fish_200_year_models$model_errors
 )
 
 year_model_diagnostics <- bind_rows(
   abund_year_models$model_diagnostics,
   rich_year_models$model_diagnostics,
   shark_year_models$model_diagnostics,
-  reef_year_models$model_diagnostics
+  reef_year_models$model_diagnostics,
+  shannon_year_models$model_diagnostics,
+  fish_200_year_models$model_diagnostics
 )
 
 saveRDS(year_predictions, "model_outputs_year/year_predictions.rds")
 saveRDS(year_model_errors, "model_outputs_year/year_model_errors.rds")
 saveRDS(year_model_diagnostics, "model_outputs_year/year_model_diagnostics.rds")
+
+glimpse(year_predictions)
 
 # -----------------------------
 # 6. Plot one reporting region per file
@@ -1488,3 +1317,780 @@ year_model_errors
 
 year_model_diagnostics %>%
   arrange(desc(run_time_minutes))
+
+year_status_cols <- c(
+  "Fished"  = "#d95f02",
+  "No-take" = "#1b9e77"
+)
+
+plot_one_metric_year <- function(df, metric_id, panel_letter) {
+  
+  metric_df <- df %>%
+    filter(metric_id == !!metric_id) %>%
+    mutate(
+      Status = factor(Status, levels = c("Fished", "No-take"))
+    )
+  
+  if (nrow(metric_df) == 0) {
+    return(
+      ggplot() +
+        theme_void() +
+        labs(tag = panel_letter) +
+        theme(
+          plot.tag = element_text(size = 18),
+          plot.tag.position = c(0, 1)
+        )
+    )
+  }
+  
+  ggplot(
+    metric_df,
+    aes(x = year, y = fit, colour = Status, group = Status)
+  ) +
+    geom_errorbar(
+      aes(ymin = lwr, ymax = upr),
+      width = 0.15,
+      linewidth = 0.6,
+      position = position_dodge(width = 0.25)
+    ) +
+    # geom_line(
+    #   linewidth = 0.7,
+    #   position = position_dodge(width = 0.25)
+    # ) +
+    geom_point(
+      size = 2.8,
+      position = position_dodge(width = 0.25)
+    ) +
+    scale_colour_manual(values = year_status_cols, drop = FALSE) +
+    # scale_x_continuous(
+    #   breaks = sort(unique(metric_df$year))
+    # ) +
+    # 
+    scale_x_continuous(
+      breaks = sort(unique(metric_df$year_num)),
+      labels = sort(unique(metric_df$year_num)),
+      expand = expansion(mult = c(0.03, 0.03))
+    )+
+    
+    labs(
+      x = NULL,
+      y = metric_y_lab[[metric_id]],
+      colour = NULL,
+      tag = panel_letter
+    ) +
+    theme_minimal(base_size = 16) +
+    plot_theme +
+    theme(
+      panel.grid = element_blank(),
+      axis.title.y = element_text(size = 16),
+      axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+      plot.tag = element_text(size = 18),
+      plot.tag.position = c(0, 1),
+      legend.position = "bottom"
+    )
+}
+
+dir.create("plots/year_predictions_patchwork",
+           recursive = TRUE,
+           showWarnings = FALSE)
+
+reporting_regions_year <- unique(year_predictions$reporting_name)
+
+for (region in reporting_regions_year) {
+  
+  message("Plotting year plot: ", region)
+  
+  plot_df <- year_predictions %>%
+    filter(reporting_name == region) %>%
+    mutate(
+      metric_id = recode(metric, !!!metric_lookup)
+    )
+  
+  plots <- purrr::map2(
+    metric_order,
+    LETTERS[seq_along(metric_order)],
+    ~ plot_one_metric_year(plot_df, .x, .y)
+  )
+  
+  p <- wrap_plots(plots, ncol = 2, guides = "collect") +
+    plot_annotation(title = paste(region, "- yearly predictions")) &
+    theme(
+      plot.title = element_text(size = 18, hjust = 0.5),
+      legend.position = "bottom"
+    )
+  
+  safe_name <- region %>%
+    stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
+    stringr::str_replace_all("_$", "")
+  
+  ggsave(
+    filename = file.path(
+      "plots/year_predictions_patchwork",
+      paste0(safe_name, "_year_predictions.png")
+    ),
+    plot = p,
+    width = 8,
+    height = 10,
+    dpi = 300
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# MODELLING BY YEAR AS FIXED FACTOR ----
+
+library(emmeans)
+library(patchwork)
+
+# -----------------------------
+# 1. Prepare data
+# -----------------------------
+
+prep_metric_data_year_fixed <- function(df, response_col) {
+  df %>%
+    filter(
+      !is.na(.data[[response_col]]),
+      !is.na(period),
+      !is.na(status),
+      !is.na(reporting_name),
+      !is.na(year),
+      !is.na(sample)
+    ) %>%
+    mutate(
+      Period = factor(period, levels = c("Pre-bloom", "Bloom")),
+      Status = factor(status, levels = c("Fished", "No-take")),
+      year = factor(year),
+      site = factor(sample)
+    )
+}
+
+abund_year_dat <- prep_metric_data_year_fixed(
+  hab_data$total_abundance_samples,
+  "total_abundance_sample"
+)
+
+rich_year_dat <- prep_metric_data_year_fixed(
+  hab_data$species_richness_samples,
+  "n_species_sample"
+)
+
+shark_year_dat <- prep_metric_data_year_fixed(
+  hab_data$shark_ray_richness_samples %>% left_join(metadata),
+  "n_species_sample"
+)
+
+reef_year_dat <- prep_metric_data_year_fixed(
+  hab_data$reef_associated_richness_samples %>% left_join(metadata),
+  "n_species_sample"
+)
+
+shannon_year_dat <- prep_metric_data_year_fixed(
+  hab_data$shannon_diversity_samples %>% left_join(metadata),
+  "shannon"
+)
+
+fish_200_year_dat <- prep_metric_data_year_fixed(
+  hab_data$fish_200_abundance_samples %>% left_join(metadata),
+  "total_abundance_sample"
+)
+
+# -----------------------------
+# 2. Fit one reporting region
+# -----------------------------
+
+fit_one_reporting_name_year_fixed <- function(df,
+                                              response_col,
+                                              metric_name,
+                                              use_site = FALSE) {
+  
+  if (
+    nrow(df) < 20 ||
+    n_distinct(droplevels(df$year)) < 2
+  ) {
+    stop("Not enough data to fit year model")
+  }
+  
+  area_reporting_name <- df %>%
+    distinct(reporting_name) %>%
+    pull(reporting_name) %>%
+    first()
+  
+  has_two_status <- n_distinct(droplevels(df$Status)) >= 2
+  
+  rand_effects <- if (use_site) {
+    "(1 | uwa_site_code)"
+  } else {
+    NULL
+  }
+  
+  fixed_effects <- if (has_two_status) {
+    "year * Status"
+  } else {
+    "year"
+  }
+  
+  rhs <- if (!is.null(rand_effects)) {
+    paste(fixed_effects, "+", rand_effects)
+  } else {
+    fixed_effects
+  }
+  
+  form <- as.formula(
+    paste0(response_col, " ~ ", rhs)
+  )
+  
+  message("Using formula: ", deparse(form))
+  
+  model <- glmmTMB(
+    form,
+    data = df,
+    family = nbinom2(link = "log")
+  )
+  
+  year_means <- emmeans(
+    model,
+    ~ year,
+    type = "response"
+  ) %>%
+    as.data.frame() %>%
+    as_tibble() %>%
+    mutate(
+      reporting_name = area_reporting_name,
+      metric = metric_name,
+      model_used = rhs,
+      summary_type = "Year means"
+    )
+  
+  if (has_two_status) {
+    
+    year_status_means <- emmeans(
+      model,
+      ~ year * Status,
+      type = "response"
+    ) %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+  } else {
+    
+    single_status <- df %>%
+      distinct(Status) %>%
+      pull(Status) %>%
+      as.character() %>%
+      first()
+    
+    year_status_means <- year_means %>%
+      mutate(Status = single_status)
+  }
+  
+  year_status_means <- year_status_means %>%
+    mutate(
+      reporting_name = area_reporting_name,
+      metric = metric_name,
+      model_used = rhs,
+      summary_type = ifelse(
+        has_two_status,
+        "Year by Status",
+        "Year only - single Status"
+      )
+    )
+  
+  list(
+    model = model,
+    model_summary = summary(model),
+    year_means = year_means,
+    year_status_means = year_status_means
+  )
+}
+
+# -----------------------------
+# 3. Run models across regions
+# -----------------------------
+
+run_metric_year_fixed_models <- function(df,
+                                         response_col,
+                                         metric_name,
+                                         use_site = FALSE,
+                                         output_dir = "model_outputs_year_fixed",
+                                         overwrite = FALSE) {
+  
+  dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+  
+  split_dat <- split(df, df$reporting_name)
+  all_outputs <- list()
+  
+  for (area_name in names(split_dat)) {
+    
+    area_df <- split_dat[[area_name]]
+    
+    safe_area_name <- area_name %>%
+      str_replace_all("[^A-Za-z0-9]+", "_") %>%
+      str_replace_all("_$", "")
+    
+    safe_metric_name <- metric_name %>%
+      str_replace_all("[^A-Za-z0-9]+", "_") %>%
+      str_replace_all("_$", "")
+    
+    output_file <- file.path(
+      output_dir,
+      paste0(safe_area_name, "_", safe_metric_name, ".rds")
+    )
+    
+    if (file.exists(output_file) && !overwrite) {
+      message("Skipping existing: ", area_name)
+      all_outputs[[area_name]] <- readRDS(output_file)
+      next
+    }
+    
+    result <- tryCatch(
+      {
+        fit <- fit_one_reporting_name_year_fixed(
+          area_df,
+          response_col,
+          metric_name,
+          use_site = use_site
+        )
+        
+        list(
+          result = fit,
+          error = NULL,
+          diagnostics = tibble(
+            reporting_name = area_name,
+            metric = metric_name,
+            n_rows = nrow(area_df),
+            n_years = n_distinct(area_df$year),
+            n_statuses = n_distinct(droplevels(area_df$Status)),
+            status = "success",
+            error_message = NA_character_
+          )
+        )
+      },
+      error = function(e) {
+        list(
+          result = NULL,
+          error = e,
+          diagnostics = tibble(
+            reporting_name = area_name,
+            metric = metric_name,
+            n_rows = nrow(area_df),
+            n_years = n_distinct(area_df$year),
+            n_statuses = n_distinct(droplevels(area_df$Status)),
+            status = "error",
+            error_message = e$message
+          )
+        )
+      }
+    )
+    
+    saveRDS(result, output_file)
+    all_outputs[[area_name]] <- result
+  }
+  
+  year_means <- map_dfr(
+    all_outputs,
+    ~ if (is.null(.x$error) && !is.null(.x$result)) .x$result$year_means else NULL
+  )
+  
+  year_status_means <- map_dfr(
+    all_outputs,
+    ~ if (is.null(.x$error) && !is.null(.x$result)) .x$result$year_status_means else NULL
+  )
+  
+  model_errors <- imap_dfr(
+    all_outputs,
+    ~ {
+      if (!is.null(.x$error)) {
+        tibble(
+          reporting_name = .y,
+          metric = metric_name,
+          error = .x$error$message
+        )
+      } else {
+        NULL
+      }
+    }
+  )
+  
+  model_diagnostics <- map_dfr(all_outputs, "diagnostics")
+  
+  list(
+    model_outputs = all_outputs,
+    year_means = year_means,
+    year_status_means = year_status_means,
+    model_errors = model_errors,
+    model_diagnostics = model_diagnostics
+  )
+}
+
+# -----------------------------
+# 4. Run all metrics
+# -----------------------------
+
+abund_year_fixed_models <- run_metric_year_fixed_models(
+  abund_year_dat,
+  response_col = "total_abundance_sample",
+  metric_name = "Total abundance",
+  use_site = TRUE,
+  output_dir = "model_outputs_year_fixed/abundance"
+)
+
+rich_year_fixed_models <- run_metric_year_fixed_models(
+  rich_year_dat,
+  response_col = "n_species_sample",
+  metric_name = "Species richness",
+  use_site = FALSE,
+  output_dir = "model_outputs_year_fixed/species_richness"
+)
+
+shark_year_fixed_models <- run_metric_year_fixed_models(
+  shark_year_dat,
+  response_col = "n_species_sample",
+  metric_name = "Shark and ray richness",
+  use_site = FALSE,
+  output_dir = "model_outputs_year_fixed/shark_ray_richness"
+)
+
+reef_year_fixed_models <- run_metric_year_fixed_models(
+  reef_year_dat,
+  response_col = "n_species_sample",
+  metric_name = "Reef associated species richness",
+  use_site = FALSE,
+  output_dir = "model_outputs_year_fixed/reef_associated_richness"
+)
+
+shannon_year_fixed_models <- run_metric_year_fixed_models(
+  shannon_year_dat,
+  response_col = "shannon",
+  metric_name = "Shannon diversity",
+  use_site = FALSE,
+  output_dir = "model_outputs_year_fixed/shannon"
+)
+
+fish_200_year_fixed_models <- run_metric_year_fixed_models(
+  fish_200_year_dat,
+  response_col = "total_abundance_sample",
+  metric_name = "Abundance > 200 mm",
+  use_site = FALSE,
+  output_dir = "model_outputs_year_fixed/200mm"
+)
+
+# -----------------------------
+# 5. Combine model outputs
+# -----------------------------
+
+year_results <- bind_rows(
+  abund_year_fixed_models$year_means,
+  rich_year_fixed_models$year_means,
+  shark_year_fixed_models$year_means,
+  reef_year_fixed_models$year_means,
+  shannon_year_fixed_models$year_means,
+  fish_200_year_fixed_models$year_means
+)
+
+year_status_results <- bind_rows(
+  abund_year_fixed_models$year_status_means,
+  rich_year_fixed_models$year_status_means,
+  shark_year_fixed_models$year_status_means,
+  reef_year_fixed_models$year_status_means,
+  shannon_year_fixed_models$year_status_means,
+  fish_200_year_fixed_models$year_status_means
+)
+
+year_model_errors <- bind_rows(
+  abund_year_fixed_models$model_errors,
+  rich_year_fixed_models$model_errors,
+  shark_year_fixed_models$model_errors,
+  reef_year_fixed_models$model_errors,
+  shannon_year_fixed_models$model_errors,
+  fish_200_year_fixed_models$model_errors
+)
+
+year_model_diagnostics <- bind_rows(
+  abund_year_fixed_models$model_diagnostics,
+  rich_year_fixed_models$model_diagnostics,
+  shark_year_fixed_models$model_diagnostics,
+  reef_year_fixed_models$model_diagnostics,
+  shannon_year_fixed_models$model_diagnostics,
+  fish_200_year_fixed_models$model_diagnostics
+)
+
+saveRDS(year_results, "model_outputs_year_fixed/year_results.rds")
+saveRDS(year_status_results, "model_outputs_year_fixed/year_status_results.rds")
+saveRDS(year_model_errors, "model_outputs_year_fixed/year_model_errors.rds")
+saveRDS(year_model_diagnostics, "model_outputs_year_fixed/year_model_diagnostics.rds")
+
+# -----------------------------
+# 6. Add Period and metric IDs
+# -----------------------------
+
+year_results <- year_results %>%
+  mutate(
+    year_num = as.numeric(as.character(year)),
+    Period = case_when(
+      year_num < 2023 ~ "Pre-bloom",
+      TRUE ~ "Bloom"
+    ),
+    Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
+    metric_id = recode(metric, !!!metric_lookup)
+  ) %>%
+  arrange(reporting_name, metric_id, year_num)
+
+year_status_results <- year_status_results %>%
+  mutate(
+    year_num = as.numeric(as.character(year)),
+    Period = case_when(
+      year_num < 2023 ~ "Pre-bloom",
+      TRUE ~ "Bloom"
+    ),
+    Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
+    Status = factor(Status, levels = c("Fished", "No-take")),
+    metric_id = recode(metric, !!!metric_lookup)
+  )
+
+# -----------------------------
+# 7. Plot by year AND status
+# -----------------------------
+
+status_cols <- c(
+  "Fished"  = "#d95f02",
+  "No-take" = "#1b9e77"
+)
+
+plot_one_metric_year_status_bar <- function(df, metric_id, panel_letter) {
+  
+  metric_df <- df %>%
+    filter(metric_id == !!metric_id)
+  
+  if (nrow(metric_df) == 0) {
+    return(
+      ggplot() +
+        theme_void() +
+        labs(tag = panel_letter) +
+        theme(
+          plot.tag = element_text(size = 18),
+          plot.tag.position = c(0, 1)
+        )
+    )
+  }
+  
+  ggplot(
+    metric_df,
+    aes(x = year_num, y = response, fill = Status)
+  ) +
+    geom_col(
+      position = position_dodge(width = 0.75),
+      width = 0.65,
+      colour = "black",
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(ymin = asymp.LCL, ymax = asymp.UCL),
+      position = position_dodge(width = 0.75),
+      width = 0.2,
+      linewidth = 0.6
+    ) +
+    scale_fill_manual(values = status_cols, drop = FALSE) +
+    labs(
+      x = NULL,
+      y = metric_y_lab[[metric_id]],
+      fill = NULL,
+      tag = panel_letter
+    ) +
+    
+    scale_x_continuous(
+      breaks = sort(unique(metric_df$year_num)),
+      labels = sort(unique(metric_df$year_num)),
+      expand = expansion(mult = c(0.03, 0.03))
+    )+ 
+    theme_minimal(base_size = 16) +
+    plot_theme +
+    theme(
+      panel.grid = element_blank(),
+      axis.title.y = element_text(size = 16),
+      axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+      plot.tag = element_text(size = 18),
+      plot.tag.position = c(0, 1),
+      legend.position = "bottom"
+    )
+}
+
+dir.create(
+  "plots/year_status_results_fixed",
+  recursive = TRUE,
+  showWarnings = FALSE
+)
+
+for (region in unique(year_status_results$reporting_name)) {
+  
+  message("Plotting year status bars: ", region)
+  
+  plot_df <- year_status_results %>%
+    filter(reporting_name == region)
+  
+  plots <- purrr::map2(
+    metric_order,
+    LETTERS[seq_along(metric_order)],
+    ~ plot_one_metric_year_status_bar(plot_df, .x, .y)
+  )
+  
+  p <- wrap_plots(plots, ncol = 2, guides = "collect") +
+    plot_annotation(title = paste(region, "- yearly results by status")) &
+    theme(
+      plot.title = element_text(size = 18, hjust = 0.5),
+      legend.position = "bottom"
+    )
+  
+  safe_name <- region %>%
+    str_replace_all("[^A-Za-z0-9]+", "_") %>%
+    str_replace_all("_$", "")
+  
+  ggsave(
+    filename = file.path(
+      "plots/year_status_results_fixed",
+      paste0(safe_name, "_year_status_bars.png")
+    ),
+    plot = p,
+    width = 8,
+    height = 10,
+    dpi = 300
+  )
+}
+
+# -----------------------------
+# 8. Plot one bar per year, coloured by Period
+# -----------------------------
+
+plot_one_metric_year_period_bar <- function(df, metric_id, panel_letter) {
+  
+  metric_df <- df %>%
+    filter(metric_id == !!metric_id)
+  
+  if (nrow(metric_df) == 0) {
+    return(
+      ggplot() +
+        theme_void() +
+        labs(tag = panel_letter) +
+        theme(
+          plot.tag = element_text(size = 18),
+          plot.tag.position = c(0, 1)
+        )
+    )
+  }
+  
+  ggplot(
+    metric_df,
+    aes(x = year_num, y = response, fill = Period)
+  ) +
+    geom_col(
+      width = 0.65,
+      colour = "black",
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(ymin = asymp.LCL, ymax = asymp.UCL),
+      width = 0.2,
+      linewidth = 0.6
+    ) +
+    scale_fill_manual(values = metric_period_cols, drop = FALSE) +
+    labs(
+      x = NULL,
+      y = metric_y_lab[[metric_id]],
+      fill = NULL,
+      tag = panel_letter
+    ) +
+    
+    scale_x_continuous(
+      breaks = sort(unique(metric_df$year_num)),
+      labels = sort(unique(metric_df$year_num)),
+      expand = expansion(mult = c(0.03, 0.03))
+    ) +
+  
+    theme_minimal(base_size = 16) +
+    plot_theme +
+    theme(
+      panel.grid = element_blank(),
+      axis.title.y = element_text(size = 16),
+      axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
+      plot.tag = element_text(size = 18),
+      plot.tag.position = c(0, 1),
+      legend.position = "bottom"
+    )
+}
+
+dir.create(
+  "plots/year_period_results_fixed",
+  recursive = TRUE,
+  showWarnings = FALSE
+)
+
+for (region in unique(year_results$reporting_name)) {
+  
+  message("Plotting one bar per year: ", region)
+  
+  plot_df <- year_results %>%
+    filter(reporting_name == region)
+  
+  plots <- purrr::map2(
+    metric_order,
+    LETTERS[seq_along(metric_order)],
+    ~ plot_one_metric_year_period_bar(plot_df, .x, .y)
+  )
+  
+  p <- wrap_plots(plots, ncol = 2, guides = "collect") +
+    plot_annotation(title = paste(region, "- yearly results")) &
+    theme(
+      plot.title = element_text(size = 18, hjust = 0.5),
+      legend.position = "bottom"
+    )
+  
+  safe_name <- region %>%
+    str_replace_all("[^A-Za-z0-9]+", "_") %>%
+    str_replace_all("_$", "")
+  
+  ggsave(
+    filename = file.path(
+      "plots/year_period_results_fixed",
+      paste0(safe_name, "_year_period_bars.png")
+    ),
+    plot = p,
+    width = 8,
+    height = 10,
+    dpi = 300
+  )
+}
