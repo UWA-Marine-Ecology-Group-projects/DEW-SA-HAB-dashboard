@@ -211,6 +211,7 @@ twoValueBoxUI <- function(id,
 
 # ---- GLOBAL ADDITIONS (put near other helpers) ----
 metric_defs <- c(
+  combined = "Combined plots",
   richness      = "Species richness",
   total_abundance = "Total abundance",
   
@@ -223,8 +224,8 @@ metric_defs <- c(
   
   # cti           = "Community temperature index",
   # func_groups   = "Abundance by functional group",
-  trophic       = "Abundance by trophic level",
-  combined = "Combined plots"
+  trophic       = "Abundance by trophic level"
+ 
 )
 
 metric_y_lab <- list(
@@ -237,7 +238,7 @@ metric_y_lab <- list(
   shannon_diversity = "Avg. shannon\n diversity index",
   
   large_fish    = "Avg. no. of fish > 200 mm",
-  trophic       = "Avg. no. of\n individuals"
+  trophic       = "Avg. no. of individuals"
 )
 
 plot_theme <- theme(
