@@ -338,11 +338,15 @@ plot_start_date <- function(df, metric_id, panel_letter) {
     geom_col(width = 25, colour = "black", alpha = 0.85) +
     geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 10, linewidth = 0.6) +
     scale_fill_manual(values = metric_period_cols, drop = FALSE) +
-    scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    scale_x_date(
+      breaks = sort(unique(metric_df$start_date_date)),
+      labels = scales::label_date("%b\n%Y"),
+      expand = expansion(mult = c(0.03, 0.03))
+    ) +
     labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
     theme_minimal(base_size = 16) +
     plot_theme +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+    theme(axis.text.x = element_text(angle = 90, hjust = 1),
           legend.position = "bottom")
 }
 
@@ -361,11 +365,15 @@ plot_start_date_status <- function(df, metric_id, panel_letter) {
                   width = 10,
                   linewidth = 0.6) +
     scale_fill_manual(values = status_cols, drop = FALSE) +
-    scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    scale_x_date(
+      breaks = sort(unique(metric_df$start_date_date)),
+      labels = scales::label_date("%b\n%Y"),
+      expand = expansion(mult = c(0.03, 0.03))
+    ) +
     labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
     theme_minimal(base_size = 16) +
     plot_theme +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+    theme(axis.text.x = element_text(angle = 90, hjust = 1),
           legend.position = "bottom")
 }
 
@@ -439,3 +447,37 @@ save_patchwork_plots(
   "start_date_status",
   "temporal results by status"
 )
+
+
+
+
+
+
+# Checking
+
+check_raw_dates <- function(df, response_col, region_name) {
+  df %>%
+    filter(reporting_name == region_name) %>%
+    mutate(
+      start_date_date = as.Date(start_date),
+      year = format(start_date_date, "%Y")
+    ) %>%
+    group_by(year, start_date_date, period, status) %>%
+    summarise(
+      n_rows = n(),
+      n_non_missing_response = sum(!is.na(.data[[response_col]])),
+      .groups = "drop"
+    ) %>%
+    arrange(start_date_date)
+}
+
+check_raw_dates(
+  hab_data$total_abundance_samples,
+  "total_abundance_sample",
+  "Aldinga - Aldinga Reef Sanctuary Zone"
+)
+
+t <- start_date_results %>%
+  filter(reporting_name == "Aldinga - Aldinga Reef Sanctuary Zone") %>%
+  count(metric, start_date_date, Period) %>%
+  arrange(metric, start_date_date)
