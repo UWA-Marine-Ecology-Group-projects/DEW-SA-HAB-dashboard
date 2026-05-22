@@ -611,14 +611,16 @@ period_results <- bind_rows(
   shannon_models$period_means,
   fish_200_models$period_means
 )
-# 
-# period_status_results <- bind_rows(
-#   abund_models$period_status_means,
-#   # rich_models$period_status_means,
-#   # shark_models$period_status_means,
-#   # reef_models$period_status_means
-# )
-# 
+
+period_status_results <- bind_rows(
+  abund_models$period_status_means,
+  rich_models$period_status_means,
+  shark_models$period_status_means,
+  reef_models$period_status_means,
+  shannon_models$period_status_means,
+  fish_200_models$period_status_means
+)
+
 # model_errors <- bind_rows(
 #   abund_models$model_errors,
 #   # rich_models$model_errors,
@@ -756,6 +758,109 @@ plot_one_metric <- function(df, metric_id, panel_letter) {
       plot.tag = element_text(size = 18),
       plot.tag.position = c(0, 1)
     )
+}
+
+status_cols <- c(
+  "Fished"  = "#d95f02",
+  "No-take" = "#1b9e77"
+)
+
+plot_one_metric_status <- function(df, metric_id, panel_letter) {
+  
+  metric_df <- df %>%
+    filter(metric_id == !!metric_id) %>%
+    mutate(
+      Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
+      Status = factor(Status, levels = c("Fished", "No-take"))
+    )
+  
+  if (nrow(metric_df) == 0) {
+    return(
+      ggplot() +
+        theme_void() +
+        labs(tag = panel_letter) +
+        theme(
+          plot.tag = element_text(size = 18),
+          plot.tag.position = c(0, 1)
+        )
+    )
+  }
+  
+  ggplot(metric_df, aes(x = Period, y = response, fill = Status)) +
+    geom_col(
+      position = position_dodge(width = 0.7),
+      width = 0.6,
+      colour = "black",
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(ymin = response - SE, ymax = response + SE),
+      position = position_dodge(width = 0.7),
+      width = 0.18,
+      linewidth = 0.6
+    ) +
+    scale_fill_manual(values = status_cols, drop = FALSE) +
+    labs(
+      x = NULL,
+      y = metric_y_lab[[metric_id]],
+      fill = NULL,
+      tag = panel_letter
+    ) +
+    theme_minimal(base_size = 16) +
+    plot_theme +
+    theme(
+      panel.grid = element_blank(),
+      axis.title.y = element_text(size = 16),
+      axis.text.x = element_text(size = 14),
+      plot.tag = element_text(size = 18),
+      plot.tag.position = c(0, 1),
+      legend.position = "bottom"
+    )
+}
+
+dir.create("plots/period_status_results", recursive = TRUE, showWarnings = FALSE)
+
+reporting_regions_status <- unique(period_status_results$reporting_name)
+
+for (region in reporting_regions_status) {
+  
+  message("Plotting status plot: ", region)
+  
+  plot_df <- period_status_results %>%
+    filter(reporting_name == region) %>%
+    mutate(
+      Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
+      Status = factor(Status, levels = c("Fished", "No-take")),
+      metric_id = recode(metric, !!!metric_lookup)
+    )
+  
+  plots <- purrr::map2(
+    metric_order,
+    LETTERS[seq_along(metric_order)],
+    ~ plot_one_metric_status(plot_df, .x, .y)
+  )
+  
+  p <- wrap_plots(plots, ncol = 2, guides = "collect") +
+    plot_annotation(title = paste(region, "- by status")) &
+    theme(
+      plot.title = element_text(size = 18, hjust = 0.5),
+      legend.position = "bottom"
+    )
+  
+  safe_name <- region %>%
+    stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
+    stringr::str_replace_all("_$", "")
+  
+  ggsave(
+    filename = file.path(
+      "plots/period_status_results",
+      paste0(safe_name, "_status.png")
+    ),
+    plot = p,
+    width = 8,
+    height = 10,
+    dpi = 300
+  )
 }
 
 # # Loop through regions
