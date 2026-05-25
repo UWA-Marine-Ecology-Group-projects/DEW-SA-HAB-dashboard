@@ -632,7 +632,8 @@ plot_stacked_species <- function(
     ggplot2::theme(
       panel.grid = ggplot2::element_blank(),
       axis.text.x = ggplot2::element_text(size = 13),
-      legend.text = ggplot2::element_text(face = "italic"),
+      # legend.text = ggplot2::element_text(face = "italic"),
+      legend.text = ggtext::element_markdown(),
       legend.position = "right"
     ) + plot_theme + 
     scale_y_continuous(expand = expansion(mult = c(0, 0)))

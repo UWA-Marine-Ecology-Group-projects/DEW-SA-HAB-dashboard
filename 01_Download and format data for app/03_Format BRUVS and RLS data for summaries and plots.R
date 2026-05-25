@@ -1163,6 +1163,7 @@ calc_impacts_status <- function(summary_df, group_col, status_col = status, metr
 # Species Richness - Location ----
 species_richness_summary_location <- species_richness_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
+  # dplyr::filter(!campaignid %in% c("202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")) %>%
   dplyr::group_by(reporting_name, period) %>%
   dplyr::summarise(
     mean = mean(n_species_sample, na.rm = TRUE),
@@ -1257,6 +1258,7 @@ species_richness_impacts_location_split <- calc_impacts_split(
 
 # Total Abundance - Location ----
 total_abundance_summary_location <- total_abundance_samples %>%
+  # dplyr::filter(!campaignid %in% c("202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")) %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
   dplyr::summarise(
@@ -1319,6 +1321,7 @@ total_abundance_impacts_location_split <- calc_impacts_split(
 
 # Degeni - Location ----
 degeni_summary_location <- degeni_samples %>%
+  # dplyr::filter(!campaignid %in% c("202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")) %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
   dplyr::summarise(
@@ -1404,6 +1407,7 @@ shark_ray_richness_samples_location <- all_bruv_samples_loc %>%
   left_join(combined_metadata)
 
 shark_ray_richness_summary_location <- shark_ray_richness_samples_location %>%
+  # dplyr::filter(!campaignid %in% c("202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")) %>%
   dplyr::group_by(reporting_name, period) %>%
   dplyr::summarise(
     mean = mean(n_species_sample, na.rm = TRUE),
@@ -1464,6 +1468,7 @@ shark_ray_richness_impacts_location_split <- calc_impacts_split(
 
 # Reef associated - Location ----
 reef_associated_richness_summary_location <- reef_associated_richness_samples %>%
+  # dplyr::filter(!campaignid %in% c("202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")) %>%
   dplyr::filter(!is.na(reporting_name)) %>%
   dplyr::group_by(reporting_name, period) %>%
   dplyr::summarise(
@@ -1526,6 +1531,7 @@ reef_associated_richness_impacts_location_split <- calc_impacts_split(
 # Fish 200 - Location ----
 fish_200_abundance_summary_location <- fish_200_abundance_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
+  # dplyr::filter(!campaignid %in% c("202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")) %>%
   dplyr::group_by(reporting_name, period) %>%
   dplyr::summarise(
     mean = mean(total_abundance_sample, na.rm = TRUE),
@@ -1587,6 +1593,7 @@ fish_200_abundance_impacts_location_split <- calc_impacts_split(
 # Shannon diversity - location -----
 shannon_diversity_summary_location <- shannon_diversity_samples %>%
   dplyr::filter(!is.na(reporting_name)) %>%
+  # dplyr::filter(!campaignid %in% c("202110-202110_SA_Shellfish Reef Monitoring_StereoBRUVS")) %>%
   dplyr::group_by(reporting_name, period) %>%
   dplyr::summarise(
     mean = mean(shannon, na.rm = TRUE),
@@ -1764,7 +1771,18 @@ format_stacked_species_data <- function(
     dplyr::mutate(
       percent = total_count / sum(total_count, na.rm = TRUE) * 100
     ) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    dplyr::mutate(genus_species = species_plot) %>%
+    dplyr::left_join(dew_species) %>%
+    dplyr::mutate(species_plot = if_else(!species_plot %in% "Other", paste0(species_plot, "\n", "(",common_name, ")"), "Other"))%>%
+    mutate(
+      species_plot = stringr::str_replace(
+        species_plot,
+        "^(.*?)\\n\\((.*?)\\)$",
+        "<i>\\1</i><br>(\\2)"
+      )
+    )
+
   
   other_labels <- df_sum %>%
     dplyr::anti_join(
@@ -1997,3 +2015,4 @@ hab_data <- structure(
   ), class = "data")
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))
+
