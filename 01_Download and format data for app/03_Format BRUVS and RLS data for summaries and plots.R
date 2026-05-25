@@ -80,7 +80,7 @@ sa_state_mp <- st_cast(state_mp, "POLYGON")
 saveRDS(sa_state_mp, "app_data/spatial/sa_state_mp.RDS") # TODO put this in a shapefile list
 
 # ---- Load data from Google Sheets ----
-# unhash to update sheets -----
+## unhash to update sheets -----
 # summary_sheet <- "https://docs.google.com/spreadsheets/d/1YReZDi7TRzlCTNdU0ganthAWa8TTcfG-eZtIObRM45k/edit?gid=0#gid=0"
 # 
 # regions_summaries <- read_sheet(summary_sheet, sheet = "region_summary_text")
@@ -106,7 +106,7 @@ pal_vals <- c(  "High" = "#EB5757",   # red
 pal_factor <- colorFactor(palette = pal_vals, domain = ordered_levels, ordered = TRUE)
 
 # Survey tracking ----
-# unhash to update sheets 
+## unhash to update sheets 
 # survey_plan <- googlesheets4::read_sheet(
 #   "https://docs.google.com/spreadsheets/d/1QxTP_s58cbhLYB4GIuS39wK1c3QfBu8TGbUhV9rD3FY/edit?gid=1319001580#gid=1319001580",
 #   sheet = "reporting_region_summary")
@@ -120,7 +120,7 @@ species_list <- CheckEM::australia_life_history
 
 fish_species <- species_list %>%
   dplyr::filter(class %in% c("Actinopterygii", "Elasmobranchii", "Myxini"))
-
+# 
 # dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
 # 
 # write_csv(dew_species, "data/lookups/SA-HAB-Functional Traits.csv")
@@ -319,6 +319,7 @@ bruv_count_regions <- bruv_count %>%
   dplyr::select(campaignid, sample, family, genus, species, region, count, period, reporting_location, reporting_sanctuary, reporting_name) %>%
   dplyr::mutate(method = "BRUVs") %>%
   semi_join(combined_metadata) %>%
+  dplyr::mutate(species = if_else(reporting_name %in% "Glenelg" & genus %in% "Sillago", "bassensis", species)) %>%
   ungroup()
 
 rls_count_regions_pre <- rls_count %>%
@@ -1810,6 +1811,26 @@ combined_count_new_periods <- combined_count %>%
     period %in% "Bloom" ~ paste(period, start_month),
     .default = period
   ))
+
+combined_count_new_periods <- combined_count %>% 
+  filter(method == "BRUVs") %>%
+  mutate(genus = if_else(genus == "Unknown", family, genus)) %>%
+  left_join(
+    combined_metadata %>% 
+      select(campaignid, sample, start_month),
+    by = c("campaignid", "sample")
+  ) %>%
+  group_by(reporting_name) %>%
+  mutate(
+    n_bloom_months = n_distinct(start_month[period == "Bloom"]),
+    period_split = case_when(
+      period == "Bloom" & n_bloom_months > 1 ~ paste0(period, "\n", start_month),
+      period == "Bloom" ~ paste(period, start_month),
+      TRUE ~ period
+    )
+  ) %>%
+  ungroup() %>%
+  select(-n_bloom_months)
 
 unique(combined_count_new_periods$period_split)
 

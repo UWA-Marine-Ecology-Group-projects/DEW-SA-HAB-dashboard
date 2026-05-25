@@ -170,7 +170,7 @@ Portunus armatus,Invertebrate,Target,NA,Blue swimmer crab,NA,NA,#00A5AB
 Pycnogonidae spp,Invertebrate,Non-target,NA,Sea spider,NA,NA,NA
 Sagaminopteron ornatum,Invertebrate,Non-target,NA,Batwing seaslug,NA,NA,NA
 Sepia apama,Invertebrate,Target,NA,Giant cuttlefish,NA,NA,NA
-Sepioteuthis australis,Invertebrate,Target,NA,Southern calamari squid,NA,NA,NA
+Sepioteuthis australis,Invertebrate,Target,NA,Southern calamari,NA,NA,NA
 Tursiops spp,Other,Non-target,NA,Bottlenose dolphin,NA,NA,NA
 Seriolella brama,Teleost,Target,Carnivore,Common warehou,NA,benthopelagic,NA
 Paristiopterus gallipavo,Teleost,Target,Omnivore,Yellowspotted boarfish,NA,demersal,NA
@@ -215,3 +215,39 @@ Cnidoglanis macrocephalus,NA,NA,NA,NA,NA,NA,NA
 Urolophus cruciatus,NA,NA,NA,NA,NA,NA,NA
 Contusus brevicaudus,NA,NA,NA,NA,NA,NA,NA
 Lepidotrigla vanessa,NA,NA,NA,NA,NA,NA,NA
+Pelates octolineatus,NA,NA,NA,NA,NA,NA,NA
+Cheilodactylus nigripes,NA,NA,NA,NA,NA,NA,NA
+Pseudophycis palmata,NA,NA,NA,NA,NA,NA,NA
+Meuschenia scabra,NA,NA,NA,NA,NA,NA,NA
+Ophionereis schayeri,NA,NA,NA,NA,NA,NA,NA
+Chelidonichthys kumu,NA,NA,NA,NA,NA,NA,NA
+Phalacrocorax varius,NA,NA,NA,NA,NA,NA,NA
+Platycephalus laevigatus,NA,NA,NA,NA,NA,NA,NA
+Cheilodactylus spectabilis,NA,NA,NA,NA,NA,NA,NA
+Tursiops aduncus,NA,NA,NA,NA,NA,NA,NA
+Paguristes frontalis,NA,NA,NA,NA,NA,NA,NA
+Conidae spp,NA,NA,NA,NA,NA,NA,NA
+Pinna dolabrata,NA,NA,NA,NA,NA,NA,NA
+Parablennius tasmanianus,NA,NA,NA,NA,NA,NA,NA
+Omobranchus anolius,NA,NA,NA,NA,NA,NA,NA
+Penaeidae spp,NA,NA,NA,NA,NA,NA,NA
+Pecten fumatus,NA,NA,NA,NA,NA,NA,NA
+Atherinosoma microstoma,NA,NA,NA,NA,NA,NA,NA
+Lissocampus runa,NA,NA,NA,NA,NA,NA,NA
+Asteriidae spp,NA,NA,NA,NA,NA,NA,NA
+Arripis trutta,NA,NA,NA,NA,NA,NA,NA
+Phylum Cnidaria spp,NA,NA,NA,NA,NA,NA,NA
+Australaria australasia,NA,NA,NA,NA,NA,NA,NA
+Arctocephalus forsteri,NA,NA,NA,NA,NA,NA,NA
+Urolophus paucimaculatus,NA,NA,NA,NA,NA,NA,NA
+Ibacus peronii,NA,NA,NA,NA,NA,NA,NA
+Contusus richei,NA,NA,NA,NA,NA,NA,NA
+Haletta spp,NA,NA,NA,NA,NA,NA,NA
+Ammotretis elongatus,NA,NA,NA,NA,NA,NA,NA
+Octopus bunurong,NA,NA,NA,NA,NA,NA,NA
+Polychaeta spp,NA,NA,NA,NA,NA,NA,NA
+Rhombosolea spp,NA,NA,NA,NA,NA,NA,NA
+Maxillicosta scabriceps,NA,NA,NA,NA,NA,NA,NA
+Diogenes spp,NA,NA,NA,NA,NA,NA,NA
+Ovalipidae spp,NA,NA,NA,NA,NA,NA,NA
+Nesogobius pulchellus,NA,NA,NA,NA,NA,NA,NA
