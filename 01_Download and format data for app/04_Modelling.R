@@ -1,691 +1,30 @@
-# Load libraries needed -----
+# ============================================================
+# START DATE MODELS + FOUR PLOTS PER LOCATION
+# ============================================================
+
 library(dplyr)
 library(purrr)
 library(glmmTMB)
 library(emmeans)
 library(ggplot2)
 library(tibble)
-library(progressr)
-library(sf)
 library(stringr)
-
-handlers(global = TRUE)
-handlers("progress")
-
-sf_use_s2(FALSE)
-
-# Read in metadata -----
-load("app_data/hab_data.Rdata")
-
-metadata <- hab_data$hab_combined_metadata %>%
-  dplyr::filter(method %in% "BRUVs")
-
-unique(metadata$method)
-
-glimpse(hab_data)
-unique(metadata$reporting_name)
-
-# -----------------------------
-# 1. Prepare data ----
-# -----------------------------
-
-prep_metric_data <- function(df, response_col) {
-  df %>%
-    filter(
-      !is.na(.data[[response_col]]),
-      !is.na(period),
-      !is.na(status),
-      !is.na(reporting_name),
-      !is.na(year),
-      !is.na(sample)
-    ) %>%
-    mutate(
-      Period = factor(period, levels = c("Pre-bloom", "Bloom")),
-      Status = factor(status, levels = c("Fished", "No-take")),
-      year = factor(year),
-      site = factor(sample)
-    )
-}
-
-
-unique((hab_data$total_abundance_samples)$reporting_name)
-subset_names <- unique(metadata$reporting_name)[1:6]
-
-abund_dat <- prep_metric_data(
-  hab_data$total_abundance_samples,
-  "total_abundance_sample") %>%
-  glimpse()
-
-unique(abund_dat$reporting_name)
-
-rich_dat <- prep_metric_data(
-  hab_data$species_richness_samples,
-  "n_species_sample")  %>%
-  glimpse()
-
-shark_dat <- prep_metric_data(
-  hab_data$shark_ray_richness_samples %>% left_join(metadata),
-  "n_species_sample")  %>%
-  glimpse()
-
-reef_dat <- prep_metric_data(
-  hab_data$reef_associated_richness_samples %>% left_join(metadata),
-  "n_species_sample")  %>%
-  glimpse()
-
-shannon_dat <- prep_metric_data(
-  hab_data$shannon_diversity_samples %>% left_join(metadata),
-  "shannon")  %>%
-  glimpse()
-
-fish_200_dat <- prep_metric_data(
-  hab_data$fish_200_abundance_samples %>% left_join(metadata),
-  "total_abundance_sample")  %>%
-  glimpse()
-
-unique(abund_dat$site)
-unique(abund_dat$uwa_site_code)
-
-# -----------------------------
-# 2. Fit one reporting_name model ----
-# -----------------------------
-
-fit_one_reporting_name <- function(df,
-                                   response_col,
-                                   metric_name,
-                                   use_site = FALSE) {
-  
-  if (
-    nrow(df) < 10 ||
-    n_distinct(droplevels(df$year)) < 2
-  ) {
-    stop("Not enough data to fit model")
-  }
-  
-  area_reporting_name <- df %>%
-    distinct(reporting_name) %>%
-    pull(reporting_name) %>%
-    first()
-  
-  has_two_periods <- n_distinct(droplevels(df$Period)) >= 2
-  has_two_status  <- n_distinct(droplevels(df$Status)) >= 2
-  
-  rand_effects <- if (use_site) {
-    "(1 | uwa_site_code) + (1 | year)"
-  } else {
-    "(1 | year)"
-  }
-  
-  fixed_effects <- case_when(
-    has_two_periods & has_two_status  ~ "Period * Status",
-    has_two_periods & !has_two_status ~ "Period",
-    !has_two_periods & has_two_status ~ "Status",
-    TRUE                              ~ "1"
-  )
-  
-  model_used <- paste(fixed_effects, "+", rand_effects)
-  
-  form <- as.formula(
-    paste0(response_col, " ~ ", fixed_effects, " + ", rand_effects)
-  )
-  
-  message("Using formula: ", deparse(form))
-  
-  family_to_use <- nbinom2(link = "log")
-  
-  model <- glmmTMB(
-    form,
-    data = df,
-    family = family_to_use
-  )
-  
-  model_summary <- summary(model)
-  
-  # -----------------------------
-  # Period means----
-  # -----------------------------
-  
-  if (has_two_periods) {
-    
-    period_means <- emmeans(
-      model,
-      ~ Period,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-  } else {
-    
-    single_period <- df %>%
-      distinct(Period) %>%
-      pull(Period) %>%
-      as.character() %>%
-      .[1]
-    
-    period_means <- emmeans(
-      model,
-      ~ 1,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-    period_means[["Period"]] <- single_period
-  }
-  
-  period_means <- period_means %>%
-    mutate(
-      reporting_name = area_reporting_name,
-      metric = metric_name,
-      model_used = model_used,
-      summary_type = ifelse(
-        has_two_periods,
-        "Period means",
-        "Intercept only - single Period"
-      )
-    )
-  
-  # -----------------------------
-  # Period x Status means----
-  # -----------------------------
-  
-  if (has_two_periods && has_two_status) {
-    
-    period_status_means <- emmeans(
-      model,
-      ~ Period * Status,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-  } else if (has_two_periods && !has_two_status) {
-    
-    single_status <- df %>%
-      distinct(Status) %>%
-      pull(Status) %>%
-      as.character() %>%
-      .[1]
-    
-    period_status_means <- emmeans(
-      model,
-      ~ Period,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-    period_status_means[["Status"]] <- single_status
-    
-  } else if (!has_two_periods && has_two_status) {
-    
-    single_period <- df %>%
-      distinct(Period) %>%
-      pull(Period) %>%
-      as.character() %>%
-      .[1]
-    
-    period_status_means <- emmeans(
-      model,
-      ~ Status,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-    period_status_means[["Period"]] <- single_period
-    
-  } else {
-    
-    single_period <- df %>%
-      distinct(Period) %>%
-      pull(Period) %>%
-      as.character() %>%
-      .[1]
-    
-    single_status <- df %>%
-      distinct(Status) %>%
-      pull(Status) %>%
-      as.character() %>%
-      .[1]
-    
-    period_status_means <- emmeans(
-      model,
-      ~ 1,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-    period_status_means[["Period"]] <- single_period
-    period_status_means[["Status"]] <- single_status
-  }
-  
-  period_status_means <- period_status_means %>%
-    mutate(
-      reporting_name = area_reporting_name,
-      metric = metric_name,
-      model_used = model_used,
-      summary_type = case_when(
-        has_two_periods & has_two_status  ~ "Period by Status",
-        has_two_periods & !has_two_status ~ "Period only - single Status",
-        !has_two_periods & has_two_status ~ "Status only - single Period",
-        TRUE                              ~ "Intercept only - single Period and Status"
-      )
-    )
-  
-  list(
-    model = model,
-    model_summary = model_summary,
-    period_means = period_means,
-    period_status_means = period_status_means
-  )
-}
-
-# -----------------------------
-# 3. Run models across all areas with debugging + incremental saving----
-# -----------------------------
-
-run_metric_models <- function(df,
-                              response_col,
-                              metric_name,
-                              use_site = FALSE,
-                              output_dir = "model_outputs",
-                              overwrite = FALSE) {
-  
-  dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
-  
-  split_dat <- df %>%
-    group_by(reporting_name) %>%
-    group_split()
-  
-  names(split_dat) <- map_chr(split_dat, ~ unique(.x$reporting_name)[1])
-  
-  all_outputs <- list()
-  
-  for (area_name in names(split_dat)) {
-    
-    area_df <- split_dat[[area_name]]
-    
-    safe_area_name <- area_name %>%
-      stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
-      stringr::str_replace_all("_$", "")
-    
-    output_file <- file.path(
-      output_dir,
-      paste0(
-        safe_area_name, "_",
-        stringr::str_replace_all(metric_name, "[^A-Za-z0-9]+", "_"),
-        ".rds"
-      )
-    )
-    
-    if (file.exists(output_file) && !overwrite) {
-      message("\nSkipping already completed model: ", area_name)
-      all_outputs[[area_name]] <- readRDS(output_file)
-      next
-    }
-    
-    message("Response summary:")
-    print(summary(area_df[[response_col]]))
-    
-    message("Zeros:")
-    print(sum(area_df[[response_col]] == 0, na.rm = TRUE))
-    
-    message("Cross table:")
-    print(table(area_df$Period, area_df$Status))
-    
-    message("Rows per year:")
-    print(table(area_df$year))
-    
-    if ("uwa_site_code" %in% names(area_df)) {
-      
-      message("Rows per site:")
-      print(sort(table(area_df$uwa_site_code), decreasing = TRUE))
-      
-    }
-    
-    message("\n==================================================")
-    message("Metric: ", metric_name)
-    message("Location: ", area_name)
-    message("Rows: ", nrow(area_df))
-    message("Years: ", n_distinct(area_df$year), " | ", paste(sort(unique(area_df$year)), collapse = ", "))
-    message("Sites/sample: ", n_distinct(area_df$site))
-    
-    if ("uwa_site_code" %in% names(area_df)) {
-      message("Unique UWA site codes: ", n_distinct(area_df$uwa_site_code))
-      message("UWA site codes: ", paste(sort(unique(area_df$uwa_site_code)), collapse = ", "))
-    }
-    
-    message("Periods: ", n_distinct(area_df$Period), " | ", paste(unique(area_df$Period), collapse = ", "))
-    message("Statuses: ", n_distinct(area_df$Status), " | ", paste(unique(area_df$Status), collapse = ", "))
-    message("Response range: ", min(area_df[[response_col]], na.rm = TRUE), " to ", max(area_df[[response_col]], na.rm = TRUE))
-    message("Starting model at: ", Sys.time())
-    
-    start_time <- Sys.time()
-    
-    result <- tryCatch(
-      {
-        fit <- fit_one_reporting_name(
-          area_df,
-          response_col,
-          metric_name,
-          use_site = use_site
-        )
-        
-        list(
-          result = fit,
-          error = NULL,
-          diagnostics = tibble(
-            reporting_name = area_name,
-            metric = metric_name,
-            n_rows = nrow(area_df),
-            n_years = n_distinct(area_df$year),
-            n_sites = n_distinct(area_df$site),
-            n_uwa_site_codes = if ("uwa_site_code" %in% names(area_df)) n_distinct(area_df$uwa_site_code) else NA_integer_,
-            n_periods = n_distinct(area_df$Period),
-            n_statuses = n_distinct(area_df$Status),
-            start_time = start_time,
-            end_time = Sys.time(),
-            run_time_minutes = as.numeric(difftime(Sys.time(), start_time, units = "mins")),
-            status = "success",
-            error_message = NA_character_
-          )
-        )
-      },
-      error = function(e) {
-        list(
-          result = NULL,
-          error = e,
-          diagnostics = tibble(
-            reporting_name = area_name,
-            metric = metric_name,
-            n_rows = nrow(area_df),
-            n_years = n_distinct(area_df$year),
-            n_sites = n_distinct(area_df$site),
-            n_uwa_site_codes = if ("uwa_site_code" %in% names(area_df)) n_distinct(area_df$uwa_site_code) else NA_integer_,
-            n_periods = n_distinct(area_df$Period),
-            n_statuses = n_distinct(area_df$Status),
-            start_time = start_time,
-            end_time = Sys.time(),
-            run_time_minutes = as.numeric(difftime(Sys.time(), start_time, units = "mins")),
-            status = "error",
-            error_message = e$message
-          )
-        )
-      }
-    )
-    
-    end_time <- Sys.time()
-    
-    message("Finished at: ", end_time)
-    message("Runtime minutes: ", round(as.numeric(difftime(end_time, start_time, units = "mins")), 2))
-    
-    if (!is.null(result$error)) {
-      message("ERROR: ", result$error$message)
-    } else {
-      message("SUCCESS")
-    }
-    
-    saveRDS(result, output_file)
-    message("Saved result to: ", output_file)
-    
-    all_outputs[[area_name]] <- result
-  }
-  
-  period_means <- map_dfr(
-    all_outputs,
-    ~ if (is.null(.x$error) && !is.null(.x$result)) .x$result$period_means else NULL
-  )
-  
-  period_status_means <- map_dfr(
-    all_outputs,
-    ~ if (is.null(.x$error) && !is.null(.x$result)) .x$result$period_status_means else NULL
-  )
-  
-  model_errors <- imap_dfr(
-    all_outputs,
-    ~ {
-      if (!is.null(.x$error)) {
-        tibble(
-          reporting_name = .y,
-          metric = metric_name,
-          error = .x$error$message
-        )
-      } else {
-        NULL
-      }
-    }
-  )
-  
-  model_diagnostics <- map_dfr(all_outputs, "diagnostics")
-  
-  saveRDS(
-    list(
-      model_outputs = all_outputs,
-      period_means = period_means,
-      period_status_means = period_status_means,
-      model_errors = model_errors,
-      model_diagnostics = model_diagnostics
-    ),
-    file.path(output_dir, paste0(stringr::str_replace_all(metric_name, "[^A-Za-z0-9]+", "_"), "_combined_results.rds"))
-  )
-  
-  list(
-    model_outputs = all_outputs,
-    period_means = period_means,
-    period_status_means = period_status_means,
-    model_errors = model_errors,
-    model_diagnostics = model_diagnostics
-  )
-}
-
-# -----------------------------
-# 4. Run metrics
-# -----------------------------
-# Total abundance----
-# ------------------------------
-
-abund_models <- run_metric_models(
-  abund_dat,
-  response_col = "total_abundance_sample",
-  metric_name = "Total abundance",
-  use_site = TRUE,
-  output_dir = "model_outputs/abundance"
-)
-
-# Check diagnostics
-abund_models$model_diagnostics %>%
-  arrange(desc(run_time_minutes))
-
-# Check errors
-abund_models$model_errors
-
-# -----------------------------
-# Species richness----
-# -----------------------------
-
-rich_models <- run_metric_models(
-  rich_dat,
-  response_col = "n_species_sample",
-  metric_name = "Species richness",
-  use_site = FALSE,
-  output_dir = "model_outputs/species_richness"
-)
-
-# Check diagnostics
-rich_models$model_diagnostics %>%
-  arrange(desc(run_time_minutes))
-
-# Check errors
-rich_models$model_errors
-
-
-# -----------------------------
-# Shark and ray richness----
-# -----------------------------
-
-shark_models <- run_metric_models(
-  shark_dat,
-  response_col = "n_species_sample",
-  metric_name = "Shark and ray richness",
-  use_site = FALSE,
-  output_dir = "model_outputs/shark_ray_richness"
-)
-
-# Check diagnostics
-shark_models$model_diagnostics %>%
-  arrange(desc(run_time_minutes))
-
-# Check errors
-shark_models$model_errors
-
-
-# -----------------------------
-# Reef associated richness----
-# -----------------------------
-
-reef_models <- run_metric_models(
-  reef_dat,
-  response_col = "n_species_sample",
-  metric_name = "Reef associated species richness",
-  use_site = FALSE,
-  output_dir = "model_outputs/reef_associated_richness"
-)
-
-# Check diagnostics
-reef_models$model_diagnostics %>%
-  arrange(desc(run_time_minutes))
-
-# Check errors
-reef_models$model_errors
-
-# -----------------------------
-# Shannon diversity        ----
-# -----------------------------
-
-shannon_models <- run_metric_models(
-  shannon_dat,
-  response_col = "shannon",
-  metric_name = "Shannon diversity",
-  use_site = FALSE,
-  output_dir = "model_outputs/shannon_diversity"
-)
-
-# Check diagnostics
-shannon_models$model_diagnostics %>%
-  arrange(desc(run_time_minutes))
-
-# Check errors
-shannon_models$model_errors
-
-# -----------------------------
-#  Fish larger than 200 mm       ----
-# -----------------------------
-
-fish_200_models <- run_metric_models(
-  fish_200_dat,
-  response_col = "total_abundance_sample",
-  metric_name = "Abundance > 200 mm",
-  use_site = FALSE,
-  output_dir = "model_outputs/200mm"
-)
-
-# Check diagnostics
-fish_200_models$model_diagnostics %>%
-  arrange(desc(run_time_minutes))
-
-# Check errors
-fish_200_models$model_errors
-
-# # -----------------------------
-# # 5. Combine dashboard-ready outputs----
-# # -----------------------------
-# 
-period_results <- bind_rows(
-  abund_models$period_means,
-  rich_models$period_means,
-  shark_models$period_means,
-  reef_models$period_means,
-  shannon_models$period_means,
-  fish_200_models$period_means
-)
-
-period_status_results <- bind_rows(
-  abund_models$period_status_means,
-  rich_models$period_status_means,
-  shark_models$period_status_means,
-  reef_models$period_status_means,
-  shannon_models$period_status_means,
-  fish_200_models$period_status_means
-)
-
-# model_errors <- bind_rows(
-#   abund_models$model_errors,
-#   # rich_models$model_errors,
-#   # shark_models$model_errors,
-#   # reef_models$model_errors
-# )
-# 
-# # Check any models that failed
-# model_errors
-# 
-# # Plot 1: Pre-bloom vs Bloom for all areas
-# # shared colours for pre/post everywhere
-# metric_period_cols <- c(
-#   "Pre-bloom"  = "#072759",  # same blue
-#   "Bloom" = "#e88e98"   # same orange
-# )
-# 
-# ggplot(period_results, aes(x = Period, y = response)) +
-#   geom_point(size = 2) +
-#   geom_errorbar(
-#     aes(ymin = response - SE, ymax = response + SE),
-#     width = 0.15
-#   ) +
-#   facet_wrap(metric ~ reporting_name, scales = "free_y") +
-#   theme_bw()
-# 
-# # Trying to make it look like the dashboard ----
-# ggplot(period_results, aes(x = Period, y = response, fill = Period)) +
-#   geom_col(width = 0.6, colour = "black", alpha = 0.85) +
-#   geom_errorbar(aes(ymin = response - SE, ymax = response + SE), width = 0.2, linewidth = 0.6) +
-#   scale_fill_manual(values = metric_period_cols) +
-#   theme_minimal(base_size = 16) +
-#   theme(legend.position = "none",
-#         panel.grid.minor = element_blank(),
-#         panel.grid.major = element_blank()) +
-#   facet_wrap(metric ~ reporting_name, scales = "free_y")
-# 
-# # Plot 2: Pre-bloom vs Bloom by Fished vs No-take
-# ggplot(period_status_results, aes(x = Period, y = response, colour = Status)) +
-#   geom_point(
-#     position = position_dodge(width = 0.3),
-#     size = 2
-#   ) +
-#   geom_errorbar(
-#     aes(ymin = response - SE, ymax = response + SE),
-#     position = position_dodge(width = 0.3),
-#     width = 0.15
-#   ) +
-#   facet_wrap(metric ~ reporting_name, scales = "free_y") +
-#   theme_bw()
-
-# Create output folder
-dir.create("plots/period_results", recursive = TRUE, showWarnings = FALSE)
-
-# Get unique reporting regions
-reporting_regions <- unique(period_results$reporting_name)
-reporting_regions
-
-# shared colours for pre/post everywhere
-metric_period_cols <- c(
-  "Pre-bloom"  = "#072759",  # same blue
-  "Bloom" = "#e88e98"   # same orange
-)
-
 library(patchwork)
+library(tidyr)
+
+# -----------------------------
+# Colours and labels
+# -----------------------------
+
+metric_period_cols <- c(
+  "Pre-bloom" = "#072759",
+  "Bloom"     = "#e88e98"
+)
+
+status_cols <- c(
+  "Fished"  = "#d95f02",
+  "No-take" = "#1b9e77"
+)
 
 metric_y_lab <- list(
   shannon_diversity = "Avg. shannon\ndiversity index",
@@ -714,1047 +53,488 @@ metric_lookup <- c(
   "Total abundance" = "total_abundance"
 )
 
-plot_one_metric <- function(df, metric_id, panel_letter) {
-  
-  metric_df <- df %>%
-    filter(metric_id == !!metric_id)
-  
-  if (nrow(metric_df) == 0) {
-    return(
-      ggplot() +
-        theme_void() +
-        labs(tag = panel_letter) +
-        theme(
-          plot.tag = element_text(size = 18),
-          plot.tag.position = c(0, 1)
-        )
-    )
-  }
-  
-  ggplot(metric_df, aes(x = Period, y = response, fill = Period)) +
-    geom_col(
-      width = 0.6,
-      colour = "black",
-      alpha = 0.85
-    ) +
-    geom_errorbar(
-      aes(ymin = response - SE, ymax = response + SE),
-      width = 0.2,
-      linewidth = 0.6
-    ) +
-    scale_fill_manual(values = metric_period_cols, drop = FALSE) +
-    labs(
-      x = NULL,
-      y = metric_y_lab[[metric_id]],
-      tag = panel_letter
-    ) +
-    theme_minimal(base_size = 16) +
-    plot_theme +
-    theme(
-      legend.position = "none",
-      panel.grid = element_blank(),
-      axis.title.y = element_text(size = 16),
-      axis.text.x = element_text(size = 14),
-      plot.tag = element_text(size = 18),
-      plot.tag.position = c(0, 1)
-    )
-}
-
-status_cols <- c(
-  "Fished"  = "#d95f02",
-  "No-take" = "#1b9e77"
+plot_theme <- theme(
+  axis.line.x = element_line(color = "black", linewidth = 0.5),
+  axis.line.y = element_line(color = "black", linewidth = 0.5),
+  panel.grid = element_blank()
 )
-
-plot_one_metric_status <- function(df, metric_id, panel_letter) {
-  
-  metric_df <- df %>%
-    filter(metric_id == !!metric_id) %>%
-    mutate(
-      Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
-      Status = factor(Status, levels = c("Fished", "No-take"))
-    )
-  
-  if (nrow(metric_df) == 0) {
-    return(
-      ggplot() +
-        theme_void() +
-        labs(tag = panel_letter) +
-        theme(
-          plot.tag = element_text(size = 18),
-          plot.tag.position = c(0, 1)
-        )
-    )
-  }
-  
-  ggplot(metric_df, aes(x = Period, y = response, fill = Status)) +
-    geom_col(
-      position = position_dodge(width = 0.7),
-      width = 0.6,
-      colour = "black",
-      alpha = 0.85
-    ) +
-    geom_errorbar(
-      aes(ymin = response - SE, ymax = response + SE),
-      position = position_dodge(width = 0.7),
-      width = 0.18,
-      linewidth = 0.6
-    ) +
-    scale_fill_manual(values = status_cols, drop = FALSE) +
-    labs(
-      x = NULL,
-      y = metric_y_lab[[metric_id]],
-      fill = NULL,
-      tag = panel_letter
-    ) +
-    theme_minimal(base_size = 16) +
-    plot_theme +
-    theme(
-      panel.grid = element_blank(),
-      axis.title.y = element_text(size = 16),
-      axis.text.x = element_text(size = 14),
-      plot.tag = element_text(size = 18),
-      plot.tag.position = c(0, 1),
-      legend.position = "bottom"
-    )
-}
-
-dir.create("plots/period_status_results", recursive = TRUE, showWarnings = FALSE)
-
-reporting_regions_status <- unique(period_status_results$reporting_name)
-
-for (region in reporting_regions_status) {
-  
-  message("Plotting status plot: ", region)
-  
-  plot_df <- period_status_results %>%
-    filter(reporting_name == region) %>%
-    mutate(
-      Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
-      Status = factor(Status, levels = c("Fished", "No-take")),
-      metric_id = recode(metric, !!!metric_lookup)
-    )
-  
-  plots <- purrr::map2(
-    metric_order,
-    LETTERS[seq_along(metric_order)],
-    ~ plot_one_metric_status(plot_df, .x, .y)
-  )
-  
-  p <- wrap_plots(plots, ncol = 2, guides = "collect") +
-    plot_annotation(title = paste(region, "- by status")) &
-    theme(
-      plot.title = element_text(size = 18, hjust = 0.5),
-      legend.position = "bottom"
-    )
-  
-  safe_name <- region %>%
-    stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
-    stringr::str_replace_all("_$", "")
-  
-  ggsave(
-    filename = file.path(
-      "plots/period_status_results",
-      paste0(safe_name, "_status.png")
-    ),
-    plot = p,
-    width = 8,
-    height = 10,
-    dpi = 300
-  )
-}
-
-# MODELLING BY YEAR ----
-
-# -----------------------------
-# 1. Prepare data with numeric year
-# -----------------------------
-
-prep_metric_data_year <- function(df, response_col) {
-  df %>%
-    filter(
-      !is.na(.data[[response_col]]),
-      !is.na(status),
-      !is.na(reporting_name),
-      !is.na(year),
-      !is.na(sample)
-    ) %>%
-    mutate(
-      Status = factor(status, levels = c("Fished", "No-take")),
-      # year = as.numeric(as.character(year)),
-      # year_scaled = as.numeric(scale(year)),
-      year = factor(year),
-      site = factor(sample)
-    )
-}
-
-abund_dat <- prep_metric_data_year(
-  hab_data$total_abundance_samples,
-  "total_abundance_sample"
-)
-
-rich_dat <- prep_metric_data_year(
-  hab_data$species_richness_samples,
-  "n_species_sample"
-)
-
-shark_dat <- prep_metric_data_year(
-  hab_data$shark_ray_richness_samples %>% left_join(metadata),
-  "n_species_sample"
-)
-
-reef_dat <- prep_metric_data_year(
-  hab_data$reef_associated_richness_samples %>% left_join(metadata),
-  "n_species_sample"
-)
-
-shannon_dat <- prep_metric_data_year(
-  hab_data$shannon_diversity_samples %>% left_join(metadata),
-  "shannon")  %>%
-  glimpse()
-
-fish_200_dat <- prep_metric_data_year(
-  hab_data$fish_200_abundance_samples %>% left_join(metadata),
-  "total_abundance_sample")  %>%
-  glimpse()
-
-# -----------------------------
-# 2. Fit one reporting region using year as fixed effect
-# -----------------------------
-
-fit_one_reporting_name_year <- function(df,
-                                        response_col,
-                                        metric_name,
-                                        use_site = FALSE) {
-  
-  if (
-    nrow(df) < 20 ||
-    n_distinct(df$year) < 2
-  ) {
-    stop("Not enough data to fit year model")
-  }
-  
-  area_reporting_name <- df %>%
-    distinct(reporting_name) %>%
-    pull(reporting_name) %>%
-    first()
-  
-  has_two_status <- n_distinct(droplevels(df$Status)) >= 2
-  
-  rand_effects <- if (use_site) {
-    "(1 | uwa_site_code)"
-  } else {
-    NULL
-  }
-  
-  fixed_effects <- if (has_two_status) {
-    "year * Status"
-  } else {
-    "year"
-  }
-  
-  rhs <- if (!is.null(rand_effects)) {
-    paste(fixed_effects, "+", rand_effects)
-  } else {
-    fixed_effects
-  }
-  
-  form <- as.formula(
-    paste0(response_col, " ~ ", rhs)
-  )
-  
-  message("Using formula: ", deparse(form))
-  
-  model <- glmmTMB(
-    form,
-    data = df,
-    family = nbinom2(link = "log")
-  )
-  
-  model_summary <- summary(model)
-  
-  # Prediction grid
-  # TODO use this if I want all years in the sequence 
-  # pred_years <- seq(
-  #   min(df$year, na.rm = TRUE),
-  #   max(df$year, na.rm = TRUE),
-  #   by = 1
-  # )
-  
-  pred_years <- sort(unique(df$year))
-  
-  year_mean <- mean(df$year, na.rm = TRUE)
-  year_sd <- sd(df$year, na.rm = TRUE)
-  
-  if (has_two_status) {
-    newdat <- expand.grid(
-      year = pred_years,
-      Status = levels(droplevels(df$Status))
-    )
-  } else {
-    newdat <- data.frame(
-      year = pred_years,
-      Status = as.character(unique(df$Status)[1])
-    )
-  }
-  
-  newdat$year <- (newdat$year - year_mean) / year_sd
-  
-  pred <- predict(
-    model,
-    newdata = newdat,
-    type = "link",
-    se.fit = TRUE,
-    re.form = NA
-  )
-  
-  predictions <- newdat %>%
-    mutate(
-      fit = exp(pred$fit),
-      lwr = exp(pred$fit - 1.96 * pred$se.fit),
-      upr = exp(pred$fit + 1.96 * pred$se.fit),
-      reporting_name = area_reporting_name,
-      metric = metric_name,
-      model_used = rhs,
-      has_two_status = has_two_status
-    )
-  
-  list(
-    model = model,
-    model_summary = model_summary,
-    predictions = predictions
-  )
-}
-
-# -----------------------------
-# 3. Run models across regions
-# -----------------------------
-
-run_metric_year_models <- function(df,
-                                   response_col,
-                                   metric_name,
-                                   use_site = FALSE,
-                                   output_dir = "model_outputs_year",
-                                   overwrite = FALSE) {
-  
-  dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
-  
-  split_dat <- split(df, df$reporting_name)
-  
-  all_outputs <- list()
-  
-  for (area_name in names(split_dat)) {
-    
-    area_df <- split_dat[[area_name]]
-    
-    safe_area_name <- area_name %>%
-      str_replace_all("[^A-Za-z0-9]+", "_") %>%
-      str_replace_all("_$", "")
-    
-    safe_metric_name <- metric_name %>%
-      str_replace_all("[^A-Za-z0-9]+", "_") %>%
-      str_replace_all("_$", "")
-    
-    output_file <- file.path(
-      output_dir,
-      paste0(safe_area_name, "_", safe_metric_name, ".rds")
-    )
-    
-    if (file.exists(output_file) && !overwrite) {
-      message("Skipping existing: ", area_name)
-      all_outputs[[area_name]] <- readRDS(output_file)
-      next
-    }
-    
-    message("\n==================================================")
-    message("Metric: ", metric_name)
-    message("Location: ", area_name)
-    message("Rows: ", nrow(area_df))
-    message("Years: ", n_distinct(area_df$year), " | ", paste(sort(unique(area_df$year)), collapse = ", "))
-    message("Statuses: ", paste(unique(area_df$Status), collapse = ", "))
-    
-    if ("uwa_site_code" %in% names(area_df)) {
-      message("Unique UWA site codes: ", n_distinct(area_df$uwa_site_code))
-    }
-    
-    start_time <- Sys.time()
-    
-    result <- tryCatch(
-      {
-        fit <- fit_one_reporting_name_year(
-          area_df,
-          response_col,
-          metric_name,
-          use_site = use_site
-        )
-        
-        list(
-          result = fit,
-          error = NULL,
-          diagnostics = tibble(
-            reporting_name = area_name,
-            metric = metric_name,
-            n_rows = nrow(area_df),
-            n_years = n_distinct(area_df$year),
-            n_statuses = n_distinct(droplevels(area_df$Status)),
-            n_sites = if ("uwa_site_code" %in% names(area_df)) n_distinct(area_df$uwa_site_code) else NA_integer_,
-            start_time = start_time,
-            end_time = Sys.time(),
-            run_time_minutes = as.numeric(difftime(Sys.time(), start_time, units = "mins")),
-            status = "success",
-            error_message = NA_character_
-          )
-        )
-      },
-      error = function(e) {
-        list(
-          result = NULL,
-          error = e,
-          diagnostics = tibble(
-            reporting_name = area_name,
-            metric = metric_name,
-            n_rows = nrow(area_df),
-            n_years = n_distinct(area_df$year),
-            n_statuses = n_distinct(droplevels(area_df$Status)),
-            n_sites = if ("uwa_site_code" %in% names(area_df)) n_distinct(area_df$uwa_site_code) else NA_integer_,
-            start_time = start_time,
-            end_time = Sys.time(),
-            run_time_minutes = as.numeric(difftime(Sys.time(), start_time, units = "mins")),
-            status = "error",
-            error_message = e$message
-          )
-        )
-      }
-    )
-    
-    saveRDS(result, output_file)
-    all_outputs[[area_name]] <- result
-  }
-  
-  predictions <- map_dfr(
-    all_outputs,
-    ~ if (is.null(.x$error) && !is.null(.x$result)) .x$result$predictions else NULL
-  )
-  
-  model_errors <- imap_dfr(
-    all_outputs,
-    ~ {
-      if (!is.null(.x$error)) {
-        tibble(
-          reporting_name = .y,
-          metric = metric_name,
-          error = .x$error$message
-        )
-      } else {
-        NULL
-      }
-    }
-  )
-  
-  model_diagnostics <- map_dfr(all_outputs, "diagnostics")
-  
-  list(
-    model_outputs = all_outputs,
-    predictions = predictions,
-    model_errors = model_errors,
-    model_diagnostics = model_diagnostics
-  )
-}
-
-# -----------------------------
-# 4. Run all metrics
-# -----------------------------
-
-abund_year_models <- run_metric_year_models(
-  abund_dat,
-  response_col = "total_abundance_sample",
-  metric_name = "Total abundance",
-  use_site = TRUE,
-  output_dir = "model_outputs_year/abundance"
-)
-
-rich_year_models <- run_metric_year_models(
-  rich_dat,
-  response_col = "n_species_sample",
-  metric_name = "Species richness",
-  use_site = FALSE,
-  output_dir = "model_outputs_year/species_richness"
-)
-
-shark_year_models <- run_metric_year_models(
-  shark_dat,
-  response_col = "n_species_sample",
-  metric_name = "Shark and ray richness",
-  use_site = FALSE,
-  output_dir = "model_outputs_year/shark_ray_richness"
-)
-
-reef_year_models <- run_metric_year_models(
-  reef_dat,
-  response_col = "n_species_sample",
-  metric_name = "Reef associated species richness",
-  use_site = FALSE,
-  output_dir = "model_outputs_year/reef_associated_richness"
-)
-
-shannon_year_models <- run_metric_year_models(
-  shannon_dat,
-  response_col = "shannon",
-  metric_name = "Shannon Diversity",
-  use_site = FALSE,
-  output_dir = "model_outputs_year/shannon"
-)
-
-fish_200_year_models <- run_metric_year_models(
-  fish_200_dat,
-  response_col = "total_abundance_sample",
-  metric_name = "Abundance > 200 mm",
-  use_site = FALSE,
-  output_dir = "model_outputs_year/shannon"
-)
-
-# -----------------------------
-# 5. Combine predictions
-# -----------------------------
-
-
-year_predictions <- bind_rows(
-  abund_year_models$predictions,
-  rich_year_models$predictions,
-  shark_year_models$predictions,
-  reef_year_models$predictions,
-  shannon_year_models$predictions,
-  fish_200_year_models$predictions
-)
-
-year_model_errors <- bind_rows(
-  abund_year_models$model_errors,
-  rich_year_models$model_errors,
-  shark_year_models$model_errors,
-  reef_year_models$model_errors,
-  shannon_year_models$model_errors,
-  fish_200_year_models$model_errors
-)
-
-year_model_diagnostics <- bind_rows(
-  abund_year_models$model_diagnostics,
-  rich_year_models$model_diagnostics,
-  shark_year_models$model_diagnostics,
-  reef_year_models$model_diagnostics,
-  shannon_year_models$model_diagnostics,
-  fish_200_year_models$model_diagnostics
-)
-
-saveRDS(year_predictions, "model_outputs_year/year_predictions.rds")
-saveRDS(year_model_errors, "model_outputs_year/year_model_errors.rds")
-saveRDS(year_model_diagnostics, "model_outputs_year/year_model_diagnostics.rds")
-
-glimpse(year_predictions)
-
-# -----------------------------
-# 6. Plot one reporting region per file
-# -----------------------------
-
-dir.create("plots/year_predictions",
-           recursive = TRUE,
-           showWarnings = FALSE)
-
-reporting_regions <- unique(year_predictions$reporting_name)
-
-for (region in reporting_regions) {
-  
-  message("Plotting: ", region)
-  
-  plot_df <- year_predictions %>%
-    filter(reporting_name == region)
-  
-  p <- ggplot(
-    plot_df,
-    aes(
-      x = year,
-      y = fit,
-      colour = Status
-    )
-  ) +
-    geom_errorbar(
-      aes(ymin = lwr, ymax = upr),
-      width = 0.15,
-      linewidth = 0.6,
-      position = position_dodge(width = 0.3)
-    ) +
-    geom_point(
-      size = 3,
-      position = position_dodge(width = 0.3)
-    ) +
-    facet_wrap(~ metric, scales = "free_y") +
-    theme_bw(base_size = 16) +
-    theme(
-      legend.position = "bottom",
-      panel.grid.minor = element_blank()
-    ) +
-    labs(
-      title = region,
-      x = "Year",
-      y = "Predicted value"
-    )
-  
-  safe_name <- region %>%
-    str_replace_all("[^A-Za-z0-9]+", "_") %>%
-    str_replace_all("_$", "")
-  
-  ggsave(
-    filename = file.path(
-      "plots/year_predictions",
-      paste0(safe_name, "_year_predictions.png")
-    ),
-    plot = p,
-    width = 12,
-    height = 8,
-    dpi = 300
-  )
-}
-
-year_model_errors
-
-year_model_diagnostics %>%
-  arrange(desc(run_time_minutes))
-
-year_status_cols <- c(
-  "Fished"  = "#d95f02",
-  "No-take" = "#1b9e77"
-)
-
-plot_one_metric_year <- function(df, metric_id, panel_letter) {
-  
-  metric_df <- df %>%
-    filter(metric_id == !!metric_id) %>%
-    mutate(
-      Status = factor(Status, levels = c("Fished", "No-take"))
-    )
-  
-  if (nrow(metric_df) == 0) {
-    return(
-      ggplot() +
-        theme_void() +
-        labs(tag = panel_letter) +
-        theme(
-          plot.tag = element_text(size = 18),
-          plot.tag.position = c(0, 1)
-        )
-    )
-  }
-  
-  ggplot(
-    metric_df,
-    aes(x = year, y = fit, colour = Status, group = Status)
-  ) +
-    geom_errorbar(
-      aes(ymin = lwr, ymax = upr),
-      width = 0.15,
-      linewidth = 0.6,
-      position = position_dodge(width = 0.25)
-    ) +
-    # geom_line(
-    #   linewidth = 0.7,
-    #   position = position_dodge(width = 0.25)
-    # ) +
-    geom_point(
-      size = 2.8,
-      position = position_dodge(width = 0.25)
-    ) +
-    scale_colour_manual(values = year_status_cols, drop = FALSE) +
-    # scale_x_continuous(
-    #   breaks = sort(unique(metric_df$year))
-    # ) +
-    # 
-    scale_x_continuous(
-      breaks = sort(unique(metric_df$year_num)),
-      labels = sort(unique(metric_df$year_num)),
-      expand = expansion(mult = c(0.03, 0.03))
-    )+
-    
-    labs(
-      x = NULL,
-      y = metric_y_lab[[metric_id]],
-      colour = NULL,
-      tag = panel_letter
-    ) +
-    theme_minimal(base_size = 16) +
-    plot_theme +
-    theme(
-      panel.grid = element_blank(),
-      axis.title.y = element_text(size = 16),
-      axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
-      plot.tag = element_text(size = 18),
-      plot.tag.position = c(0, 1),
-      legend.position = "bottom"
-    )
-}
-
-dir.create("plots/year_predictions_patchwork",
-           recursive = TRUE,
-           showWarnings = FALSE)
-
-reporting_regions_year <- unique(year_predictions$reporting_name)
-
-for (region in reporting_regions_year) {
-  
-  message("Plotting year plot: ", region)
-  
-  plot_df <- year_predictions %>%
-    filter(reporting_name == region) %>%
-    mutate(
-      metric_id = recode(metric, !!!metric_lookup)
-    )
-  
-  plots <- purrr::map2(
-    metric_order,
-    LETTERS[seq_along(metric_order)],
-    ~ plot_one_metric_year(plot_df, .x, .y)
-  )
-  
-  p <- wrap_plots(plots, ncol = 2, guides = "collect") +
-    plot_annotation(title = paste(region, "- yearly predictions")) &
-    theme(
-      plot.title = element_text(size = 18, hjust = 0.5),
-      legend.position = "bottom"
-    )
-  
-  safe_name <- region %>%
-    stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
-    stringr::str_replace_all("_$", "")
-  
-  ggsave(
-    filename = file.path(
-      "plots/year_predictions_patchwork",
-      paste0(safe_name, "_year_predictions.png")
-    ),
-    plot = p,
-    width = 8,
-    height = 10,
-    dpi = 300
-  )
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# MODELLING BY YEAR AS FIXED FACTOR ----
-
-library(emmeans)
-library(patchwork)
 
 # -----------------------------
 # 1. Prepare data
 # -----------------------------
 
-prep_metric_data_year_fixed <- function(df, response_col) {
+prep_metric_data <- function(df, response_col) {
   df %>%
     filter(
       !is.na(.data[[response_col]]),
       !is.na(period),
       !is.na(status),
       !is.na(reporting_name),
-      !is.na(year),
+      !is.na(start_date),
       !is.na(sample)
     ) %>%
     mutate(
       Period = factor(period, levels = c("Pre-bloom", "Bloom")),
       Status = factor(status, levels = c("Fished", "No-take")),
-      year = factor(year),
+      start_date_date = as.Date(start_date),
+      start_date_fct = droplevels(factor(start_date_date)),
       site = factor(sample)
     )
 }
 
-abund_year_dat <- prep_metric_data_year_fixed(
-  hab_data$total_abundance_samples,
-  "total_abundance_sample"
-)
+# Read in metadata -----
+load("app_data/hab_data.Rdata")
 
-rich_year_dat <- prep_metric_data_year_fixed(
-  hab_data$species_richness_samples,
-  "n_species_sample"
-)
+metadata <- hab_data$hab_combined_metadata %>%
+  dplyr::filter(method %in% "BRUVs")
 
-shark_year_dat <- prep_metric_data_year_fixed(
-  hab_data$shark_ray_richness_samples %>% left_join(metadata),
-  "n_species_sample"
-)
-
-reef_year_dat <- prep_metric_data_year_fixed(
-  hab_data$reef_associated_richness_samples %>% left_join(metadata),
-  "n_species_sample"
-)
-
-shannon_year_dat <- prep_metric_data_year_fixed(
-  hab_data$shannon_diversity_samples %>% left_join(metadata),
-  "shannon"
-)
-
-fish_200_year_dat <- prep_metric_data_year_fixed(
-  hab_data$fish_200_abundance_samples %>% left_join(metadata),
-  "total_abundance_sample"
-)
+abund_dat <- prep_metric_data(hab_data$total_abundance_samples, "total_abundance_sample")
+rich_dat <- prep_metric_data(hab_data$species_richness_samples, "n_species_sample")
+shark_dat <- prep_metric_data(hab_data$shark_ray_richness_samples %>% left_join(metadata), "n_species_sample")
+reef_dat <- prep_metric_data(hab_data$reef_associated_richness_samples %>% left_join(metadata), "n_species_sample")
+shannon_dat <- prep_metric_data(hab_data$shannon_diversity_samples %>% left_join(metadata), "shannon")
+fish_200_dat <- prep_metric_data(hab_data$fish_200_abundance_samples %>% left_join(metadata), "total_abundance_sample")
 
 # -----------------------------
-# 2. Fit one reporting region
+# 2. Fit one region
 # -----------------------------
 
-fit_one_reporting_name_year_fixed <- function(df,
-                                              response_col,
-                                              metric_name,
-                                              use_site = FALSE) {
+# fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
+#   
+#   if (nrow(df) < 10) {
+#     stop("Not enough data")
+#   }
+#   
+#   area_name <- unique(df$reporting_name)[1]
+#   
+#   has_two_periods <- n_distinct(droplevels(df$Period)) >= 2
+#   has_two_status <- n_distinct(droplevels(df$Status)) >= 2
+#   has_two_dates <- n_distinct(droplevels(df$start_date_fct)) >= 2
+#   
+#   site_re <- if (use_site && "uwa_site_code" %in% names(df)) {
+#     " + (1 | uwa_site_code)"
+#   } else {
+#     ""
+#   }
+#   
+#   # Period model: start_date is random/blocking effect
+#   period_fixed <- case_when(
+#     has_two_periods & has_two_status ~ "Period * Status",
+#     has_two_periods ~ "Period",
+#     has_two_status ~ "Status",
+#     TRUE ~ "1"
+#   )
+#   
+#   period_re <- if (has_two_dates) {
+#     " + (1 | start_date_fct)"
+#   } else {
+#     ""
+#   }
+#   
+#   period_form <- as.formula(
+#     paste0(response_col, " ~ ", period_fixed, period_re, site_re)
+#   )
+#   
+#   period_model <- glmmTMB(
+#     period_form,
+#     data = df,
+#     family = nbinom2(link = "log")
+#   )
+#   
+#   # Temporal model: start_date is fixed factor
+#   temporal_fixed <- if (has_two_status && has_two_dates) {
+#     "start_date_fct * Status"
+#   } else if (has_two_dates) {
+#     "start_date_fct"
+#   } else if (has_two_status) {
+#     "Status"
+#   } else {
+#     "1"
+#   }
+#   
+#   temporal_form <- as.formula(
+#     paste0(response_col, " ~ ", temporal_fixed, site_re)
+#   )
+#   
+#   temporal_model <- glmmTMB(
+#     temporal_form,
+#     data = df,
+#     family = nbinom2(link = "log")
+#   )
+#   
+#   # ---- Period means
+#   period_means <- emmeans(period_model, ~ Period, type = "response") %>%
+#     as.data.frame() %>%
+#     as_tibble() %>%
+#     mutate(reporting_name = area_name, metric = metric_name)
+#   
+#   period_status_means <- emmeans(period_model, ~ Period * Status, type = "response") %>%
+#     as.data.frame() %>%
+#     as_tibble() %>%
+#     mutate(reporting_name = area_name, metric = metric_name)
+#   
+#   # ---- Start date means
+#   date_lookup <- df %>%
+#     distinct(start_date_fct, start_date_date) %>%
+#     mutate(start_date_fct = as.character(start_date_fct))
+#   
+#   period_lookup <- df %>%
+#     distinct(start_date_date, Period)
+#   
+#   start_date_means <- emmeans(temporal_model, ~ start_date_fct, type = "response") %>%
+#     as.data.frame() %>%
+#     as_tibble() %>%
+#     mutate(start_date_fct = as.character(start_date_fct)) %>%
+#     left_join(date_lookup, by = "start_date_fct") %>%
+#     left_join(period_lookup, by = "start_date_date") %>%
+#     mutate(reporting_name = area_name, metric = metric_name)
+#   
+#   # start_date_means <- emmeans(temporal_model, ~ start_date_fct, type = "response") %>%
+#   #   as.data.frame() %>%
+#   #   as_tibble() %>%
+#   #   left_join(date_lookup, by = "start_date_fct") %>%
+#   #   mutate(reporting_name = area_name, metric = metric_name)
+#   
+#   start_date_status_means <- emmeans(temporal_model, ~ start_date_fct * Status, type = "response") %>%
+#     as.data.frame() %>%
+#     as_tibble() %>%
+#     left_join(date_lookup, by = "start_date_fct") %>%
+#     mutate(reporting_name = area_name, metric = metric_name)
+#   
+#   list(
+#     period_model = period_model,
+#     temporal_model = temporal_model,
+#     period_means = period_means,
+#     period_status_means = period_status_means,
+#     start_date_means = start_date_means,
+#     start_date_status_means = start_date_status_means
+#   )
+# }
+
+library(tidyr)
+
+fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
   
-  if (
-    nrow(df) < 20 ||
-    n_distinct(droplevels(df$year)) < 2
-  ) {
-    stop("Not enough data to fit year model")
+  if (nrow(df) < 10) {
+    stop("Not enough data")
   }
   
-  area_reporting_name <- df %>%
-    distinct(reporting_name) %>%
-    pull(reporting_name) %>%
-    first()
+  area_name <- unique(df$reporting_name)[1]
   
-  has_two_status <- n_distinct(droplevels(df$Status)) >= 2
+  df <- df %>%
+    mutate(
+      Period = droplevels(Period),
+      Status = droplevels(Status),
+      start_date_fct = droplevels(start_date_fct)
+    )
   
-  rand_effects <- if (use_site) {
-    "(1 | uwa_site_code)"
+  has_two_periods <- n_distinct(df$Period) >= 2
+  has_two_status  <- n_distinct(df$Status) >= 2
+  has_two_dates   <- n_distinct(df$start_date_fct) >= 2
+  
+  site_re <- if (use_site && "uwa_site_code" %in% names(df)) {
+    " + (1 | uwa_site_code)"
   } else {
-    NULL
+    ""
   }
   
-  fixed_effects <- if (has_two_status) {
-    "year * Status"
+  # -----------------------------
+  # Check whether every date has both statuses
+  # -----------------------------
+  
+  if (has_two_dates && has_two_status) {
+    
+    date_status_check <- df %>%
+      count(start_date_fct, Status) %>%
+      complete(start_date_fct, Status, fill = list(n = 0))
+    
+    has_complete_date_status <- all(date_status_check$n > 0)
+    
   } else {
-    "year"
+    
+    has_complete_date_status <- FALSE
+    
   }
   
-  rhs <- if (!is.null(rand_effects)) {
-    paste(fixed_effects, "+", rand_effects)
-  } else {
-    fixed_effects
-  }
+  message("Has complete date x status design: ", has_complete_date_status)
   
-  form <- as.formula(
-    paste0(response_col, " ~ ", rhs)
+  # -----------------------------
+  # Period model
+  # -----------------------------
+  
+  period_fixed <- case_when(
+    has_two_periods & has_two_status ~ "Period * Status",
+    has_two_periods                  ~ "Period",
+    has_two_status                   ~ "Status",
+    TRUE                             ~ "1"
   )
   
-  message("Using formula: ", deparse(form))
+  period_re <- if (has_two_dates) {
+    " + (1 | start_date_fct)"
+  } else {
+    ""
+  }
   
-  model <- glmmTMB(
-    form,
+  period_form <- as.formula(
+    paste0(response_col, " ~ ", period_fixed, period_re, site_re)
+  )
+  
+  message("Period model: ", deparse(period_form))
+  
+  period_model <- glmmTMB(
+    period_form,
     data = df,
     family = nbinom2(link = "log")
   )
   
-  year_means <- emmeans(
-    model,
-    ~ year,
-    type = "response"
-  ) %>%
-    as.data.frame() %>%
-    as_tibble() %>%
-    mutate(
-      reporting_name = area_reporting_name,
-      metric = metric_name,
-      model_used = rhs,
-      summary_type = "Year means"
-    )
+  # -----------------------------
+  # Temporal model
+  # -----------------------------
   
-  if (has_two_status) {
+  temporal_fixed <- case_when(
+    has_two_dates & has_two_status & has_complete_date_status ~ "start_date_fct * Status",
+    has_two_dates                                             ~ "start_date_fct",
+    has_two_status                                            ~ "Status",
+    TRUE                                                      ~ "1"
+  )
+  
+  temporal_form <- as.formula(
+    paste0(response_col, " ~ ", temporal_fixed, site_re)
+  )
+  
+  message("Temporal model: ", deparse(temporal_form))
+  
+  temporal_model <- glmmTMB(
+    temporal_form,
+    data = df,
+    family = nbinom2(link = "log")
+  )
+  
+  # -----------------------------
+  # Lookup tables
+  # -----------------------------
+  
+  date_lookup <- df %>%
+    distinct(start_date_fct, start_date_date) %>%
+    mutate(start_date_fct = as.character(start_date_fct))
+  
+  period_lookup <- df %>%
+    distinct(start_date_date, Period)
+  
+  # -----------------------------
+  # Period means
+  # -----------------------------
+  
+  if (has_two_periods) {
     
-    year_status_means <- emmeans(
-      model,
-      ~ year * Status,
-      type = "response"
-    ) %>%
+    period_means <- emmeans(period_model, ~ Period, type = "response") %>%
       as.data.frame() %>%
       as_tibble()
     
   } else {
     
-    single_status <- df %>%
-      distinct(Status) %>%
-      pull(Status) %>%
-      as.character() %>%
-      first()
+    single_period <- as.character(unique(df$Period)[1])
     
-    year_status_means <- year_means %>%
-      mutate(Status = single_status)
+    period_means <- emmeans(period_model, ~ 1, type = "response") %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+    period_means[["Period"]] <- single_period
+    
   }
   
-  year_status_means <- year_status_means %>%
+  period_means <- period_means %>%
     mutate(
-      reporting_name = area_reporting_name,
-      metric = metric_name,
-      model_used = rhs,
-      summary_type = ifelse(
-        has_two_status,
-        "Year by Status",
-        "Year only - single Status"
-      )
+      reporting_name = area_name,
+      metric = metric_name
+    )
+  
+  # -----------------------------
+  # Period by Status means
+  # -----------------------------
+  
+  if (has_two_periods && has_two_status) {
+    
+    period_status_means <- emmeans(period_model, ~ Period * Status, type = "response") %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+  } else if (has_two_periods) {
+    
+    single_status <- as.character(unique(df$Status)[1])
+    
+    period_status_means <- emmeans(period_model, ~ Period, type = "response") %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+    period_status_means[["Status"]] <- single_status
+    
+  } else if (has_two_status) {
+    
+    single_period <- as.character(unique(df$Period)[1])
+    
+    period_status_means <- emmeans(period_model, ~ Status, type = "response") %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+    period_status_means[["Period"]] <- single_period
+    
+  } else {
+    
+    single_period <- as.character(unique(df$Period)[1])
+    single_status <- as.character(unique(df$Status)[1])
+    
+    period_status_means <- emmeans(period_model, ~ 1, type = "response") %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+    period_status_means[["Period"]] <- single_period
+    period_status_means[["Status"]] <- single_status
+    
+  }
+  
+  period_status_means <- period_status_means %>%
+    mutate(
+      reporting_name = area_name,
+      metric = metric_name
+    )
+  
+  # -----------------------------
+  # Start date means
+  # -----------------------------
+  
+  if (has_two_dates) {
+    
+    start_date_means <- emmeans(temporal_model, ~ start_date_fct, type = "response") %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+  } else {
+    
+    single_date <- as.character(unique(df$start_date_fct)[1])
+    
+    start_date_means <- emmeans(temporal_model, ~ 1, type = "response") %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+    start_date_means[["start_date_fct"]] <- single_date
+    
+  }
+  
+  start_date_means <- start_date_means %>%
+    mutate(start_date_fct = as.character(start_date_fct)) %>%
+    left_join(date_lookup, by = "start_date_fct") %>%
+    left_join(period_lookup, by = "start_date_date") %>%
+    mutate(
+      reporting_name = area_name,
+      metric = metric_name
+    )
+  
+  # -----------------------------
+  # Start date by Status means
+  # -----------------------------
+  
+  if (has_two_dates && has_two_status && has_complete_date_status) {
+    
+    start_date_status_means <- emmeans(
+      temporal_model,
+      ~ start_date_fct * Status,
+      type = "response"
+    ) %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+  } else if (has_two_dates) {
+    
+    start_date_status_means <- emmeans(
+      temporal_model,
+      ~ start_date_fct,
+      type = "response"
+    ) %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+    start_date_status_means[["Status"]] <- "Not modelled by Status"
+    
+  } else if (has_two_status) {
+    
+    single_date <- as.character(unique(df$start_date_fct)[1])
+    
+    start_date_status_means <- emmeans(
+      temporal_model,
+      ~ Status,
+      type = "response"
+    ) %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+    start_date_status_means[["start_date_fct"]] <- single_date
+    
+  } else {
+    
+    single_date <- as.character(unique(df$start_date_fct)[1])
+    single_status <- as.character(unique(df$Status)[1])
+    
+    start_date_status_means <- emmeans(
+      temporal_model,
+      ~ 1,
+      type = "response"
+    ) %>%
+      as.data.frame() %>%
+      as_tibble()
+    
+    start_date_status_means[["start_date_fct"]] <- single_date
+    start_date_status_means[["Status"]] <- single_status
+    
+  }
+  
+  start_date_status_means <- start_date_status_means %>%
+    mutate(start_date_fct = as.character(start_date_fct)) %>%
+    left_join(date_lookup, by = "start_date_fct") %>%
+    left_join(period_lookup, by = "start_date_date") %>%
+    mutate(
+      reporting_name = area_name,
+      metric = metric_name
     )
   
   list(
-    model = model,
-    model_summary = summary(model),
-    year_means = year_means,
-    year_status_means = year_status_means
+    period_model = period_model,
+    temporal_model = temporal_model,
+    period_means = period_means,
+    period_status_means = period_status_means,
+    start_date_means = start_date_means,
+    start_date_status_means = start_date_status_means,
+    has_complete_date_status = has_complete_date_status
   )
 }
 
 # -----------------------------
-# 3. Run models across regions
+# 3. Run across regions
 # -----------------------------
 
-run_metric_year_fixed_models <- function(df,
-                                         response_col,
-                                         metric_name,
-                                         use_site = FALSE,
-                                         output_dir = "model_outputs_year_fixed",
-                                         overwrite = FALSE) {
-  
-  dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+run_metric_models <- function(df, response_col, metric_name, use_site = FALSE) {
   
   split_dat <- split(df, df$reporting_name)
-  all_outputs <- list()
   
-  for (area_name in names(split_dat)) {
-    
-    area_df <- split_dat[[area_name]]
-    
-    safe_area_name <- area_name %>%
-      str_replace_all("[^A-Za-z0-9]+", "_") %>%
-      str_replace_all("_$", "")
-    
-    safe_metric_name <- metric_name %>%
-      str_replace_all("[^A-Za-z0-9]+", "_") %>%
-      str_replace_all("_$", "")
-    
-    output_file <- file.path(
-      output_dir,
-      paste0(safe_area_name, "_", safe_metric_name, ".rds")
+  outputs <- map(
+    split_dat,
+    ~ tryCatch(
+      fit_one_region(.x, response_col, metric_name, use_site),
+      error = function(e) e
     )
-    
-    if (file.exists(output_file) && !overwrite) {
-      message("Skipping existing: ", area_name)
-      all_outputs[[area_name]] <- readRDS(output_file)
-      next
-    }
-    
-    result <- tryCatch(
-      {
-        fit <- fit_one_reporting_name_year_fixed(
-          area_df,
-          response_col,
-          metric_name,
-          use_site = use_site
-        )
-        
-        list(
-          result = fit,
-          error = NULL,
-          diagnostics = tibble(
-            reporting_name = area_name,
-            metric = metric_name,
-            n_rows = nrow(area_df),
-            n_years = n_distinct(area_df$year),
-            n_statuses = n_distinct(droplevels(area_df$Status)),
-            status = "success",
-            error_message = NA_character_
-          )
-        )
-      },
-      error = function(e) {
-        list(
-          result = NULL,
-          error = e,
-          diagnostics = tibble(
-            reporting_name = area_name,
-            metric = metric_name,
-            n_rows = nrow(area_df),
-            n_years = n_distinct(area_df$year),
-            n_statuses = n_distinct(droplevels(area_df$Status)),
-            status = "error",
-            error_message = e$message
-          )
-        )
-      }
-    )
-    
-    saveRDS(result, output_file)
-    all_outputs[[area_name]] <- result
-  }
-  
-  year_means <- map_dfr(
-    all_outputs,
-    ~ if (is.null(.x$error) && !is.null(.x$result)) .x$result$year_means else NULL
   )
-  
-  year_status_means <- map_dfr(
-    all_outputs,
-    ~ if (is.null(.x$error) && !is.null(.x$result)) .x$result$year_status_means else NULL
-  )
-  
-  model_errors <- imap_dfr(
-    all_outputs,
-    ~ {
-      if (!is.null(.x$error)) {
-        tibble(
-          reporting_name = .y,
-          metric = metric_name,
-          error = .x$error$message
-        )
-      } else {
-        NULL
-      }
-    }
-  )
-  
-  model_diagnostics <- map_dfr(all_outputs, "diagnostics")
   
   list(
-    model_outputs = all_outputs,
-    year_means = year_means,
-    year_status_means = year_status_means,
-    model_errors = model_errors,
-    model_diagnostics = model_diagnostics
+    outputs = outputs,
+    period_means = map_dfr(outputs, ~ if (!inherits(.x, "error")) .x$period_means),
+    period_status_means = map_dfr(outputs, ~ if (!inherits(.x, "error")) .x$period_status_means),
+    start_date_means = map_dfr(outputs, ~ if (!inherits(.x, "error")) .x$start_date_means),
+    start_date_status_means = map_dfr(outputs, ~ if (!inherits(.x, "error")) .x$start_date_status_means),
+    errors = imap_dfr(outputs, ~ {
+      if (inherits(.x, "error")) {
+        tibble(reporting_name = .y, metric = metric_name, error = .x$message)
+      }
+    })
   )
 }
 
@@ -1762,335 +542,329 @@ run_metric_year_fixed_models <- function(df,
 # 4. Run all metrics
 # -----------------------------
 
-abund_year_fixed_models <- run_metric_year_fixed_models(
-  abund_year_dat,
-  response_col = "total_abundance_sample",
-  metric_name = "Total abundance",
-  use_site = TRUE,
-  output_dir = "model_outputs_year_fixed/abundance"
-)
+abund_models <- run_metric_models(abund_dat, "total_abundance_sample", "Total abundance", use_site = TRUE)
+rich_models <- run_metric_models(rich_dat, "n_species_sample", "Species richness")
+shark_models <- run_metric_models(shark_dat, "n_species_sample", "Shark and ray richness")
+reef_models <- run_metric_models(reef_dat, "n_species_sample", "Reef associated species richness")
+shannon_models <- run_metric_models(shannon_dat, "shannon", "Shannon diversity")
+fish_200_models <- run_metric_models(fish_200_dat, "total_abundance_sample", "Abundance > 200 mm")
 
-rich_year_fixed_models <- run_metric_year_fixed_models(
-  rich_year_dat,
-  response_col = "n_species_sample",
-  metric_name = "Species richness",
-  use_site = FALSE,
-  output_dir = "model_outputs_year_fixed/species_richness"
-)
+period_results <- bind_rows(
+  abund_models$period_means,
+  rich_models$period_means,
+  shark_models$period_means,
+  reef_models$period_means,
+  shannon_models$period_means,
+  fish_200_models$period_means
+) %>%
+  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
-shark_year_fixed_models <- run_metric_year_fixed_models(
-  shark_year_dat,
-  response_col = "n_species_sample",
-  metric_name = "Shark and ray richness",
-  use_site = FALSE,
-  output_dir = "model_outputs_year_fixed/shark_ray_richness"
-)
+period_status_results <- bind_rows(
+  abund_models$period_status_means,
+  rich_models$period_status_means,
+  shark_models$period_status_means,
+  reef_models$period_status_means,
+  shannon_models$period_status_means,
+  fish_200_models$period_status_means
+) %>%
+  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
-reef_year_fixed_models <- run_metric_year_fixed_models(
-  reef_year_dat,
-  response_col = "n_species_sample",
-  metric_name = "Reef associated species richness",
-  use_site = FALSE,
-  output_dir = "model_outputs_year_fixed/reef_associated_richness"
-)
+start_date_results <- bind_rows(
+  abund_models$start_date_means,
+  rich_models$start_date_means,
+  shark_models$start_date_means,
+  reef_models$start_date_means,
+  shannon_models$start_date_means,
+  fish_200_models$start_date_means
+) %>%
+  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
-shannon_year_fixed_models <- run_metric_year_fixed_models(
-  shannon_year_dat,
-  response_col = "shannon",
-  metric_name = "Shannon diversity",
-  use_site = FALSE,
-  output_dir = "model_outputs_year_fixed/shannon"
-)
+start_date_status_results <- bind_rows(
+  abund_models$start_date_status_means,
+  rich_models$start_date_status_means,
+  shark_models$start_date_status_means,
+  reef_models$start_date_status_means,
+  shannon_models$start_date_status_means,
+  fish_200_models$start_date_status_means
+) %>%
+  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
-fish_200_year_fixed_models <- run_metric_year_fixed_models(
-  fish_200_year_dat,
-  response_col = "total_abundance_sample",
-  metric_name = "Abundance > 200 mm",
-  use_site = FALSE,
-  output_dir = "model_outputs_year_fixed/200mm"
+readr::write_excel_csv(period_results, "model_results/period_results.csv")
+readr::write_excel_csv(period_status_results, "model_results/period_status_results.csv")
+readr::write_excel_csv(start_date_results, "model_results/start_date_results.csv")
+readr::write_excel_csv(start_date_status_results, "model_results/start_date_status_results.csv")
+
+writexl::write_xlsx(
+  list(
+    period_results = period_results,
+    period_status_results = period_status_results,
+    start_date_results = start_date_results,
+    start_date_status_results = start_date_status_results
+  ),
+  "model_results/model_results.xlsx"
 )
 
 # -----------------------------
-# 5. Combine model outputs
+# 5. Plot helpers
 # -----------------------------
 
-year_results <- bind_rows(
-  abund_year_fixed_models$year_means,
-  rich_year_fixed_models$year_means,
-  shark_year_fixed_models$year_means,
-  reef_year_fixed_models$year_means,
-  shannon_year_fixed_models$year_means,
-  fish_200_year_fixed_models$year_means
-)
+blank_panel <- function(panel_letter) {
+  ggplot() +
+    theme_void() +
+    labs(tag = panel_letter) +
+    theme(plot.tag = element_text(size = 18))
+}
 
-year_status_results <- bind_rows(
-  abund_year_fixed_models$year_status_means,
-  rich_year_fixed_models$year_status_means,
-  shark_year_fixed_models$year_status_means,
-  reef_year_fixed_models$year_status_means,
-  shannon_year_fixed_models$year_status_means,
-  fish_200_year_fixed_models$year_status_means
-)
-
-year_model_errors <- bind_rows(
-  abund_year_fixed_models$model_errors,
-  rich_year_fixed_models$model_errors,
-  shark_year_fixed_models$model_errors,
-  reef_year_fixed_models$model_errors,
-  shannon_year_fixed_models$model_errors,
-  fish_200_year_fixed_models$model_errors
-)
-
-year_model_diagnostics <- bind_rows(
-  abund_year_fixed_models$model_diagnostics,
-  rich_year_fixed_models$model_diagnostics,
-  shark_year_fixed_models$model_diagnostics,
-  reef_year_fixed_models$model_diagnostics,
-  shannon_year_fixed_models$model_diagnostics,
-  fish_200_year_fixed_models$model_diagnostics
-)
-
-saveRDS(year_results, "model_outputs_year_fixed/year_results.rds")
-saveRDS(year_status_results, "model_outputs_year_fixed/year_status_results.rds")
-saveRDS(year_model_errors, "model_outputs_year_fixed/year_model_errors.rds")
-saveRDS(year_model_diagnostics, "model_outputs_year_fixed/year_model_diagnostics.rds")
-
-# -----------------------------
-# 6. Add Period and metric IDs
-# -----------------------------
-
-year_results <- year_results %>%
-  mutate(
-    year_num = as.numeric(as.character(year)),
-    Period = case_when(
-      year_num < 2023 ~ "Pre-bloom",
-      TRUE ~ "Bloom"
-    ),
-    Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
-    metric_id = recode(metric, !!!metric_lookup)
-  ) %>%
-  arrange(reporting_name, metric_id, year_num)
-
-year_status_results <- year_status_results %>%
-  mutate(
-    year_num = as.numeric(as.character(year)),
-    Period = case_when(
-      year_num < 2023 ~ "Pre-bloom",
-      TRUE ~ "Bloom"
-    ),
-    Period = factor(Period, levels = c("Pre-bloom", "Bloom")),
-    Status = factor(Status, levels = c("Fished", "No-take")),
-    metric_id = recode(metric, !!!metric_lookup)
-  )
-
-# -----------------------------
-# 7. Plot by year AND status
-# -----------------------------
-
-status_cols <- c(
-  "Fished"  = "#d95f02",
-  "No-take" = "#1b9e77"
-)
-
-plot_one_metric_year_status_bar <- function(df, metric_id, panel_letter) {
+plot_period <- function(df, metric_id, panel_letter) {
   
-  metric_df <- df %>%
-    filter(metric_id == !!metric_id)
+  metric_df <- df %>% filter(metric_id == !!metric_id)
   
-  if (nrow(metric_df) == 0) {
-    return(
-      ggplot() +
-        theme_void() +
-        labs(tag = panel_letter) +
-        theme(
-          plot.tag = element_text(size = 18),
-          plot.tag.position = c(0, 1)
-        )
-    )
-  }
+  if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
   
-  ggplot(
-    metric_df,
-    aes(x = year_num, y = response, fill = Status)
-  ) +
-    geom_col(
-      position = position_dodge(width = 0.75),
-      width = 0.65,
-      colour = "black",
-      alpha = 0.85
-    ) +
-    geom_errorbar(
-      aes(ymin = asymp.LCL, ymax = asymp.UCL),
-      position = position_dodge(width = 0.75),
-      width = 0.2,
-      linewidth = 0.6
-    ) +
-    scale_fill_manual(values = status_cols, drop = FALSE) +
-    labs(
-      x = NULL,
-      y = metric_y_lab[[metric_id]],
-      fill = NULL,
-      tag = panel_letter
-    ) +
-    
-    scale_x_continuous(
-      breaks = sort(unique(metric_df$year_num)),
-      labels = sort(unique(metric_df$year_num)),
-      expand = expansion(mult = c(0.03, 0.03))
-    )+ 
+  ggplot(metric_df, aes(x = Period, y = response, fill = Period)) +
+    geom_col(width = 0.6, colour = "black", alpha = 0.85) +
+    geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2, linewidth = 0.6) +
+    scale_fill_manual(values = metric_period_cols, drop = FALSE) +
+    labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
     theme_minimal(base_size = 16) +
     plot_theme +
-    theme(
-      panel.grid = element_blank(),
-      axis.title.y = element_text(size = 16),
-      axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
-      plot.tag = element_text(size = 18),
-      plot.tag.position = c(0, 1),
-      legend.position = "bottom"
-    )
+    theme(legend.position = "none")
 }
 
-dir.create(
-  "plots/year_status_results_fixed",
-  recursive = TRUE,
-  showWarnings = FALSE
-)
-
-for (region in unique(year_status_results$reporting_name)) {
+plot_period_status <- function(df, metric_id, panel_letter) {
   
-  message("Plotting year status bars: ", region)
+  metric_df <- df %>% filter(metric_id == !!metric_id)
   
-  plot_df <- year_status_results %>%
-    filter(reporting_name == region)
+  if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
   
-  plots <- purrr::map2(
-    metric_order,
-    LETTERS[seq_along(metric_order)],
-    ~ plot_one_metric_year_status_bar(plot_df, .x, .y)
-  )
-  
-  p <- wrap_plots(plots, ncol = 2, guides = "collect") +
-    plot_annotation(title = paste(region, "- yearly results by status")) &
-    theme(
-      plot.title = element_text(size = 18, hjust = 0.5),
-      legend.position = "bottom"
-    )
-  
-  safe_name <- region %>%
-    str_replace_all("[^A-Za-z0-9]+", "_") %>%
-    str_replace_all("_$", "")
-  
-  ggsave(
-    filename = file.path(
-      "plots/year_status_results_fixed",
-      paste0(safe_name, "_year_status_bars.png")
-    ),
-    plot = p,
-    width = 8,
-    height = 10,
-    dpi = 300
-  )
+  ggplot(metric_df, aes(x = Period, y = response, fill = Status)) +
+    geom_col(position = position_dodge(width = 0.7), width = 0.6, colour = "black", alpha = 0.85) +
+    geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL),
+                  position = position_dodge(width = 0.7),
+                  width = 0.18,
+                  linewidth = 0.6) +
+    scale_fill_manual(values = status_cols, drop = FALSE) +
+    labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
+    theme_minimal(base_size = 16) +
+    plot_theme +
+    theme(legend.position = "bottom")
 }
 
-# -----------------------------
-# 8. Plot one bar per year, coloured by Period
-# -----------------------------
 
-plot_one_metric_year_period_bar <- function(df, metric_id, panel_letter) {
+
+plot_start_date <- function(df, metric_id, panel_letter) {
   
   metric_df <- df %>%
-    filter(metric_id == !!metric_id)
+    filter(metric_id == !!metric_id) %>%
+    arrange(start_date_date)
   
-  if (nrow(metric_df) == 0) {
-    return(
-      ggplot() +
-        theme_void() +
-        labs(tag = panel_letter) +
-        theme(
-          plot.tag = element_text(size = 18),
-          plot.tag.position = c(0, 1)
-        )
-    )
-  }
+  if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
   
-  ggplot(
-    metric_df,
-    aes(x = year_num, y = response, fill = Period)
-  ) +
-    geom_col(
-      width = 0.65,
-      colour = "black",
-      alpha = 0.85
-    ) +
+  ggplot(metric_df, aes(x = start_date_date, y = response, fill = Period)) +
+    geom_col(width = 120, colour = "black", alpha = 0.85) +
     geom_errorbar(
       aes(ymin = asymp.LCL, ymax = asymp.UCL),
-      width = 0.2,
+      width = 40,
       linewidth = 0.6
     ) +
     scale_fill_manual(values = metric_period_cols, drop = FALSE) +
+    scale_x_date(
+      date_breaks = "1 year",
+      date_labels = "%Y",
+      expand = expansion(mult = c(0.03, 0.03))
+    ) +
     labs(
       x = NULL,
       y = metric_y_lab[[metric_id]],
-      fill = NULL,
-      tag = panel_letter
+      tag = panel_letter,
+      fill = NULL
     ) +
-    
-    scale_x_continuous(
-      breaks = sort(unique(metric_df$year_num)),
-      labels = sort(unique(metric_df$year_num)),
-      expand = expansion(mult = c(0.03, 0.03))
-    ) +
-  
     theme_minimal(base_size = 16) +
     plot_theme +
     theme(
-      panel.grid = element_blank(),
-      axis.title.y = element_text(size = 16),
-      axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
-      plot.tag = element_text(size = 18),
-      plot.tag.position = c(0, 1),
+      axis.text.x = element_text(angle = 90, hjust = 1),
       legend.position = "bottom"
     )
 }
 
-dir.create(
-  "plots/year_period_results_fixed",
-  recursive = TRUE,
-  showWarnings = FALSE
+# plot_start_date_status <- function(df, metric_id, panel_letter) {
+#   
+#   metric_df <- df %>%
+#     filter(metric_id == !!metric_id) %>%
+#     arrange(start_date_date)
+#   
+#   if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
+#   
+#   ggplot(metric_df, aes(x = start_date_date, y = response, fill = Status)) +
+#     geom_col(position = position_dodge(width = 30), width = 25, colour = "black", alpha = 0.85) +
+#     geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL),
+#                   position = position_dodge(width = 30),
+#                   width = 10,
+#                   linewidth = 0.6) +
+#     scale_fill_manual(values = status_cols, drop = FALSE) +
+#     scale_x_date(
+#       breaks = sort(unique(metric_df$start_date_date)),
+#       labels = scales::label_date("%b\n%Y"),
+#       expand = expansion(mult = c(0.03, 0.03))
+#     ) +
+#     labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
+#     theme_minimal(base_size = 16) +
+#     plot_theme +
+#     theme(axis.text.x = element_text(angle = 90, hjust = 1),
+#           legend.position = "bottom")
+# }
+
+plot_start_date_status <- function(df, metric_id, panel_letter) {
+  
+  metric_df <- df %>%
+    filter(metric_id == !!metric_id) %>%
+    arrange(start_date_date)
+  
+  if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
+  
+  ggplot(metric_df, aes(x = start_date_date, y = response, fill = Status)) +
+    geom_col(
+      position = position_dodge(width = 120),
+      width = 100,
+      colour = "black",
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(ymin = asymp.LCL, ymax = asymp.UCL),
+      position = position_dodge(width = 120),
+      width = 35,
+      linewidth = 0.6
+    ) +
+    scale_fill_manual(values = status_cols, drop = FALSE) +
+    scale_x_date(
+      date_breaks = "1 year",
+      date_labels = "%Y",
+      expand = expansion(mult = c(0.03, 0.03))
+    ) +
+    labs(
+      x = NULL,
+      y = metric_y_lab[[metric_id]],
+      tag = panel_letter,
+      fill = NULL
+    ) +
+    theme_minimal(base_size = 16) +
+    plot_theme +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1),
+      legend.position = "bottom"
+    )
+}
+
+# -----------------------------
+# 6. Save four plot types
+# -----------------------------
+
+save_patchwork_plots <- function(results_df, plot_fun, output_dir, suffix, title_suffix, width = 8) {
+  
+  dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+  
+  for (region in unique(results_df$reporting_name)) {
+    
+    plot_df <- results_df %>% filter(reporting_name == region)
+    
+    plots <- map2(
+      metric_order,
+      LETTERS[seq_along(metric_order)],
+      ~ plot_fun(plot_df, .x, .y)
+    )
+    
+    p <- wrap_plots(plots, ncol = 2, guides = "collect") &
+      # plot_annotation(title = paste(region, "-", title_suffix)) &
+      theme(
+        plot.title = element_text(size = 18, hjust = 0.5),
+        legend.position = "bottom"
+      )
+    
+    safe_name <- region %>%
+      str_replace_all("[^A-Za-z0-9]+", "_") %>%
+      str_replace_all("_$", "")
+    
+    ggsave(
+      filename = file.path(output_dir, paste0(safe_name, "_", suffix, ".png")),
+      plot = p,
+      width = width,
+      height = 10,
+      dpi = 300
+    )
+  }
+}
+
+save_patchwork_plots(
+  period_results,
+  plot_period,
+  "plots/period_results",
+  "period",
+  "period means"
 )
 
-for (region in unique(year_results$reporting_name)) {
-  
-  message("Plotting one bar per year: ", region)
-  
-  plot_df <- year_results %>%
-    filter(reporting_name == region)
-  
-  plots <- purrr::map2(
-    metric_order,
-    LETTERS[seq_along(metric_order)],
-    ~ plot_one_metric_year_period_bar(plot_df, .x, .y)
-  )
-  
-  p <- wrap_plots(plots, ncol = 2, guides = "collect") +
-    plot_annotation(title = paste(region, "- yearly results")) &
-    theme(
-      plot.title = element_text(size = 18, hjust = 0.5),
-      legend.position = "bottom"
-    )
-  
-  safe_name <- region %>%
-    str_replace_all("[^A-Za-z0-9]+", "_") %>%
-    str_replace_all("_$", "")
-  
-  ggsave(
-    filename = file.path(
-      "plots/year_period_results_fixed",
-      paste0(safe_name, "_year_period_bars.png")
-    ),
-    plot = p,
-    width = 8,
-    height = 10,
-    dpi = 300
-  )
+save_patchwork_plots(
+  period_status_results,
+  plot_period_status,
+  "plots/period_status_results",
+  "period_status",
+  "period means by status"
+)
+
+save_patchwork_plots(
+  start_date_results,
+  plot_start_date,
+  "plots/start_date_results",
+  "start_date",
+  "temporal results"
+)
+
+save_patchwork_plots(
+  start_date_status_results,
+  plot_start_date_status,
+  "plots/start_date_status_results",
+  "start_date_status",
+  "temporal results by status",
+  width = 12
+)
+
+
+# Checking
+expected_locations <- sort(unique(abund_dat$reporting_name))
+
+actual_locations <- sort(unique(start_date_results$reporting_name))
+
+setdiff(expected_locations, actual_locations)
+
+
+
+check_raw_dates <- function(df, response_col, region_name) {
+  df %>%
+    filter(reporting_name == region_name) %>%
+    mutate(
+      start_date_date = as.Date(start_date),
+      year = format(start_date_date, "%Y")
+    ) %>%
+    group_by(year, start_date_date, period, status) %>%
+    summarise(
+      n_rows = n(),
+      n_non_missing_response = sum(!is.na(.data[[response_col]])),
+      .groups = "drop"
+    ) %>%
+    arrange(start_date_date)
 }
+
+check_raw_dates(
+  hab_data$total_abundance_samples,
+  "total_abundance_sample",
+  "Aldinga - Aldinga Reef Sanctuary Zone"
+)
+
+t <- start_date_results %>%
+  filter(reporting_name == "Aldinga - Aldinga Reef Sanctuary Zone") %>%
+  count(metric, start_date_date, Period) %>%
+  arrange(metric, start_date_date)
+
