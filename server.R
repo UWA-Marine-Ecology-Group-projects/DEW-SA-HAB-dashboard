@@ -3486,7 +3486,7 @@ server <- function(input, output, session) {
     make_top10_plot(
       region_name    = input$region,
       focal_period   = "Bloom",
-      title_lab      = "Most common species post-bloom",
+      title_lab      = "Most common species during bloom",
       number_species = input$region_number_species,
       split_status   = input$region_species_status,
       facet_status   = input$region_species_facet
@@ -3542,7 +3542,7 @@ server <- function(input, output, session) {
     p2 <- make_top10_plot(
       region_name  = input$region,
       focal_period   = "Bloom",
-      title_lab      = "Most common species post-bloom",
+      title_lab      = "Most common species during bloom",
       number_species = input$region_number_species,
       split_status   = input$region_species_status,
       facet_status   = input$region_species_facet
@@ -4454,7 +4454,7 @@ server <- function(input, output, session) {
     make_top10_plot_location(
       location_name  = input$location,
       focal_period   = "Bloom",
-      title_lab      = "Most common species post-bloom",
+      title_lab      = "Most common species during bloom",
       number_species = input$location_number_species,
       split_status   = input$location_species_status,
       facet_status   = input$location_species_facet
@@ -4534,7 +4534,7 @@ server <- function(input, output, session) {
     p2 <- make_top10_plot_location(
       location_name  = input$location,
       focal_period   = "Bloom",
-      title_lab      = "Most common species post-bloom",
+      title_lab      = "Most common species during bloom",
       number_species = input$location_number_species,
       split_status   = input$location_species_status,
       facet_status   = input$location_species_facet
