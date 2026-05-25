@@ -557,7 +557,8 @@ period_results <- bind_rows(
   shannon_models$period_means,
   fish_200_models$period_means
 ) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup))
+  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
 period_status_results <- bind_rows(
   abund_models$period_status_means,
@@ -567,7 +568,8 @@ period_status_results <- bind_rows(
   shannon_models$period_status_means,
   fish_200_models$period_status_means
 ) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup))
+  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
 start_date_results <- bind_rows(
   abund_models$start_date_means,
@@ -577,7 +579,8 @@ start_date_results <- bind_rows(
   shannon_models$start_date_means,
   fish_200_models$start_date_means
 ) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup))
+  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
 start_date_status_results <- bind_rows(
   abund_models$start_date_status_means,
@@ -587,7 +590,23 @@ start_date_status_results <- bind_rows(
   shannon_models$start_date_status_means,
   fish_200_models$start_date_status_means
 ) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup))
+  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
+
+readr::write_excel_csv(period_results, "model_results/period_results.csv")
+readr::write_excel_csv(period_status_results, "model_results/period_status_results.csv")
+readr::write_excel_csv(start_date_results, "model_results/start_date_results.csv")
+readr::write_excel_csv(start_date_status_results, "model_results/start_date_status_results.csv")
+
+writexl::write_xlsx(
+  list(
+    period_results = period_results,
+    period_status_results = period_status_results,
+    start_date_results = start_date_results,
+    start_date_status_results = start_date_status_results
+  ),
+  "model_results/model_results.xlsx"
+)
 
 # -----------------------------
 # 5. Plot helpers
