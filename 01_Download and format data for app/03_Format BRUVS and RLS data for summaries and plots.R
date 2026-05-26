@@ -170,17 +170,21 @@ rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
 
 bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) %>%
   semi_join(bruv_metadata)
 
 rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
-  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) 
 
 bruv_length <- readRDS("data/raw/sa_length_bruv.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) %>%
   semi_join(bruv_metadata)
 
 rls_length <- readRDS("data/raw/sa_length_rls.RDS") %>%
-  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus))
 
 # Start to format data ----
 # Fix sanctuary locations in the BRUV metadata ----
@@ -1864,39 +1868,79 @@ test <- location_species_stacked_split$plot_df
 
 MASTER_COLOURS <- readRDS("sasha example/master_species_colours.rds")
 
+# build_species_palette <- function(species_vec, dew_species, colour_pool) {
+#   
+#   # Match species to dew_species table
+#   lookup <- dew_species %>%
+#     dplyr::select(genus_species, colour)
+#   
+#   df <- data.frame(genus_species = species_vec) %>%
+#     dplyr::left_join(lookup, by = "genus_species")
+#   
+#   # Existing colours from dew_species
+#   used_cols <- df$colour[!is.na(df$colour)]
+#   
+#   # Species needing colours
+#   missing_species <- df$genus_species[is.na(df$colour)]
+#   
+#   if (length(missing_species) > 0) {
+#     
+#     available_cols <- setdiff(colour_pool, used_cols)
+#     
+#     if (length(available_cols) < length(missing_species)) {
+#       stop("Not enough colours in master palette")
+#     }
+#     
+#     # Assign colours
+#     new_cols <- setNames(
+#       sample(available_cols, length(missing_species)),
+#       missing_species
+#     )
+#     
+#     df$colour[is.na(df$colour)] <- new_cols[df$genus_species[is.na(df$colour)]]
+#   }
+#   
+#   # Named vector for ggplot
+#   setNames(df$colour, df$genus_species)
+# }
+
+
+clean_species <- function(x) {
+  x %>%
+    str_remove("^<i>") %>%
+    str_remove("</i><br>.*$") %>%
+    trimws()
+}
+
 build_species_palette <- function(species_vec, dew_species, colour_pool) {
   
-  # Match species to dew_species table
   lookup <- dew_species %>%
-    dplyr::select(genus_species, colour)
+    mutate(
+      species_key = trimws(genus_species),
+      colour = na_if(colour, "NA")
+    ) %>%
+    select(species_key, colour) %>%
+    distinct(species_key, .keep_all = TRUE)
   
-  df <- data.frame(genus_species = species_vec) %>%
-    dplyr::left_join(lookup, by = "genus_species")
+  df <- tibble(
+    genus_species = species_vec,
+    species_key = clean_species(species_vec)
+  ) %>%
+    left_join(lookup, by = "species_key")
   
-  # Existing colours from dew_species
   used_cols <- df$colour[!is.na(df$colour)]
+  missing_i <- which(is.na(df$colour))
   
-  # Species needing colours
-  missing_species <- df$genus_species[is.na(df$colour)]
-  
-  if (length(missing_species) > 0) {
-    
+  if (length(missing_i) > 0) {
     available_cols <- setdiff(colour_pool, used_cols)
     
-    if (length(available_cols) < length(missing_species)) {
+    if (length(available_cols) < length(missing_i)) {
       stop("Not enough colours in master palette")
     }
     
-    # Assign colours
-    new_cols <- setNames(
-      sample(available_cols, length(missing_species)),
-      missing_species
-    )
-    
-    df$colour[is.na(df$colour)] <- new_cols[df$genus_species[is.na(df$colour)]]
+    df$colour[missing_i] <- sample(available_cols, length(missing_i))
   }
   
-  # Named vector for ggplot
   setNames(df$colour, df$genus_species)
 }
 
@@ -1909,6 +1953,8 @@ all_species <- unique(
 )
 
 all_species <- setdiff(all_species, "Other")
+
+set.seed(2)
 
 species_palette <- build_species_palette(
   species_vec = all_species,

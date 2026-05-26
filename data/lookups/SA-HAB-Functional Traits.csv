@@ -139,7 +139,7 @@ Tetractenos glaber,Teleost,Non-target,Carnivore,Smooth toadfish,short and / or d
 Thamnaconus degeni,Teleost,Target,Omnivore,Bluefin leatherjacket,short and / or deep,demersal,#941CCB
 Thyrsites atun,Teleost,Target,Carnivore,Barracouta,elongated,benthopelagic,NA
 Tilodon sexfasciatus,Teleost,Non-target,Carnivore,Moonlighter,short and / or deep,demersal,NA
-Torquigener pleurogramma,Teleost,Non-target,Carnivore,Toadfish,fusiform / normal,demersal,NA
+Torquigener pleurogramma,Teleost,Non-target,Carnivore,Weeping toadfish,fusiform / normal,demersal,NA
 Trachichthys australis,Teleost,Non-target,Planktivore,Southern roughy,short and / or deep,reef-associated,NA
 Trachinops noarlungae,Teleost,Non-target,Carnivore,Yellowhead hulafish,elongated,reef-associated,NA
 Trachurus declivis,Teleost,Target,Carnivore,Common jack mackerel,fusiform / normal,benthopelagic,NA
@@ -180,7 +180,7 @@ Austrodromidia octodentata,Invertebrate,Non-target,NA,Sponge crab,NA,NA,NA
 Aracana spp,Teleost,Non-target,Carnivore,Cowfish,NA,demersal,NA
 Engraulis australis,Teleost,Target,Planktivore,Anchovy,elongated,pelagic-neritic,#A3809F
 Phalacrocorax fuscescens,Other,Non-target,NA,Cormorant,NA,NA,NA
-Sillago schomburgkii,NA,NA,NA,NA,NA,NA,NA
+Sillago schomburgkii,NA,NA,NA,Yellowfin whiting,NA,NA,NA
 Odax cyanomelas,NA,NA,NA,NA,NA,NA,NA
 Portunidae australiensis,NA,NA,NA,NA,NA,NA,NA
 Siphonognathus spp,NA,NA,NA,NA,NA,NA,NA
@@ -191,14 +191,14 @@ Unknown spp,NA,NA,NA,NA,NA,NA,NA
 Platycephalus spp,NA,NA,NA,NA,NA,NA,NA
 Parequula elongata,NA,NA,NA,NA,NA,NA,NA
 Unknown australiensis,NA,NA,NA,NA,NA,NA,NA
-Pseudocaranx georgianus,NA,NA,NA,NA,NA,NA,NA
+Pseudocaranx georgianus,NA,NA,NA,Silver trevally,NA,NA,NA
 Nototodarus gouldi,NA,NA,NA,NA,NA,NA,NA
 Dasella brevicaudata,NA,NA,NA,NA,NA,NA,NA
 Cheilio nigripes,NA,NA,NA,NA,NA,NA,NA
 Cheilinus nigripes,NA,NA,NA,NA,NA,NA,NA
 Labrus laticlavis,NA,NA,NA,NA,NA,NA,NA
 Nesogobius spp,NA,NA,NA,NA,NA,NA,NA
-Sillago bassensis,NA,NA,NA,NA,NA,NA,NA
+Sillago bassensis,NA,NA,NA,Southern School Whiting,NA,NA,NA
 Diodon nichthemerus,NA,NA,NA,NA,NA,NA,NA
 Lepidotrigla papilio,NA,NA,NA,NA,NA,NA,NA
 Octopus spp,NA,NA,NA,NA,NA,NA,NA
@@ -215,7 +215,7 @@ Cnidoglanis macrocephalus,NA,NA,NA,NA,NA,NA,NA
 Urolophus cruciatus,NA,NA,NA,NA,NA,NA,NA
 Contusus brevicaudus,NA,NA,NA,NA,NA,NA,NA
 Lepidotrigla vanessa,NA,NA,NA,NA,NA,NA,NA
-Pelates octolineatus,NA,NA,NA,NA,NA,NA,NA
+Pelates octolineatus,NA,NA,NA,Western striped grunter,NA,NA,NA
 Cheilodactylus nigripes,NA,NA,NA,NA,NA,NA,NA
 Pseudophycis palmata,NA,NA,NA,NA,NA,NA,NA
 Meuschenia scabra,NA,NA,NA,NA,NA,NA,NA

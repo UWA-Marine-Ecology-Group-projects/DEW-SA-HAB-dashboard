@@ -557,7 +557,10 @@ period_results <- bind_rows(
   shannon_models$period_means,
   fish_200_models$period_means
 ) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  mutate(
+    metric_id = recode(metric, !!!metric_lookup),
+    Period = factor(Period, levels = c("Pre-bloom", "Bloom"))
+  ) %>%
   dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
 period_status_results <- bind_rows(
@@ -568,7 +571,8 @@ period_status_results <- bind_rows(
   shannon_models$period_status_means,
   fish_200_models$period_status_means
 ) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+  mutate(metric_id = recode(metric, !!!metric_lookup),
+         Period = factor(Period, levels = c("Pre-bloom", "Bloom"))) %>%
   dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
 
 start_date_results <- bind_rows(

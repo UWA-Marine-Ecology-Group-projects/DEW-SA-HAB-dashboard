@@ -250,10 +250,10 @@ metric_plot_type_input_id <- function(prefix, metric_id) {
 }
 
 metric_tab_body_ui <- function(metric_id, prefix = "em") {
-
+  
   data_id <- metric_data_key(metric_id)
   plot_type_id <- metric_plot_type_input_id(prefix, data_id)
-
+  
   tagList(
     bslib::layout_columns(
       col_widths = c(12),
@@ -263,7 +263,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         value = FALSE  # FALSE = default bars
       )
     ),
-
+    
     # Your existing layout(s)
     switch(
       metric_id,
@@ -287,7 +287,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
             col_widths = c(6, 6),
             metric_plot_with_downloads(prefix, data_id, "main"),
             metric_plot_with_downloads(prefix, data_id, "status")
-
+            
           ),
           layout_columns(
             col_widths = c(12),
@@ -295,7 +295,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
           )
         )
       },
-
+      
       total_abundance = {
         tagList(
           h4("Total abundance"),
@@ -310,7 +310,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
           )
         )
       },
-
+      
       shark_ray_richness = {
         tagList(
           h4("Shark and ray richness"),
@@ -326,7 +326,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
           )
         )
       },
-
+      
       reef_associated_richness = {
         tagList(
           h4("Reef associated species richness"),
@@ -341,7 +341,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
           )
         )
       },
-
+      
       shannon_diversity = {
         tagList(
           h4("Shannon diversity index"),
@@ -356,7 +356,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
           )
         )
       },
-
+      
       fish_200_abundance = {
         tagList(
           h4("Fish greater than 200mm abundance"),
@@ -371,7 +371,7 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
           )
         )
       },
-
+      
       trophic = {
         tagList(
           h4("Abundance by trophic level"),
@@ -388,20 +388,20 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
         )
       },
       
-
-
+      
+      
       # default: 2 plots
       {
         div(
           layout_columns(
-          col_widths = c(6, 6),
-          metric_plot_with_downloads(prefix, data_id, "main"),
-          metric_plot_with_downloads(prefix, data_id, "status")
-        ),
-        layout_columns(
-          col_widths = c(12),
-          metric_plot_with_downloads(prefix, data_id, "year")
-        ))
+            col_widths = c(6, 6),
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "status")
+          ),
+          layout_columns(
+            col_widths = c(12),
+            metric_plot_with_downloads(prefix, data_id, "year")
+          ))
       }
     )
   )
@@ -633,8 +633,10 @@ plot_stacked_species <- function(
       panel.grid = ggplot2::element_blank(),
       axis.text.x = ggplot2::element_text(size = 13),
       # legend.text = ggplot2::element_text(face = "italic"),
-      legend.text = ggtext::element_markdown(),
-      legend.position = "right"
+      legend.text = ggtext::element_markdown(size = 10),
+      legend.position = "right",
+      legend.key.height = unit(0.8, "cm"),
+      legend.spacing.y = unit(0.2, "cm")
     ) + plot_theme + 
     scale_y_continuous(expand = expansion(mult = c(0, 0)))
 }
@@ -1824,7 +1826,7 @@ server <- function(input, output, session) {
           x = NULL,
           y = metric_y_lab[["total_abundance"]]#,
           #subtitle = paste0(input$region,
-                            # ": Average total abundance per sample by status")
+          # ": Average total abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -3261,7 +3263,7 @@ server <- function(input, output, session) {
     # ---- Data prep ----
     df_raw <- hab_data$region_top_species_average |>
       dplyr::filter(region == region_name)
-
+    
     # Top N species within the focal period
     top_species <- df_raw |>
       dplyr::filter(period == focal_period) |>
@@ -4610,11 +4612,11 @@ server <- function(input, output, session) {
     hab_data$species_richness_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
       dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) #%>%
-      # group_by(campaignid) %>%
-      # mutate(
-      #   campaign_date = min(date),
-      # ) %>%
-      # ungroup()
+    # group_by(campaignid) %>%
+    # mutate(
+    #   campaign_date = min(date),
+    # ) %>%
+    # ungroup()
   })
   
   richness_main_results_location <- reactive({
@@ -4904,9 +4906,9 @@ server <- function(input, output, session) {
     hab_data$total_abundance_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
       dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) #%>%
-      # group_by(campaignid) %>%
-      # mutate(campaign_date = min(date)) %>%
-      # ungroup()
+    # group_by(campaignid) %>%
+    # mutate(campaign_date = min(date)) %>%
+    # ungroup()
   })
   
   total_abundance_main_results_location <- reactive({
@@ -5110,7 +5112,7 @@ server <- function(input, output, session) {
           x = NULL,
           y = metric_y_lab[["total_abundance"]]#,
           # subtitle = paste0(input$location,
-                            # ": Average total abundance per sample by status")
+          # ": Average total abundance per sample by status")
         ) +
         theme_minimal(base_size = 16) +
         theme(
@@ -5224,9 +5226,9 @@ server <- function(input, output, session) {
     hab_data$shark_ray_richness_samples_location %>%
       dplyr::filter(reporting_name == input$location) %>%
       dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) #%>%
-      # group_by(campaignid) %>%
-      # mutate(campaign_date = min(date)) %>%
-      # ungroup()
+    # group_by(campaignid) %>%
+    # mutate(campaign_date = min(date)) %>%
+    # ungroup()
   })
   
   shark_ray_richness_main_results_location <- reactive({
@@ -5552,9 +5554,9 @@ server <- function(input, output, session) {
     hab_data$reef_associated_richness_samples %>%
       dplyr::filter(reporting_name == input$location) %>%
       dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))# %>%
-      # group_by(campaignid) %>%
-      # mutate(campaign_date = min(date)) %>%
-      # ungroup()
+    # group_by(campaignid) %>%
+    # mutate(campaign_date = min(date)) %>%
+    # ungroup()
   })
   
   reef_associated_richness_main_results_location <- reactive({
@@ -6858,7 +6860,7 @@ server <- function(input, output, session) {
   })
   
   # Start from the SUMMARY table (means per sample)
-
+  
   # COMBINED PLOT ----
   # main ----
   loc_plot_combined_main <- reactive({
@@ -6921,7 +6923,7 @@ server <- function(input, output, session) {
     plot_theme <- theme(
       axis.line.x = element_line(color = "black", linewidth = 0.5),
       axis.line.y = element_line(color = "black", linewidth = 0.5),
-    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
     
     p1 <- shannon_diversity_year_plot_location() +
       # theme(axis.text.x = element_blank())+
@@ -6946,12 +6948,12 @@ server <- function(input, output, session) {
       plot_theme +  
       # scale_y_continuous(expand = expansion(mult = c(0, 0)))+ 
       theme(legend.title = element_blank())
-   
-     p5 <- fish_200_abundance_year_plot_location()+ 
+    
+    p5 <- fish_200_abundance_year_plot_location()+ 
       plot_theme +  
       # scale_y_continuous(expand = expansion(mult = c(0, 0)))+ 
-       theme(legend.title = element_blank())
-
+      theme(legend.title = element_blank())
+    
     p6 <- trophic_year_plot_location() +
       plot_theme +
       scale_y_continuous(expand = expansion(mult = c(0, 0)))
@@ -7211,7 +7213,7 @@ server <- function(input, output, session) {
         filename = file,
         plot = location_stacked_split(),
         width = 8,
-        height = 5,
+        height = 6,
         dpi = 300
       )
     }
