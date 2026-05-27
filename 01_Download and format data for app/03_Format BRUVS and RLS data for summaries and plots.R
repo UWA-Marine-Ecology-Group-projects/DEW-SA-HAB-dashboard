@@ -634,6 +634,9 @@ location_top_species_average <- combined_count %>%
   ) %>%
   left_join(location_number_samples)
 
+# Save combined count
+# saveRDS(combined_count, "raw_count.RDS")
+
 test_duplicates <- dew_species %>%
   group_by(genus_species) %>%
   dplyr::summarise(n = n()) %>%
@@ -1225,7 +1228,6 @@ species_richness_summary_location_split <- species_richness_samples %>%
   )
 
 unique(species_richness_summary_location_split$period) %>% sort()
-
 
 calc_impacts_split <- function(summary_df, group_col, metric_id) {
   group_col <- rlang::enquo(group_col)
