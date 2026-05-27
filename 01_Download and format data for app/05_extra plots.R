@@ -3,6 +3,18 @@ library(dplyr)
 library(ggplot2)
 library(CheckEM)
 library(forcats)
+library(ggtext)
+
+plot_theme <- theme_bw(base_size = 16)  + theme(
+  axis.line.x = element_line(color = "black", linewidth = 0.5),
+  axis.line.y = element_line(color = "black", linewidth = 0.5),
+  axis.text.x = ggtext::element_markdown(),
+  axis.text.y = ggtext::element_markdown(),
+  panel.grid.minor = element_blank(),
+  panel.grid.major = element_blank(),
+  legend.position = "bottom"
+) 
+
 
 # Read in data -----
 load("app_data/hab_data.Rdata")
@@ -66,7 +78,10 @@ top_species_average_overall <- combined_count %>%
   ) %>%
   dplyr::mutate(
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
-    display_name = paste0(genus, " ", species, " (", common_name, ")")
+    display_name = paste0(
+      "<i>", genus, " ", species, "</i><br>",
+      " (", common_name, ")"
+    )
   ) 
 
 
@@ -113,7 +128,10 @@ top_species_average <- combined_count %>%
   ) %>%
   dplyr::mutate(
     common_name = dplyr::if_else(is.na(common_name), australian_common_name, common_name),
-    display_name = paste0(genus, " ", species, " (", common_name, ")")
+    display_name = paste0(
+      "<i>", genus, " ", species, "</i><br>",
+      " (", common_name, ")"
+    )
   ) 
 
 # Species averages -----
@@ -158,7 +176,8 @@ period_levels <- c(
 )
 
 plot_data <- plot_data %>%
-  mutate(period = factor(period, levels = period_levels))
+  mutate(period = factor(period, levels = period_levels)) %>%
+  dplyr::filter(!is.na(reporting_name))
 
 bloom_periods <- setdiff(period_levels, "Pre-bloom")
 
@@ -171,11 +190,11 @@ fill_cols <- c(
   setNames(bloom_cols, bloom_periods)
 )
 
-scale_fill_manual(
-  values = fill_cols,
-  breaks = period_levels,
-  drop = FALSE
-)
+# scale_fill_manual(
+#   values = fill_cols,
+#   breaks = period_levels,
+#   drop = FALSE
+# )
 
 # # Plot ----
 
@@ -185,16 +204,30 @@ pd <- position_dodge(width = 0.8, reverse = TRUE)
 library(purrr)
 
 # Unique reporting names
-reporting_names <- unique(plot_data$reporting_name)
+reporting_names <- unique((plot_data)$reporting_name)
 
 # Create output folder
 dir.create("plots/species", recursive = TRUE, showWarnings = FALSE)
 
+
 # Loop through regions
 for(i in reporting_names){
-  
+
   dat_i <- plot_data %>%
     filter(reporting_name == i)
+  
+  plot_periods <- period_levels[period_levels %in% dat_i$period]
+  
+  plot_bloom_periods <- setdiff(plot_periods, "Pre-bloom")
+  
+  plot_bloom_cols <- grDevices::colorRampPalette(
+    c("#e88e98", "#f8d7da")
+  )(length(plot_bloom_periods))
+  
+  plot_fill_cols <- c(
+    "Pre-bloom" = "#072759",
+    setNames(plot_bloom_cols, plot_bloom_periods)
+  )
   
   species_order <- dat_i %>%
     distinct(display_name, overall_average) %>%
@@ -228,7 +261,7 @@ for(i in reporting_names){
     ) +
     coord_flip() +
     scale_fill_manual(
-      values = fill_cols,
+      values = plot_fill_cols,
       breaks = period_levels
     ) +
     labs(
@@ -237,10 +270,12 @@ for(i in reporting_names){
       y = "Average abundance",
       fill = NULL
     ) +
-    theme_bw() +
+    theme_minimal(base_size = 16) +
     theme(
-      legend.position = "bottom"
-    )
+      # legend.position  = "none",
+      panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+    )+
+    plot_theme
   
   print(p)
   
@@ -252,7 +287,110 @@ for(i in reporting_names){
       ".png"
     ),
     plot = p,
-    width = 8,
+    width = 7,
+    height = 5,
+    dpi = 300
+  )
+}
+
+
+
+top5_region_species_occurrence <- top_species_average_overall %>%
+  group_by(reporting_name) %>%
+  slice_max(
+    overall_n_samples_present,
+    n = 5,
+    with_ties = FALSE
+  ) %>%
+  ungroup()
+
+plot_data_occurrence <- top_species_average %>%
+  semi_join(
+    top5_region_species_occurrence,
+    by = c("reporting_name", "display_name")
+  ) %>%
+  left_join(
+    top5_region_species_occurrence,
+    by = c("reporting_name", "display_name")
+  ) %>%
+  mutate(
+    period = factor(period, levels = period_levels)
+  )
+
+
+dir.create("plots/species_occurrence", recursive = TRUE, showWarnings = FALSE)
+
+for(i in unique(plot_data_occurrence$reporting_name)){
+  
+  dat_i <- plot_data_occurrence %>%
+    filter(reporting_name == i)
+  
+  species_order <- dat_i %>%
+    distinct(display_name, overall_n_samples_present) %>%
+    arrange(overall_n_samples_present) %>%
+    pull(display_name)
+  
+  dat_i <- dat_i %>%
+    mutate(display_name = factor(display_name, levels = species_order))
+  
+  plot_periods <- period_levels[period_levels %in% dat_i$period]
+  
+  plot_bloom_periods <- setdiff(plot_periods, "Pre-bloom")
+  
+  plot_bloom_cols <- grDevices::colorRampPalette(
+    c("#e88e98", "#f8d7da")
+  )(length(plot_bloom_periods))
+  
+  plot_fill_cols <- c(
+    "Pre-bloom" = "#072759",
+    setNames(plot_bloom_cols, plot_bloom_periods)
+  )
+  
+  p <- ggplot(
+    dat_i,
+    aes(
+      x = display_name,
+      y = average,
+      fill = period
+    )
+  ) +
+    geom_col(position = pd, width = 0.7) +
+    geom_errorbar(
+      aes(
+        ymin = pmax(0, average - se),
+        ymax = average + se
+      ),
+      position = pd,
+      width = 0.2
+    ) +
+    coord_flip() +
+    scale_fill_manual(
+      values = plot_fill_cols,
+      breaks = period_levels,
+      drop = TRUE
+    ) +
+    labs(
+      x = NULL,
+      y = "Average abundance",
+      fill = NULL
+    ) +
+    # theme_minimal(base_size = 16) +
+    theme(
+      # legend.position  = "none",
+      panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+    )+
+    plot_theme
+  
+  print(p)
+  
+  ggsave(
+    filename = paste0(
+      "plots/species_occurrence/",
+      gsub("[^A-Za-z0-9]", "_", i),
+      ".png"
+    ),
+    plot = p,
+    width = 7,
     height = 5,
     dpi = 300
   )
