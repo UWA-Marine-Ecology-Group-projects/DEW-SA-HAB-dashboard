@@ -171,6 +171,9 @@ rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
 bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
   dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) %>%
+  dplyr::mutate(species = if_else((species %in% "georgianus" & genus %in% "Pseudocaranx"), "spp", species)) %>%
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
+  dplyr::mutate(scientific = paste(family, genus, species)) %>%
   semi_join(bruv_metadata)
 
 rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
@@ -180,6 +183,9 @@ rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
 bruv_length <- readRDS("data/raw/sa_length_bruv.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
   dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) %>%
+  dplyr::mutate(species = if_else((species %in% "georgianus" & genus %in% "Pseudocaranx"), "spp", species)) %>%
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
+  dplyr::mutate(scientific = paste(family, genus, species)) %>%
   semi_join(bruv_metadata)
 
 rls_length <- readRDS("data/raw/sa_length_rls.RDS") %>%
