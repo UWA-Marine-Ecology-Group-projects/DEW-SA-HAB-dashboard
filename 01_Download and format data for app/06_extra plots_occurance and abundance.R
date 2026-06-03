@@ -61,7 +61,7 @@ max_species_per_plot <- Inf
 # show_value_labels adds the numeric values at the end of bars.
 # include_location_in_title is FALSE because you said you do not want plot titles.
 show_error_bars <- TRUE
-show_value_labels <- TRUE
+show_value_labels <- FALSE
 include_location_in_title <- FALSE
 
 # Colours.
