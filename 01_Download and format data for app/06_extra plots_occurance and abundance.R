@@ -365,11 +365,20 @@ get_species_to_plot <- function(location_name, metric, focus_group) {
     # Occurrence plots:
     # Keep species that occur in at least 15% of deployments in the focus
     # period only.
+    # species_to_plot <- selection_summary %>%
+    #   filter(
+    #     reporting_name == location_name,
+    #     period_group == focus_group,
+    #     occurrence_percent >= occurrence_threshold_percent
+    #   ) %>%
+    #   mutate(selection_value = occurrence_percent)
+    
     species_to_plot <- selection_summary %>%
       filter(
         reporting_name == location_name,
         period_group == focus_group,
-        occurrence_percent >= occurrence_threshold_percent
+        occurrence_percent >= occurrence_threshold_percent,
+        average_abundance > abundance_threshold_per_drop
       ) %>%
       mutate(selection_value = occurrence_percent)
     
