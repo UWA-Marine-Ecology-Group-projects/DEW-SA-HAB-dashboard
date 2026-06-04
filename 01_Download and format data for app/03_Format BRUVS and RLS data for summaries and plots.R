@@ -120,6 +120,9 @@ species_list <- CheckEM::australia_life_history
 
 fish_species <- species_list %>%
   dplyr::filter(class %in% c("Actinopterygii", "Elasmobranchii", "Myxini"))
+
+sharks_species <- species_list %>%
+  dplyr::filter(!class %in% c("Elasmobranchii"))
 # 
 # dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing")
 # 
@@ -597,7 +600,7 @@ location_number_samples <- combined_metadata %>%
   dplyr::summarise(total_n_of_samples_for_period = n()) %>%
   ungroup() %>%
   glimpse()
-  
+
 
 location_top_species_average <- combined_count %>%
   full_join(combined_metadata) %>%
@@ -1010,7 +1013,24 @@ reef_associated_richness_impacts <- reef_associated_richness_summary %>%
 
 # Fish greater than 200 mm abundance ----
 
+fish_200_abundance_samples_original <- combined_length %>%
+  # left_join(CheckEM::australia_life_history) %>%
+  # filter(!class %in% "Elasmobranchii") %>%
+  dplyr::mutate(count = as.numeric(count), length = as.numeric(length)) %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::filter(length > 200) %>%
+  dplyr::group_by(region, period, campaignid, sample, reporting_name) %>%
+  dplyr::summarise(total_abundance_original = sum(count)) %>%
+  ungroup() %>%
+  dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
+  tidyr::replace_na(list(total_abundance_original = 0))  %>%
+  dplyr::filter(!is.na(region)) %>%
+  semi_join(successful_length_drops) %>%
+  left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date))
+
 fish_200_abundance_samples <- combined_length %>%
+  left_join(CheckEM::australia_life_history) %>%
+  filter(class %in% "Actinopterygii") %>%
   dplyr::mutate(count = as.numeric(count), length = as.numeric(length)) %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(length > 200) %>%
@@ -1022,6 +1042,14 @@ fish_200_abundance_samples <- combined_length %>%
   dplyr::filter(!is.na(region)) %>%
   semi_join(successful_length_drops) %>%
   left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date))
+
+comparison <- left_join(fish_200_abundance_samples, fish_200_abundance_samples_original) %>%
+  dplyr::mutate(difference = total_abundance_original - total_abundance_sample) %>%
+  select(total_abundance_original, total_abundance_sample, difference, everything())
+# 
+# plot(comparison$total_abundance_sample, comparison$without_sharks_total_abundance_sample)
+
+# unique(fish_200_abundance_samples$class)
 
 fish_200_abundance_summary <- fish_200_abundance_samples %>%
   dplyr::group_by(region, period) %>%
@@ -1794,7 +1822,7 @@ format_stacked_species_data <- function(
         "<i>\\1</i><br>(\\2)"
       )
     )
-
+  
   
   other_labels <- df_sum %>%
     dplyr::anti_join(
