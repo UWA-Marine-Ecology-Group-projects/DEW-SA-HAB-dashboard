@@ -86,13 +86,13 @@ Trygonorrhina dumerilii,Chondrichthyes,By-catch,Carnivore,Southern fiddler ray,o
 Upeneichthys vlamingii,Teleost,Target,Carnivore,Goatfish,fusiform / normal,demersal,#4BDCFF,reef/seagrass/unconsilidated,demersal,No,Y,NA
 Urolophus gigas,Chondrichthyes,Non-target,Carnivore,Spotted stingaree,other,demersal,NA,reef/seagrass/unconsolidated,demersal,No,Y,NA
 Urolophus spp,Chondrichthyes,Non-target,Carnivore,Stingaree,other,demersal,NA,reef/seagrass/unconsolidated,demersal,No,Y,NA
-Austrodromidia octodentata,Invertebrate,Non-target,NA,Sponge crab,NA,NA,NA,NA,Benthic,No,Y,Benthic for these ?
+Austrodromidia octodentata,Invertebrate,Non-target,NA,Sponge crab,NA,NA,NA,reef,Benthic,No,Y,Benthic for these ?
 Coscinasterias muricata,Invertebrate,Non-target,NA,Eleven arm seastar,NA,NA,NA,reef/uncosolidated,Benthic,No,Y,NA
-Diogenidae spp,Invertebrate,Non-target,NA,Hermit crab,NA,NA,NA,NA,Benthic,No,Y,NA
+Diogenidae spp,Invertebrate,Non-target,NA,Hermit crab,NA,NA,NA,reef,Benthic,No,Y,NA
 Guinusia chabrus,Invertebrate,Non-target,NA,Red bait crab,NA,NA,NA,NA,Benthic,No,Y,NA
-Jasus edwardsii,Invertebrate,Target,NA,Southern rock lobster,NA,NA,NA,NA,Benthic,No,Y,NA
+Jasus edwardsii,Invertebrate,Target,NA,Southern rock lobster,NA,NA,NA,reef,Benthic,No,Y,NA
 Leptomithrax gaimardii,Invertebrate,Non-target,NA,Spider crab,NA,NA,#F36600,reef/seagrass/unconsolidated,Benthic,No,Y,NA
-Macroctopus maorum,Invertebrate,Target,NA,Maori octopus,NA,NA,NA,NA,Benthic,No,Y,NA
+Macroctopus maorum,Invertebrate,Target,NA,Maori octopus,NA,NA,NA,reef/seagrass,Benthic,No,Y,NA
 Melicertus latisulcatus,Invertebrate,Target,NA,King prawn,NA,NA,NA,reef/seagrass/unconsolidated,Benthic,No,Y,NA
 Monacanthidae spp,Teleost,Non-target,Omnivore,Leatherjacket,NA,NA,#CA162E,NA,demersal,No,Y,NA
 Naxia aurita,Invertebrate,Non-target,NA,Decorator crab,NA,NA,NA,reef/seagrass,Benthic,No,Y,NA
@@ -101,14 +101,14 @@ Neophoca cinerea,Other,Non-target,NA,Australian sealion,NA,NA,NA,reef/unconsolid
 Nil Nil,Empty,NA,NA,N/A,NA,NA,NA,NA,NA,NA,NA,NA
 Octopodidae spp,Invertebrate,Target,NA,Octopus,NA,NA,NA,reef/seagrass/unconsolidated,Benthic,No,Y,?
 Ovalipes australiensis,Invertebrate,By-catch,NA,Sand crab,NA,NA,NA,unconsolidated,Benthic,No,Y,NA
-Ozius truncatus,Invertebrate,Non-target,NA,Reef crab,NA,NA,NA,NA,Benthic,No,Y,NA
+Ozius truncatus,Invertebrate,Non-target,NA,Reef crab,NA,NA,NA,reef,Benthic,No,Y,NA
 Pectinidae spp,Invertebrate,Target,NA,Scallop,NA,NA,NA,seagrass/unconsolidated,Benthic,No,Y,NA
 Phalacrocorax fuscescens,Other,Non-target,NA,Cormorant,NA,NA,NA,NA,NA,NA,Y,NA
 Phalacrocorax spp,Other,Non-target,NA,Cormorant,NA,NA,NA,NA,NA,NA,Y,NA
 Portunus armatus,Invertebrate,Target,NA,Blue swimmer crab,NA,NA,#00A5AB,reef/seagrass/unconsolidated,Benthic,Yes,Y,NA
 Pycnogonidae spp,Invertebrate,Non-target,NA,Sea spider,NA,NA,NA,NA,Benthic,No,Y,NA
 Sagaminopteron ornatum,Invertebrate,Non-target,NA,Batwing seaslug,NA,NA,NA,NA,NA,No,Y,NA
-Sepia apama,Invertebrate,Target,NA,Giant cuttlefish,NA,NA,NA,NA,Demersal,Yes,Y,?
+Sepia apama,Invertebrate,Target,NA,Giant cuttlefish,NA,NA,NA,reef,Demersal,Yes,Y,?
 Sepioteuthis australis,Invertebrate,Target,NA,Southern calamari,NA,NA,NA,reef/seagrass,Benthopelagic,Yes,Y,?
 Tursiops spp,Other,Non-target,NA,Bottlenose dolphin,NA,NA,NA,reef/seagrass/unconsolidated,pelagic,Yes,Y,?
 Arripis georgianus,Teleost,Target,Carnivore,Australian herring,fusiform / normal,pelagic-neritic,NA,reef/seagrass/unconsolidated,pelagic-neritic,Yes,Y,?
@@ -147,7 +147,7 @@ Gobiesocidae spp,Teleost,Non-target,Omnivore,Clingfish,elongated,reef-associated
 Gobiidae spp,Teleost,Non-target,Omnivore,Goby,elongated,reef-associated,NA,reef/seagrass/unconsolidated,Benthic,No,Y,?
 Gymnothorax prasinus,Teleost,Non-target,Carnivore,Green moray,eel-like,reef-associated,NA,reef,Demersal,No,Y,NA
 Heteroscarus acroptilus,Teleost,Non-target,Omnivore,Rainbow cale,fusiform / normal,reef-associated,NA,reef,Demersal,No,Y,NA
-Hippocampus spp,Teleost,Non-target,Planktivore,Seahorse,elongated,reef-associated,NA,NA,NA,NA,Y,?
+Hippocampus spp,Teleost,Non-target,Planktivore,Seahorse,elongated,reef-associated,NA,reef,NA,NA,Y,?
 Hypoplectrodes nigroruber,Teleost,Target,Carnivore,Banded seaperch,fusiform / normal,reef-associated,NA,reef,Demersal,No,Y,NA
 Latropiscis purpurissatus,Teleost,Target,Carnivore,Sergeant baker,elongated,reef-associated,NA,reef,Demersal,No,Y,NA
 Meuschenia australis,Teleost,Target,Omnivore,Southern leatherjacket,short and / or deep,reef-associated,NA,reef,Demersal,No,Y,NA
@@ -176,42 +176,42 @@ Scobinichthys granulatus,Teleost,Target,Omnivore,Rough leatherjackets,short and 
 Scorpis georgiana,Teleost,Target,Planktivore,Banded sweep,short and / or deep,reef-associated,NA,reef,NA,NA,Y,NA
 Scorpis lineolata,Teleost,Target,Planktivore,Silver sweep,short and / or deep,reef-associated,NA,reef,NA,NA,Y,NA
 Sphyraena forsteri,Teleost,Target,Carnivore,Bigeye barracuda,elongated,reef-associated,NA,NA,NA,NA,Y,NA
-Sutorectus tentaculatus,Chondrichthyes,Non-target,Carnivore,Cobbler wobbegong,elongated,reef-associated,NA,NA,NA,NA,NA,NA
+Sutorectus tentaculatus,Chondrichthyes,Non-target,Carnivore,Cobbler wobbegong,elongated,reef-associated,NA,reef,NA,NA,NA,NA
 Syngnathidae spp,Teleost,Non-target,Planktivore,Pipefish,elongated,reef-associated,NA,NA,NA,NA,NA,NA
-Trachichthys australis,Teleost,Non-target,Planktivore,Southern roughy,short and / or deep,reef-associated,NA,NA,NA,NA,NA,NA
-Trachinops noarlungae,Teleost,Non-target,Carnivore,Yellowhead hulafish,elongated,reef-associated,NA,NA,NA,NA,NA,NA
-Vincentia conspersa,Teleost,Non-target,Planktivore,Southern cardinalfish,Elongated,reef-associated,NA,NA,NA,NA,NA,NA
-Allomycterus pilatus,NA,NA,NA,Australian burrfish,NA,NA,NA,NA,NA,NA,Y,NA
-Ammotretis elongatus,NA,NA,NA,Elongate flounder,NA,NA,NA,NA,NA,NA,Y,NA
-Ammotretis spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Trachichthys australis,Teleost,Non-target,Planktivore,Southern roughy,short and / or deep,reef-associated,NA,reef,NA,NA,NA,NA
+Trachinops noarlungae,Teleost,Non-target,Carnivore,Yellowhead hulafish,elongated,reef-associated,NA,reef,NA,NA,NA,NA
+Vincentia conspersa,Teleost,Non-target,Planktivore,Southern cardinalfish,Elongated,reef-associated,NA,reef,NA,NA,NA,NA
+Allomycterus pilatus,NA,NA,NA,Australian burrfish,NA,NA,NA,reef,NA,NA,Y,NA
+Ammotretis elongatus,NA,NA,NA,Elongate flounder,NA,NA,NA,sand,NA,NA,Y,NA
+Ammotretis spp,NA,NA,NA,Flounder sp,NA,NA,NA,NA,NA,NA,NA,NA
 Arctocephalus forsteri,NA,NA,NA,Fur seal,NA,NA,NA,NA,NA,NA,Y,NA
-Arripis trutta,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Asteriidae spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Arripis trutta,NA,NA,NA,Eastern Australian Salmon,NA,NA,NA,NA,NA,NA,NA,NA
+Asteriidae spp,NA,NA,NA,Seastar sp,NA,NA,NA,NA,NA,NA,NA,NA
 Atherinosoma microstoma,NA,NA,NA,Smallmouth hardyhead,NA,NA,NA,NA,NA,NA,Y,NA
-Australaria australasia,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Cheilinus nigripes,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,old name magpie perch
-Cheilio nigripes,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,old name magpie perch
-Cheilodactylus nigripes,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,old name magpie perch
-Cheilodactylus spectabilis,NA,NA,NA,Banded morwong,NA,NA,NA,NA,NA,NA,Y,NA
-Chelidonichthys kumu,NA,NA,NA,Red gurnard,NA,NA,NA,NA,NA,NA,Y,NA
+Australaria australasia,NA,NA,NA,Horse Conch,NA,NA,NA,NA,NA,NA,NA,NA
+Cheilinus nigripes,NA,NA,NA,Magpie Perch,NA,NA,NA,NA,NA,NA,Y,old name magpie perch
+Cheilio nigripes,NA,NA,NA,Magpie Perch,NA,NA,NA,NA,NA,NA,Y,old name magpie perch
+Cheilodactylus nigripes,NA,NA,NA,Magpie Perch,NA,NA,NA,NA,NA,NA,Y,old name magpie perch
+Cheilodactylus spectabilis,NA,NA,NA,Banded morwong,NA,NA,NA,reef,NA,NA,Y,NA
+Chelidonichthys kumu,NA,NA,NA,Red gurnard,NA,NA,NA,sand,NA,NA,Y,NA
 Cnidoglanis macrocephalus,NA,NA,NA,Estuary cobbler,NA,NA,NA,NA,NA,NA,Y,NA
-Conidae spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Conidae spp,NA,NA,NA,Cone Shell,NA,NA,NA,NA,NA,NA,NA,NA
 Contusus brevicaudus,NA,NA,NA,Prickly toadfish,NA,NA,NA,NA,NA,NA,Y,NA
 Contusus richei,NA,NA,NA,Barred toadfish,NA,NA,NA,NA,NA,NA,Y,NA
-Dasella brevicaudata,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Diodon nichthemerus,NA,NA,NA,Globefish,NA,NA,NA,NA,NA,NA,Y,NA
-Diogenes spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Eocallionymus papilio,NA,NA,NA,Painted stinkfish,NA,NA,NA,NA,NA,NA,Y,NA
-Equichlamys bifrons,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Haletta spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,? weed whiting
-Hapalochlaena spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Dasella brevicaudata,NA,NA,NA,Smooth Ray,NA,NA,NA,NA,NA,NA,NA,NA
+Diodon nichthemerus,NA,NA,NA,Globefish,NA,NA,NA,reef,NA,NA,Y,NA
+Diogenes spp,NA,NA,NA,Hermit Crab,NA,NA,NA,NA,NA,NA,NA,NA
+Eocallionymus papilio,NA,NA,NA,Painted stinkfish,NA,NA,NA,sand,NA,NA,Y,NA
+Equichlamys bifrons,NA,NA,NA,Queen Scallop,NA,NA,NA,NA,NA,NA,NA,NA
+Haletta spp,NA,NA,NA,Weed whiting sp,NA,NA,NA,NA,NA,NA,Y,? weed whiting
+Hapalochlaena spp,NA,NA,NA,Blue ring octopus,NA,NA,NA,NA,NA,NA,NA,NA
 Heptranchias perlo,NA,NA,NA,Sharpnose sevengill shark,NA,NA,NA,NA,NA,NA,Y,NA
-Ibacus peronii,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Labrus laticlavis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,? old name laticlavius
+Ibacus peronii,NA,NA,NA,Balmain bug,NA,NA,NA,NA,NA,NA,NA,NA
+Labrus laticlavis,NA,NA,NA,Senator Wrasse,NA,NA,NA,NA,NA,NA,Y,? old name laticlavius
 Lepidotrigla papilio,NA,NA,NA,Spiny gurnard,NA,NA,NA,NA,NA,NA,Y,NA
 Lepidotrigla spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,NA
 Lepidotrigla vanessa,NA,NA,NA,Butterfly gurnard,NA,NA,NA,NA,NA,NA,Y,NA
-Lissocampus runa,NA,NA,NA,Javelin pipefish,NA,NA,NA,NA,NA,NA,Y,?
+Lissocampus runa,NA,NA,NA,Javelin pipefish,NA,NA,NA,seagrass,NA,NA,Y,?
 Maxillicosta scabriceps,NA,NA,NA,Little gurnard perch,NA,NA,NA,NA,NA,NA,Y,NA
 Meuschenia scabra,NA,NA,NA,Velvet leatherjacket,NA,NA,NA,NA,NA,NA,Y,old name?
 Nesogobius pulchellus,NA,NA,NA,Sailfin goby,NA,NA,NA,sand,NA,NA,Y,?
@@ -219,14 +219,14 @@ Nesogobius spp,NA,NA,NA,Gobies,NA,NA,NA,NA,NA,NA,Y,?
 Nototodarus gouldi,NA,NA,NA,Gould's squid,NA,NA,NA,NA,NA,NA,Y,?
 Octopus bunurong,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Octopus spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Odax cyanomelas,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,old name
+Odax cyanomelas,NA,NA,NA,NA,NA,NA,NA,reef,NA,NA,Y,old name
 Omobranchus anolius,NA,NA,NA,Oyster blenny,NA,NA,NA,NA,NA,NA,Y,NA
-Ophionereis schayeri,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Ophthalmolepis lineolata,Teleost,Non-target,Carnivore,NA,elongated,benthopelagic,NA,NA,NA,NA,Y,NA
+Ophionereis schayeri,NA,NA,NA,Brittle Star,NA,NA,NA,NA,NA,NA,NA,NA
+Ophthalmolepis lineolata,Teleost,Non-target,Carnivore,Southern Moari Wrasse,elongated,benthopelagic,NA,reef,NA,NA,Y,NA
 Ovalipidae spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Paguristes frontalis,NA,NA,NA,Common hermit crab,NA,NA,NA,NA,NA,NA,NA,NA
-Parablennius tasmanianus,NA,NA,NA,Tasmanian blenny,NA,NA,NA,NA,NA,NA,Y,NA
-Parazanclistius hutchinsi,NA,NA,NA,Short boarfish,NA,NA,NA,NA,NA,NA,Y,NA
+Paguristes frontalis,NA,NA,NA,Common hermit crab,NA,NA,NA,reef,NA,NA,NA,NA
+Parablennius tasmanianus,NA,NA,NA,Tasmanian blenny,NA,NA,NA,reef,NA,NA,Y,NA
+Parazanclistius hutchinsi,NA,NA,NA,Short boarfish,NA,NA,NA,reef,NA,NA,Y,NA
 Parequula elongata,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Pecten fumatus,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Pelates octolineatus,NA,NA,NA,Western striped grunter,NA,NA,NA,NA,NA,NA,Y,old name
@@ -234,14 +234,14 @@ Penaeidae spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Phalacrocorax varius,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Phylum Cnidaria spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Pinna dolabrata,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Platycephalus laevigatus,NA,NA,NA,Rock flathead,NA,NA,NA,NA,NA,NA,Y,NA
+Platycephalus laevigatus,NA,NA,NA,Rock flathead,NA,NA,NA,reef/seagrass/unconsolidated,NA,NA,Y,NA
 Platycephalus spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Y,NA
 Pleuronectidae spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Polychaeta spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Portunidae australiensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Portunus australiensis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Pseudocaranx georgianus,NA,NA,NA,Silver trevally,NA,NA,NA,NA,NA,NA,Y,should be sp.
-Pseudophycis palmata,NA,NA,NA,Australian red cod,NA,NA,NA,NA,NA,NA,Y,NA
+Pseudocaranx georgianus,NA,NA,NA,Silver trevally,NA,NA,NA,reef,NA,NA,Y,should be sp.
+Pseudophycis palmata,NA,NA,NA,Australian red cod,NA,NA,NA,reef,NA,NA,Y,NA
 Rhombosolea spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Sillago bassensis,NA,NA,NA,Southern School Whiting,NA,NA,NA,NA,NA,NA,Y,NA
 Siphonognathus spp,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
