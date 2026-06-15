@@ -12,6 +12,8 @@ library(stringr)
 library(patchwork)
 library(tidyr)
 
+sf::sf_use_s2()
+
 # -----------------------------
 # Colours and labels
 # -----------------------------
@@ -86,24 +88,59 @@ prep_metric_data <- function(df, response_col) {
 load("app_data/hab_data.Rdata")
 
 metadata <- hab_data$hab_combined_metadata %>%
+  sf::st_drop_geometry() %>%
   dplyr::filter(method %in% "BRUVs")
 
-abund_dat <- prep_metric_data(hab_data$total_abundance_samples, "total_abundance_sample")
-rich_dat <- prep_metric_data(hab_data$species_richness_samples, "n_species_sample")
-shark_dat <- prep_metric_data(hab_data$shark_ray_richness_samples %>% left_join(metadata), "n_species_sample")
-reef_dat <- prep_metric_data(hab_data$reef_associated_richness_samples %>% left_join(metadata), "n_species_sample")
-shannon_dat <- prep_metric_data(hab_data$shannon_diversity_samples %>% left_join(metadata), "shannon")
-fish_200_dat <- prep_metric_data(hab_data$fish_200_abundance_samples %>% left_join(metadata), "total_abundance_sample")
+test <- hab_data$total_abundance_samples %>%
+  filter(
+    # is.na(.data[[response_col]]),
+    is.na(period)|
+      is.na(status)|
+      is.na(reporting_name)|
+      is.na(start_date)|
+      is.na(sample)
+  ) 
 
-find_zero_dates <- function(df, response_col, threshold = 0.8) {
+abund_dat <- prep_metric_data(hab_data$total_abundance_samples, "total_abundance_sample")%>%
+  sf::st_drop_geometry()
+
+rich_dat <- prep_metric_data(hab_data$species_richness_samples, "n_species_sample")%>%
+  sf::st_drop_geometry()
+
+shark_dat <- prep_metric_data(hab_data$shark_ray_richness_samples %>% left_join(metadata), "n_species_sample")%>%
+  sf::st_drop_geometry()
+
+reef_dat <- prep_metric_data(hab_data$reef_associated_richness_samples %>% left_join(metadata), "n_species_sample")%>%
+  sf::st_drop_geometry()
+
+shannon_dat <- prep_metric_data(hab_data$shannon_diversity_samples %>% left_join(metadata), "shannon")%>%
+  sf::st_drop_geometry()
+
+fish_200_dat <- prep_metric_data(hab_data$fish_200_abundance_samples %>% left_join(metadata), "total_abundance_sample")%>%
+  sf::st_drop_geometry()
+
+# find_zero_dates <- function(df, response_col, threshold = 0.9) {
+#   
+#   df %>%
+#     group_by(reporting_name, start_date_date) %>%
+#     summarise(
+#       prop_zero = mean(.data[[response_col]] == 0, na.rm = TRUE),
+#       .groups = "drop"
+#     ) %>%
+#     mutate(
+#       skip_date = prop_zero > threshold
+#     )
+# }
+
+find_zero_dates <- function(df, response_col, threshold = 0.9) {
   
   df %>%
-    group_by(reporting_name, start_date_date) %>%
-    summarise(
+    dplyr::group_by(reporting_name, start_date_date) %>%
+    dplyr::summarise(
       prop_zero = mean(.data[[response_col]] == 0, na.rm = TRUE),
       .groups = "drop"
     ) %>%
-    mutate(
+    dplyr::mutate(
       skip_date = prop_zero > threshold
     )
 }
@@ -176,8 +213,8 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
   if (has_two_dates && has_two_status) {
     
     date_status_check <- df %>%
-      count(start_date_fct, Status) %>%
-      complete(start_date_fct, Status, fill = list(n = 0))
+      dplyr::count(start_date_fct, Status) %>%
+      tidyr::complete(start_date_fct, Status, fill = list(n = 0))
     
     has_complete_date_status <- all(date_status_check$n > 0)
     
@@ -235,16 +272,16 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
     ungroup()
   
   excluded_dates <- temporal_df %>%
-    filter(prop_zero_date > 0.8) %>%
+    filter(prop_zero_date > 0.9) %>%
     distinct(start_date_fct, start_date_date, prop_zero_date) %>%
     mutate(
       reporting_name = area_name,
       metric = metric_name,
-      exclusion_reason = "Not modelled\n(>80% zeros)"
+      exclusion_reason = "Not modelled\n(>90% zeros)"
     )
   
   temporal_df <- temporal_df %>%
-    filter(prop_zero_date <= 0.8) %>%
+    filter(prop_zero_date <= 0.9) %>%
     mutate(
       start_date_fct = droplevels(start_date_fct),
       Period = droplevels(Period),
@@ -654,7 +691,7 @@ start_date_status_results <- start_date_status_results %>%
 # 5. Plot helpers
 # -----------------------------
 
-blank_panel <- function(panel_letter, label = "More than 80% zeros") {
+blank_panel <- function(panel_letter, label = "More than 90% zeros") {
   ggplot() +
     annotate(
       "text",
@@ -745,7 +782,7 @@ plot_start_date <- function(df, metric_id, panel_letter) {
       aes(
         x = start_date_date,
         y = max(metric_df$response, na.rm = TRUE) * 0.35,
-        label = ">80% zeros"
+        label = ">90% zeros"
       ),
       inherit.aes = FALSE,
       size = 3,
@@ -846,7 +883,7 @@ save_patchwork_plots <- function(results_df, plot_fun, output_dir, suffix, title
 save_patchwork_plots(
   period_results,
   plot_period,
-  "plots/20250604/period_results",
+  "plots/20250615/period_results",
   "period",
   "period means"
 )
@@ -854,7 +891,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   period_status_results,
   plot_period_status,
-  "plots/20250604/period_status_results",
+  "plots/20250615/period_status_results",
   "period_status",
   "period means by status"
 )
@@ -862,7 +899,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_results,
   plot_start_date,
-  "plots/20250604/start_date_results",
+  "plots/20250615/start_date_results",
   "start_date",
   "temporal results"
 )
@@ -870,7 +907,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_status_results,
   plot_start_date_status,
-  "plots/20250604/start_date_status_results",
+  "plots/20250615/start_date_status_results",
   "start_date_status",
   "temporal results by status",
   width = 12

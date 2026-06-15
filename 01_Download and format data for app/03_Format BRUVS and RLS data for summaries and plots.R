@@ -128,7 +128,8 @@ sharks_species <- species_list %>%
 # 
 # write_csv(dew_species, "data/lookups/SA-HAB-Functional Traits.csv")
 
-dew_species <- read_csv("data/lookups/SA-HAB-Functional Traits.csv")
+dew_species <- read_csv("data/lookups/SA-HAB-Functional Traits.csv") %>%
+  clean_names()
 
 duplicates <- dew_species %>%
   dplyr::group_by(genus_species) %>%
@@ -973,16 +974,18 @@ shark_ray_richness_impacts <- shark_ray_richness_summary %>%
 
 # Reef associated richness ----
 reef_associated_richness_samples <- combined_count %>%
-  dplyr::filter(count > 0) %>%
+  # dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
   dplyr::left_join(dew_species) %>%
-  dplyr::mutate(functional_group %in% "reef-associated") %>%
+  dplyr::filter(habitat_association %in% "reef") %>%
   dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
-  tidyr::replace_na(list(count = 0)) %>%
+  dplyr::filter(count > 0) %>%
   dplyr::group_by(campaignid, region, period, status, sample, reporting_name) %>%
-  dplyr::distinct(genus, species) %>%
+  dplyr::distinct(family, genus, species) %>%
   dplyr::summarise(n_species_sample = dplyr::n(), .groups = "drop") %>%
   ungroup() %>%
+  dplyr::full_join(combined_metadata %>% dplyr::filter(method %in% "BRUVs")) %>%
+  tidyr::replace_na(list(n_species_sample = 0)) %>%
   dplyr::filter(!is.na(region)) %>%
   left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date)) %>%
   left_join(combined_metadata)
