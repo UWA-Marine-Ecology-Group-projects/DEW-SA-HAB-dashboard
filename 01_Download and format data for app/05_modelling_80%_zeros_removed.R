@@ -160,6 +160,10 @@ fish200_zero_dates <- find_zero_dates(
   "total_abundance_sample"
 )
 
+test <- reef_dat %>%
+  group_by(reporting_name) %>%
+  count(start_date)
+
 test_prop_zero <- mean((shark_dat%>%filter(reporting_name%in%"Glenelg"))[['n_species_sample']] == 0, na.rm = TRUE)
 
 library(tidyr)
@@ -198,7 +202,7 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
   
   has_two_periods <- n_distinct(df$Period) >= 2
   has_two_status  <- n_distinct(df$Status) >= 2
-  has_two_dates   <- n_distinct(df$start_date_fct) >= 2
+  has_two_dates   <- n_distinct(df$start_date_fct) >= 3
   
   site_re <- if (use_site && "uwa_site_code" %in% names(df)) {
     " + (1 | uwa_site_code)"
@@ -883,7 +887,7 @@ save_patchwork_plots <- function(results_df, plot_fun, output_dir, suffix, title
 save_patchwork_plots(
   period_results,
   plot_period,
-  "plots/20250615/period_results",
+  "plots/20250616/period_results",
   "period",
   "period means"
 )
@@ -891,7 +895,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   period_status_results,
   plot_period_status,
-  "plots/20250615/period_status_results",
+  "plots/20250616/period_status_results",
   "period_status",
   "period means by status"
 )
@@ -899,7 +903,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_results,
   plot_start_date,
-  "plots/20250615/start_date_results",
+  "plots/20250616/start_date_results",
   "start_date",
   "temporal results"
 )
@@ -907,7 +911,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_status_results,
   plot_start_date_status,
-  "plots/20250615/start_date_status_results",
+  "plots/20250616/start_date_status_results",
   "start_date_status",
   "temporal results by status",
   width = 12
