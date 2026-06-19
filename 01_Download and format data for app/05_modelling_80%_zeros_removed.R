@@ -161,8 +161,9 @@ fish200_zero_dates <- find_zero_dates(
 )
 
 test <- reef_dat %>%
+  dplyr::distinct(reporting_name, start_date) %>%
   group_by(reporting_name) %>%
-  count(start_date)
+  count()
 
 test_prop_zero <- mean((shark_dat%>%filter(reporting_name%in%"Glenelg"))[['n_species_sample']] == 0, na.rm = TRUE)
 
