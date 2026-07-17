@@ -14,7 +14,10 @@ sf_use_s2(FALSE)
 # Sites that DEW want ----
 sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
   clean_names() %>%
-  select(site_code, site_name)
+  select(site_code, site_name, location_g, bruvsrepor)
+
+# TODO review
+# Key fields are “Site_name” and “Location_g” for the two tabs on the portal. I’ve also added a “BRUVSRepor” column to show how they map to the BRUVS reporting regions, they actually fit in quite well but I think it may be too broad a scale to sensibly present the results. Maybe start with the location and site groupings, and then we can look at reporting region down the track if we need to
 
 # Read in data sets ----
 cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
@@ -68,9 +71,28 @@ length(unique(m1$survey_id)) # 1797 surveys (but includes two blocks?)
 length(unique(m2_fish$survey_id)) # 1424 surveys (but includes two blocks?)
 length(unique(m2_inverts$survey_id)) # 1828 surveys (but includes two blocks?)
 
-# TODO check with Sophie - what the 70 sites were?
-
 # Format data ----
+# what I think I need to do
+# 1. Check species are correct - change names - using Sasha's scripts
+# 2. Check they are all the species they are meant to be, do I need to split for sharks and rays vs. fish?
+# 3. Split data into pre-bloom and post-bloom.
+# 4. Make sure that the summarising categories are in the data e.g. site, reporting_region, period
+# 5. Clarify how I am going to calculate the metrics e.g. if each block is averaged per site and then a region is also the average of all blocks in the region or if is the average of the sites (I think the former)
+# 6. Calc metrics - start with Species richness and diversity metrics first
+# 
+
+
+
+
+
+
+
+# Metrics ----
+# Species richness (fish and inverts separately)
+# B20 (or similar – Tim’s metric?)
+# Shannon diversity (fish and inverts separately)
+# Abundance/richness of functional/diet groups? To be determined – will create master list of traits for all species
+# Percent cover of canopy forming macroalgae
 
 
 # Check to see original sites ----
