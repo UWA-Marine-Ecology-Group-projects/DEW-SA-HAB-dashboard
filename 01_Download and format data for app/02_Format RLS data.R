@@ -4,67 +4,77 @@ options(timeout = 9999999) # the package is large, so need to extend the timeout
 
 # Load libraries needed -----
 library(CheckEM)
-# library(devtools)
 library(dplyr)
-library(googlesheets4)
-# library(httr)
 library(sf)
 library(stringr)
-library(tidyverse)
+library(readr)
 
-rls <- read.csv("data/raw/IMOS_-_National_Reef_Monitoring_Network_Sub-Facility_-_Global_reef_fish_abundance_and_biomass.csv", skip = 71) %>%
-  dplyr::select(survey_id, location, site_code, site_name, latitude, longitude, survey_date, depth, family, reporting_name, size_class, total) %>%
-  tidyr::separate(reporting_name, into = c("genus", "species"), remove = FALSE) %>%
-  dplyr::rename(count = total, depth_m = depth) %>%
-  glimpse()
+sf_use_s2(FALSE)
 
-rls_metadata <- read.csv("data/raw/IMOS_-_National_Reef_Monitoring_Network_Sub-Facility_-_Survey_metadata.csv", skip = 71) %>%
-  dplyr::rename(depth_m = depth, latitude_dd = latitude, longitude_dd = longitude) %>%
-  glimpse()
+# Sites that DEW want ----
+sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
+  clean_names() %>%
+  select(site_code, site_name)
 
-# TODO Need to fix synonyms
-synonyms_in_rls <- dplyr::left_join(rls, CheckEM::aus_synonyms)  %>%
-  dplyr::filter(count > 0) %>%
-  dplyr::filter(!is.na(genus_correct)) %>%
-  dplyr::mutate('old name' = paste(family, genus, species, sep = " ")) %>%
-  dplyr::mutate('new name' = paste(family_correct, genus_correct, species_correct, sep = " ")) %>%
-  dplyr::select('old name', 'new name') %>% # taken out sample
-  dplyr::distinct()
+# Read in data sets ----
+cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
 
-rls_with_synonyms_changed <- dplyr::left_join(rls, CheckEM::aus_synonyms) %>%
-  dplyr::mutate(genus = ifelse(!genus_correct%in%c(NA), genus_correct, genus)) %>%
-  dplyr::mutate(species = ifelse(!is.na(species_correct), species_correct, species)) %>%
-  dplyr::mutate(family = ifelse(!is.na(family_correct), family_correct, family)) %>%
-  dplyr::select(-c(family_correct, genus_correct, species_correct)) %>%
-  mutate(family = str_replace_all(family, "[^[:alnum:]]", "")) %>%
-  mutate(genus = str_replace_all(genus, "[^[:alnum:]]", "")) %>%
-  mutate(species = str_replace_all(species, c("[^[:alnum:]]" = "", "pusillusdoriferus" = "pusillus doriferus"))) %>%
-  dplyr::mutate(scientific = paste(family, genus, species)) %>%
-  dplyr::group_by(survey_id, location, site_code, site_name, latitude, longitude, survey_date, depth_m, family, genus, species, scientific) %>%
-  dplyr::slice(which.max(count)) %>%
-  ungroup()
+survey_list <- read_csv("data/raw/RLS/ep_survey_list_SA.csv") %>%
+  dplyr::filter(site_code %in% unique(sa_sites$site_code))
 
-# Species not in list ----
-# TODO should check regions too
-count_species_not_in_list <- rls_with_synonyms_changed %>%
-  dplyr::anti_join(., CheckEM::australia_life_history, by = c("family", "genus", "species")) %>%
-  dplyr::filter(count > 0) %>%
-  dplyr::distinct(family, genus, species) 
+# Animals ----
+m1          <- read_csv("data/raw/RLS/ep_M1_SA.csv") %>% dplyr::select(-cols_to_remove) %>%
+  dplyr::filter(site_code %in% unique(sa_sites$site_code))
 
-# TODO fix these up with synonyms!
+m2_fish     <- read_csv("data/raw/RLS/ep_M2_cryptic_fish_SA.csv") %>% dplyr::select(-cols_to_remove) %>%
+  dplyr::filter(site_code %in% unique(sa_sites$site_code))
 
-rls_count <- rls_with_synonyms_changed %>%
-  glimpse()
+m2_inverts  <- read_csv("data/raw/RLS/ep_M2_inverts_SA.csv") %>% dplyr::select(-cols_to_remove) %>%
+  dplyr::filter(site_code %in% unique(sa_sites$site_code))
 
-rls_length <- rls_with_synonyms_changed %>%
-  dplyr::mutate(length_mm = 10 * size_class) %>%
-  glimpse()
+summary(m1)
 
-write.csv(rls_metadata, "data/raw/sa_metadata_rls.csv", row.names = FALSE)
-saveRDS(rls_metadata, "data/raw/sa_metadata_rls.RDS")
+summary(m2_fish)
+unique(m2_fish$class)
 
-write.csv(rls_count, "data/raw/sa_count_rls.csv", row.names = FALSE)
-saveRDS(rls_count, "data/raw/sa_count_rls.RDS")
+summary(m2_inverts)
+unique(m2_inverts$class)
 
-write.csv(rls_length, "data/raw/sa_length_rls.csv", row.names = FALSE)
-saveRDS(rls_length, "data/raw/sa_length_rls.RDS")
+# # Going to ignore these two for now ----
+# m3          <- read_csv("data/raw/RLS/ep_M3_isq_SA.csv")
+# m0          <- read_csv("data/raw/RLS/ep_M0_off_transect_sighting_SA.csv")
+
+# Checking out data ----
+names(m1)
+names(survey_list)
+
+unique(m1$location) # 3 locations
+unique(m2_fish$location) # 3 locations
+unique(m2_inverts$location) # 3 locations
+unique(survey_list$location) # 3 locations
+
+length(unique(m1$site_name)) # 70 sites
+length(unique(m2_fish$site_name)) # 70 sites
+length(unique(m2_inverts$site_name)) # 70 sites
+length(unique(survey_list$site_name)) # 70 sites
+
+length(unique(m1$site_code)) # 70 sites
+length(unique(m2_fish$site_code)) # 70 sites
+length(unique(m2_inverts$site_code)) # 70 sites
+length(unique(survey_list$site_code)) # 70 sites
+
+length(unique(survey_list$survey_id)) # 1843 surveys
+length(unique(m1$survey_id)) # 1797 surveys (but includes two blocks?)
+length(unique(m2_fish$survey_id)) # 1424 surveys (but includes two blocks?)
+length(unique(m2_inverts$survey_id)) # 1828 surveys (but includes two blocks?)
+
+# TODO check with Sophie - what the 70 sites were?
+
+# Format data ----
+
+
+# Check to see original sites ----
+# rls_dive_sites <- survey_list %>%
+#   distinct(site_code, site_name, latitude, longitude)
+# 
+# write_csv(rls_dive_sites, "rls_dive_sites.csv")
