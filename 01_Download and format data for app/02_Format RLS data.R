@@ -8,6 +8,7 @@ library(dplyr)
 library(sf)
 library(stringr)
 library(readr)
+library(tidyr)
 
 sf_use_s2(FALSE)
 
@@ -18,6 +19,9 @@ sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
 
 # TODO review
 # Key fields are “Site_name” and “Location_g” for the two tabs on the portal. I’ve also added a “BRUVSRepor” column to show how they map to the BRUVS reporting regions, they actually fit in quite well but I think it may be too broad a scale to sensibly present the results. Maybe start with the location and site groupings, and then we can look at reporting region down the track if we need to
+
+# Life history ----
+lh <- CheckEM::australia_life_history
 
 # Read in data sets ----
 cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
@@ -73,21 +77,56 @@ length(unique(m2_inverts$survey_id)) # 1828 surveys (but includes two blocks?)
 
 # Format data ----
 # what I think I need to do
-# 1. Check species are correct - change names - using Sasha's scripts
+# 1. Check species are correct - change names - using Sasha's scripts - check out the different cols for naming and see if they are different
 # 2. Check they are all the species they are meant to be, do I need to split for sharks and rays vs. fish?
 # 3. Split data into pre-bloom and post-bloom.
 # 4. Make sure that the summarising categories are in the data e.g. site, reporting_region, period
 # 5. Clarify how I am going to calculate the metrics e.g. if each block is averaged per site and then a region is also the average of all blocks in the region or if is the average of the sites (I think the former)
 # 6. Calc metrics - start with Species richness and diversity metrics first
-# 
+
+# Start with method 1 ----
+m1_species <- m1 %>%
+  distinct(phylum, class, order, family, recorded_species_name, species_name, reporting_name) %>%
+  dplyr::filter(!recorded_species_name %in% c("No species found")) %>%
+  # dplyr::filter(!species_name == reporting_name) %>% # I think reporting name is the same as species name except for spps.
+  # dplyr::filter(!recorded_species_name == species_name) %>% # the only ones that are changed are synonym changes I think
+  tidyr::separate(species_name, into = c("genus", "species"), extra = "merge") %>%
+  mutate(species = str_remove_all(species, "\\.")) %>%
+  dplyr::mutate(genus = if_else(family == genus, "Unknown", genus)) %>%
+  tidyr::replace_na(list(family = "Unknown", genus = "Unknown")) 
+
+
+unique(m1_species$genus) %>% sort()
+unique(m1_species$species) %>% sort()
+
+length(unique(m1_species$recorded_species_name))
+length(unique(m1_species$reporting_name))
+length(unique(m1_species$species_name))
+
+synonyms_in_m1 <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
+  dplyr::filter(!is.na(genus_correct)) %>%
+  dplyr::mutate('old name' = paste(family, genus, species, sep = " ")) %>%
+  dplyr::mutate('new name' = paste(family_correct, genus_correct, species_correct, sep = " ")) %>%
+  dplyr::select('old name', 'new name') %>%
+  dplyr::distinct()
+
+m1_species_new <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
+  dplyr::mutate(genus = ifelse(!genus_correct%in%c(NA), genus_correct, genus)) %>%
+  dplyr::mutate(species = ifelse(!is.na(species_correct), species_correct, species)) %>%
+  dplyr::mutate(family = ifelse(!is.na(family_correct), family_correct, family)) %>%
+  dplyr::select(-c(family_correct, genus_correct, species_correct)) %>%
+  dplyr::mutate(scientific = paste(family, genus, species)) %>%
+  dplyr::mutate(genus = str_replace_all(genus, "Ascarosepion", "Sepia")) %>%
+  dplyr::mutate(family = if_else(genus %in% "Neatypus", "Microcanthidae", family)) %>%
+  dplyr::mutate(family = if_else(genus %in% "Ophiclinus", "Ophiclinidae", family))
+
+m1_species_new_not_observed <- m1_species_new %>%
+  dplyr::distinct(family, genus, species) %>%
+  dplyr::anti_join(., CheckEM::australia_life_history, by = c("family", "genus", "species"))
 
 
 
-
-
-
-
-# Metrics ----
+# Metrics ----# Metrics -recorded_species_name---
 # Species richness (fish and inverts separately)
 # B20 (or similar – Tim’s metric?)
 # Shannon diversity (fish and inverts separately)
