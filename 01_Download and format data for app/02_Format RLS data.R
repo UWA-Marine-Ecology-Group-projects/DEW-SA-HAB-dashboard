@@ -118,7 +118,9 @@ m1_species_new <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(scientific = paste(family, genus, species)) %>%
   dplyr::mutate(genus = str_replace_all(genus, "Ascarosepion", "Sepia")) %>%
   dplyr::mutate(family = if_else(genus %in% "Neatypus", "Microcanthidae", family)) %>%
-  dplyr::mutate(family = if_else(genus %in% "Ophiclinus", "Ophiclinidae", family))
+  dplyr::mutate(family = if_else(genus %in% "Ophiclinus", "Ophiclinidae", family)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) %>%
+  dplyr::mutate(scientific = paste(genus, species))
 
 m1_species_new_not_observed <- m1_species_new %>%
   dplyr::distinct(family, genus, species) %>%
