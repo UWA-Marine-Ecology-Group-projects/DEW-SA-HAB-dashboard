@@ -120,7 +120,16 @@ m1_species_new <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(family = if_else(genus %in% "Neatypus", "Microcanthidae", family)) %>%
   dplyr::mutate(family = if_else(genus %in% "Ophiclinus", "Ophiclinidae", family)) %>%
   dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) %>%
-  dplyr::mutate(scientific = paste(genus, species))
+  dplyr::mutate(species = if_else(genus %in% "Pseudocaranx", "spp", species)) %>%
+  dplyr::mutate(species = if_else(genus %in% "Cochleoceps", "spp", species)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Cochleoceps", "Unknown", genus)) %>%
+  
+  dplyr::mutate(genus = if_else(recorded_species_name %in% "Nesogobius spp.", "Unknown", genus)) %>%
+  dplyr::mutate(species = if_else(species %in% "gigas", "spp", species)) %>%
+  
+  dplyr::mutate(scientific = paste(genus, species)) %>%
+  dplyr::rename(rls_recorded_name = recorded_species_name, rls_reporting_name = reporting_name) %>%
+  dplyr::select(phylum, class, order, family, genus, species, scientific, rls_recorded_name, rls_reporting_name)
 
 m1_species_new_not_observed <- m1_species_new %>%
   dplyr::distinct(family, genus, species) %>%
