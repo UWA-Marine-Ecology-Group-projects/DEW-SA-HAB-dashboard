@@ -67,117 +67,119 @@ write.csv(crypticfish.metadata, file = "SA_MP_RLS_crypticfish_metadata.csv", row
 write.csv(inverts.metadata, file = "SA_MP_RLS_inverts_metadata.csv", row.names = FALSE)
 
 #update species name
-fish.metadata$taxon [fish.metadata$taxon == "Pagrus auratus"] <- "Chrysophrys auratus"
-fish.metadata$taxon [fish.metadata$taxon == "Pelates octolineatus"] <- "Helotes octolineatus"
-fish.metadata$taxon [fish.metadata$taxon == "Ascarosepion apama"] <- "Sepia apama"
-fish.metadata$taxon [fish.metadata$taxon == ""] <- "Nil"
-fish.metadata$family [fish.metadata$family == "Cheilodactylidae"] <- "Latridae"
-fish.metadata$family [fish.metadata$family == "Ostraciidae"] <- "Aracanidae"
-fish.metadata$family [fish.metadata$family == "Odacidae"] <- "Labridae"
-fish.metadata$taxon [fish.metadata$taxon == "Myliobatis australis"] <- "Myliobatis tenuicaudatus"
-fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Tilodon sexfasciatus"] <- "Microcanthidae"
-fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Neatypus obliquus"] <- "Microcanthidae"
-fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Scorpis aequipinnis"] <- "Scorpididae"
-fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Scorpis georgiana"] <- "Scorpididae"
-fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Girella zebra"] <- "Girellidae"
-fish.metadata$taxon [fish.metadata$taxon == "Apogon victoriae"] <- "Ostorhinchus victoriae"
+#Done fish.metadata$taxon [fish.metadata$taxon == "Pagrus auratus"] <- "Chrysophrys auratus"
+# DONE fish.metadata$taxon [fish.metadata$taxon == "Pelates octolineatus"] <- "Helotes octolineatus"
+# Done fish.metadata$taxon [fish.metadata$taxon == "Ascarosepion apama"] <- "Sepia apama"
+# DOne fish.metadata$taxon [fish.metadata$taxon == ""] <- "Nil"
+fish.metadata$family [fish.metadata$family == "Cheilodactylidae"] <- "Latridae" # TODO Not sure about this one
+# DOne fish.metadata$family [fish.metadata$family == "Ostraciidae"] <- "Aracanidae"
+# Done fish.metadata$family [fish.metadata$family == "Odacidae"] <- "Labridae"
+# DONE fish.metadata$taxon [fish.metadata$taxon == "Myliobatis australis"] <- "Myliobatis tenuicaudatus"
+# DONE fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Tilodon sexfasciatus"] <- "Microcanthidae"
+# DONE fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Neatypus obliquus"] <- "Microcanthidae"
+# DONE fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Scorpis aequipinnis"] <- "Scorpididae"
+# DONE fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Scorpis georgiana"] <- "Scorpididae"
+# DONE fish.metadata$family [fish.metadata$family == "Kyphosidae" & fish.metadata$taxon == "Girella zebra"] <- "Girellidae"
+# DONE fish.metadata$taxon [fish.metadata$taxon == "Apogon victoriae"] <- "Ostorhinchus victoriae"
 
 
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == ""] <- "Nil"
-crypticfish.metadata$family [crypticfish.metadata$family == "Scorpaenidae" & crypticfish.metadata$taxon == "Glyptauchen panduratus"] <- "Tetrarogidae"
-crypticfish.metadata$family [crypticfish.metadata$family == "Scorpaenidae" & crypticfish.metadata$taxon == "Helicolenus percoides"] <- "Sebastidae"
-crypticfish.metadata$family [crypticfish.metadata$family == "Scorpaenidae" & crypticfish.metadata$taxon == "Neosebastes scorpaenoides"] <- "Neosebastidae"
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == ""] <- "Nil"
+# crypticfish.metadata$family [crypticfish.metadata$family == "Scorpaenidae" & crypticfish.metadata$taxon == "Glyptauchen panduratus"] <- "Tetrarogidae"
+# crypticfish.metadata$family [crypticfish.metadata$family == "Scorpaenidae" & crypticfish.metadata$taxon == "Helicolenus percoides"] <- "Sebastidae" # Not in the data
+# crypticfish.metadata$family [crypticfish.metadata$family == "Scorpaenidae" & crypticfish.metadata$taxon == "Neosebastes scorpaenoides"] <- "Neosebastidae"
 
-inverts.metadata$taxon [inverts.metadata$taxon == ""] <- "Nil"
-inverts.metadata$taxon [inverts.metadata$taxon == "Ascarosepion apama"] <- "Sepia apama"
+# inverts.metadata$taxon [inverts.metadata$taxon == ""] <- "Nil"
+# inverts.metadata$taxon [inverts.metadata$taxon == "Ascarosepion apama"] <- "Sepia apama"
 
 #remove taxon
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Heteroclinus tristis"),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Ophiclinus spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Labrid spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Monacanthid spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Siphonognathus spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Pempheris spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Sillaginid spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Tripterygiid spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Actinopterygii spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Clupeiformes spp."),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Meridiastra gunnii"),]
-fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Pleuroploca australasia"),]
+# TODO check these in a google sheet
 
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Blenniid spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Clinid spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Cristiceps spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Gobiid spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Heterodontus portusjacksoni egg"),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Parascyllium spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Pempheris spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Scorpaenid spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Norfolkia spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Tripterygiid spp."),]
-crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Actinopterygii spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Heteroclinus tristis"),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Ophiclinus spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Labrid spp."),] # NOT IN DATA
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Monacanthid spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Siphonognathus spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Pempheris spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Sillaginid spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Tripterygiid spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Actinopterygii spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Clupeiformes spp."),]
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Meridiastra gunnii"),] # Not in data
+# fish.metadata <- fish.metadata[-which(fish.metadata$taxon == "Pleuroploca australasia"),] # Not in the data
+ 
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Blenniid spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Clinid spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Cristiceps spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Gobiid spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Heterodontus portusjacksoni egg"),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Parascyllium spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Pempheris spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Scorpaenid spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Norfolkia spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Tripterygiid spp."),]
+# crypticfish.metadata <- crypticfish.metadata[-which(crypticfish.metadata$taxon == "Actinopterygii spp."),]
 
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Aeolidiid spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Meridiastra spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Cypraeid spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Facelinid spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Holothuriid spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Naxia spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Mitrid spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Muricid spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Pterynotus spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Decapoda spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Nectocarcinus spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Cabestana spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Crinoidea spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Gastropoda spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Malacostraca spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Nudibranchia spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Platyhelminthes spp."),]
-inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Pycnogonida spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Aeolidiid spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Meridiastra spp."),] # not in data
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Cypraeid spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Facelinid spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Holothuriid spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Naxia spp."),] # not in data
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Mitrid spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Muricid spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Pterynotus spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Decapoda spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Nectocarcinus spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Cabestana spp."),]
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Crinoidea spp."),] # Not in data
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Gastropoda spp."),] # Not in data
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Malacostraca spp."),] # Not in data
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Nudibranchia spp."),] # Not in data
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Platyhelminthes spp."),] # Not in data
+# inverts.metadata <- inverts.metadata[-which(inverts.metadata$taxon == "Pycnogonida spp."),] # Not in data
 
 #Aggregate similar species
 
-fish.metadata$taxon [fish.metadata$taxon == "Pseudocaranx georgianus"] <- "Pseudocaranx spp."
-fish.metadata$taxon [fish.metadata$taxon == "Pseudocaranx wrighti"] <- "Pseudocaranx spp."
-fish.metadata$taxon [fish.metadata$taxon == "Clinid spp."] <- "Heteroclinus spp."
-fish.metadata$taxon [fish.metadata$taxon == "Heteroclinus johnstoni"] <- "Heteroclinus spp."
-fish.metadata$taxon [fish.metadata$taxon == "Cochleoceps bicolor"] <- "Gobiesocidae spp."
-fish.metadata$taxon [fish.metadata$taxon == "Gobiesocid spp."] <- "Gobiesocidae spp."
-fish.metadata$taxon [fish.metadata$taxon == "Nesogobius spp."] <- "Gobiidae spp."
-fish.metadata$taxon [fish.metadata$taxon == "Gobiid spp."] <- "Gobiidae spp."
-fish.metadata$taxon [fish.metadata$taxon == "Clupeid spp."] <- "Clupeidae spp."
-fish.metadata$taxon [fish.metadata$taxon == "Urolophus gigas"] <- "Urolophus spp."
-fish.metadata$taxon [fish.metadata$taxon == "Atherinid spp."] <- "Atherinidae spp."
+# fish.metadata$taxon [fish.metadata$taxon == "Pseudocaranx georgianus"] <- "Pseudocaranx spp."
+# fish.metadata$taxon [fish.metadata$taxon == "Pseudocaranx wrighti"] <- "Pseudocaranx spp."
+# fish.metadata$taxon [fish.metadata$taxon == "Clinid spp."] <- "Heteroclinus spp." # NOT IN DATA?
+# fish.metadata$taxon [fish.metadata$taxon == "Heteroclinus johnstoni"] <- "Heteroclinus spp." # NOT IN DATA?
+# fish.metadata$taxon [fish.metadata$taxon == "Cochleoceps bicolor"] <- "Gobiesocidae spp."
+# fish.metadata$taxon [fish.metadata$taxon == "Gobiesocid spp."] <- "Gobiesocidae spp."
+# fish.metadata$taxon [fish.metadata$taxon == "Nesogobius spp."] <- "Gobiidae spp."
+# fish.metadata$taxon [fish.metadata$taxon == "Gobiid spp."] <- "Gobiidae spp." # NOT IN DATA?
+# fish.metadata$taxon [fish.metadata$taxon == "Clupeid spp."] <- "Clupeidae spp."
+# fish.metadata$taxon [fish.metadata$taxon == "Urolophus gigas"] <- "Urolophus spp."
+# fish.metadata$taxon [fish.metadata$taxon == "Atherinid spp."] <- "Atherinidae spp."
 
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus adelaidae"] <- "Heteroclinus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus johnstoni"] <- "Heteroclinus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus kuiteri"] <- "Heteroclinus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus perspicillatus"] <- "Heteroclinus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus roseus"] <- "Heteroclinus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus tristis"] <- "Heteroclinus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Ophiclinus gracilis"] <- "Ophiclinus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Ophiclinus ningulus"] <- "Ophiclinus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Aspasmogaster tasmaniensis"] <- "Aspasmogaster spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Nesogobius sp. 4 [groovedcheek]"] <- "Nesogobius spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Platycephalid spp."] <- "Platycephalus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Platycephalus laevigatus"] <- "Platycephalus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Scorpaena papillosa [cf]"] <- "Scorpaena papillosa"
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Urolophus gigas"] <- "Urolophus spp."
-crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Ophichthid spp."] <- "Ophichthidae spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus adelaidae"] <- "Heteroclinus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus johnstoni"] <- "Heteroclinus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus kuiteri"] <- "Heteroclinus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus perspicillatus"] <- "Heteroclinus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus roseus"] <- "Heteroclinus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Heteroclinus tristis"] <- "Heteroclinus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Ophiclinus gracilis"] <- "Ophiclinus spp." # should gabrieli be pooled too?
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Ophiclinus ningulus"] <- "Ophiclinus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Aspasmogaster tasmaniensis"] <- "Aspasmogaster spp." # Not in the data
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Nesogobius sp. 4 [groovedcheek]"] <- "Nesogobius spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Platycephalid spp."] <- "Platycephalus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Platycephalus laevigatus"] <- "Platycephalus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Scorpaena papillosa [cf]"] <- "Scorpaena papillosa" # Not in data
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Urolophus gigas"] <- "Urolophus spp."
+# crypticfish.metadata$taxon [crypticfish.metadata$taxon == "Ophichthid spp."] <- "Ophichthidae spp."
 
-inverts.metadata$taxon [inverts.metadata$taxon == "Comanthus tasmaniae"] <- "Comanthus spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Coryphellina rubrolineata"] <- "Flabellinidae spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Flabellina spp."] <- "Flabellinidae spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Pagurus sinuatus"] <- "Paguridae spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Pagurid spp."] <- "Paguridae spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Portunus pelagicus"] <- "Portunus armatus"
-inverts.metadata$taxon [inverts.metadata$taxon == "Pseudoceros lividus"] <- "Pseudobiceros spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Holopneustes porosissimus"] <- "Holopneustes spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Amblypneustes elevatus"] <- "Amblypneustes spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Amblypneustes ovum"] <- "Amblypneustes spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Amblypneustes pallidus"] <- "Amblypneustes spp."
-inverts.metadata$taxon [inverts.metadata$taxon == "Pyura australis"] <- "Pyura spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Comanthus tasmaniae"] <- "Comanthus spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Coryphellina rubrolineata"] <- "Flabellinidae spp." # Not in the data
+# inverts.metadata$taxon [inverts.metadata$taxon == "Flabellina spp."] <- "Flabellinidae spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Pagurus sinuatus"] <- "Paguridae spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Pagurid spp."] <- "Paguridae spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Portunus pelagicus"] <- "Portunus armatus"
+# inverts.metadata$taxon [inverts.metadata$taxon == "Pseudoceros lividus"] <- "Pseudobiceros spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Holopneustes porosissimus"] <- "Holopneustes spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Amblypneustes elevatus"] <- "Amblypneustes spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Amblypneustes ovum"] <- "Amblypneustes spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Amblypneustes pallidus"] <- "Amblypneustes spp."
+# inverts.metadata$taxon [inverts.metadata$taxon == "Pyura australis"] <- "Pyura spp."
 
 
 #remove 0s
