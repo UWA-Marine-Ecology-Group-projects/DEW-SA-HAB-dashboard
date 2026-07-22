@@ -676,9 +676,19 @@ nav_panel(
   layout_sidebar(
     sidebar = sidebar(
       width = "350px",
+      
+      h5("Select data:"),
+      
+      radioButtons(
+        inputId  = "methodlocation",
+        label    = "Choose a method to display:",
+        choices  = c("BRUVS", "Dive"),
+        inline   = TRUE
+      ),
+      
       selectizeInput(
         "location",
-        "Choose a location",
+        "Choose a location:",
         choices = NULL, multiple = FALSE,
         options = list(placeholder = "Choose a location...")
       ),

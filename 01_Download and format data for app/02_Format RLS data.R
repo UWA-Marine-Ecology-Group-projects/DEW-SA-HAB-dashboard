@@ -32,11 +32,17 @@ lh <- CheckEM::australia_life_history
 cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
 
 survey_list <- read_csv("data/raw/RLS/ep_survey_list_SA.csv") %>%
-  dplyr::filter(site_code %in% unique(sa_sites$site_code))
+  dplyr::filter(site_code %in% unique(sa_sites$site_code)) #%>%
+  # dplyr::mutate(id = paste(survey_id, block))
 
+# NOTE survey list does not have block - assume they always have 2?
+
+length(unique(survey_list$survey_id))
+length(unique(survey_list$survey_id)) * 2
 # Animals ----
 m1          <- read_csv("data/raw/RLS/ep_M1_SA.csv") %>% dplyr::select(-cols_to_remove) %>%
-  dplyr::filter(site_code %in% unique(sa_sites$site_code))
+  dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
+  dplyr::filter(survey_id %in% unique(survey_list$survey_id)) 
 
 m2_fish     <- read_csv("data/raw/RLS/ep_M2_cryptic_fish_SA.csv") %>% dplyr::select(-cols_to_remove) %>%
   dplyr::filter(site_code %in% unique(sa_sites$site_code))
@@ -91,7 +97,7 @@ length(unique(m2_inverts$survey_id)) # 1828 surveys (but includes two blocks?)
 
 # Start with method 1 ----
 m1_species <- m1 %>%
-  distinct(phylum, class, order, family, recorded_species_name, species_name, reporting_name) %>%
+  # distinct(phylum, class, order, family, recorded_species_name, species_name, reporting_name) %>%
   dplyr::filter(!recorded_species_name %in% c("No species found")) %>%
   # dplyr::filter(!species_name == reporting_name) %>% # I think reporting name is the same as species name except for spps.
   # dplyr::filter(!recorded_species_name == species_name) %>% # the only ones that are changed are synonym changes I think
@@ -134,8 +140,8 @@ m1_species_new <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(genus_fam = if_else(genus %in% "Unknown", family, genus)) %>%
   dplyr::mutate(portal_name = paste(genus_fam, species)) %>%
   dplyr::rename(rls_recorded_name = recorded_species_name, rls_reporting_name = reporting_name) %>%
-  dplyr::distinct(phylum, class, order, family, genus, species, portal_name, rls_reporting_name) %>% #rls_recorded_name
-  left_join(dew_species) %>%
+  # dplyr::distinct(phylum, class, order, family, genus, species, portal_name, rls_reporting_name) %>% #rls_recorded_name
+  # left_join(dew_species) %>%
   dplyr::filter(!family %in% "Unknown") %>%
   dplyr::filter(!class %in% "Teleostei") # removed species that had multiple classes for Cheilodactylus spectabilis  
 
@@ -154,7 +160,7 @@ m1_species_new_not_observed <- m1_species_new %>%
 
 # Method 2 ----
 m2_species <- m2_fish %>%
-  distinct(phylum, class, order, family, recorded_species_name, species_name, reporting_name) %>%
+  # distinct(phylum, class, order, family, recorded_species_name, species_name, reporting_name) %>%
   dplyr::filter(!recorded_species_name %in% c("No species found")) %>%
   # dplyr::filter(!species_name == reporting_name) %>% # I think reporting name is the same as species name except for spps.
   # dplyr::filter(!recorded_species_name == species_name) %>% # the only ones that are changed are synonym changes I think
@@ -200,8 +206,8 @@ m2_species_new <- dplyr::left_join(m2_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(genus_fam = if_else(genus %in% "Unknown", family, genus)) %>%
   dplyr::mutate(portal_name = paste(genus_fam, species)) %>%
   dplyr::rename(rls_recorded_name = recorded_species_name, rls_reporting_name = reporting_name) %>%
-  dplyr::distinct(phylum, class, order, family, genus, species, portal_name, rls_reporting_name) %>% #rls_recorded_name
-  left_join(dew_species) %>%
+  # dplyr::distinct(phylum, class, order, family, genus, species, portal_name, rls_reporting_name) %>% #rls_recorded_name
+  # left_join(dew_species) %>%
   dplyr::filter(!family %in% "Unknown")
 
 species_in_multiple_classes <- m2_species_new %>%
@@ -259,7 +265,7 @@ m2_species_new_inverts <- m2_species_inverts %>%
   dplyr::mutate(portal_name = paste(genus_fam, species)) %>%
   dplyr::rename(rls_recorded_name = recorded_species_name, rls_reporting_name = reporting_name) %>%
   dplyr::distinct(phylum, class, order, family, genus, species, portal_name, rls_reporting_name) %>% #rls_recorded_name
-  left_join(dew_species) %>%
+  # left_join(dew_species) %>%
   dplyr::filter(!order %in% c("Articulata", "Trochida")) %>%
   dplyr::filter(!family %in% "Unknown")
 
@@ -276,12 +282,43 @@ species_in_multiple_classes <- m2_species_new_inverts %>%
 
 # write_sheet(m2_species_new_inverts, "https://docs.google.com/spreadsheets/d/1M5UgtuoN6YAYKnXcB3UpbVn-ugvKGcwPbkNYUI-t_AM/edit?usp=sharing", sheet = "M2_inverts")
 
+# Find common species ----
+species_in_m1_m2_fish <- semi_join(m1_species_new, m2_species_new) %>%
+  dplyr::select(phylum, class, order, family, genus, species, portal_name, common_name) # 36 species that are in both
+
+species_in_m1_m2_inverts <- semi_join(m1_species_new, m2_species_new_inverts) %>%
+  dplyr::select(phylum, class, order, family, genus, species, portal_name, common_name) # 2 species that are in both
+
+species_in_m2_both <- semi_join(m2_species_new, m2_species_new_inverts) %>%
+  dplyr::select(phylum, class, order, family, genus, species, portal_name, common_name) # none - that's good
+
 # Metrics ----# Metrics -recorded_species_name---
 # Species richness (fish and inverts separately)
 # B20 (or similar – Tim’s metric?)
 # Shannon diversity (fish and inverts separately)
 # Abundance/richness of functional/diet groups? To be determined – will create master list of traits for all species
 # Percent cover of canopy forming macroalgae
+
+# Species Richness ----
+# TODO - need to filter these to only fish first!
+# Calculated per block -----
+names(m1_species_new)
+
+m1_fish_sr <- m1_species_new %>%
+  dplyr::distinct(survey_id, site_code, survey_date, block, family, portal_name) %>%
+  dplyr::group_by(survey_id, site_code, survey_date, block) %>%
+  dplyr::summarise(value = n())
+
+hist(m1_fish_sr$value)
+summary(m1_fish_sr)
+
+m2_fish_sr <- m2_species_new %>%
+  dplyr::distinct(survey_id, site_code, survey_date, block, family, portal_name) %>%
+  dplyr::group_by(survey_id, site_code, survey_date, block) %>%
+  dplyr::summarise(value = n())
+
+hist(m2_fish_sr$value)
+summary(m2_fish_sr)
 
 
 # Check to see original sites ----
