@@ -20,7 +20,12 @@ sf_use_s2(FALSE)
 # Shapefiles ----
 # Reporting regions -----
 regions_shp <- st_read("data/spatial/Reporting_regions_30102025.shp", quiet = TRUE) %>%
-  dplyr::rename(region = RegionName)
+  dplyr::rename(region = RegionName) %>%
+  dplyr::mutate(region = str_replace_all(region, 
+                                         c("Eastern Kangaroo Island" = "Kangaroo Island",
+                                           "Northern Kangaroo Island" = "Kangaroo Island")))
+
+unique(regions_shp$region)
 
 # Ensure WGS84 for Leaflet 
 regions_shp <- st_transform(regions_shp, 4326)  # TODO put this in a shapefile list
