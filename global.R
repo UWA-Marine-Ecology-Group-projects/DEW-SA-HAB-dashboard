@@ -247,8 +247,8 @@ plot_theme <- theme(
 
 # shared colours for pre/post everywhere
 metric_period_cols <- c(
-  "Pre-bloom"  = "#072759",  # same blue
-  "Bloom" = "#e88e98"   # same orange
+  "Pre-bloom"  = "#193b73",  # same blue
+  "Bloom" = "#92bd83"   # same orange
 )
 
 metric_groups <- function(metric_id) {

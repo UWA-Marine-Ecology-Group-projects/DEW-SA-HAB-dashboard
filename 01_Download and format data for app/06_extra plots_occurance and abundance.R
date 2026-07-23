@@ -43,7 +43,7 @@ raw_count_file <- "raw_count.RDS"
 functional_traits_file <- "data/lookups/SA-HAB-Functional Traits.csv"
 
 # Output folder.
-output_root <- "plots/top_occurrence_abundance_by_location_focus_period"
+output_root <- "plots/20260723/top_occurrence_abundance_by_location_focus_period"
 
 # Thresholds requested.
 # Occurrence uses >= because the requirement is "at least 15%".
@@ -66,9 +66,16 @@ include_location_in_title <- FALSE
 
 # Colours.
 # Pre-bloom is dark blue. Bloom periods are pink shades.
-pre_bloom_colour <- "#072759"
-bloom_colour_start <- "#e88e98"
-bloom_colour_end <- "#f8d7da"
+# pre_bloom_colour <- "#193b73"
+# bloom_colour_start <- "#92bd83"
+# bloom_colour_end <- "#8b95d9"
+# 
+# # "#e3c06d" 3rd colour
+pre_bloom_colour <- "#193b73"
+
+bloom_colour_start  <- "#92bd83"
+bloom_colour_middle <- "#8b95d9"
+bloom_colour_end    <- "#e3c06d"
 
 # Output image sizing.
 plot_width <- 9
@@ -106,13 +113,34 @@ safe_filename <- function(x) {
 # Make colours for the periods in one plot.
 # Pre-bloom always gets the dark blue.
 # Any Bloom/Post-bloom periods get a gradient from pink to light pink.
+# make_period_colours <- function(plot_periods) {
+#   
+#   bloom_periods <- setdiff(plot_periods, "Pre-bloom")
+#   
+#   if (length(bloom_periods) > 0) {
+#     bloom_cols <- grDevices::colorRampPalette(
+#       c(bloom_colour_start, bloom_colour_end)
+#     )(length(bloom_periods))
+#   } else {
+#     bloom_cols <- character(0)
+#   }
+#   
+#   c(
+#     "Pre-bloom" = pre_bloom_colour,
+#     setNames(bloom_cols, bloom_periods)
+#   )
+# }
 make_period_colours <- function(plot_periods) {
   
   bloom_periods <- setdiff(plot_periods, "Pre-bloom")
   
   if (length(bloom_periods) > 0) {
     bloom_cols <- grDevices::colorRampPalette(
-      c(bloom_colour_start, bloom_colour_end)
+      c(
+        bloom_colour_start,
+        bloom_colour_middle,
+        bloom_colour_end
+      )
     )(length(bloom_periods))
   } else {
     bloom_cols <- character(0)
@@ -123,7 +151,6 @@ make_period_colours <- function(plot_periods) {
     setNames(bloom_cols, bloom_periods)
   )
 }
-
 
 # ---- Read in data ----
 

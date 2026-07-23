@@ -3256,8 +3256,8 @@ server <- function(input, output, session) {
     
     # Base colours (your existing theme)
     period_cols <- c(
-      "Pre-bloom" = "#072759",
-      "Bloom"     = "#e88e98"
+      "Pre-bloom" = "#193b73",
+      "Bloom"     = "#92bd83"
     )
     
     # ---- Data prep ----
@@ -4221,8 +4221,8 @@ server <- function(input, output, session) {
     
     # Base colours (your existing theme)
     period_cols <- c(
-      "Pre-bloom" = "#072759",
-      "Bloom"     = "#e88e98"
+      "Pre-bloom" = "#193b73",
+      "Bloom"     = "#92bd83"
     )
     
     # Same structure as your region table, just filtered by location
