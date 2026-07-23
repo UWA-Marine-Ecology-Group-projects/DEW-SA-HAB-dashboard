@@ -23,6 +23,11 @@ metric_period_cols <- c(
   "Bloom"     = "#e88e98"
 )
 
+metric_period_cols <- c(
+  "Pre-bloom"  = "#193b73",  # same blue
+  "Bloom" = "#92bd83"   # same orange
+)
+
 status_cols <- c(
   "Fished"  = "#d95f02",
   "No-take" = "#1b9e77"
@@ -203,7 +208,7 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
   
   has_two_periods <- n_distinct(df$Period) >= 2
   has_two_status  <- n_distinct(df$Status) >= 2
-  has_two_dates   <- n_distinct(df$start_date_fct) >= 3
+  has_two_dates   <- n_distinct(df$start_date_fct) >= 2
   
   site_re <- if (use_site && "uwa_site_code" %in% names(df)) {
     " + (1 | uwa_site_code)"
@@ -888,7 +893,7 @@ save_patchwork_plots <- function(results_df, plot_fun, output_dir, suffix, title
 save_patchwork_plots(
   period_results,
   plot_period,
-  "plots/20250616/period_results",
+  "plots/20260723A/period_results",
   "period",
   "period means"
 )
@@ -896,7 +901,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   period_status_results,
   plot_period_status,
-  "plots/20250616/period_status_results",
+  "plots/20260723A/period_status_results",
   "period_status",
   "period means by status"
 )
@@ -904,7 +909,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_results,
   plot_start_date,
-  "plots/20250616/start_date_results",
+  "plots/20260723A/start_date_results",
   "start_date",
   "temporal results"
 )
@@ -912,7 +917,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_status_results,
   plot_start_date_status,
-  "plots/20250616/start_date_status_results",
+  "plots/20260723A/start_date_status_results",
   "start_date_status",
   "temporal results by status",
   width = 12
