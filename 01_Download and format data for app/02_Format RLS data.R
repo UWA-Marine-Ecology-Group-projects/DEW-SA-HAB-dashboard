@@ -10,6 +10,8 @@ library(stringr)
 library(readr)
 library(tidyr)
 library(googlesheets4)
+library(grid)
+library(ggplot2)
 
 sf_use_s2(FALSE)
 
@@ -19,7 +21,8 @@ sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
   select(site_code, site_name, location_g, bruvsrepor)
 
 dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing") %>%
-  rename(portal_name = genus_species)
+  rename(portal_name = genus_species) %>%
+  mutate(genus_species = portal_name)
 2
 
 # TODO review
@@ -35,10 +38,20 @@ survey_list <- read_csv("data/raw/RLS/ep_survey_list_SA.csv") %>%
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) #%>%
   # dplyr::mutate(id = paste(survey_id, block))
 
+check <- survey_list %>%
+  distinct(survey_id, site_code, survey_date, depth) %>%
+  group_by(site_code, survey_date) %>%
+  summarise(n = n())
+
+hist(check$n)
+
+plot(survey_list$survey_date, survey_list$depth)
+
 # NOTE survey list does not have block - assume they always have 2?
 
 length(unique(survey_list$survey_id))
 length(unique(survey_list$survey_id)) * 2
+
 # Animals ----
 m1          <- read_csv("data/raw/RLS/ep_M1_SA.csv") %>% dplyr::select(-cols_to_remove) %>%
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
@@ -284,13 +297,13 @@ species_in_multiple_classes <- m2_species_new_inverts %>%
 
 # Find common species ----
 species_in_m1_m2_fish <- semi_join(m1_species_new, m2_species_new) %>%
-  dplyr::select(phylum, class, order, family, genus, species, portal_name, common_name) # 36 species that are in both
+  dplyr::distinct(phylum, class, order, family, genus, species, portal_name) # m36 species that are in both
 
 species_in_m1_m2_inverts <- semi_join(m1_species_new, m2_species_new_inverts) %>%
-  dplyr::select(phylum, class, order, family, genus, species, portal_name, common_name) # 2 species that are in both
+  dplyr::distinct(phylum, class, order, family, genus, species, portal_name) # 2 species that are in both
 
 species_in_m2_both <- semi_join(m2_species_new, m2_species_new_inverts) %>%
-  dplyr::select(phylum, class, order, family, genus, species, portal_name, common_name) # none - that's good
+  dplyr::distinct(phylum, class, order, family, genus, species, portal_name) # none - that's good
 
 # Metrics ----# Metrics -recorded_species_name---
 # Species richness (fish and inverts separately)
@@ -304,21 +317,224 @@ species_in_m2_both <- semi_join(m2_species_new, m2_species_new_inverts) %>%
 # Calculated per block -----
 names(m1_species_new)
 
-m1_fish_sr <- m1_species_new %>%
+m1_fish_sr_samples <- m1_species_new %>%
   dplyr::distinct(survey_id, site_code, survey_date, block, family, portal_name) %>%
   dplyr::group_by(survey_id, site_code, survey_date, block) %>%
   dplyr::summarise(value = n())
 
-hist(m1_fish_sr$value)
-summary(m1_fish_sr)
+hist(m1_fish_sr_samples$value)
+summary(m1_fish_sr_samples)
 
-m2_fish_sr <- m2_species_new %>%
+m2_fish_sr_samples <- m2_species_new %>%
   dplyr::distinct(survey_id, site_code, survey_date, block, family, portal_name) %>%
   dplyr::group_by(survey_id, site_code, survey_date, block) %>%
   dplyr::summarise(value = n())
 
-hist(m2_fish_sr$value)
-summary(m2_fish_sr)
+hist(m2_fish_sr_samples$value)
+summary(m2_fish_sr_samples)
+
+
+# Stacked abundance plots -----
+## Stacked bar plots -----
+m1_all_species <- m1_species_new %>%
+  dplyr::mutate(
+    period = if_else(
+      as.Date(survey_date) < as.Date("2025-03-01"),
+      "Pre-bloom",
+      "Bloom"
+    )
+  ) %>%
+  dplyr::mutate(genus_species = paste(genus, species)) %>%
+  dplyr::rename(count = total) %>%
+  glimpse()
+
+unique(m1_all_species$period)
+
+test_dates <- m1_all_species %>%
+  distinct(survey_date, period)
+
+format_stacked_species_data <- function(
+    df,
+    group_var,
+    period_var = period,
+    species_var = genus_species,
+    count_var = count,
+    top_n = 5
+) {
+  
+  group_var   <- rlang::ensym(group_var)
+  period_var  <- rlang::ensym(period_var)
+  species_var <- rlang::ensym(species_var)
+  count_var   <- rlang::ensym(count_var)
+  
+  df_sum <- df %>%
+    dplyr::filter(
+      !is.na(!!group_var),
+      !is.na(!!period_var),
+      !is.na(!!species_var)
+    ) %>%
+    dplyr::group_by(!!group_var, !!period_var, !!species_var) %>%
+    dplyr::summarise(
+      total_count = sum(!!count_var, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::rename(
+      group_name = !!group_var,
+      period_name = !!period_var,
+      species_name = !!species_var
+    )
+  
+  top_species <- df_sum %>%
+    dplyr::group_by(group_name, period_name) %>%
+    dplyr::slice_max(
+      order_by = total_count,
+      n = top_n,
+      with_ties = FALSE
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(group_name, period_name, species_name) %>%
+    dplyr::mutate(is_top_species = TRUE)
+  
+  plot_df <- df_sum %>%
+    dplyr::left_join(
+      top_species,
+      by = c("group_name", "period_name", "species_name")
+    ) %>%
+    dplyr::mutate(
+      species_plot = dplyr::if_else(
+        is.na(is_top_species),
+        "Other",
+        species_name
+      )
+    ) %>%
+    dplyr::group_by(group_name, period_name, species_plot) %>%
+    dplyr::summarise(
+      total_count = sum(total_count, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::group_by(group_name, period_name) %>%
+    dplyr::mutate(
+      percent = total_count / sum(total_count, na.rm = TRUE) * 100
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(genus_species = species_plot) %>%
+    dplyr::left_join(dew_species) %>%
+    dplyr::mutate(species_plot = if_else(!species_plot %in% "Other", paste0(species_plot, "\n", "(",common_name, ")"), "Other"))%>%
+    mutate(
+      species_plot = stringr::str_replace(
+        species_plot,
+        "^(.*?)\\n\\((.*?)\\)$",
+        "<i>\\1</i><br>(\\2)"
+      )
+    )
+  
+  
+  other_labels <- df_sum %>%
+    dplyr::anti_join(
+      top_species,
+      by = c("group_name", "period_name", "species_name")
+    ) %>%
+    dplyr::group_by(group_name, period_name) %>%
+    dplyr::summarise(
+      n_other = dplyr::n_distinct(species_name),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(
+      label = paste0(n_other, " spp.")
+    )
+  
+  list(
+    plot_df = plot_df,
+    other_labels = other_labels
+  )
+}
+
+species_stacked <- format_stacked_species_data(
+  df = m1_all_species,
+  group_var = location,
+  top_n = 5
+)
+
+test <- species_stacked$plot_df
+
+df_check <- species_stacked$plot_df %>%
+  dplyr::filter(group_name == "Adelaide")
+
+all_species <- unique(c(species_stacked$plot_df$species_plot,
+                        location_species_stacked$plot_df$species_plot))
+
+all_species <- setdiff(all_species, "Other")
+
+
+
+MASTER_COLOURS <- readRDS("sasha example/master_species_colours.rds")
+
+species_palette <- build_species_palette(
+  species_vec = all_species,
+  dew_species = dew_species,
+  colour_pool = MASTER_COLOURS
+)
+
+# Add "Other"
+species_palette["Other"] <- "grey70"
+
+plot_theme <- theme(
+  axis.line.x = element_line(color = "black", linewidth = 0.5),
+  axis.line.y = element_line(color = "black", linewidth = 0.5))
+
+# TODO loop these and save to google drive
+plot_stacked_species(
+  plot_df = species_stacked$plot_df,
+  other_labels = species_stacked$other_labels,
+  selected_name = "Adelaide",
+  palette = species_palette
+)
+
+plot_stacked_species(
+  plot_df = species_stacked$plot_df,
+  other_labels = species_stacked$other_labels,
+  selected_name = "Encounter",
+  palette = species_palette
+)
+
+plot_stacked_species(
+  plot_df = species_stacked$plot_df,
+  other_labels = species_stacked$other_labels,
+  selected_name = "Yorke Peninsula",
+  palette = species_palette
+)
+
+location_species_stacked <- format_stacked_species_data(
+  df = m1_all_species,
+  group_var = site_code,
+  top_n = 5
+)
+
+test <- location_species_stacked$plot_df
+
+# TODO loop these and save to google drive
+plot_stacked_species(
+  plot_df = location_species_stacked$plot_df,
+  other_labels = location_species_stacked$other_labels,
+  selected_name = "COO18",
+  palette = species_palette
+)
+
+plot_stacked_species(
+  plot_df = location_species_stacked$plot_df,
+  other_labels = location_species_stacked$other_labels,
+  selected_name = "GSV121",
+  palette = species_palette
+)
+
+# TODO need to look at how campaigns are created for RLS? Do they have multiple surveys post bloom
+surveys <- m1_all_species %>%
+  distinct(survey_id, location, site_code, survey_date, period)
+
+survey_ns <- surveys %>%
+  distinct(location, site_code, period, survey_date) %>%
+  group_by(location, site_code, period) %>%
+  summarise(n = n())
 
 
 # Check to see original sites ----
