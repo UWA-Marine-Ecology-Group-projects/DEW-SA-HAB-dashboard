@@ -1278,3 +1278,42 @@ check_raw_dates <- function(df, response_col, region_name) {
     ) %>%
     arrange(start_date_date)
 }
+
+
+uncertainty_issues <- bind_rows(
+  period_results %>%
+    mutate(result_type = "Period"),
+  
+  period_status_results %>%
+    mutate(result_type = "Period by status"),
+  
+  start_date_results %>%
+    mutate(result_type = "Temporal"),
+  
+  start_date_status_results %>%
+    mutate(result_type = "Temporal by status")
+) %>%
+  filter(
+    is.na(SE) |
+      !is.finite(SE) |
+      is.na(asymp.LCL) |
+      !is.finite(asymp.LCL) |
+      is.na(asymp.UCL) |
+      !is.finite(asymp.UCL)
+  ) %>%
+  select(
+    reporting_name,
+    metric,
+    result_type,
+    any_of(c(
+      "Period",
+      "Status",
+      "start_date_date"
+    )),
+    response,
+    SE,
+    asymp.LCL,
+    asymp.UCL
+  )
+
+uncertainty_issues
