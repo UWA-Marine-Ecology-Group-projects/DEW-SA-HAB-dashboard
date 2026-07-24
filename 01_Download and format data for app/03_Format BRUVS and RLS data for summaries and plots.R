@@ -1909,83 +1909,38 @@ location_species_stacked_split <- format_stacked_species_data(
 
 test <- location_species_stacked_split$plot_df
 
+# Install once if needed
+# install.packages("colorspace")
 
-MASTER_COLOURS <- readRDS("sasha example/master_species_colours.rds")
+species_colours <- colorspace::qualitative_hcl(
+  n = 15,
+  palette = "Dark 3"
+)
 
-# build_species_palette <- function(species_vec, dew_species, colour_pool) {
-#   
-#   # Match species to dew_species table
-#   lookup <- dew_species %>%
-#     dplyr::select(genus_species, colour)
-#   
-#   df <- data.frame(genus_species = species_vec) %>%
-#     dplyr::left_join(lookup, by = "genus_species")
-#   
-#   # Existing colours from dew_species
-#   used_cols <- df$colour[!is.na(df$colour)]
-#   
-#   # Species needing colours
-#   missing_species <- df$genus_species[is.na(df$colour)]
-#   
-#   if (length(missing_species) > 0) {
-#     
-#     available_cols <- setdiff(colour_pool, used_cols)
-#     
-#     if (length(available_cols) < length(missing_species)) {
-#       stop("Not enough colours in master palette")
-#     }
-#     
-#     # Assign colours
-#     new_cols <- setNames(
-#       sample(available_cols, length(missing_species)),
-#       missing_species
-#     )
-#     
-#     df$colour[is.na(df$colour)] <- new_cols[df$genus_species[is.na(df$colour)]]
-#   }
-#   
-#   # Named vector for ggplot
-#   setNames(df$colour, df$genus_species)
-# }
+OTHER_COLOUR <- "grey70"
 
-
-clean_species <- function(x) {
-  x %>%
-    str_remove("^<i>") %>%
-    str_remove("</i><br>.*$") %>%
-    trimws()
-}
-
-build_species_palette <- function(species_vec, dew_species, colour_pool) {
+build_species_palette <- function(species_vec) {
   
-  lookup <- dew_species %>%
-    mutate(
-      species_key = trimws(genus_species),
-      colour = na_if(colour, "NA")
-    ) %>%
-    select(species_key, colour) %>%
-    distinct(species_key, .keep_all = TRUE)
+  species_vec <- unique(species_vec)
+  species_vec <- species_vec[species_vec != "Other"]
   
-  df <- tibble(
-    genus_species = species_vec,
-    species_key = clean_species(species_vec)
-  ) %>%
-    left_join(lookup, by = "species_key")
-  
-  used_cols <- df$colour[!is.na(df$colour)]
-  missing_i <- which(is.na(df$colour))
-  
-  if (length(missing_i) > 0) {
-    available_cols <- setdiff(colour_pool, used_cols)
-    
-    if (length(available_cols) < length(missing_i)) {
-      stop("Not enough colours in master palette")
-    }
-    
-    df$colour[missing_i] <- sample(available_cols, length(missing_i))
+  if (length(species_vec) > length(SPECIES_COLOURS)) {
+    stop(
+      "There are ", length(species_vec),
+      " species, but only ", length(SPECIES_COLOURS),
+      " species colours are available."
+    )
   }
   
-  setNames(df$colour, df$genus_species)
+  # Alphabetical ordering makes the assignment reproducible
+  species_vec <- sort(species_vec)
+  
+  species_palette <- setNames(
+    SPECIES_COLOURS[seq_along(species_vec)],
+    species_vec
+  )
+  
+  c(species_palette, Other = OTHER_COLOUR)
 }
 
 all_species <- unique(
@@ -1996,18 +1951,7 @@ all_species <- unique(
   )
 )
 
-all_species <- setdiff(all_species, "Other")
-
-set.seed(2)
-
-species_palette <- build_species_palette(
-  species_vec = all_species,
-  dew_species = dew_species,
-  colour_pool = MASTER_COLOURS
-)
-
-# Add "Other"
-species_palette["Other"] <- "grey70"
+species_palette <- build_species_palette(all_species)
 
 # Combined data
 hab_data <- structure(

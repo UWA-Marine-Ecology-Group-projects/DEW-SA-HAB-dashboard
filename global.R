@@ -25,6 +25,7 @@ library(googlesheets4)
 library(rmarkdown)
 library(ggtext)
 library(DT)
+library(colorspace)
 
 source("R/helpers.R")          # defines filter_by_park(), ensure_sf_ll(), base_map(), etc.
 source("R/mod_park_summary.R") # defines mod_park_summary_ui/server (contains session$onFlushed INSIDE)
@@ -36,6 +37,25 @@ load("app_data/dataframes.Rdata")
 load("app_data/plots.Rdata")
 load("app_data/hab_data.Rdata")
 # load("app_data/downloads.Rdata")
+
+species_colours <- c(
+  "#4F7CC9", # 1 Blue
+  "#D98C3F", # 2 Orange
+  "#4FA08F", # 3 Teal
+  "#D06D93", # 4 Pink
+  "#E0B938", # 5 Yellow
+  "#6A717A", # 6 Grey
+  "#9A7A5B", # 7 Brown
+  "#98B55E", # 8 Olive
+  "#8AA2DA", # 9 Light Blue
+  "#8F667A", # 10 Mauve
+  "#B04A7A", # 11 Magenta
+  "#69B86E", # 12 Green
+  "#E5A34A",  # 13 Amber
+  "black"
+)
+
+OTHER_COLOUR <- "#d9d9d9"
 
 # List of campaigns ----
 campaigns <- unique((hab_data$hab_combined_metadata)$campaignid) %>% sort()

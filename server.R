@@ -560,36 +560,55 @@ add_metric_downloads <- function(output, prefix, data_id, plot_id,
   )
 }
 
-
 plot_stacked_species <- function(
     plot_df,
     other_labels,
     selected_name,
-    palette,
+    colour_pool = species_colours,
     period_order = c("Pre-bloom", "Bloom")
 ) {
   
-  dat <- plot_df%>%
+  df <- plot_df %>%
     dplyr::filter(group_name == selected_name)
   
   period_order <- c(
     "Pre-bloom",
-    sort(setdiff(unique(dat$period_name), "Pre-bloom"))
+    sort(setdiff(unique(df$period_name), "Pre-bloom"))
   )
   
-  df <- plot_df %>%
-    dplyr::filter(group_name == selected_name) %>%
+  df <- df %>%
     dplyr::mutate(
-      period_name = factor(period_name, levels = period_order)#,
-      # species_plot = forcats::fct_relevel(species_plot, "Other", after = Inf)
+      period_name = factor(period_name, levels = period_order)
     )
   
   species_order <- df %>%
     dplyr::filter(species_plot != "Other") %>%
     dplyr::group_by(species_plot) %>%
-    dplyr::summarise(total_percent = sum(percent, na.rm = TRUE), .groups = "drop") %>%
-    dplyr::arrange(-total_percent) %>%
+    dplyr::summarise(
+      total_percent = sum(percent, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::arrange(dplyr::desc(total_percent)) %>%
     dplyr::pull(species_plot)
+  
+  n_species <- length(species_order)
+  
+  if (n_species > length(colour_pool)) {
+    stop(
+      "This plot contains ", n_species,
+      " species, but only ", length(colour_pool),
+      " colours are available."
+    )
+  }
+  
+  # Use colours 1:n for the species in this particular plot
+  plot_palette <- setNames(
+    colour_pool[seq_len(n_species)],
+    species_order
+  )
+  
+  # Other is always grey
+  plot_palette <- c(plot_palette, Other = "#d9d9d9")
   
   species_order <- c(species_order, "Other")
   
@@ -608,20 +627,43 @@ plot_stacked_species <- function(
     ) %>%
     dplyr::mutate(ypos = percent / 2)
   
-  ggplot2::ggplot(df, ggplot2::aes(x = period_name, y = percent, fill = species_plot)) +
+  ggplot2::ggplot(
+    df,
+    ggplot2::aes(
+      x = period_name,
+      y = percent,
+      fill = species_plot
+    )
+  ) +
     ggplot2::geom_col(width = 0.75, colour = "black") +
-    ggplot2::geom_text(
-      data = labels_df,
-      ggplot2::aes(x = period_name, y = ypos, label = label),
-      inherit.aes = FALSE,
-      fontface = "bold",
-      size = 4
+    # ggplot2::geom_text(
+    #   data = labels_df,
+    #   ggplot2::aes(
+    #     x = period_name,
+    #     y = ypos,
+    #     label = label
+    #   ),
+    #   inherit.aes = FALSE,
+    #   fontface = "bold",
+    #   size = 4
+    # ) +
+    ggplot2::scale_fill_manual(
+      values = plot_palette,
+      drop = FALSE
     ) +
-    ggplot2::scale_fill_manual(values = palette) +
+    # ggplot2::scale_y_continuous(
+    #   labels = scales::label_percent(scale = 1),
+    #   limits = c(0, 100),
+    #   expand = ggplot2::expansion(mult = c(0, 0.02))
+    # ) +
     ggplot2::scale_y_continuous(
       labels = scales::label_percent(scale = 1),
-      limits = c(0, 100),
-      expand = ggplot2::expansion(mult = c(0, 0.02))
+      breaks = c(0, 25, 50, 75, 100),
+      expand = ggplot2::expansion(mult = c(0, 0))
+    ) +
+    ggplot2::coord_cartesian(
+      ylim = c(0, 100),
+      expand = FALSE
     ) +
     ggplot2::labs(
       x = NULL,
@@ -632,14 +674,93 @@ plot_stacked_species <- function(
     ggplot2::theme(
       panel.grid = ggplot2::element_blank(),
       axis.text.x = ggplot2::element_text(size = 13),
-      # legend.text = ggplot2::element_text(face = "italic"),
       legend.text = ggtext::element_markdown(size = 10),
       legend.position = "right",
-      legend.key.height = unit(0.8, "cm"),
-      legend.spacing.y = unit(0.2, "cm")
-    ) + plot_theme + 
-    scale_y_continuous(expand = expansion(mult = c(0, 0)))
+      legend.key.height = grid::unit(0.8, "cm"),
+      legend.spacing.y = grid::unit(0.2, "cm")
+    ) +
+    plot_theme
 }
+# plot_stacked_species <- function(
+#     plot_df,
+#     other_labels,
+#     selected_name,
+    # palette,
+# #    colour_pool = species_colours,
+#     period_order = c("Pre-bloom", "Bloom")
+# ) {
+#   
+#   dat <- plot_df%>%
+#     dplyr::filter(group_name == selected_name)
+#   
+#   period_order <- c(
+#     "Pre-bloom",
+#     sort(setdiff(unique(dat$period_name), "Pre-bloom"))
+#   )
+#   
+#   df <- plot_df %>%
+#     dplyr::filter(group_name == selected_name) %>%
+#     dplyr::mutate(
+#       period_name = factor(period_name, levels = period_order)#,
+#       # species_plot = forcats::fct_relevel(species_plot, "Other", after = Inf)
+#     )
+#   
+#   species_order <- df %>%
+#     dplyr::filter(species_plot != "Other") %>%
+#     dplyr::group_by(species_plot) %>%
+#     dplyr::summarise(total_percent = sum(percent, na.rm = TRUE), .groups = "drop") %>%
+#     dplyr::arrange(-total_percent) %>%
+#     dplyr::pull(species_plot)
+#   
+#   species_order <- c(species_order, "Other")
+#   
+#   df <- df %>%
+#     dplyr::mutate(
+#       species_plot = factor(species_plot, levels = species_order)
+#     )
+#   
+#   labels_df <- other_labels %>%
+#     dplyr::filter(group_name == selected_name) %>%
+#     dplyr::left_join(
+#       df %>%
+#         dplyr::filter(species_plot == "Other") %>%
+#         dplyr::select(group_name, period_name, percent),
+#       by = c("group_name", "period_name")
+#     ) %>%
+#     dplyr::mutate(ypos = percent / 2)
+#   
+#   ggplot2::ggplot(df, ggplot2::aes(x = period_name, y = percent, fill = species_plot)) +
+#     ggplot2::geom_col(width = 0.75, colour = "black") +
+#     ggplot2::geom_text(
+#       data = labels_df,
+#       ggplot2::aes(x = period_name, y = ypos, label = label),
+#       inherit.aes = FALSE,
+#       fontface = "bold",
+#       size = 4
+#     ) +
+#     ggplot2::scale_fill_manual(values = palette) +
+#     ggplot2::scale_y_continuous(
+#       labels = scales::label_percent(scale = 1),
+#       limits = c(0, 100),
+#       expand = ggplot2::expansion(mult = c(0, 0.02))
+#     ) +
+#     ggplot2::labs(
+#       x = NULL,
+#       y = "Percentage of observations",
+#       fill = "Species"
+#     ) +
+#     ggplot2::theme_minimal(base_size = 15) +
+#     ggplot2::theme(
+#       panel.grid = ggplot2::element_blank(),
+#       axis.text.x = ggplot2::element_text(size = 13),
+#       # legend.text = ggplot2::element_text(face = "italic"),
+#       legend.text = ggtext::element_markdown(size = 10),
+#       legend.position = "right",
+#       legend.key.height = unit(0.8, "cm"),
+#       legend.spacing.y = unit(0.2, "cm")
+#     ) + plot_theme + 
+#     scale_y_continuous(expand = expansion(mult = c(0, 0)))
+# }
 
 # ------------------------------ server ---------------------------------------
 
@@ -7026,8 +7147,8 @@ server <- function(input, output, session) {
     plot_stacked_species(
       plot_df = hab_data$species_stacked$plot_df,
       other_labels = hab_data$species_stacked$other_labels,
-      selected_name = input$region,
-      palette = hab_data$species_palette
+      selected_name = input$region#,
+      # palette = hab_data$species_palette
     )
     
   })
@@ -7145,8 +7266,8 @@ server <- function(input, output, session) {
     plot_stacked_species(
       plot_df = hab_data$location_species_stacked$plot_df,
       other_labels = hab_data$location_species_stacked$other_labels,
-      selected_name = input$location,
-      palette = hab_data$species_palette
+      selected_name = input$location#,
+      #palette = hab_data$species_palette
     )
     
   })
@@ -7184,8 +7305,8 @@ server <- function(input, output, session) {
     plot_stacked_species(
       plot_df = hab_data$location_species_stacked_split$plot_df,
       other_labels = hab_data$location_species_stacked_split$other_labels,
-      selected_name = input$location,
-      palette = hab_data$species_palette
+      selected_name = input$location#,
+      #palette = hab_data$species_palette
     )
     
   })
