@@ -25,7 +25,7 @@ library(googlesheets4)
 library(rmarkdown)
 library(ggtext)
 library(DT)
-library(colorspace)
+# library(colorspace)
 
 source("R/helpers.R")          # defines filter_by_park(), ensure_sf_ll(), base_map(), etc.
 source("R/mod_park_summary.R") # defines mod_park_summary_ui/server (contains session$onFlushed INSIDE)
