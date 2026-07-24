@@ -19,11 +19,6 @@ sf::sf_use_s2()
 # -----------------------------
 
 metric_period_cols <- c(
-  "Pre-bloom" = "#072759",
-  "Bloom"     = "#e88e98"
-)
-
-metric_period_cols <- c(
   "Pre-bloom"  = "#193b73",  # same blue
   "Bloom" = "#92bd83"   # same orange
 )
@@ -121,7 +116,8 @@ reef_dat <- prep_metric_data(hab_data$reef_associated_richness_samples %>% left_
 shannon_dat <- prep_metric_data(hab_data$shannon_diversity_samples %>% left_join(metadata), "shannon")%>%
   sf::st_drop_geometry()
 
-fish_200_dat <- prep_metric_data(hab_data$fish_200_abundance_samples %>% left_join(metadata), "total_abundance_sample")%>%
+fish_200_dat <- prep_metric_data(hab_data$fish_200_abundance_samples %>% 
+                                   left_join(metadata), "total_abundance_sample")%>%
   sf::st_drop_geometry()
 
 # find_zero_dates <- function(df, response_col, threshold = 0.9) {
@@ -171,31 +167,48 @@ test <- reef_dat %>%
   count()
 
 test_prop_zero <- mean((shark_dat%>%filter(reporting_name%in%"Glenelg"))[['n_species_sample']] == 0, na.rm = TRUE)
+test_prop_zero <- mean((shark_dat%>%filter(reporting_name%in%"Cape Elizabeth - Cape Elizabeth Sanctuary Zone"))[['n_species_sample']] == 0, na.rm = TRUE)
 
 library(tidyr)
 
-fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
+# -----------------------------
+# 2. Fit one region
+# -----------------------------
+
+fit_one_region <- function(
+    df,
+    response_col,
+    metric_name,
+    use_site = FALSE
+) {
   
+  # ----------------------------------------------------------
+  # Initial checks
+  # ----------------------------------------------------------
   
   if (nrow(df) < 10) {
     stop("Not enough data")
   }
   
-  # ---------------------------------
-  # Skip metrics with >80% zeros
-  # ---------------------------------
+  # Skip the whole regional metric when more than 90%
+  # of all observations are zero
+  prop_zero <- mean(
+    df[[response_col]] == 0,
+    na.rm = TRUE
+  )
   
-  # prop_zero <- mean(df[[response_col]] == 0, na.rm = TRUE)
-  # 
-  # if (prop_zero > 0.8) {
-  #   return(list(
-  #     skipped = TRUE,
-  #     reason = "More than 80% zeros",
-  #     prop_zero = prop_zero,
-  #     reporting_name = unique(df$reporting_name)[1],
-  #     metric = metric_name
-  #   ))
-  # }
+  if (prop_zero => 0.9) {
+    
+    return(
+      list(
+        skipped = TRUE,
+        reason = "More than 90% zeros",
+        prop_zero = prop_zero,
+        reporting_name = unique(df$reporting_name)[1],
+        metric = metric_name
+      )
+    )
+  }
   
   area_name <- unique(df$reporting_name)[1]
   
@@ -206,19 +219,26 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
       start_date_fct = droplevels(start_date_fct)
     )
   
-  has_two_periods <- n_distinct(df$Period) >= 2
-  has_two_status  <- n_distinct(df$Status) >= 2
-  has_two_dates   <- n_distinct(df$start_date_fct) >= 2
+  # ----------------------------------------------------------
+  # Structure of complete regional dataset
+  # ----------------------------------------------------------
   
-  # site_re <- if (use_site && "uwa_site_code" %in% names(df)) {
-  #   " + (1 | uwa_site_code)"
-  # } else {
-  #   ""
-  # }
+  has_two_periods <-
+    n_distinct(df$Period) >= 2
+  
+  has_two_status <-
+    n_distinct(df$Status) >= 2
+  
+  has_two_dates <-
+    n_distinct(df$start_date_fct) >= 2
+  
   has_multiple_sites <-
     use_site &&
     "uwa_site_code" %in% names(df) &&
-    dplyr::n_distinct(df$uwa_site_code, na.rm = TRUE) > 1
+    n_distinct(
+      df$uwa_site_code,
+      na.rm = TRUE
+    ) > 1
   
   site_re <- if (has_multiple_sites) {
     " + (1 | uwa_site_code)"
@@ -226,67 +246,69 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
     ""
   }
   
+  message("Reporting region: ", area_name)
+  message("Number of observations: ", nrow(df))
+  message(
+    "Number of sampling dates: ",
+    n_distinct(df$start_date_fct)
+  )
+  message(
+    "Number of statuses: ",
+    n_distinct(df$Status)
+  )
+  
   message(
     "Number of sites: ",
     if ("uwa_site_code" %in% names(df)) {
-      dplyr::n_distinct(df$uwa_site_code, na.rm = TRUE)
+      n_distinct(
+        df$uwa_site_code,
+        na.rm = TRUE
+      )
     } else {
       0
     }
   )
   
-  message("Including site random effect: ", has_multiple_sites)
-  
-  # -----------------------------
-  # Check whether every date has both statuses
-  # -----------------------------
-  
-  if (has_two_dates && has_two_status) {
-    
-    date_status_check <- df %>%
-      dplyr::count(start_date_fct, Status) %>%
-      tidyr::complete(start_date_fct, Status, fill = list(n = 0))
-    
-    has_complete_date_status <- all(date_status_check$n > 0)
-    
-  } else {
-    
-    has_complete_date_status <- FALSE
-    
-  }
-  
-  message("Has complete date x status design: ", has_complete_date_status)
-  
-  # -----------------------------
-  # Period model
-  # -----------------------------
-  
-  period_fixed <- case_when(
-    has_two_periods & has_two_status ~ "Period * Status",
-    has_two_periods                  ~ "Period",
-    has_two_status                   ~ "Status",
-    TRUE                             ~ "1"
+  message(
+    "Including site random effect in period model: ",
+    has_multiple_sites
   )
   
-  # period_re <- if (has_two_dates) {
-  #   " + (1 | start_date_fct)"
-  # } else {
-  #   ""
-  # }
+  # ==========================================================
+  # Period model
+  # ==========================================================
   
-  # Number of unique sampling dates represented in each period
+  period_fixed <- case_when(
+    has_two_periods && has_two_status ~
+      "Period * Status",
+    
+    has_two_periods ~
+      "Period",
+    
+    has_two_status ~
+      "Status",
+    
+    TRUE ~
+      "1"
+  )
+  
+  # Count the number of dates in each period
   dates_per_period <- df %>%
-    distinct(Period, start_date_fct) %>%
-    count(Period, name = "n_dates")
+    distinct(
+      Period,
+      start_date_fct
+    ) %>%
+    count(
+      Period,
+      name = "n_dates"
+    )
   
-  # Date and period are perfectly confounded when every period
-  # is represented by only one sampling date
+  # Date and period are perfectly confounded when each
+  # period contains only one sampling date
   date_confounded_with_period <-
     has_two_periods &&
     all(dates_per_period$n_dates == 1)
   
-  # Only include date as a random effect when it is not
-  # perfectly confounded with period
   include_date_random_effect <-
     has_two_dates &&
     !date_confounded_with_period
@@ -308,102 +330,54 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
   )
   
   period_form <- as.formula(
-    paste0(response_col, " ~ ", period_fixed, period_re, site_re)
+    paste0(
+      response_col,
+      " ~ ",
+      period_fixed,
+      period_re,
+      site_re
+    )
   )
   
-  message("Period model: ", deparse(period_form))
+  message(
+    "Period model: ",
+    deparse(period_form)
+  )
   
   period_model <- glmmTMB(
-    period_form,
+    formula = period_form,
     data = df,
     family = nbinom2(link = "log")
   )
   
-  # -----------------------------
-  # Temporal model
-  # -----------------------------
-  
-  # -----------------------------
-  # Remove dates with >80% zeros
-  # ONLY for temporal modelling
-  # -----------------------------
-  
-  temporal_df <- df %>%
-    group_by(start_date_fct) %>%
-    mutate(
-      prop_zero_date = mean(.data[[response_col]] == 0, na.rm = TRUE)
-    ) %>%
-    ungroup()
-  
-  excluded_dates <- temporal_df %>%
-    filter(prop_zero_date > 0.9) %>%
-    distinct(start_date_fct, start_date_date, prop_zero_date) %>%
-    mutate(
-      reporting_name = area_name,
-      metric = metric_name,
-      exclusion_reason = "Not modelled\n(>90% zeros)"
-    )
-  
-  temporal_df <- temporal_df %>%
-    filter(prop_zero_date <= 0.9) %>%
-    mutate(
-      start_date_fct = droplevels(start_date_fct),
-      Period = droplevels(Period),
-      Status = droplevels(Status)
-    )
-  
-  
-  
-  temporal_fixed <- case_when(
-    has_two_dates & has_two_status & has_complete_date_status ~ "start_date_fct * Status",
-    has_two_dates                                             ~ "start_date_fct",
-    has_two_status                                            ~ "Status",
-    TRUE                                                      ~ "1"
-  )
-  
-  temporal_form <- as.formula(
-    paste0(response_col, " ~ ", temporal_fixed, site_re)
-  )
-  
-  message("Temporal model: ", deparse(temporal_form))
-  
-  temporal_model <- glmmTMB(
-    temporal_form,
-    data = temporal_df,
-    family = nbinom2(link = "log")
-  )
-  
-  # -----------------------------
-  # Lookup tables
-  # -----------------------------
-  
-  date_lookup <- temporal_df %>%
-    distinct(start_date_fct, start_date_date) %>%
-    mutate(start_date_fct = as.character(start_date_fct))
-  
-  period_lookup <- temporal_df %>%
-    distinct(start_date_date, Period)
-  
-  # -----------------------------
+  # ----------------------------------------------------------
   # Period means
-  # -----------------------------
+  # ----------------------------------------------------------
   
   if (has_two_periods) {
     
-    period_means <- emmeans(period_model, ~ Period, type = "response") %>%
+    period_means <- emmeans(
+      period_model,
+      ~ Period,
+      type = "response"
+    ) %>%
       as.data.frame() %>%
       as_tibble()
     
   } else {
     
-    single_period <- as.character(unique(df$Period)[1])
+    single_period <-
+      as.character(unique(df$Period)[1])
     
-    period_means <- emmeans(period_model, ~ 1, type = "response") %>%
+    period_means <- emmeans(
+      period_model,
+      ~ 1,
+      type = "response"
+    ) %>%
       as.data.frame() %>%
       as_tibble()
     
     period_means[["Period"]] <- single_period
-    
   }
   
   period_means <- period_means %>%
@@ -412,48 +386,73 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
       metric = metric_name
     )
   
-  # -----------------------------
-  # Period by Status means
-  # -----------------------------
+  # ----------------------------------------------------------
+  # Period-by-status means
+  # ----------------------------------------------------------
   
   if (has_two_periods && has_two_status) {
     
-    period_status_means <- emmeans(period_model, ~ Period * Status, type = "response") %>%
+    period_status_means <- emmeans(
+      period_model,
+      ~ Period * Status,
+      type = "response"
+    ) %>%
       as.data.frame() %>%
       as_tibble()
     
   } else if (has_two_periods) {
     
-    single_status <- as.character(unique(df$Status)[1])
+    single_status <-
+      as.character(unique(df$Status)[1])
     
-    period_status_means <- emmeans(period_model, ~ Period, type = "response") %>%
+    period_status_means <- emmeans(
+      period_model,
+      ~ Period,
+      type = "response"
+    ) %>%
       as.data.frame() %>%
       as_tibble()
     
-    period_status_means[["Status"]] <- single_status
+    period_status_means[["Status"]] <-
+      single_status
     
   } else if (has_two_status) {
     
-    single_period <- as.character(unique(df$Period)[1])
+    single_period <-
+      as.character(unique(df$Period)[1])
     
-    period_status_means <- emmeans(period_model, ~ Status, type = "response") %>%
+    period_status_means <- emmeans(
+      period_model,
+      ~ Status,
+      type = "response"
+    ) %>%
       as.data.frame() %>%
       as_tibble()
     
-    period_status_means[["Period"]] <- single_period
+    period_status_means[["Period"]] <-
+      single_period
     
   } else {
     
-    single_period <- as.character(unique(df$Period)[1])
-    single_status <- as.character(unique(df$Status)[1])
+    single_period <-
+      as.character(unique(df$Period)[1])
     
-    period_status_means <- emmeans(period_model, ~ 1, type = "response") %>%
+    single_status <-
+      as.character(unique(df$Status)[1])
+    
+    period_status_means <- emmeans(
+      period_model,
+      ~ 1,
+      type = "response"
+    ) %>%
       as.data.frame() %>%
       as_tibble()
     
-    period_status_means[["Period"]] <- single_period
-    period_status_means[["Status"]] <- single_status
+    period_status_means[["Period"]] <-
+      single_period
     
+    period_status_means[["Status"]] <-
+      single_status
   }
   
   period_status_means <- period_status_means %>%
@@ -462,555 +461,995 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
       metric = metric_name
     )
   
-  # -----------------------------
-  # Start date means
-  # -----------------------------
+  # ==========================================================
+  # Temporal model
+  # ==========================================================
   
-  if (has_two_dates) {
-    
-    start_date_means <- emmeans(temporal_model, ~ start_date_fct, type = "response") %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-  } else {
-    
-    single_date <- as.character(unique(df$start_date_fct)[1])
-    
-    start_date_means <- emmeans(temporal_model, ~ 1, type = "response") %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-    start_date_means[["start_date_fct"]] <- single_date
-    
-  }
+  # Calculate the proportion of zeros separately for each date
+  temporal_df <- df %>%
+    group_by(start_date_fct) %>%
+    mutate(
+      prop_zero_date = mean(
+        .data[[response_col]] == 0,
+        na.rm = TRUE
+      )
+    ) %>%
+    ungroup()
   
-  start_date_means <- start_date_means %>%
-    mutate(start_date_fct = as.character(start_date_fct)) %>%
-    left_join(date_lookup, by = "start_date_fct") %>%
-    left_join(period_lookup, by = "start_date_date") %>%
+  # Save dates excluded from the temporal model
+  excluded_dates <- temporal_df %>%
+    filter(prop_zero_date >= 0.9) %>%
+    distinct(
+      start_date_fct,
+      start_date_date,
+      prop_zero_date
+    ) %>%
     mutate(
       reporting_name = area_name,
-      metric = metric_name
+      metric = metric_name,
+      exclusion_reason = "Not modelled\n(>90% zeros)"
     )
   
-  # -----------------------------
-  # Start date by Status means
-  # -----------------------------
-  
-  if (has_two_dates && has_two_status && has_complete_date_status) {
-    
-    start_date_status_means <- emmeans(
-      temporal_model,
-      ~ start_date_fct * Status,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-  } else if (has_two_dates) {
-    
-    start_date_status_means <- emmeans(
-      temporal_model,
-      ~ start_date_fct,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-    start_date_status_means[["Status"]] <- "Not modelled by Status"
-    
-  } else if (has_two_status) {
-    
-    single_date <- as.character(unique(df$start_date_fct)[1])
-    
-    start_date_status_means <- emmeans(
-      temporal_model,
-      ~ Status,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-    start_date_status_means[["start_date_fct"]] <- single_date
-    
-  } else {
-    
-    single_date <- as.character(unique(df$start_date_fct)[1])
-    single_status <- as.character(unique(df$Status)[1])
-    
-    start_date_status_means <- emmeans(
-      temporal_model,
-      ~ 1,
-      type = "response"
-    ) %>%
-      as.data.frame() %>%
-      as_tibble()
-    
-    start_date_status_means[["start_date_fct"]] <- single_date
-    start_date_status_means[["Status"]] <- single_status
-    
-  }
-  
-  start_date_status_means <- start_date_status_means %>%
-    mutate(start_date_fct = as.character(start_date_fct)) %>%
-    left_join(date_lookup, by = "start_date_fct") %>%
-    left_join(period_lookup, by = "start_date_date") %>%
+  # Remove dates with more than 90% zeros
+  temporal_df <- temporal_df %>%
+    filter(prop_zero_date < 0.9) %>%
     mutate(
-      reporting_name = area_name,
-      metric = metric_name
+      start_date_fct =
+        droplevels(start_date_fct),
+      
+      Period =
+        droplevels(Period),
+      
+      Status =
+        droplevels(Status)
     )
   
-  list(
-    skipped = FALSE,
-    period_model = period_model,
-    temporal_model = temporal_model,
-    period_means = period_means,
-    period_status_means = period_status_means,
-    start_date_means = start_date_means,
-    start_date_status_means = start_date_status_means,
-    has_complete_date_status = has_complete_date_status,
-    excluded_dates = excluded_dates
-  )
-}
-
-# -----------------------------
-# 3. Run across regions
-# -----------------------------
-
-run_metric_models <- function(df, response_col, metric_name, use_site = TRUE) {
-  
-  split_dat <- split(df, df$reporting_name)
-  
-  outputs <- map(
-    split_dat,
-    ~ tryCatch(
-      fit_one_region(.x, response_col, metric_name, use_site),
-      error = function(e) e
-    )
+  message(
+    "Temporal observations remaining: ",
+    nrow(temporal_df)
   )
   
-  list(
-    outputs = outputs,
-    
-    zero_summary = imap_dfr(outputs, ~ {
-      if (is.list(.x) && isTRUE(.x$skipped)) {
-        tibble(
-          reporting_name = .x$reporting_name,
-          metric = .x$metric,
-          prop_zero = .x$prop_zero,
-          percent_zero = round(.x$prop_zero * 100, 1),
-          reason = .x$reason
-        )
-      }
-    }),
-    
-    period_means = map_dfr(outputs, ~ {
-      if (is.list(.x) && !isTRUE(.x$skipped) && !inherits(.x, "error")) .x$period_means
-    }),
-    
-    period_status_means = map_dfr(outputs, ~ {
-      if (is.list(.x) && !isTRUE(.x$skipped) && !inherits(.x, "error")) .x$period_status_means
-    }),
-    
-    start_date_means = map_dfr(outputs, ~ {
-      if (is.list(.x) && !isTRUE(.x$skipped) && !inherits(.x, "error")) .x$start_date_means
-    }),
-    
-    start_date_status_means = map_dfr(outputs, ~ {
-      if (is.list(.x) && !isTRUE(.x$skipped) && !inherits(.x, "error")) .x$start_date_status_means
-    }),
-    
-    excluded_dates = map_dfr(outputs, ~ {
-      if (!inherits(.x, "error")) .x$excluded_dates
-    }),
-    
-    errors = imap_dfr(outputs, ~ {
-      if (inherits(.x, "error")) {
-        tibble(reporting_name = .y, metric = metric_name, error = .x$message)
-      }
-    })
+  message(
+    "Temporal dates excluded: ",
+    nrow(excluded_dates)
   )
-}
-
-# -----------------------------
-# 4. Run all metrics
-# -----------------------------
-
-abund_models <- run_metric_models(abund_dat, "total_abundance_sample", "Total abundance", use_site = TRUE)
-rich_models <- run_metric_models(rich_dat, "n_species_sample", "Species richness")
-shark_models <- run_metric_models(shark_dat, "n_species_sample", "Shark and ray richness")
-reef_models <- run_metric_models(reef_dat, "n_species_sample", "Reef associated species richness")
-shannon_models <- run_metric_models(shannon_dat, "shannon", "Shannon diversity")
-fish_200_models <- run_metric_models(fish_200_dat, "total_abundance_sample", "Abundance > 200 mm")
-
-period_results <- bind_rows(
-  abund_models$period_means,
-  rich_models$period_means,
-  shark_models$period_means,
-  reef_models$period_means,
-  shannon_models$period_means,
-  fish_200_models$period_means
-) %>%
-  mutate(
-    metric_id = recode(metric, !!!metric_lookup),
-    Period = factor(Period, levels = c("Pre-bloom", "Bloom"))
-  ) %>%
-  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
-
-period_status_results <- bind_rows(
-  abund_models$period_status_means,
-  rich_models$period_status_means,
-  shark_models$period_status_means,
-  reef_models$period_status_means,
-  shannon_models$period_status_means,
-  fish_200_models$period_status_means
-) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup),
-         Period = factor(Period, levels = c("Pre-bloom", "Bloom"))) %>%
-  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
-
-start_date_results <- bind_rows(
-  abund_models$start_date_means,
-  rich_models$start_date_means,
-  shark_models$start_date_means,
-  reef_models$start_date_means,
-  shannon_models$start_date_means,
-  fish_200_models$start_date_means
-) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
-  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
-
-start_date_status_results <- bind_rows(
-  abund_models$start_date_status_means,
-  rich_models$start_date_status_means,
-  shark_models$start_date_status_means,
-  reef_models$start_date_status_means,
-  shannon_models$start_date_status_means,
-  fish_200_models$start_date_status_means
-) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
-  dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
-
-zero_summary <- bind_rows(
-  abund_models$zero_summary,
-  rich_models$zero_summary,
-  shark_models$zero_summary,
-  reef_models$zero_summary,
-  shannon_models$zero_summary,
-  fish_200_models$zero_summary
-)
-
-excluded_dates_df <- bind_rows(
-  abund_models$excluded_dates,
-  rich_models$excluded_dates,
-  shark_models$excluded_dates,
-  reef_models$excluded_dates,
-  shannon_models$excluded_dates,
-  fish_200_models$excluded_dates
-) %>%
-  mutate(metric_id = recode(metric, !!!metric_lookup))
-
-
-
-readr::write_excel_csv(period_results, "model_results/period_results.csv")
-readr::write_excel_csv(period_status_results, "model_results/period_status_results.csv")
-readr::write_excel_csv(start_date_results, "model_results/start_date_results.csv")
-readr::write_excel_csv(start_date_status_results, "model_results/start_date_status_results.csv")
-
-writexl::write_xlsx(
-  list(
-    period_results = period_results,
-    period_status_results = period_status_results,
-    start_date_results = start_date_results,
-    start_date_status_results = start_date_status_results
-  ),
-  "model_results/model_results.xlsx"
-)
-
-period_results <- period_results %>%
-  mutate(
-    asymp.LCL = ifelse(is.infinite(asymp.LCL), NA, asymp.LCL),
-    asymp.UCL = ifelse(is.infinite(asymp.UCL), NA, asymp.UCL)
-  )
-
-period_status_results <- period_status_results %>%
-  mutate(
-    asymp.LCL = ifelse(is.infinite(asymp.LCL), NA, asymp.LCL),
-    asymp.UCL = ifelse(is.infinite(asymp.UCL), NA, asymp.UCL)
-  )
-
-start_date_results <- start_date_results %>%
-  mutate(
-    asymp.LCL = ifelse(is.infinite(asymp.LCL), NA, asymp.LCL),
-    asymp.UCL = ifelse(is.infinite(asymp.UCL), NA, asymp.UCL)
-  )
-
-start_date_status_results <- start_date_status_results %>%
-  mutate(
-    asymp.LCL = ifelse(is.infinite(asymp.LCL), NA, asymp.LCL),
-    asymp.UCL = ifelse(is.infinite(asymp.UCL), NA, asymp.UCL)
-  )
-
-# -----------------------------
-# 5. Plot helpers
-# -----------------------------
-
-blank_panel <- function(panel_letter, label = "More than 90% zeros") {
-  ggplot() +
-    annotate(
-      "text",
-      x = 0,
-      y = 0,
-      label = label,
-      size = 6,
-      fontface = "italic"
-    ) +
-    xlim(-1, 1) +
-    ylim(-1, 1) +
-    theme_void() +
-    labs(tag = panel_letter) +
-    theme(plot.tag = element_text(size = 18))
-}
-
-plot_period <- function(df, metric_id, panel_letter) {
   
-  metric_df <- df %>% filter(metric_id == !!metric_id)
+  # Defaults in case the temporal model cannot be fitted
+  temporal_model <- NULL
+  temporal_error <- NA_character_
   
-  if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
+  temporal_has_two_dates <- FALSE
+  temporal_has_two_status <- FALSE
+  temporal_has_complete_date_status <- FALSE
   
-  ggplot(metric_df, aes(x = Period, y = response, fill = Period)) +
-    geom_col(width = 0.6, colour = "black", alpha = 0.85) +
-    geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2, linewidth = 0.6) +
-    scale_fill_manual(values = metric_period_cols, drop = FALSE) +
-    labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
-    theme_minimal(base_size = 16) +
-    plot_theme +
-    theme(legend.position = "none")
-}
-
-plot_period_status <- function(df, metric_id, panel_letter) {
+  start_date_means <- tibble()
+  start_date_status_means <- tibble()
   
-  metric_df <- df %>% filter(metric_id == !!metric_id)
+  # ----------------------------------------------------------
+  # Fit temporal model when data remain
+  # ----------------------------------------------------------
   
-  if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
-  
-  ggplot(metric_df, aes(x = Period, y = response, fill = Status)) +
-    geom_col(position = position_dodge(width = 0.7), width = 0.6, colour = "black", alpha = 0.85) +
-    geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL),
-                  position = position_dodge(width = 0.7),
-                  width = 0.18,
-                  linewidth = 0.6) +
-    scale_fill_manual(values = status_cols, drop = FALSE) +
-    labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
-    theme_minimal(base_size = 16) +
-    plot_theme +
-    theme(legend.position = "bottom")
-}
-
-
-
-plot_start_date <- function(df, metric_id, panel_letter) {
-  
-  metric_df <- df %>%
-    filter(metric_id == !!metric_id) %>%
-    arrange(start_date_date)
-  
-  if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
-  
-  ggplot(metric_df, aes(x = start_date_date, y = response, fill = Period)) +
-    geom_col(width = 120, colour = "black", alpha = 0.85) +
-    geom_errorbar(
-      aes(ymin = asymp.LCL, ymax = asymp.UCL),
-      width = 40,
-      linewidth = 0.6
-    ) +
-    scale_fill_manual(values = metric_period_cols, drop = FALSE) +
-    scale_x_date(
-      date_breaks = "1 year",
-      date_labels = "%Y",
-      expand = expansion(mult = c(0.03, 0.03))
-    ) +
-    labs(
-      x = NULL,
-      y = metric_y_lab[[metric_id]],
-      tag = panel_letter,
-      fill = NULL
-    ) +
+  if (nrow(temporal_df) == 0) {
     
-    geom_text(
-      data = excluded_dates_df %>%
-        filter(
-          reporting_name == unique(metric_df$reporting_name),
-          metric == unique(metric_df$metric)
-        ),
-      aes(
-        x = start_date_date,
-        y = max(metric_df$response, na.rm = TRUE) * 0.35,
-        label = ">90% zeros"
-      ),
-      inherit.aes = FALSE,
-      size = 3,
-      fontface = "italic",
-      angle = 90,
-      hjust = 0.5,
-      vjust = 0.5
-    ) +
-    
-    theme_minimal(base_size = 16) +
-    plot_theme +
-    theme(
-      axis.text.x = element_text(angle = 90, hjust = 1),
-      legend.position = "bottom"
-    )
-}
-
-plot_start_date_status <- function(df, metric_id, panel_letter) {
-  
-  metric_df <- df %>%
-    filter(metric_id == !!metric_id) %>%
-    arrange(start_date_date)
-  
-  if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
-  
-  ggplot(metric_df, aes(x = start_date_date, y = response, fill = Status)) +
-    geom_col(
-      position = position_dodge(width = 120),
-      width = 100,
-      colour = "black",
-      alpha = 0.85
-    ) +
-    geom_errorbar(
-      aes(ymin = asymp.LCL, ymax = asymp.UCL),
-      position = position_dodge(width = 120),
-      width = 35,
-      linewidth = 0.6
-    ) +
-    scale_fill_manual(values = status_cols, drop = FALSE) +
-    scale_x_date(
-      date_breaks = "1 year",
-      date_labels = "%Y",
-      expand = expansion(mult = c(0.03, 0.03))
-    ) +
-    labs(
-      x = NULL,
-      y = metric_y_lab[[metric_id]],
-      tag = panel_letter,
-      fill = NULL
-    ) +
-    theme_minimal(base_size = 16) +
-    plot_theme +
-    theme(
-      axis.text.x = element_text(angle = 90, hjust = 1),
-      legend.position = "bottom"
-    )
-}
-
-# -----------------------------
-# 6. Save four plot types
-# -----------------------------
-
-save_patchwork_plots <- function(results_df, plot_fun, output_dir, suffix, title_suffix, width = 8) {
-  
-  dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
-  
-  for (region in unique(results_df$reporting_name)) {
-    
-    plot_df <- results_df %>% filter(reporting_name == region)
-    
-    plots <- map2(
-      metric_order,
-      LETTERS[seq_along(metric_order)],
-      ~ plot_fun(plot_df, .x, .y)
-    )
-    
-    p <- wrap_plots(plots, ncol = 2, guides = "collect") &
-      # plot_annotation(title = paste(region, "-", title_suffix)) &
-      theme(
-        plot.title = element_text(size = 18, hjust = 0.5),
-        legend.position = "bottom"
+    temporal_error <-
+      paste(
+        "No observations remained after excluding",
+        "dates with more than 90% zeros"
       )
     
-    safe_name <- region %>%
-      str_replace_all("[^A-Za-z0-9]+", "_") %>%
-      str_replace_all("_$", "")
+    message(
+      "Temporal model not fitted: ",
+      temporal_error
+    )
     
-    ggsave(
-      filename = file.path(output_dir, paste0(safe_name, "_", suffix, ".png")),
-      plot = p,
-      width = width,
-      height = 10,
-      dpi = 300
+  } else {
+    
+    # Recalculate factor levels AFTER removing dates
+    temporal_has_two_dates <-
+      n_distinct(
+        temporal_df$start_date_fct
+      ) >= 2
+    
+    temporal_has_two_status <-
+      n_distinct(
+        temporal_df$Status
+      ) >= 2
+    
+    message(
+      "Temporal sampling dates remaining: ",
+      n_distinct(temporal_df$start_date_fct)
+    )
+    
+    message(
+      "Temporal statuses remaining: ",
+      n_distinct(temporal_df$Status)
+    )
+    
+    # Check whether every remaining date contains both statuses
+    if (
+      temporal_has_two_dates &&
+      temporal_has_two_status
+    ) {
+      
+      temporal_date_status_check <- temporal_df %>%
+        count(
+          start_date_fct,
+          Status
+        ) %>%
+        tidyr::complete(
+          start_date_fct,
+          Status,
+          fill = list(n = 0)
+        )
+      
+      temporal_has_complete_date_status <-
+        all(temporal_date_status_check$n > 0)
+      
+    } else {
+      
+      temporal_has_complete_date_status <-
+        FALSE
+    }
+    
+    message(
+      "Complete temporal date x status design: ",
+      temporal_has_complete_date_status
+    )
+    
+    # Recheck site levels after excluding dates
+    temporal_has_multiple_sites <-
+      use_site &&
+      "uwa_site_code" %in% names(temporal_df) &&
+      n_distinct(
+        temporal_df$uwa_site_code,
+        na.rm = TRUE
+      ) > 1
+    
+    temporal_site_re <- if (
+      temporal_has_multiple_sites
+    ) {
+      " + (1 | uwa_site_code)"
+    } else {
+      ""
+    }
+    
+    message(
+      "Including site random effect in temporal model: ",
+      temporal_has_multiple_sites
+    )
+    
+    temporal_fixed <- case_when(
+      temporal_has_two_dates &&
+        temporal_has_two_status &&
+        temporal_has_complete_date_status ~
+        "start_date_fct * Status",
+      
+      temporal_has_two_dates ~
+        "start_date_fct",
+      
+      temporal_has_two_status ~
+        "Status",
+      
+      TRUE ~
+        "1"
+    )
+    
+    temporal_form <- as.formula(
+      paste0(
+        response_col,
+        " ~ ",
+        temporal_fixed,
+        temporal_site_re
+      )
+    )
+    
+    message(
+      "Temporal model: ",
+      deparse(temporal_form)
+    )
+    
+    fit_count_model <- function(formula, data) {
+      
+      nb_model <- glmmTMB(
+        formula,
+        data = data,
+        family = nbinom2(link = "log")
+      )
+      
+      nb_dispersion <- sigma(nb_model)
+      
+      if (
+        !isTRUE(nb_model$sdr$pdHess) ||
+        !is.finite(nb_dispersion) ||
+        nb_dispersion > 1e5
+      ) {
+        
+        message(
+          "Negative-binomial model unstable or approximately Poisson; ",
+          "refitting with Poisson."
+        )
+        
+        return(
+          glmmTMB(
+            formula,
+            data = data,
+            family = poisson(link = "log")
+          )
+        )
+      }
+      
+      nb_model
+    }
+    
+    # Catch temporal errors without losing the period model
+    # temporal_fit <- tryCatch(
+    #   glmmTMB(
+    #     formula = temporal_form,
+    #     data = temporal_df,
+    #     family = nbinom2(link = "log")
+    #   ),
+    #   error = function(e) e
+    # )
+    
+    # temporal_fit <- tryCatch(
+    #   fit_count_model(
+    #     formula = temporal_form,
+    #     data = temporal_df
+    #   ),
+    #   error = function(e) e
+    # )
+    temporal_fit <- tryCatch(
+      fit_count_model(
+        formula = temporal_form,
+        data = temporal_df
+      ),
+      error = function(e) e
+    )
+    
+    if (inherits(temporal_fit, "error")) {
+      
+      temporal_error <- conditionMessage(temporal_fit)
+      
+      message(
+        "Temporal model failed: ",
+        temporal_error
+      )
+      
+    } else {
+      
+      temporal_model <- temporal_fit$model
+      
+      # Continue with the existing date_lookup,
+      # emmeans and result-building code here
+      
+      if (inherits(temporal_fit, "error")) {
+        
+        temporal_error <-
+          temporal_fit$message
+        
+        message(
+          "Temporal model failed: ",
+          temporal_error
+        )
+        
+      } else {
+        
+        temporal_model <- temporal_fit
+        
+        # ------------------------------------------------------
+        # Lookup tables
+        # ------------------------------------------------------
+        
+        date_lookup <- temporal_df %>%
+          distinct(
+            start_date_fct,
+            start_date_date
+          ) %>%
+          mutate(
+            start_date_fct =
+              as.character(start_date_fct)
+          )
+        
+        period_lookup <- temporal_df %>%
+          distinct(
+            start_date_date,
+            Period
+          )
+        
+        # ------------------------------------------------------
+        # Start-date means
+        # ------------------------------------------------------
+        
+        if (temporal_has_two_dates) {
+          
+          start_date_means <- emmeans(
+            temporal_model,
+            ~ start_date_fct,
+            type = "response"
+          ) %>%
+            as.data.frame() %>%
+            as_tibble()
+          
+        } else {
+          
+          single_date <-
+            as.character(
+              unique(
+                temporal_df$start_date_fct
+              )[1]
+            )
+          
+          start_date_means <- emmeans(
+            temporal_model,
+            ~ 1,
+            type = "response"
+          ) %>%
+            as.data.frame() %>%
+            as_tibble()
+          
+          start_date_means[["start_date_fct"]] <-
+            single_date
+        }
+        
+        start_date_means <- start_date_means %>%
+          mutate(
+            start_date_fct =
+              as.character(start_date_fct)
+          ) %>%
+          left_join(
+            date_lookup,
+            by = "start_date_fct"
+          ) %>%
+          left_join(
+            period_lookup,
+            by = "start_date_date"
+          ) %>%
+          mutate(
+            reporting_name = area_name,
+            metric = metric_name
+          )
+        
+        # ------------------------------------------------------
+        # Start-date-by-status means
+        # ------------------------------------------------------
+        
+        if (
+          temporal_has_two_dates &&
+          temporal_has_two_status &&
+          temporal_has_complete_date_status
+        ) {
+          
+          start_date_status_means <- emmeans(
+            temporal_model,
+            ~ start_date_fct * Status,
+            type = "response"
+          ) %>%
+            as.data.frame() %>%
+            as_tibble()
+          
+        } else if (temporal_has_two_dates) {
+          
+          start_date_status_means <- emmeans(
+            temporal_model,
+            ~ start_date_fct,
+            type = "response"
+          ) %>%
+            as.data.frame() %>%
+            as_tibble()
+          
+          start_date_status_means[["Status"]] <-
+            "Not modelled by Status"
+          
+        } else if (temporal_has_two_status) {
+          
+          single_date <-
+            as.character(
+              unique(
+                temporal_df$start_date_fct
+              )[1]
+            )
+          
+          start_date_status_means <- emmeans(
+            temporal_model,
+            ~ Status,
+            type = "response"
+          ) %>%
+            as.data.frame() %>%
+            as_tibble()
+          
+          start_date_status_means[["start_date_fct"]] <-
+            single_date
+          
+        } else {
+          
+          single_date <-
+            as.character(
+              unique(
+                temporal_df$start_date_fct
+              )[1]
+            )
+          
+          single_status <-
+            as.character(
+              unique(
+                temporal_df$Status
+              )[1]
+            )
+          
+          start_date_status_means <- emmeans(
+            temporal_model,
+            ~ 1,
+            type = "response"
+          ) %>%
+            as.data.frame() %>%
+            as_tibble()
+          
+          start_date_status_means[["start_date_fct"]] <-
+            single_date
+          
+          start_date_status_means[["Status"]] <-
+            single_status
+        }
+        
+        start_date_status_means <-
+          start_date_status_means %>%
+          mutate(
+            start_date_fct =
+              as.character(start_date_fct)
+          ) %>%
+          left_join(
+            date_lookup,
+            by = "start_date_fct"
+          ) %>%
+          left_join(
+            period_lookup,
+            by = "start_date_date"
+          ) %>%
+          mutate(
+            reporting_name = area_name,
+            metric = metric_name
+          )
+      }
+    }
+    
+    # ----------------------------------------------------------
+    # Return results
+    # ----------------------------------------------------------
+    
+    list(
+      skipped = FALSE,
+      
+      period_model = period_model,
+      temporal_model = temporal_model,
+      
+      period_means = period_means,
+      period_status_means = period_status_means,
+      
+      start_date_means = start_date_means,
+      start_date_status_means = start_date_status_means,
+      
+      period_family = period_fit$family_used,
+      period_fallback = period_fit$fallback_used,
+      period_fallback_reason = period_fit$fallback_reason,
+      period_model_ok = period_fit$model_ok,
+      
+      temporal_family = if (!is.null(temporal_model)) {
+        temporal_fit$family_used
+      } else {
+        NA_character_
+      },
+      
+      temporal_fallback = if (!is.null(temporal_model)) {
+        temporal_fit$fallback_used
+      } else {
+        NA
+      },
+      
+      temporal_fallback_reason = if (!is.null(temporal_model)) {
+        temporal_fit$fallback_reason
+      } else {
+        temporal_error
+      },
+      
+      temporal_model_ok = if (!is.null(temporal_model)) {
+        temporal_fit$model_ok
+      } else {
+        FALSE
+      },
+      
+      has_complete_date_status =
+        temporal_has_complete_date_status,
+      
+      temporal_has_two_dates =
+        temporal_has_two_dates,
+      
+      temporal_has_two_status =
+        temporal_has_two_status,
+      
+      excluded_dates = excluded_dates,
+      temporal_error = temporal_error
     )
   }
-}
-
-save_patchwork_plots(
-  period_results,
-  plot_period,
-  "plots/20260724/period_results",
-  "period",
-  "period means"
-)
-
-save_patchwork_plots(
-  period_status_results,
-  plot_period_status,
-  "plots/20260724/period_status_results",
-  "period_status",
-  "period means by status"
-)
-
-save_patchwork_plots(
-  start_date_results,
-  plot_start_date,
-  "plots/20260724/start_date_results",
-  "start_date",
-  "temporal results"
-)
-
-save_patchwork_plots(
-  start_date_status_results,
-  plot_start_date_status,
-  "plots/20260724/start_date_status_results",
-  "start_date_status",
-  "temporal results by status",
-  width = 12
-)
-
-
-# Checking
-expected_locations <- sort(unique(abund_dat$reporting_name))
-
-actual_locations <- sort(unique(start_date_results$reporting_name))
-
-setdiff(expected_locations, actual_locations)
-
-
-
-check_raw_dates <- function(df, response_col, region_name) {
-  df %>%
-    filter(reporting_name == region_name) %>%
+  
+  # -----------------------------
+  # 3. Run across regions
+  # -----------------------------
+  
+  run_metric_models <- function(df, response_col, metric_name, use_site = TRUE) {
+    
+    split_dat <- split(df, df$reporting_name)
+    
+    outputs <- map(
+      split_dat,
+      ~ tryCatch(
+        fit_one_region(.x, response_col, metric_name, use_site),
+        error = function(e) e
+      )
+    )
+    
+    list(
+      outputs = outputs,
+      
+      model_summary = imap_dfr(outputs, ~ {
+        
+        if (
+          is.list(.x) &&
+          !inherits(.x, "error") &&
+          !isTRUE(.x$skipped)
+        ) {
+          
+          bind_rows(
+            tibble(
+              reporting_name = .y,
+              metric = metric_name,
+              model_type = "Period",
+              family_used = .x$period_family,
+              fallback_used = .x$period_fallback,
+              fallback_reason = .x$period_fallback_reason,
+              model_ok = .x$period_model_ok
+            ),
+            
+            tibble(
+              reporting_name = .y,
+              metric = metric_name,
+              model_type = "Temporal",
+              family_used = .x$temporal_family,
+              fallback_used = .x$temporal_fallback,
+              fallback_reason = .x$temporal_fallback_reason,
+              model_ok = .x$temporal_model_ok
+            )
+          )
+        }
+      })
+      
+      zero_summary = imap_dfr(outputs, ~ {
+        if (is.list(.x) && isTRUE(.x$skipped)) {
+          tibble(
+            reporting_name = .x$reporting_name,
+            metric = .x$metric,
+            prop_zero = .x$prop_zero,
+            percent_zero = round(.x$prop_zero * 100, 1),
+            reason = .x$reason
+          )
+        }
+      }),
+      
+      period_means = map_dfr(outputs, ~ {
+        if (is.list(.x) && !isTRUE(.x$skipped) && !inherits(.x, "error")) .x$period_means
+      }),
+      
+      period_status_means = map_dfr(outputs, ~ {
+        if (is.list(.x) && !isTRUE(.x$skipped) && !inherits(.x, "error")) .x$period_status_means
+      }),
+      
+      start_date_means = map_dfr(outputs, ~ {
+        if (is.list(.x) && !isTRUE(.x$skipped) && !inherits(.x, "error")) .x$start_date_means
+      }),
+      
+      start_date_status_means = map_dfr(outputs, ~ {
+        if (is.list(.x) && !isTRUE(.x$skipped) && !inherits(.x, "error")) .x$start_date_status_means
+      }),
+      
+      excluded_dates = map_dfr(outputs, ~ {
+        if (!inherits(.x, "error")) .x$excluded_dates
+      }),
+      
+      errors = imap_dfr(outputs, ~ {
+        if (inherits(.x, "error")) {
+          tibble(reporting_name = .y, metric = metric_name, error = .x$message)
+        }
+      })
+    )
+  }
+  
+  # -----------------------------
+  # 4. Run all metrics
+  # -----------------------------
+  
+  abund_models <- run_metric_models(abund_dat, "total_abundance_sample", "Total abundance", use_site = TRUE)
+  rich_models <- run_metric_models(rich_dat, "n_species_sample", "Species richness")
+  shark_models <- run_metric_models(shark_dat, "n_species_sample", "Shark and ray richness")
+  reef_models <- run_metric_models(reef_dat, "n_species_sample", "Reef associated species richness")
+  shannon_models <- run_metric_models(shannon_dat, "shannon", "Shannon diversity")
+  fish_200_models <- run_metric_models(fish_200_dat, "total_abundance_sample", "Abundance > 200 mm")
+  
+  period_results <- bind_rows(
+    abund_models$period_means,
+    rich_models$period_means,
+    shark_models$period_means,
+    reef_models$period_means,
+    shannon_models$period_means,
+    fish_200_models$period_means
+  ) %>%
     mutate(
-      start_date_date = as.Date(start_date),
-      year = format(start_date_date, "%Y")
+      metric_id = recode(metric, !!!metric_lookup),
+      Period = factor(Period, levels = c("Pre-bloom", "Bloom"))
     ) %>%
-    group_by(year, start_date_date, period, status) %>%
-    summarise(
-      n_rows = n(),
-      n_non_missing_response = sum(!is.na(.data[[response_col]])),
-      .groups = "drop"
-    ) %>%
-    arrange(start_date_date)
-}
-
-check_raw_dates(
-  hab_data$total_abundance_samples,
-  "total_abundance_sample",
-  "Aldinga - Aldinga Reef Sanctuary Zone"
-)
-
-t <- start_date_results %>%
-  filter(reporting_name == "Aldinga - Aldinga Reef Sanctuary Zone") %>%
-  count(metric, start_date_date, Period) %>%
-  arrange(metric, start_date_date)
-
+    dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
+  
+  period_status_results <- bind_rows(
+    abund_models$period_status_means,
+    rich_models$period_status_means,
+    shark_models$period_status_means,
+    reef_models$period_status_means,
+    shannon_models$period_status_means,
+    fish_200_models$period_status_means
+  ) %>%
+    mutate(metric_id = recode(metric, !!!metric_lookup),
+           Period = factor(Period, levels = c("Pre-bloom", "Bloom"))) %>%
+    dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
+  
+  start_date_results <- bind_rows(
+    abund_models$start_date_means,
+    rich_models$start_date_means,
+    shark_models$start_date_means,
+    reef_models$start_date_means,
+    shannon_models$start_date_means,
+    fish_200_models$start_date_means
+  ) %>%
+    mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+    dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
+  
+  start_date_status_results <- bind_rows(
+    abund_models$start_date_status_means,
+    rich_models$start_date_status_means,
+    shark_models$start_date_status_means,
+    reef_models$start_date_status_means,
+    shannon_models$start_date_status_means,
+    fish_200_models$start_date_status_means
+  ) %>%
+    mutate(metric_id = recode(metric, !!!metric_lookup)) %>%
+    dplyr::mutate(response = as.numeric(response), SE = as.numeric(SE), asymp.LCL = as.numeric(asymp.LCL), asymp.UCL = as.numeric(asymp.UCL))
+  
+  zero_summary <- bind_rows(
+    abund_models$zero_summary,
+    rich_models$zero_summary,
+    shark_models$zero_summary,
+    reef_models$zero_summary,
+    shannon_models$zero_summary,
+    fish_200_models$zero_summary
+  )
+  
+  excluded_dates_df <- bind_rows(
+    abund_models$excluded_dates,
+    rich_models$excluded_dates,
+    shark_models$excluded_dates,
+    reef_models$excluded_dates,
+    shannon_models$excluded_dates,
+    fish_200_models$excluded_dates
+  ) %>%
+    mutate(metric_id = recode(metric, !!!metric_lookup))
+  
+  
+  
+  readr::write_excel_csv(period_results, "model_results/period_results.csv")
+  readr::write_excel_csv(period_status_results, "model_results/period_status_results.csv")
+  readr::write_excel_csv(start_date_results, "model_results/start_date_results.csv")
+  readr::write_excel_csv(start_date_status_results, "model_results/start_date_status_results.csv")
+  
+  writexl::write_xlsx(
+    list(
+      period_results = period_results,
+      period_status_results = period_status_results,
+      start_date_results = start_date_results,
+      start_date_status_results = start_date_status_results
+    ),
+    "model_results/model_results.xlsx"
+  )
+  
+  period_results <- period_results %>%
+    mutate(
+      asymp.LCL = ifelse(is.infinite(asymp.LCL), NA, asymp.LCL),
+      asymp.UCL = ifelse(is.infinite(asymp.UCL), NA, asymp.UCL)
+    )
+  
+  period_status_results <- period_status_results %>%
+    mutate(
+      asymp.LCL = ifelse(is.infinite(asymp.LCL), NA, asymp.LCL),
+      asymp.UCL = ifelse(is.infinite(asymp.UCL), NA, asymp.UCL)
+    )
+  
+  start_date_results <- start_date_results %>%
+    mutate(
+      asymp.LCL = ifelse(is.infinite(asymp.LCL), NA, asymp.LCL),
+      asymp.UCL = ifelse(is.infinite(asymp.UCL), NA, asymp.UCL)
+    )
+  
+  start_date_status_results <- start_date_status_results %>%
+    mutate(
+      asymp.LCL = ifelse(is.infinite(asymp.LCL), NA, asymp.LCL),
+      asymp.UCL = ifelse(is.infinite(asymp.UCL), NA, asymp.UCL)
+    )
+  
+  # -----------------------------
+  # 5. Plot helpers
+  # -----------------------------
+  
+  blank_panel <- function(panel_letter, label = "More than 90% zeros") {
+    ggplot() +
+      annotate(
+        "text",
+        x = 0,
+        y = 0,
+        label = label,
+        size = 6,
+        fontface = "italic"
+      ) +
+      xlim(-1, 1) +
+      ylim(-1, 1) +
+      theme_void() +
+      labs(tag = panel_letter) +
+      theme(plot.tag = element_text(size = 18))
+  }
+  
+  plot_period <- function(df, metric_id, panel_letter) {
+    
+    metric_df <- df %>% filter(metric_id == !!metric_id)
+    
+    if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
+    
+    ggplot(metric_df, aes(x = Period, y = response, fill = Period)) +
+      geom_col(width = 0.6, colour = "black", alpha = 0.85) +
+      geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.2, linewidth = 0.6) +
+      scale_fill_manual(values = metric_period_cols, drop = FALSE) +
+      labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
+      theme_minimal(base_size = 16) +
+      plot_theme +
+      theme(legend.position = "none")
+  }
+  
+  plot_period_status <- function(df, metric_id, panel_letter) {
+    
+    metric_df <- df %>% filter(metric_id == !!metric_id)
+    
+    if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
+    
+    ggplot(metric_df, aes(x = Period, y = response, fill = Status)) +
+      geom_col(position = position_dodge(width = 0.7), width = 0.6, colour = "black", alpha = 0.85) +
+      geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL),
+                    position = position_dodge(width = 0.7),
+                    width = 0.18,
+                    linewidth = 0.6) +
+      scale_fill_manual(values = status_cols, drop = FALSE) +
+      labs(x = NULL, y = metric_y_lab[[metric_id]], tag = panel_letter, fill = NULL) +
+      theme_minimal(base_size = 16) +
+      plot_theme +
+      theme(legend.position = "bottom")
+  }
+  
+  
+  
+  plot_start_date <- function(df, metric_id, panel_letter) {
+    
+    metric_df <- df %>%
+      filter(metric_id == !!metric_id) %>%
+      arrange(start_date_date)
+    
+    if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
+    
+    ggplot(metric_df, aes(x = start_date_date, y = response, fill = Period)) +
+      geom_col(width = 120, colour = "black", alpha = 0.85) +
+      geom_errorbar(
+        aes(ymin = asymp.LCL, ymax = asymp.UCL),
+        width = 40,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = metric_period_cols, drop = FALSE) +
+      scale_x_date(
+        date_breaks = "1 year",
+        date_labels = "%Y",
+        expand = expansion(mult = c(0.03, 0.03))
+      ) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[[metric_id]],
+        tag = panel_letter,
+        fill = NULL
+      ) +
+      
+      geom_text(
+        data = excluded_dates_df %>%
+          filter(
+            reporting_name == unique(metric_df$reporting_name),
+            metric == unique(metric_df$metric)
+          ),
+        aes(
+          x = start_date_date,
+          y = max(metric_df$response, na.rm = TRUE) * 0.35,
+          label = ">90% zeros"
+        ),
+        inherit.aes = FALSE,
+        size = 3,
+        fontface = "italic",
+        angle = 90,
+        hjust = 0.5,
+        vjust = 0.5
+      ) +
+      
+      theme_minimal(base_size = 16) +
+      plot_theme +
+      theme(
+        axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom"
+      )
+  }
+  
+  plot_start_date_status <- function(df, metric_id, panel_letter) {
+    
+    metric_df <- df %>%
+      filter(metric_id == !!metric_id) %>%
+      arrange(start_date_date)
+    
+    if (nrow(metric_df) == 0) return(blank_panel(panel_letter))
+    
+    ggplot(metric_df, aes(x = start_date_date, y = response, fill = Status)) +
+      geom_col(
+        position = position_dodge(width = 120),
+        width = 100,
+        colour = "black",
+        alpha = 0.85
+      ) +
+      geom_errorbar(
+        aes(ymin = asymp.LCL, ymax = asymp.UCL),
+        position = position_dodge(width = 120),
+        width = 35,
+        linewidth = 0.6
+      ) +
+      scale_fill_manual(values = status_cols, drop = FALSE) +
+      scale_x_date(
+        date_breaks = "1 year",
+        date_labels = "%Y",
+        expand = expansion(mult = c(0.03, 0.03))
+      ) +
+      labs(
+        x = NULL,
+        y = metric_y_lab[[metric_id]],
+        tag = panel_letter,
+        fill = NULL
+      ) +
+      theme_minimal(base_size = 16) +
+      plot_theme +
+      theme(
+        axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom"
+      )
+  }
+  
+  # -----------------------------
+  # 6. Save four plot types
+  # -----------------------------
+  
+  save_patchwork_plots <- function(results_df, plot_fun, output_dir, suffix, title_suffix, width = 8) {
+    
+    dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+    
+    for (region in unique(results_df$reporting_name)) {
+      
+      plot_df <- results_df %>% filter(reporting_name == region)
+      
+      plots <- map2(
+        metric_order,
+        LETTERS[seq_along(metric_order)],
+        ~ plot_fun(plot_df, .x, .y)
+      )
+      
+      p <- wrap_plots(plots, ncol = 2, guides = "collect") &
+        # plot_annotation(title = paste(region, "-", title_suffix)) &
+        theme(
+          plot.title = element_text(size = 18, hjust = 0.5),
+          legend.position = "bottom"
+        )
+      
+      safe_name <- region %>%
+        str_replace_all("[^A-Za-z0-9]+", "_") %>%
+        str_replace_all("_$", "")
+      
+      ggsave(
+        filename = file.path(output_dir, paste0(safe_name, "_", suffix, ".png")),
+        plot = p,
+        width = width,
+        height = 10,
+        dpi = 300
+      )
+    }
+  }
+  
+  save_patchwork_plots(
+    period_results,
+    plot_period,
+    "plots/20260724A/period_results",
+    "period",
+    "period means"
+  )
+  
+  save_patchwork_plots(
+    period_status_results,
+    plot_period_status,
+    "plots/20260724A/period_status_results",
+    "period_status",
+    "period means by status"
+  )
+  
+  save_patchwork_plots(
+    start_date_results,
+    plot_start_date,
+    "plots/20260724A/start_date_results",
+    "start_date",
+    "temporal results"
+  )
+  
+  save_patchwork_plots(
+    start_date_status_results,
+    plot_start_date_status,
+    "plots/20260724A/start_date_status_results",
+    "start_date_status",
+    "temporal results by status",
+    width = 12
+  )
+  
+  
+  # Checking
+  expected_locations <- sort(unique(abund_dat$reporting_name))
+  
+  actual_locations <- sort(unique(start_date_results$reporting_name))
+  
+  setdiff(expected_locations, actual_locations)
+  
+  
+  
+  check_raw_dates <- function(df, response_col, region_name) {
+    df %>%
+      filter(reporting_name == region_name) %>%
+      mutate(
+        start_date_date = as.Date(start_date),
+        year = format(start_date_date, "%Y")
+      ) %>%
+      group_by(year, start_date_date, period, status) %>%
+      summarise(
+        n_rows = n(),
+        n_non_missing_response = sum(!is.na(.data[[response_col]])),
+        .groups = "drop"
+      ) %>%
+      arrange(start_date_date)
+  }
+  
+  check_raw_dates(
+    hab_data$total_abundance_samples,
+    "total_abundance_sample",
+    "Aldinga - Aldinga Reef Sanctuary Zone"
+  )
+  
+  t <- start_date_results %>%
+    filter(reporting_name == "Aldinga - Aldinga Reef Sanctuary Zone") %>%
+    count(metric, start_date_date, Period) %>%
+    arrange(metric, start_date_date)
+  
+  ardrossan_richness_poisson <- glmmTMB(
+    n_species_sample ~ start_date_fct * Status,
+    data = temporal_df,
+    family = poisson(link = "log")
+  )
+  
+  summary(ardrossan_richness_poisson)
+  
+  ardrossan_richness_poisson$sdr$pdHess

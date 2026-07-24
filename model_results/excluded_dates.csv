@@ -1,0 +1,43 @@
+﻿"start_date_fct","start_date_date","prop_zero_date","reporting_name","metric","exclusion_reason","metric_id"
+"2019-12-07","2019-12-07",0.9166666666666666,"Aldinga - Aldinga Reef Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2016-05-24","2016-05-24",0.9166666666666666,"Bay of Shoals - Bay of Shoals Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2025-05-22","2025-05-22",0.9166666666666666,"Boston Bay","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2026-03-10","2026-03-10",0.9166666666666666,"Cape Elizabeth - Cape Elizabeth Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2017-01-12","2017-01-12",0.9375,"Cuttlefish Coast - Fairway Bank Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2025-10-21","2025-10-21",1,"Glenelg","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2025-11-13","2025-11-13",1,"O'Sullivan","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2026-03-06","2026-03-06",0.9411764705882353,"O'Sullivan","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2023-12-01","2023-12-01",1,"O'Sullivan","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2025-10-13","2025-10-13",1,"Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2016-11-03","2016-11-03",0.9,"Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2017-12-05","2017-12-05",0.9545454545454546,"Rapid Head - Rapid Head Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2021-01-21","2021-01-21",0.9583333333333334,"Rapid Head - Rapid Head Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2025-12-02","2025-12-02",0.9166666666666666,"The Pages - The Pages Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2025-10-30","2025-10-30",1,"Victor Harbor - Encounter Bay Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2025-10-24","2025-10-24",1,"Windara Reef - Windara Shell fish Reef Sanctuary Zone","Shark and ray richness","Not modelled
+(>=90% zeros)","sharks_rays"
+"2022-05-10","2022-05-10",0.9583333333333334,"Boston Bay","Reef associated species richness","Not modelled
+(>=90% zeros)","reef_associated_richness"
+"2025-05-22","2025-05-22",0.9166666666666666,"Boston Bay","Reef associated species richness","Not modelled
+(>=90% zeros)","reef_associated_richness"
+"2017-02-25","2017-02-25",1,"Dangerous Reef - Dangerous Reef Sanctuary Zone","Reef associated species richness","Not modelled
+(>=90% zeros)","reef_associated_richness"
+"2014-09-03","2014-09-03",1,"Middle/Long Spit - Middle Spit Sanctuary Zone","Reef associated species richness","Not modelled
+(>=90% zeros)","reef_associated_richness"
+"2025-10-21","2025-10-21",1,"Glenelg","Abundance > 200 mm","Not modelled
+(>=90% zeros)","large_fish"
