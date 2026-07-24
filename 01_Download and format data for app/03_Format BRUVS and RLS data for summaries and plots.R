@@ -1912,46 +1912,46 @@ test <- location_species_stacked_split$plot_df
 # Install once if needed
 # install.packages("colorspace")
 
-species_colours <- colorspace::qualitative_hcl(
-  n = 15,
-  palette = "Dark 3"
-)
-
-OTHER_COLOUR <- "grey70"
-
-build_species_palette <- function(species_vec) {
-  
-  species_vec <- unique(species_vec)
-  species_vec <- species_vec[species_vec != "Other"]
-  
-  if (length(species_vec) > length(SPECIES_COLOURS)) {
-    stop(
-      "There are ", length(species_vec),
-      " species, but only ", length(SPECIES_COLOURS),
-      " species colours are available."
-    )
-  }
-  
-  # Alphabetical ordering makes the assignment reproducible
-  species_vec <- sort(species_vec)
-  
-  species_palette <- setNames(
-    SPECIES_COLOURS[seq_along(species_vec)],
-    species_vec
-  )
-  
-  c(species_palette, Other = OTHER_COLOUR)
-}
-
-all_species <- unique(
-  c(
-    species_stacked$plot_df$species_plot,
-    location_species_stacked$plot_df$species_plot,
-    location_species_stacked_split$plot_df$species_plot
-  )
-)
-
-species_palette <- build_species_palette(all_species)
+# species_colours <- colorspace::qualitative_hcl(
+#   n = 15,
+#   palette = "Dark 3"
+# )
+# 
+# OTHER_COLOUR <- "grey70"
+# 
+# build_species_palette <- function(species_vec) {
+#   
+#   species_vec <- unique(species_vec)
+#   species_vec <- species_vec[species_vec != "Other"]
+#   
+#   if (length(species_vec) > length(SPECIES_COLOURS)) {
+#     stop(
+#       "There are ", length(species_vec),
+#       " species, but only ", length(SPECIES_COLOURS),
+#       " species colours are available."
+#     )
+#   }
+#   
+#   # Alphabetical ordering makes the assignment reproducible
+#   species_vec <- sort(species_vec)
+#   
+#   species_palette <- setNames(
+#     SPECIES_COLOURS[seq_along(species_vec)],
+#     species_vec
+#   )
+#   
+#   c(species_palette, Other = OTHER_COLOUR)
+# }
+# 
+# all_species <- unique(
+#   c(
+#     species_stacked$plot_df$species_plot,
+#     location_species_stacked$plot_df$species_plot,
+#     location_species_stacked_split$plot_df$species_plot
+#   )
+# )
+# 
+# species_palette <- build_species_palette(all_species)
 
 # Combined data
 hab_data <- structure(
@@ -2042,7 +2042,7 @@ hab_data <- structure(
     
     species_stacked = species_stacked,
     location_species_stacked = location_species_stacked,
-    species_palette = species_palette,
+    # species_palette = species_palette,
     
     location_species_stacked_split = location_species_stacked_split
     

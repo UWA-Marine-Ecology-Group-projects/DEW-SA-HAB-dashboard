@@ -893,7 +893,7 @@ save_patchwork_plots <- function(results_df, plot_fun, output_dir, suffix, title
 save_patchwork_plots(
   period_results,
   plot_period,
-  "plots/20260723A/period_results",
+  "plots/20260724/period_results",
   "period",
   "period means"
 )
@@ -901,7 +901,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   period_status_results,
   plot_period_status,
-  "plots/20260723A/period_status_results",
+  "plots/20260724/period_status_results",
   "period_status",
   "period means by status"
 )
@@ -909,7 +909,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_results,
   plot_start_date,
-  "plots/20260723A/start_date_results",
+  "plots/20260724/start_date_results",
   "start_date",
   "temporal results"
 )
@@ -917,7 +917,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_status_results,
   plot_start_date_status,
-  "plots/20260723A/start_date_status_results",
+  "plots/20260724/start_date_status_results",
   "start_date_status",
   "temporal results by status",
   width = 12
