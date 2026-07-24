@@ -210,11 +210,32 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
   has_two_status  <- n_distinct(df$Status) >= 2
   has_two_dates   <- n_distinct(df$start_date_fct) >= 2
   
-  site_re <- if (use_site && "uwa_site_code" %in% names(df)) {
+  # site_re <- if (use_site && "uwa_site_code" %in% names(df)) {
+  #   " + (1 | uwa_site_code)"
+  # } else {
+  #   ""
+  # }
+  has_multiple_sites <-
+    use_site &&
+    "uwa_site_code" %in% names(df) &&
+    dplyr::n_distinct(df$uwa_site_code, na.rm = TRUE) > 1
+  
+  site_re <- if (has_multiple_sites) {
     " + (1 | uwa_site_code)"
   } else {
     ""
   }
+  
+  message(
+    "Number of sites: ",
+    if ("uwa_site_code" %in% names(df)) {
+      dplyr::n_distinct(df$uwa_site_code, na.rm = TRUE)
+    } else {
+      0
+    }
+  )
+  
+  message("Including site random effect: ", has_multiple_sites)
   
   # -----------------------------
   # Check whether every date has both statuses
@@ -247,11 +268,44 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
     TRUE                             ~ "1"
   )
   
-  period_re <- if (has_two_dates) {
+  # period_re <- if (has_two_dates) {
+  #   " + (1 | start_date_fct)"
+  # } else {
+  #   ""
+  # }
+  
+  # Number of unique sampling dates represented in each period
+  dates_per_period <- df %>%
+    distinct(Period, start_date_fct) %>%
+    count(Period, name = "n_dates")
+  
+  # Date and period are perfectly confounded when every period
+  # is represented by only one sampling date
+  date_confounded_with_period <-
+    has_two_periods &&
+    all(dates_per_period$n_dates == 1)
+  
+  # Only include date as a random effect when it is not
+  # perfectly confounded with period
+  include_date_random_effect <-
+    has_two_dates &&
+    !date_confounded_with_period
+  
+  period_re <- if (include_date_random_effect) {
     " + (1 | start_date_fct)"
   } else {
     ""
   }
+  
+  message(
+    "Date confounded with Period: ",
+    date_confounded_with_period
+  )
+  
+  message(
+    "Including sampling-date random effect: ",
+    include_date_random_effect
+  )
   
   period_form <- as.formula(
     paste0(response_col, " ~ ", period_fixed, period_re, site_re)
@@ -523,7 +577,7 @@ fit_one_region <- function(df, response_col, metric_name, use_site = FALSE) {
 # 3. Run across regions
 # -----------------------------
 
-run_metric_models <- function(df, response_col, metric_name, use_site = FALSE) {
+run_metric_models <- function(df, response_col, metric_name, use_site = TRUE) {
   
   split_dat <- split(df, df$reporting_name)
   
