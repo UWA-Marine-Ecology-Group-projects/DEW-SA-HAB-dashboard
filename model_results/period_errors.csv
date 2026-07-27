@@ -1,0 +1,3 @@
+﻿"reporting_name","metric","error"
+"Cuttlefish Coast - Fairway Bank Sanctuary Zone","Shark and ray richness","Negative binomial Hessian was not positive definite | Poisson Hessian was not positive definite"
+"Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone","Abundance > 200 mm","Negative binomial Hessian was not positive definite | Poisson Hessian was not positive definite"

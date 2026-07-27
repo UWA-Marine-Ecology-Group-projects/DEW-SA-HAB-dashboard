@@ -67,6 +67,11 @@ plot_theme <- theme(
 
 prep_metric_data <- function(df, response_col) {
   df %>%
+    
+    dplyr::mutate(status = if_else(sample %in% "OASO04_2510", "Fished", status)) %>%
+    dplyr::mutate(status = if_else(uwa_site_code %in% "45", "No-take", status)) %>%
+    
+    
     filter(
       !is.na(.data[[response_col]]),
       !is.na(period),
@@ -89,7 +94,9 @@ load("app_data/hab_data.Rdata")
 
 metadata <- hab_data$hab_combined_metadata %>%
   sf::st_drop_geometry() %>%
-  filter(method == "BRUVs")
+  filter(method == "BRUVs") %>%
+  dplyr::mutate(status = if_else(sample %in% "OASO04_2510", "Fished", status)) %>%
+  dplyr::mutate(status = if_else(uwa_site_code %in% "45", "No-take", status)) 
 
 abund_dat <- prep_metric_data(
   hab_data$total_abundance_samples,
@@ -1225,7 +1232,7 @@ save_patchwork_plots <- function(
 save_patchwork_plots(
   period_results,
   plot_period,
-  "plots/20260724_nbinom2/period_results",
+  "plots/20260727_nbinom2/period_results",
   "period",
   "period means"
 )
@@ -1233,7 +1240,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   period_status_results,
   plot_period_status,
-  "plots/20260724_nbinom2/period_status_results",
+  "plots/20260727_nbinom2/period_status_results",
   "period_status",
   "period means by status"
 )
@@ -1241,7 +1248,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_results,
   plot_start_date,
-  "plots/20260724_nbinom2/start_date_results",
+  "plots/20260727_nbinom2/start_date_results",
   "start_date",
   "temporal results"
 )
@@ -1249,7 +1256,7 @@ save_patchwork_plots(
 save_patchwork_plots(
   start_date_status_results,
   plot_start_date_status,
-  "plots/20260724_nbinom2/start_date_status_results",
+  "plots/20260727_nbinom2/start_date_status_results",
   "start_date_status",
   "temporal results by status",
   width = 12
@@ -1317,3 +1324,213 @@ uncertainty_issues <- bind_rows(
   )
 
 uncertainty_issues
+
+region <- "Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone"
+
+ardrossan_model <- abund_models$outputs[[region]]
+# Show the temporal model formula
+formula(ardrossan_model$temporal_model)
+
+# Full model results
+summary(ardrossan_model$temporal_model)
+
+region <- 
+
+rich_ardrossan <- rich_dat %>%
+  filter(reporting_name %in% "Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone")
+
+rich_ardrossan %>%
+  summarise(
+    n_observations = n(),
+    n_dates = n_distinct(start_date_date),
+    n_periods = n_distinct(Period),
+    n_statuses = n_distinct(Status),
+    n_sites = n_distinct(sample)
+  )
+
+rich_ardrossan %>%
+  count(start_date_date, Period, Status, uwa_site_code, name = "n_samples") %>%
+  arrange(start_date_date, Status)
+
+rich_ardrossan %>%
+  count(start_date_date, Period, Status, name = "n_samples") %>%
+  tidyr::pivot_wider(
+    names_from = Status,
+    values_from = n_samples,
+    values_fill = 0
+  ) %>%
+  arrange(start_date_date)
+
+rich_ardrossan_temporal <- rich_ardrossan %>%
+  group_by(start_date_fct) %>%
+  mutate(
+    prop_zero_date = mean(n_species_sample == 0, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  filter(prop_zero_date < 0.9) %>%
+  mutate(
+    start_date_fct = droplevels(start_date_fct),
+    Period = droplevels(Period),
+    Status = droplevels(Status)
+  )
+
+rich_ardrossan_temporal %>%
+  count(start_date_date, Period, Status, name = "n_samples") %>%
+  tidyr::pivot_wider(
+    names_from = Status,
+    values_from = n_samples,
+    values_fill = 0
+  ) %>%
+  arrange(start_date_date)
+
+
+ardrossan_richness <- rich_dat %>%
+  filter(reporting_name == "Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone")
+
+ardrossan_richness %>%
+  count(Period, Status, name = "n_samples") %>%
+  tidyr::complete(
+    Period,
+    Status,
+    fill = list(n_samples = 0)
+  )
+
+ardrossan_richness %>%
+  group_by(Period, Status) %>%
+  summarise(
+    n_samples = n(),
+    n_dates = n_distinct(start_date_date),
+    n_sites = n_distinct(uwa_site_code),
+    .groups = "drop"
+  ) %>%
+  tidyr::complete(
+    Period,
+    Status,
+    fill = list(
+      n_samples = 0,
+      n_dates = 0,
+      n_sites = 0
+    )
+  )
+
+period_model <- rich_models$outputs[["Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone"]]$period_model
+
+formula(period_model)
+summary(period_model)
+
+period_model$sdr$pdHess
+
+emmeans::emmeans(
+  period_model,
+  ~ Period,
+  type = "response"
+)
+
+emmeans::emmeans(
+  period_model,
+  ~ Period * Status,
+  type = "response"
+)
+
+period_poisson <- glmmTMB::glmmTMB(
+  n_species_sample ~ Period * Status +
+    (1 | start_date_fct) +
+    (1 | uwa_site_code),
+  data = ardrossan_richness,
+  family = poisson(link = "log")
+)
+
+summary(period_poisson)
+period_poisson$sdr$pdHess
+VarCorr(period_poisson)
+
+emmeans::emmeans(
+  period_poisson,
+  ~ Period * Status,
+  type = "response"
+)
+
+period_poisson_site <- glmmTMB::glmmTMB(
+  n_species_sample ~ Period * Status +
+    (1 | uwa_site_code),
+  data = ardrossan_richness,
+  family = poisson(link = "log")
+)
+
+summary(period_poisson_site)
+period_poisson_site$sdr$pdHess
+VarCorr(period_poisson_site)
+
+emmeans::emmeans(
+  period_poisson_site,
+  ~ Period * Status,
+  type = "response"
+)
+
+#### Summarise the existing negative binomial fits----
+# This will identify regions where the species-richness period model has failed or collapsed towards Poisson:
+library(dplyr)
+library(purrr)
+library(tibble)
+
+richness_nb_diagnostics <- imap_dfr(
+  rich_models$outputs,
+  function(result, region_name) {
+    
+    if (
+      inherits(result, "error") ||
+      !is.list(result) ||
+      isTRUE(result$skipped) ||
+      is.null(result$period_model)
+    ) {
+      return(
+        tibble(
+          reporting_name = region_name,
+          model_available = FALSE,
+          pdHess = NA,
+          theta = NA_real_,
+          finite_standard_errors = FALSE
+        )
+      )
+    }
+    
+    model <- result$period_model
+    
+    coefficient_se <- tryCatch(
+      sqrt(diag(vcov(model)$cond)),
+      error = function(e) NA_real_
+    )
+    
+    tibble(
+      reporting_name = region_name,
+      model_available = TRUE,
+      pdHess = isTRUE(model$sdr$pdHess),
+      theta = tryCatch(
+        sigma(model),
+        error = function(e) NA_real_
+      ),
+      finite_standard_errors = all(is.finite(coefficient_se))
+    )
+  }
+)
+
+richness_nb_diagnostics %>%
+  arrange(pdHess, desc(theta))
+
+richness_nb_diagnostics %>%
+  filter(
+    !pdHess |
+      !finite_standard_errors |
+      theta > 1e6
+  )
+
+library(DHARMa)
+
+simulated_residuals <- simulateResiduals(
+  period_poisson_site,
+  n = 1000
+)
+
+plot(simulated_residuals)
+testDispersion(simulated_residuals)
+testZeroInflation(simulated_residuals)

@@ -1,0 +1,22 @@
+﻿"metric","model_type","family_code","selected_family","n_models"
+"Abundance > 200 mm","Period","nbinom2","Negative binomial (nbinom2)",17
+"Abundance > 200 mm","Period",NA,NA,1
+"Abundance > 200 mm","Temporal","nbinom2","Negative binomial (nbinom2)",17
+"Abundance > 200 mm","Temporal",NA,NA,1
+"Reef associated species richness","Period","nbinom2","Negative binomial (nbinom2)",12
+"Reef associated species richness","Period","poisson","Poisson",8
+"Reef associated species richness","Temporal","nbinom2","Negative binomial (nbinom2)",11
+"Reef associated species richness","Temporal","poisson","Poisson",8
+"Reef associated species richness","Temporal",NA,NA,1
+"Shannon diversity","Period","gaussian","Gaussian",20
+"Shannon diversity","Temporal","gaussian","Gaussian",20
+"Shark and ray richness","Period","nbinom2","Negative binomial (nbinom2)",1
+"Shark and ray richness","Period","poisson","Poisson",16
+"Shark and ray richness","Period",NA,NA,1
+"Shark and ray richness","Temporal","poisson","Poisson",18
+"Species richness","Period","nbinom2","Negative binomial (nbinom2)",10
+"Species richness","Period","poisson","Poisson",10
+"Species richness","Temporal","nbinom2","Negative binomial (nbinom2)",8
+"Species richness","Temporal","poisson","Poisson",12
+"Total abundance","Period","nbinom2","Negative binomial (nbinom2)",20
+"Total abundance","Temporal","nbinom2","Negative binomial (nbinom2)",20
