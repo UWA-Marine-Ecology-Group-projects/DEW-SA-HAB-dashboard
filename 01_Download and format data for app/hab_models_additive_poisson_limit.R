@@ -20,7 +20,7 @@ sf::sf_use_s2()
 # Model-family and output settings
 # -----------------------------
 
-analysis_tag <- "20260728_poisson_nb_gaussian"
+analysis_tag <- "20260728_additive_poisson_limit"
 plot_output_root <- file.path("plots", analysis_tag)
 model_output_root <- file.path("model_results", analysis_tag)
 
@@ -28,6 +28,12 @@ model_output_root <- file.path("model_results", analysis_tag)
 # dispersion ratio is greater than this value. This is a pragmatic
 # screening threshold rather than a universal statistical cut-off.
 poisson_dispersion_threshold <- 1.5
+
+# If an nbinom2 model has an extremely large theta, its extra-dispersion
+# term is effectively zero and the model has approached its Poisson limit.
+# When the Poisson model is otherwise valid, retain Poisson rather than
+# rejecting both models because the unnecessary nbinom2 parameter failed.
+nbinom2_poisson_limit_threshold <- 1e6
 
 # -----------------------------
 # Colours and labels
@@ -595,29 +601,77 @@ fit_selected_family_model <- function(
     }
     model_error <- NA_character_
 
+  } else if (
+    poisson_check$valid &&
+      !nbinom2_check$valid &&
+      is.finite(nbinom2_theta) &&
+      nbinom2_theta > nbinom2_poisson_limit_threshold
+  ) {
+    # The negative-binomial dispersion parameter is extremely large,
+    # indicating that nbinom2 has approached its Poisson limit. Keep
+    # the valid Poisson model instead of rejecting both candidates.
+    selected_model <- poisson_fit$model
+    selected_check <- poisson_check
+    selected_family_code <- "poisson"
+    selected_family_label <- "Poisson (log link)"
+    selected_link <- "log"
+
+    selection_reason <- paste0(
+      "Poisson retained because the nbinom2 dispersion parameter ",
+      "was extremely large (theta = ",
+      signif(nbinom2_theta, 4),
+      "), exceeding the Poisson-limit threshold of ",
+      format(nbinom2_poisson_limit_threshold, scientific = TRUE),
+      ". The negative-binomial model had approached its Poisson limit."
+    )
+
+    model_error <- NA_character_
+
   } else {
     selected_model <- NULL
-    selected_check <- if (fit_nbinom2) nbinom2_check else poisson_check
-    selected_family_code <- if (fit_nbinom2) "nbinom2" else "poisson"
+    selected_check <- if (fit_nbinom2) {
+      nbinom2_check
+    } else {
+      poisson_check
+    }
+
+    selected_family_code <- if (fit_nbinom2) {
+      "nbinom2"
+    } else {
+      "poisson"
+    }
+
     selected_family_label <- if (fit_nbinom2) {
       "Negative binomial nbinom2 (log link)"
     } else {
       "Poisson (log link)"
     }
+
     selected_link <- "log"
+
     selection_reason <- if (poisson_overdispersed) {
       paste0(
-        "Poisson was overdispersed (ratio = ",
+        "Poisson was flagged as overdispersed (ratio = ",
         round(poisson_dispersion, 3),
-        "), but the nbinom2 replacement was invalid"
+        "), but the nbinom2 replacement was invalid and did not ",
+        "clearly approach the Poisson limit"
       )
     } else {
       "Neither the Poisson model nor the nbinom2 replacement was valid"
     }
+
     model_error <- combine_messages(
-      model_error_text(poisson_fit, poisson_check, "Poisson model"),
+      model_error_text(
+        poisson_fit,
+        poisson_check,
+        "Poisson model"
+      ),
       if (fit_nbinom2) {
-        model_error_text(nbinom2_fit, nbinom2_check, "nbinom2 model")
+        model_error_text(
+          nbinom2_fit,
+          nbinom2_check,
+          "nbinom2 model"
+        )
       }
     )
   }
@@ -652,6 +706,11 @@ fit_selected_family_model <- function(
     nbinom2_valid = if (fit_nbinom2) nbinom2_check$valid else NA,
     nbinom2_AIC = if (fit_nbinom2) nbinom2_check$AIC else NA_real_,
     nbinom2_theta = nbinom2_theta,
+    nbinom2_poisson_limit_threshold =
+      nbinom2_poisson_limit_threshold,
+    nbinom2_at_poisson_limit =
+      is.finite(nbinom2_theta) &&
+      nbinom2_theta > nbinom2_poisson_limit_threshold,
     nbinom2_warnings = nbinom2_fit$warnings,
     nbinom2_error = nbinom2_fit$error,
     selected_model_valid = !is.null(selected_model),
@@ -1052,7 +1111,7 @@ fit_one_region <- function(
     ) %>%
     ungroup()
   
-  # Exclude dates with 90% OR MORE zeros
+  # Exclude complete dates with 90% OR MORE zeros.
   excluded_dates <- temporal_df %>%
     filter(prop_zero_date >= 0.9) %>%
     distinct(
@@ -1069,7 +1128,7 @@ fit_one_region <- function(
       exclusion_reason = "Not modelled\n(>=90% zeros)"
     )
   
-  # Retain dates with less than 90% zeros
+  # Retain dates with less than 90% zeros.
   temporal_df <- temporal_df %>%
     filter(prop_zero_date < 0.9) %>%
     mutate(
@@ -1088,6 +1147,12 @@ fit_one_region <- function(
   temporal_has_two_dates <- FALSE
   temporal_has_two_status <- FALSE
   temporal_has_complete_date_status <- FALSE
+  temporal_date_status_check <- tibble()
+  n_all_zero_date_status_cells <- 0L
+  temporal_has_all_zero_date_status_cell <- FALSE
+  use_additive_temporal_model <- FALSE
+  temporal_fixed <- NA_character_
+  temporal_structure_reason <- NA_character_
   start_date_means <- tibble()
   start_date_status_means <- tibble()
   
@@ -1106,17 +1171,50 @@ fit_one_region <- function(
     temporal_has_two_status <-
       n_distinct(temporal_df$Status) >= 2
     
+    # Check whether every retained date contains both statuses, and
+    # whether any observed Date x Status cell contains only zeros.
     if (temporal_has_two_dates && temporal_has_two_status) {
       temporal_date_status_check <- temporal_df %>%
-        count(start_date_fct, Status) %>%
-        complete(
+        group_by(start_date_fct, Status) %>%
+        summarise(
+          n_samples = n(),
+          n_positive = sum(
+            .data[[response_col]] > 0,
+            na.rm = TRUE
+          ),
+          percent_zero = mean(
+            .data[[response_col]] == 0,
+            na.rm = TRUE
+          ) * 100,
+          all_zero = all(
+            .data[[response_col]] == 0,
+            na.rm = TRUE
+          ),
+          .groups = "drop"
+        ) %>%
+        tidyr::complete(
           start_date_fct,
           Status,
-          fill = list(n = 0)
+          fill = list(
+            n_samples = 0L,
+            n_positive = 0L,
+            percent_zero = NA_real_,
+            all_zero = NA
+          )
         )
       
       temporal_has_complete_date_status <-
-        all(temporal_date_status_check$n > 0)
+        all(temporal_date_status_check$n_samples > 0)
+      
+      n_all_zero_date_status_cells <- temporal_date_status_check %>%
+        filter(
+          n_samples > 0,
+          all_zero %in% TRUE
+        ) %>%
+        nrow()
+      
+      temporal_has_all_zero_date_status_cell <-
+        n_all_zero_date_status_cells > 0
     }
     
     temporal_has_multiple_sites <-
@@ -1130,15 +1228,79 @@ fit_one_region <- function(
       ""
     }
     
+    # Use an additive Date + Status model when all Date x Status
+    # combinations are represented but at least one observed cell is all zero.
+    # This avoids estimating a separate interaction coefficient for a cell
+    # whose fitted mean is being driven towards zero.
+    use_additive_temporal_model <-
+      temporal_has_two_dates &&
+      temporal_has_two_status &&
+      temporal_has_complete_date_status &&
+      temporal_has_all_zero_date_status_cell
+    
     temporal_fixed <- case_when(
       temporal_has_two_dates &&
         temporal_has_two_status &&
-        temporal_has_complete_date_status ~
+        temporal_has_complete_date_status &&
+        !temporal_has_all_zero_date_status_cell ~
         "start_date_fct * Status",
-      temporal_has_two_dates ~ "start_date_fct",
-      temporal_has_two_status ~ "Status",
-      TRUE ~ "1"
+      
+      use_additive_temporal_model ~
+        "start_date_fct + Status",
+      
+      # If one or more statuses are absent from a date, do not estimate
+      # a date-by-status interaction or an overall status effect.
+      temporal_has_two_dates ~
+        "start_date_fct",
+      
+      temporal_has_two_status ~
+        "Status",
+      
+      TRUE ~
+        "1"
     )
+    
+    temporal_structure_reason <- case_when(
+      use_additive_temporal_model ~
+        paste0(
+          "Additive date + Status model used because ",
+          n_all_zero_date_status_cells,
+          " observed date x Status cell(s) contained all zeros"
+        ),
+      
+      temporal_has_two_dates &&
+        temporal_has_two_status &&
+        temporal_has_complete_date_status ~
+        "Full date x Status interaction used",
+      
+      temporal_has_two_dates &&
+        temporal_has_two_status &&
+        !temporal_has_complete_date_status ~
+        paste(
+          "Date-only model used because Status was not",
+          "represented at every retained sampling date"
+        ),
+      
+      temporal_has_two_dates ~
+        "Date-only fixed effect used",
+      
+      temporal_has_two_status ~
+        "Status-only fixed effect used",
+      
+      TRUE ~
+        "Intercept-only fixed effect used"
+    )
+    
+    message("Temporal fixed effects: ", temporal_fixed)
+    message("Temporal structure reason: ", temporal_structure_reason)
+    message(
+      "All-zero date x Status cells: ",
+      n_all_zero_date_status_cells
+    )
+    
+    if (nrow(temporal_date_status_check) > 0) {
+      print(temporal_date_status_check)
+    }
     
     temporal_form <- as.formula(
       paste0(
@@ -1159,6 +1321,17 @@ fit_one_region <- function(
       model_type = "Temporal",
       family_code = family_code
     )
+    
+    # Record why the interaction, additive model, or date-only model was used.
+    temporal_fit$diagnostics <- temporal_fit$diagnostics %>%
+      mutate(
+        fixed_effect_structure = temporal_fixed,
+        structure_reason = temporal_structure_reason,
+        n_all_zero_date_status_cells =
+          n_all_zero_date_status_cells,
+        complete_date_status_design =
+          temporal_has_complete_date_status
+      )
     
     temporal_model <- temporal_fit$model
     temporal_error <- temporal_fit$error
@@ -1200,6 +1373,9 @@ fit_one_region <- function(
             left_join(date_lookup, by = "start_date_fct") %>%
             left_join(period_lookup, by = "start_date_date")
           
+          # Predicted Date x Status combinations can still be calculated from
+          # an additive model. In that case, the status difference is assumed
+          # to be the same at every date because no interaction was fitted.
           if (
             temporal_has_two_dates &&
             temporal_has_two_status &&
@@ -1281,7 +1457,11 @@ fit_one_region <- function(
             family_code = temporal_fit$family_code,
             model_link = temporal_fit$family_link,
             family_selection_reason =
-              temporal_fit$selection_reason
+              temporal_fit$selection_reason,
+            fixed_effect_structure = temporal_fixed,
+            structure_reason = temporal_structure_reason,
+            n_all_zero_date_status_cells =
+              n_all_zero_date_status_cells
           )
         
         start_date_status_means <-
@@ -1293,7 +1473,11 @@ fit_one_region <- function(
             family_code = temporal_fit$family_code,
             model_link = temporal_fit$family_link,
             family_selection_reason =
-              temporal_fit$selection_reason
+              temporal_fit$selection_reason,
+            fixed_effect_structure = temporal_fixed,
+            structure_reason = temporal_structure_reason,
+            n_all_zero_date_status_cells =
+              n_all_zero_date_status_cells
           )
       }
     }
@@ -2411,161 +2595,3 @@ readr::write_excel_csv(
 
 uncertainty_issues
 model_family_counts
-
-
-region_name <- "Cuttlefish Coast - Fairway Bank Sanctuary Zone"
-
-cuttlefish_shark <- shark_dat %>%
-  filter(reporting_name == region_name)
-
-cuttlefish_shark %>%
-  group_by(Period, Status) %>%
-  summarise(
-    n_samples = n(),
-    n_dates = n_distinct(start_date_date),
-    n_sites = n_distinct(uwa_site_code),
-    n_zero = sum(n_species_sample == 0),
-    percent_zero = mean(n_species_sample == 0) * 100,
-    mean_richness = mean(n_species_sample),
-    maximum = max(n_species_sample),
-    .groups = "drop"
-  )
-
-formula(shark_models$outputs[["Cuttlefish Coast - Fairway Bank Sanctuary Zone"]]$period_poisson_candidate_model)
-names(shark_models$outputs[["Cuttlefish Coast - Fairway Bank Sanctuary Zone"]])
-
-shark_models$outputs[["Cuttlefish Coast - Fairway Bank Sanctuary Zone"]]$period_model
-
-
-region_name <- "Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone"
-
-offshore_big <- fish_200_dat %>%
-  filter(reporting_name == region_name)
-
-offshore_big %>%
-  group_by(Period, Status) %>%
-  summarise(
-    n_samples = n(),
-    n_dates = n_distinct(start_date_date),
-    n_sites = n_distinct(uwa_site_code),
-    n_zero = sum(total_abundance_sample == 0),
-    percent_zero = mean(total_abundance_sample == 0) * 100,
-    mean_no = mean(total_abundance_sample),
-    maximum = max(total_abundance_sample),
-    .groups = "drop"
-  )
-
-# region_name <- "Orcades Bank - Orcades Bank Sanctuary Zone"
-# # only 12 drops - on two days, no length data!
-# 
-# orcades_big <- fish_200_dat %>%
-#   filter(reporting_name == region_name)
-# 
-# orcades_big %>%
-#   group_by(Period, Status) %>%
-#   summarise(
-#     n_samples = n(),
-#     n_dates = n_distinct(start_date_date),
-#     n_sites = n_distinct(uwa_site_code),
-#     n_zero = sum(total_abundance_sample == 0),
-#     percent_zero = mean(total_abundance_sample == 0) * 100,
-#     mean_no = mean(total_abundance_sample),
-#     maximum = max(total_abundance_sample),
-#     .groups = "drop"
-#   )
-
-check_period_information <- function(df, response_col) {
-  df %>%
-    group_by(Period, Status) %>%
-    summarise(
-      n_dates = n_distinct(start_date_date),
-      n_samples = n(),
-      n_sites = n_distinct(uwa_site_code),
-      
-      n_positive = sum(.data[[response_col]] > 0, na.rm = TRUE),
-      percent_zero = mean(.data[[response_col]] == 0, na.rm = TRUE) * 100,
-      all_zero = all(.data[[response_col]] == 0),
-      .groups = "drop"
-    )
-}
-
-check_period_information(
-  offshore_big,
-  "total_abundance_sample"
-)
-
-check_period_information(
-  cuttlefish_shark,
-  "n_species_sample"
-)
-
-offshore_big_additive <- glmmTMB::glmmTMB(
-  total_abundance_sample ~ Period + Status +
-    (1 | uwa_site_code),
-  data = offshore_big,
-  family = poisson(link = "log")
-)
-
-summary(offshore_big_additive)
-offshore_big_additive$sdr$pdHess
-
-offshore_res <- DHARMa::simulateResiduals(
-  offshore_big_additive,
-  n = 1000
-)
-
-DHARMa::testDispersion(offshore_res)
-
-offshore_big_nb <- glmmTMB::glmmTMB(
-  total_abundance_sample ~ Period + Status +
-    (1 | uwa_site_code),
-  data = offshore_big,
-  family = glmmTMB::nbinom2(link = "log")
-)
-
-summary(offshore_big_nb)
-offshore_big_nb$sdr$pdHess
-VarCorr(offshore_big_nb)
-
-
-offshore_nb_res <- DHARMa::simulateResiduals(
-  offshore_big_nb,
-  n = 1000
-)
-
-plot(offshore_nb_res)
-
-DHARMa::testDispersion(offshore_nb_res)
-DHARMa::testZeroInflation(offshore_nb_res)
-
-
-region_name <- "Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone"
-
-fish_200_dat %>%
-  filter(reporting_name == region_name) %>%
-  group_by(start_date_date, Period, Status) %>%
-  summarise(
-    n_samples = n(),
-    n_positive = sum(total_abundance_sample > 0),
-    percent_zero =
-      mean(total_abundance_sample == 0) * 100,
-    all_zero =
-      all(total_abundance_sample == 0),
-    .groups = "drop"
-  )
-
-
-region_name <- "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone"
-
-reef_dat %>%
-  filter(reporting_name == region_name) %>%
-  group_by(start_date_date, Period, Status) %>%
-  summarise(
-    n_samples = n(),
-    n_positive = sum(n_species_sample > 0),
-    percent_zero =
-      mean(n_species_sample == 0) * 100,
-    all_zero =
-      all(n_species_sample == 0),
-    .groups = "drop"
-  )

@@ -20,7 +20,7 @@ sf::sf_use_s2()
 # Model-family and output settings
 # -----------------------------
 
-analysis_tag <- "20260728_poisson_nb_gaussian"
+analysis_tag <- "20260728_additive"
 plot_output_root <- file.path("plots", analysis_tag)
 model_output_root <- file.path("model_results", analysis_tag)
 
@@ -1052,7 +1052,7 @@ fit_one_region <- function(
     ) %>%
     ungroup()
   
-  # Exclude dates with 90% OR MORE zeros
+  # Exclude complete dates with 90% OR MORE zeros.
   excluded_dates <- temporal_df %>%
     filter(prop_zero_date >= 0.9) %>%
     distinct(
@@ -1069,7 +1069,7 @@ fit_one_region <- function(
       exclusion_reason = "Not modelled\n(>=90% zeros)"
     )
   
-  # Retain dates with less than 90% zeros
+  # Retain dates with less than 90% zeros.
   temporal_df <- temporal_df %>%
     filter(prop_zero_date < 0.9) %>%
     mutate(
@@ -1088,6 +1088,12 @@ fit_one_region <- function(
   temporal_has_two_dates <- FALSE
   temporal_has_two_status <- FALSE
   temporal_has_complete_date_status <- FALSE
+  temporal_date_status_check <- tibble()
+  n_all_zero_date_status_cells <- 0L
+  temporal_has_all_zero_date_status_cell <- FALSE
+  use_additive_temporal_model <- FALSE
+  temporal_fixed <- NA_character_
+  temporal_structure_reason <- NA_character_
   start_date_means <- tibble()
   start_date_status_means <- tibble()
   
@@ -1106,17 +1112,50 @@ fit_one_region <- function(
     temporal_has_two_status <-
       n_distinct(temporal_df$Status) >= 2
     
+    # Check whether every retained date contains both statuses, and
+    # whether any observed Date x Status cell contains only zeros.
     if (temporal_has_two_dates && temporal_has_two_status) {
       temporal_date_status_check <- temporal_df %>%
-        count(start_date_fct, Status) %>%
-        complete(
+        group_by(start_date_fct, Status) %>%
+        summarise(
+          n_samples = n(),
+          n_positive = sum(
+            .data[[response_col]] > 0,
+            na.rm = TRUE
+          ),
+          percent_zero = mean(
+            .data[[response_col]] == 0,
+            na.rm = TRUE
+          ) * 100,
+          all_zero = all(
+            .data[[response_col]] == 0,
+            na.rm = TRUE
+          ),
+          .groups = "drop"
+        ) %>%
+        tidyr::complete(
           start_date_fct,
           Status,
-          fill = list(n = 0)
+          fill = list(
+            n_samples = 0L,
+            n_positive = 0L,
+            percent_zero = NA_real_,
+            all_zero = NA
+          )
         )
       
       temporal_has_complete_date_status <-
-        all(temporal_date_status_check$n > 0)
+        all(temporal_date_status_check$n_samples > 0)
+      
+      n_all_zero_date_status_cells <- temporal_date_status_check %>%
+        filter(
+          n_samples > 0,
+          all_zero %in% TRUE
+        ) %>%
+        nrow()
+      
+      temporal_has_all_zero_date_status_cell <-
+        n_all_zero_date_status_cells > 0
     }
     
     temporal_has_multiple_sites <-
@@ -1130,15 +1169,79 @@ fit_one_region <- function(
       ""
     }
     
+    # Use an additive Date + Status model when all Date x Status
+    # combinations are represented but at least one observed cell is all zero.
+    # This avoids estimating a separate interaction coefficient for a cell
+    # whose fitted mean is being driven towards zero.
+    use_additive_temporal_model <-
+      temporal_has_two_dates &&
+      temporal_has_two_status &&
+      temporal_has_complete_date_status &&
+      temporal_has_all_zero_date_status_cell
+    
     temporal_fixed <- case_when(
       temporal_has_two_dates &&
         temporal_has_two_status &&
-        temporal_has_complete_date_status ~
+        temporal_has_complete_date_status &&
+        !temporal_has_all_zero_date_status_cell ~
         "start_date_fct * Status",
-      temporal_has_two_dates ~ "start_date_fct",
-      temporal_has_two_status ~ "Status",
-      TRUE ~ "1"
+      
+      use_additive_temporal_model ~
+        "start_date_fct + Status",
+      
+      # If one or more statuses are absent from a date, do not estimate
+      # a date-by-status interaction or an overall status effect.
+      temporal_has_two_dates ~
+        "start_date_fct",
+      
+      temporal_has_two_status ~
+        "Status",
+      
+      TRUE ~
+        "1"
     )
+    
+    temporal_structure_reason <- case_when(
+      use_additive_temporal_model ~
+        paste0(
+          "Additive date + Status model used because ",
+          n_all_zero_date_status_cells,
+          " observed date x Status cell(s) contained all zeros"
+        ),
+      
+      temporal_has_two_dates &&
+        temporal_has_two_status &&
+        temporal_has_complete_date_status ~
+        "Full date x Status interaction used",
+      
+      temporal_has_two_dates &&
+        temporal_has_two_status &&
+        !temporal_has_complete_date_status ~
+        paste(
+          "Date-only model used because Status was not",
+          "represented at every retained sampling date"
+        ),
+      
+      temporal_has_two_dates ~
+        "Date-only fixed effect used",
+      
+      temporal_has_two_status ~
+        "Status-only fixed effect used",
+      
+      TRUE ~
+        "Intercept-only fixed effect used"
+    )
+    
+    message("Temporal fixed effects: ", temporal_fixed)
+    message("Temporal structure reason: ", temporal_structure_reason)
+    message(
+      "All-zero date x Status cells: ",
+      n_all_zero_date_status_cells
+    )
+    
+    if (nrow(temporal_date_status_check) > 0) {
+      print(temporal_date_status_check)
+    }
     
     temporal_form <- as.formula(
       paste0(
@@ -1159,6 +1262,17 @@ fit_one_region <- function(
       model_type = "Temporal",
       family_code = family_code
     )
+    
+    # Record why the interaction, additive model, or date-only model was used.
+    temporal_fit$diagnostics <- temporal_fit$diagnostics %>%
+      mutate(
+        fixed_effect_structure = temporal_fixed,
+        structure_reason = temporal_structure_reason,
+        n_all_zero_date_status_cells =
+          n_all_zero_date_status_cells,
+        complete_date_status_design =
+          temporal_has_complete_date_status
+      )
     
     temporal_model <- temporal_fit$model
     temporal_error <- temporal_fit$error
@@ -1200,6 +1314,9 @@ fit_one_region <- function(
             left_join(date_lookup, by = "start_date_fct") %>%
             left_join(period_lookup, by = "start_date_date")
           
+          # Predicted Date x Status combinations can still be calculated from
+          # an additive model. In that case, the status difference is assumed
+          # to be the same at every date because no interaction was fitted.
           if (
             temporal_has_two_dates &&
             temporal_has_two_status &&
@@ -1281,7 +1398,11 @@ fit_one_region <- function(
             family_code = temporal_fit$family_code,
             model_link = temporal_fit$family_link,
             family_selection_reason =
-              temporal_fit$selection_reason
+              temporal_fit$selection_reason,
+            fixed_effect_structure = temporal_fixed,
+            structure_reason = temporal_structure_reason,
+            n_all_zero_date_status_cells =
+              n_all_zero_date_status_cells
           )
         
         start_date_status_means <-
@@ -1293,7 +1414,11 @@ fit_one_region <- function(
             family_code = temporal_fit$family_code,
             model_link = temporal_fit$family_link,
             family_selection_reason =
-              temporal_fit$selection_reason
+              temporal_fit$selection_reason,
+            fixed_effect_structure = temporal_fixed,
+            structure_reason = temporal_structure_reason,
+            n_all_zero_date_status_cells =
+              n_all_zero_date_status_cells
           )
       }
     }
@@ -2539,33 +2664,68 @@ DHARMa::testDispersion(offshore_nb_res)
 DHARMa::testZeroInflation(offshore_nb_res)
 
 
-region_name <- "Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone"
-
-fish_200_dat %>%
-  filter(reporting_name == region_name) %>%
-  group_by(start_date_date, Period, Status) %>%
-  summarise(
-    n_samples = n(),
-    n_positive = sum(total_abundance_sample > 0),
-    percent_zero =
-      mean(total_abundance_sample == 0) * 100,
-    all_zero =
-      all(total_abundance_sample == 0),
-    .groups = "drop"
-  )
 
 
 region_name <- "Port Noarlunga - Port Noarlunga Reef Sanctuary Zone"
 
-reef_dat %>%
+port_reef_output <- reef_models$outputs[[region_name]]
+
+formula(port_reef_output$temporal_candidate_model)
+summary(port_reef_output$temporal_candidate_model)
+VarCorr(port_reef_output$temporal_candidate_model)
+glmmTMB::diagnose(port_reef_output$temporal_candidate_model)
+
+port_reef_dat <- reef_dat %>%
   filter(reporting_name == region_name) %>%
-  group_by(start_date_date, Period, Status) %>%
+  group_by(start_date_fct) %>%
+  mutate(
+    prop_zero_date = mean(
+      n_species_sample == 0,
+      na.rm = TRUE
+    )
+  ) %>%
+  ungroup() %>%
+  filter(prop_zero_date < 0.9) %>%
+  mutate(
+    start_date_fct = droplevels(start_date_fct),
+    Status = droplevels(Status)
+  )
+
+port_reef_poisson_no_site <- glmmTMB::glmmTMB(
+  n_species_sample ~ start_date_fct + Status,
+  data = port_reef_dat,
+  family = poisson(link = "log")
+)
+
+summary(port_reef_poisson_no_site)
+port_reef_poisson_no_site$sdr$pdHess
+
+port_reef_dat %>%
+  group_by(start_date_date, Status) %>%
   summarise(
     n_samples = n(),
     n_positive = sum(n_species_sample > 0),
-    percent_zero =
-      mean(n_species_sample == 0) * 100,
-    all_zero =
-      all(n_species_sample == 0),
+    percent_zero = mean(n_species_sample == 0) * 100,
+    all_zero = all(n_species_sample == 0),
+    n_sites = n_distinct(uwa_site_code),
     .groups = "drop"
   )
+
+port_reef_poisson <- glmmTMB::glmmTMB(
+  n_species_sample ~ start_date_fct,
+  data = port_reef_dat,
+  family = poisson(link = "log")
+)
+
+summary(port_reef_poisson)
+port_reef_poisson$sdr$pdHess
+
+port_reef_poisson_res <- DHARMa::simulateResiduals(
+  port_reef_poisson,
+  n = 1000
+)
+
+plot(port_reef_poisson_res)
+
+DHARMa::testDispersion(port_reef_poisson_res)
+DHARMa::testZeroInflation(port_reef_poisson_res)
