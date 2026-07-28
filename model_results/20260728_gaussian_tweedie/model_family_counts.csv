@@ -1,0 +1,19 @@
+﻿"metric","model_type","family_code","selected_family","selected_model_valid","n_models"
+"Abundance > 200 mm","Period","tweedie","Tweedie (log link)",FALSE,5
+"Abundance > 200 mm","Period","tweedie","Tweedie (log link)",TRUE,13
+"Abundance > 200 mm","Temporal","tweedie","Tweedie (log link)",FALSE,5
+"Abundance > 200 mm","Temporal","tweedie","Tweedie (log link)",TRUE,13
+"Reef associated species richness","Period","poisson","Poisson (log link)",TRUE,20
+"Reef associated species richness","Temporal","poisson","Poisson (log link)",TRUE,20
+"Shannon diversity","Period","tweedie","Tweedie (log link)",FALSE,1
+"Shannon diversity","Period","tweedie","Tweedie (log link)",TRUE,19
+"Shannon diversity","Temporal","tweedie","Tweedie (log link)",TRUE,20
+"Shark and ray richness","Period","poisson","Poisson (log link)",FALSE,1
+"Shark and ray richness","Period","poisson","Poisson (log link)",TRUE,17
+"Shark and ray richness","Temporal","poisson","Poisson (log link)",TRUE,18
+"Species richness","Period","poisson","Poisson (log link)",TRUE,20
+"Species richness","Temporal","poisson","Poisson (log link)",TRUE,20
+"Total abundance","Period","tweedie","Tweedie (log link)",FALSE,11
+"Total abundance","Period","tweedie","Tweedie (log link)",TRUE,9
+"Total abundance","Temporal","tweedie","Tweedie (log link)",FALSE,11
+"Total abundance","Temporal","tweedie","Tweedie (log link)",TRUE,9

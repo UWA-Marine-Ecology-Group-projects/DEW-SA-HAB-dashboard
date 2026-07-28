@@ -1,0 +1,7 @@
+﻿"metric","metric_id","family_code","model_family","link"
+"Species richness","richness","poisson","Poisson (log link)","log"
+"Shark and ray richness","sharks_rays","poisson","Poisson (log link)","log"
+"Reef associated species richness","reef_associated_richness","poisson","Poisson (log link)","log"
+"Total abundance","total_abundance","tweedie","Tweedie (log link)","log"
+"Abundance > 200 mm","large_fish","tweedie","Tweedie (log link)","log"
+"Shannon diversity","shannon_diversity","tweedie","Tweedie (log link)","log"

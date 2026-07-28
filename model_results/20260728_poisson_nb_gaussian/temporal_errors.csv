@@ -1,0 +1,3 @@
+﻿"reporting_name","metric","family_code","model_family","error"
+"Port Noarlunga - Port Noarlunga Reef Sanctuary Zone","Reef associated species richness","auto_count","Poisson; nbinom2 if overdispersed","nbinom2 model did not converge | nbinom2 model Hessian was not positive definite | nbinom2 model AIC was not finite"
+"Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone","Abundance > 200 mm","auto_count","Poisson; nbinom2 if overdispersed","Poisson model Hessian was not positive definite | Poisson model AIC was not finite | nbinom2 model Hessian was not positive definite | nbinom2 model AIC was not finite"
