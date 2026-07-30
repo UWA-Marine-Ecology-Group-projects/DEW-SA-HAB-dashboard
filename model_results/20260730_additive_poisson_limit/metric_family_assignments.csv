@@ -1,0 +1,7 @@
+﻿"metric","metric_id","family_code","model_family","link"
+"Species richness","richness","auto_count","Poisson; nbinom2 if overdispersed","log"
+"Shark and ray richness","sharks_rays","auto_count","Poisson; nbinom2 if overdispersed","log"
+"Reef associated species richness","reef_associated_richness","auto_count","Poisson; nbinom2 if overdispersed","log"
+"Total abundance","total_abundance","auto_count","Poisson; nbinom2 if overdispersed","log"
+"Abundance > 200 mm","large_fish","auto_count","Poisson; nbinom2 if overdispersed","log"
+"Shannon diversity","shannon_diversity","gaussian","gaussian (identity link)","identity"

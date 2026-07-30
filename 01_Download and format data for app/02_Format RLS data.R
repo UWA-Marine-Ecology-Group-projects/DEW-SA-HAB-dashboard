@@ -34,9 +34,10 @@ lh <- CheckEM::australia_life_history
 # Read in data sets ----
 cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
 
-survey_list <- read_csv("data/raw/RLS/ep_survey_list_SA.csv") %>%
-  dplyr::filter(site_code %in% unique(sa_sites$site_code)) #%>%
-  # dplyr::mutate(id = paste(survey_id, block))
+survey_list <- read_csv("data/raw/RLS/ep_survey_list.csv") %>%
+  dplyr::filter(site_code %in% unique(sa_sites$site_code)) 
+
+unique(survey_list$methods)
 
 check <- survey_list %>%
   distinct(survey_id, site_code, survey_date, depth) %>%
@@ -46,6 +47,12 @@ check <- survey_list %>%
 hist(check$n)
 
 plot(survey_list$survey_date, survey_list$depth)
+
+# Check for sampling events - transects that are split over multiple days
+unique(survey_list$depth) # not always 1-4 as the transect some 0, 8 and 9's
+
+survey_dates <- survey_list %>%
+  distinct(site_name, survey_date)
 
 # NOTE survey list does not have block - assume they always have 2?
 
@@ -94,10 +101,10 @@ length(unique(m2_fish$site_code)) # 70 sites
 length(unique(m2_inverts$site_code)) # 70 sites
 length(unique(survey_list$site_code)) # 70 sites
 
-length(unique(survey_list$survey_id)) # 1843 surveys
-length(unique(m1$survey_id)) # 1797 surveys (but includes two blocks?)
-length(unique(m2_fish$survey_id)) # 1424 surveys (but includes two blocks?)
-length(unique(m2_inverts$survey_id)) # 1828 surveys (but includes two blocks?)
+length(unique(survey_list$survey_id)) # 1855 surveys
+length(unique(m1$survey_id)) # 1823 surveys (but includes two blocks?)
+length(unique(m2_fish$survey_id)) # 1445 surveys (but includes two blocks?)
+length(unique(m2_inverts$survey_id)) # 1840 surveys (but includes two blocks?)
 
 # Format data ----
 # what I think I need to do
@@ -119,6 +126,10 @@ m1_species <- m1 %>%
   dplyr::mutate(genus = if_else(family == genus, "Unknown", genus)) %>%
   tidyr::replace_na(list(family = "Unknown", genus = "Unknown")) 
 
+m1_no_species <- m1 %>%
+  dplyr::filter(recorded_species_name %in% c("No species found"))
+
+surveys_that_not_present_in_m1 <- anti_join(survey_list, m1) # All surveys using method 1 are present in the data for fish
 
 unique(m1_species$genus) %>% sort()
 unique(m1_species$species) %>% sort()
@@ -318,20 +329,24 @@ species_in_m2_both <- semi_join(m2_species_new, m2_species_new_inverts) %>%
 names(m1_species_new)
 
 m1_fish_sr_samples <- m1_species_new %>%
-  dplyr::distinct(survey_id, site_code, survey_date, block, family, portal_name) %>%
-  dplyr::group_by(survey_id, site_code, survey_date, block) %>%
+  dplyr::distinct(survey_id, site_code, survey_date, family, portal_name) %>%
+  dplyr::group_by(survey_id, site_code, survey_date) %>%
   dplyr::summarise(value = n())
 
 hist(m1_fish_sr_samples$value)
 summary(m1_fish_sr_samples)
 
 m2_fish_sr_samples <- m2_species_new %>%
-  dplyr::distinct(survey_id, site_code, survey_date, block, family, portal_name) %>%
-  dplyr::group_by(survey_id, site_code, survey_date, block) %>%
+  dplyr::distinct(survey_id, site_code, survey_date, family, portal_name) %>%
+  dplyr::group_by(survey_id, site_code, survey_date) %>%
   dplyr::summarise(value = n())
 
 hist(m2_fish_sr_samples$value)
 summary(m2_fish_sr_samples)
+
+
+# Site averages x sampling period ----
+
 
 
 # Stacked abundance plots -----

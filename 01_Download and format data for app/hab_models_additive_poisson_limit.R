@@ -20,7 +20,7 @@ sf::sf_use_s2()
 # Model-family and output settings
 # -----------------------------
 
-analysis_tag <- "20260728_additive_poisson_limit"
+analysis_tag <- "20260730_additive_poisson_limit"
 plot_output_root <- file.path("plots", analysis_tag)
 model_output_root <- file.path("model_results", analysis_tag)
 
@@ -83,7 +83,7 @@ metric_family_assignments <- tribble(
   "Reef associated species richness",  "reef_associated_richness",       "auto_count", "Poisson; nbinom2 if overdispersed",  "log",
   "Total abundance",                   "total_abundance",                "auto_count", "Poisson; nbinom2 if overdispersed",  "log",
   "Abundance > 200 mm",                "large_fish",                     "auto_count", "Poisson; nbinom2 if overdispersed",  "log",
-  "Shannon diversity",                 "shannon_diversity",              "gaussian",   "Gaussian (identity link)",            "identity"
+  "Shannon diversity",                 "shannon_diversity",              "gaussian",   "gaussian (identity link)",            "identity"
 )
 
 plot_theme <- theme(
@@ -258,9 +258,9 @@ get_family_details <- function(family_code) {
     return(
       list(
         family = gaussian(link = "identity"),
-        label = "Gaussian (identity link)",
+        label = "gaussian (identity link)",
         link = "identity",
-        reason = "Gaussian identity model was specified for Shannon diversity"
+        reason = "gaussian identity model was specified for Shannon diversity"
       )
     )
   }
@@ -469,7 +469,7 @@ fit_selected_family_model <- function(
     model_error <- if (gaussian_check$valid) {
       NA_character_
     } else {
-      model_error_text(gaussian_fit, gaussian_check, "Gaussian model")
+      model_error_text(gaussian_fit, gaussian_check, "gaussian model")
     }
 
     diagnostics <- tibble(
@@ -488,7 +488,7 @@ fit_selected_family_model <- function(
       },
       requested_family_code = family_code,
       family_code = "gaussian",
-      selected_family = "Gaussian (identity link)",
+      selected_family = "gaussian (identity link)",
       link = "identity",
       selection_reason = requested_family$reason,
       poisson_dispersion_ratio = NA_real_,
@@ -520,7 +520,7 @@ fit_selected_family_model <- function(
         candidate_model = gaussian_fit$model,
         valid = gaussian_check$valid,
         family_code = "gaussian",
-        family_label = "Gaussian (identity link)",
+        family_label = "gaussian (identity link)",
         family_link = "identity",
         selection_reason = requested_family$reason,
         diagnostics = diagnostics,
@@ -2218,38 +2218,90 @@ get_blank_panel_label <- function(
   "Model result unavailable\n(see model error tables)"
 }
 
-plot_period <- function(df, metric_id, panel_letter) {
-  metric_df <- df %>%
-    filter(.data$metric_id == !!metric_id)
-  
-  # if (nrow(metric_df) == 0) {
-  #   return(blank_panel(panel_letter))
-  # }
-  
-  if (nrow(metric_df) == 0) {
-    
-    region <- unique(df$reporting_name)[1]
-    
-    return(
-      blank_panel(
-        panel_letter = panel_letter,
-        label = get_blank_panel_label(
-          region = region,
-          metric_id = metric_id,
-          model_type = "Period"
-        )
+add_plot_confidence_limits <- function(df) {
+  df %>%
+    mutate(
+      plot_LCL = case_when(
+        metric_id == "shannon_diversity" ~ pmax(asymp.LCL, 0),
+        TRUE ~ asymp.LCL
+      ),
+      lower_limit_truncated = (
+        metric_id == "shannon_diversity" &
+          !is.na(asymp.LCL) &
+          asymp.LCL < 0
       )
     )
-  }
+}
+
+# plot_period <- function(df, metric_id, panel_letter) {
+#   metric_df <- df %>%
+#     filter(.data$metric_id == !!metric_id)
+#   
+#   # if (nrow(metric_df) == 0) {
+#   #   return(blank_panel(panel_letter))
+#   # }
+#   
+#   if (nrow(metric_df) == 0) {
+#     
+#     region <- unique(df$reporting_name)[1]
+#     
+#     return(
+#       blank_panel(
+#         panel_letter = panel_letter,
+#         label = get_blank_panel_label(
+#           region = region,
+#           metric_id = metric_id,
+#           model_type = "Period"
+#         )
+#       )
+#     )
+#   }
+#   
+#   ggplot(metric_df, aes(x = Period, y = response, fill = Period)) +
+#     geom_col(width = 0.6, colour = "black", alpha = 0.85) +
+#     geom_errorbar(
+#       aes(ymin = asymp.LCL, ymax = asymp.UCL),
+#       width = 0.2,
+#       linewidth = 0.6
+#     ) +
+#     scale_fill_manual(values = metric_period_cols, drop = FALSE) +
+#     labs(
+#       x = NULL,
+#       y = metric_y_lab[[metric_id]],
+#       tag = panel_letter,
+#       fill = NULL
+#     ) +
+#     theme_minimal(base_size = 16) +
+#     plot_theme +
+#     theme(legend.position = "none")
+# }
+
+plot_period <- function(df, metric_id, panel_letter) {
+  
+  metric_df <- df %>%
+    filter(.data$metric_id == !!metric_id) %>%
+    add_plot_confidence_limits()
+  
+  # Existing blank-panel code here
   
   ggplot(metric_df, aes(x = Period, y = response, fill = Period)) +
-    geom_col(width = 0.6, colour = "black", alpha = 0.85) +
+    geom_col(
+      width = 0.6,
+      colour = "black",
+      alpha = 0.85
+    ) +
     geom_errorbar(
-      aes(ymin = asymp.LCL, ymax = asymp.UCL),
+      aes(
+        ymin = plot_LCL,
+        ymax = asymp.UCL
+      ),
       width = 0.2,
       linewidth = 0.6
     ) +
-    scale_fill_manual(values = metric_period_cols, drop = FALSE) +
+    scale_fill_manual(
+      values = metric_period_cols,
+      drop = FALSE
+    ) +
     labs(
       x = NULL,
       y = metric_y_lab[[metric_id]],
@@ -2263,7 +2315,8 @@ plot_period <- function(df, metric_id, panel_letter) {
 
 plot_period_status <- function(df, metric_id, panel_letter) {
   metric_df <- df %>%
-    filter(.data$metric_id == !!metric_id)
+    filter(.data$metric_id == !!metric_id) %>%
+    add_plot_confidence_limits()
 
   if (nrow(metric_df) == 0) {
     region <- unique(df$reporting_name)[1]
@@ -2287,7 +2340,7 @@ plot_period_status <- function(df, metric_id, panel_letter) {
       alpha = 0.85
     ) +
     geom_errorbar(
-      aes(ymin = asymp.LCL, ymax = asymp.UCL),
+      aes(ymin = plot_LCL, ymax = asymp.UCL),
       position = position_dodge(width = 0.7),
       width = 0.18,
       linewidth = 0.6
@@ -2496,14 +2549,14 @@ save_patchwork_plots(
   "period",
   "period means"
 )
-# 
-# save_patchwork_plots(
-#   period_status_results,
-#   plot_period_status,
-#   file.path(plot_output_root, "period_status_results"),
-#   "period_status",
-#   "period means by status"
-# )
+
+save_patchwork_plots(
+  period_status_results,
+  plot_period_status,
+  file.path(plot_output_root, "period_status_results"),
+  "period_status",
+  "period means by status"
+)
 
 save_patchwork_plots(
   start_date_results,
@@ -2595,3 +2648,42 @@ readr::write_excel_csv(
 
 uncertainty_issues
 model_family_counts
+
+
+
+
+model <- shannon_models$outputs[["Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone"]]$period_model
+
+par(mfrow = c(1, 2))
+
+plot(
+  fitted(model),
+  residuals(model, type = "pearson"),
+  xlab = "Fitted values",
+  ylab = "Pearson residuals"
+)
+abline(h = 0, lty = 2)
+
+qqnorm(residuals(model, type = "pearson"))
+qqline(residuals(model, type = "pearson"))
+
+library(DHARMa)
+
+sim_res <- simulateResiduals(
+  fittedModel = model,
+  n = 1000
+)
+
+par(mfrow = c(2, 2))
+plot(sim_res)
+testUniformity(sim_res)
+testDispersion(sim_res)
+testOutliers(sim_res)
+
+shannon_dat %>%
+  summarise(
+    n = n(),
+    n_zero = sum(shannon == 0, na.rm = TRUE),
+    percent_zero = mean(shannon == 0, na.rm = TRUE) * 100,
+    minimum = min(shannon, na.rm = TRUE)
+  )

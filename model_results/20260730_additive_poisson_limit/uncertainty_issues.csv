@@ -1,0 +1,6 @@
+﻿"reporting_name","metric","result_type","model_family","family_code","model_link","Period","Status","start_date_date","response","SE","asymp.LCL","asymp.UCL"
+"Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone","Shark and ray richness","Period","Poisson (log link)","poisson","log","Bloom",NA,NA,5.028856389981745e-11,4.23786376737945e-6,2.220446049250313e-16,NA
+"Windara Reef - Windara Shell fish Reef Sanctuary Zone","Shark and ray richness","Period","Poisson (log link)","poisson","log","Bloom",NA,NA,7.46350590261399e-10,7.504713413920781e-6,2.220446049250313e-16,NA
+"Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone","Shark and ray richness","Period by status","Poisson (log link)","poisson","log","Bloom","Fished",NA,6.506346112983221e-10,8.491978400311456e-6,2.220446049250313e-16,NA
+"Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone","Shark and ray richness","Period by status","Poisson (log link)","poisson","log","Bloom","No-take",NA,3.886881538717391e-12,6.531349506371961e-7,2.220446049250313e-16,NA
+"Windara Reef - Windara Shell fish Reef Sanctuary Zone","Shark and ray richness","Period by status","Poisson (log link)","poisson","log","Bloom","Fished",NA,7.46350590261399e-10,7.504713413920781e-6,2.220446049250313e-16,NA
