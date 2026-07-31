@@ -23,5 +23,12 @@ dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d
 # CheckEM life history list ----
 lh <- CheckEM::australia_life_history
 
+cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon", "program")
 
-cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
+m1 <- read_csv("data/raw/RLS/ep_M1_SA.csv") %>% 
+  dplyr::select(!all_of(cols_to_remove))
+  dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
+  dplyr::filter(survey_id %in% unique(survey_list$survey_id)) 
+
+
+
