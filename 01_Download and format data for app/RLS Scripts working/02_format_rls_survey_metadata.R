@@ -35,7 +35,9 @@ sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
 
 # Read in survey list data ----
 survey_list <- read_csv("data/raw/RLS/ep_survey_list.csv") %>%
-  dplyr::filter(site_code %in% unique(sa_sites$site_code)) 
+  dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
+  dplyr::mutate(methods = 
+                  if_else((site_code %in% "GSV191" & survey_date %in% c("2005-04-11", "2005-04-12")), "2", methods))
 
 # NOTE survey list does not have block - assume they always have 2?
 length(unique(survey_list$survey_id))
@@ -50,7 +52,7 @@ survey_list_expanded <- survey_list %>%
 
 unique(survey_list_expanded$methods) %>% sort()
 
-# TODO check with Sophie methods 12, 13, and NA - have sent her an email 31/07
+# NOTE Method 12 is a debris survey, 13 is PQ data, and method 0 is off transect sightings 31/07
 
 sl_m1_raw <- survey_list_expanded %>%
   filter(methods == 1)
