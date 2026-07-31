@@ -119,7 +119,7 @@ sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date")) %>%
 
 sl_m3 <- left_join(sl_m3_raw, dates_m3, by = c("site_name", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
-  tidyr::uncount(weights = 2, .id = "block")
+  tidyr::uncount(weights = 2, .id = "block") # TODO check habitat method, if it has two blocks
 
 # # Remove intermediate objects from the environment ----
 # rm(sl_m1_raw, sl_m2_raw, sl_m3_raw, check, dates_m1, dates_m2, dates_m3, sa_sites, survey_list, survey_list_expanded)
