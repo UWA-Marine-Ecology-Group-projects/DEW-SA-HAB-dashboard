@@ -55,7 +55,8 @@ unique(survey_list_expanded$methods) %>% sort()
 # NOTE Method 12 is a debris survey, 13 is PQ data, and method 0 is off transect sightings 31/07
 
 sl_m1_raw <- survey_list_expanded %>%
-  filter(methods == 1)
+  filter(methods == 1) #%>%
+  # dplyr::filter()
 
 sl_m2_raw <- survey_list_expanded %>%
   filter(methods == 2)

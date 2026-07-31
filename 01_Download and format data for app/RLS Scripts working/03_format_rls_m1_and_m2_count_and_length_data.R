@@ -32,25 +32,25 @@ sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
 cols_to_remove <- c("ecoregion", "country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon", "program", "location", "site_code", "latitude", "longitude") # duplicated with metadata
 
 ## survey lists ----
-sl_m1 <- readRDS("data/tidy/rls_m1_survey_list.rds")
-sl_m2 <- readRDS("data/tidy/rls_m2_survey_list.rds")
+sl_m1 <- readRDS("data/tidy/rls_m1_survey_list.rds") %>% dplyr::mutate(id = paste(survey_id, block))
+sl_m2 <- readRDS("data/tidy/rls_m2_survey_list.rds") %>% dplyr::mutate(id = paste(survey_id, block))
 
 ## abundance and length ----
 m1 <- read_csv("data/raw/RLS/ep_M1_SA.csv") %>% 
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
   dplyr::select(!all_of(cols_to_remove)) %>%
-  dplyr::filter(survey_id %in% unique(sl_m1$survey_id)) 
+  dplyr::filter(survey_id %in% unique(sl_m1$survey_id))  %>% dplyr::mutate(id = paste(survey_id, block))
 
 m2_fish <- read_csv("data/raw/RLS/ep_M2_cryptic_fish_SA.csv") %>% 
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
   dplyr::select(!all_of(cols_to_remove))  %>%
-  dplyr::filter(survey_id %in% unique(sl_m2$survey_id)) 
+  dplyr::filter(survey_id %in% unique(sl_m2$survey_id))  %>% dplyr::mutate(id = paste(survey_id, block))
 
 m2_inverts <- read_csv("data/raw/RLS/ep_M2_inverts_SA.csv") %>% 
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
   dplyr::select(!all_of(cols_to_remove))  %>%
   dplyr::filter(survey_id %in% unique(sl_m2$survey_id)) %>%
-  dplyr::select(-biomass)
+  dplyr::select(-biomass) %>% dplyr::mutate(id = paste(survey_id, block))
 
 # Checking out the data
 summary(m1)
@@ -85,6 +85,14 @@ m2_inverts_no_species <- m2_inverts %>%
 surveys_not_present_in_m2_invert_data <- anti_join(sl_m2, m2_inverts) 
 write_csv(surveys_not_present_in_m2_invert_data, "surveys_not_present_in_m2_inverts_data.csv")
 
+# Check number of surveys
+length(unique(sl_m1$id)) # 3646
+length(unique(sl_m2$id)) # 3698
+
+length(unique(m1$id)) # 3636 (3646 - 3636 = 10)
+length(unique(m2_fish$id)) # 2282 (3698 - 2282 = 1416)
+length(unique(m2_inverts$id)) # 3361 (3698 - 3361 = 337)
+
 # test <- anti_join(m2_fish_no_species, m2_inverts_no_species) # they are exactly the same!
 # TODO something weird is happening here I think
 
@@ -107,11 +115,11 @@ m1_species <- m1 %>%
 #   dplyr::select('old name', 'new name') %>%
 #   dplyr::distinct()
 
-species_in_multiple_classes <- m1_species %>%
-  dplyr::distinct(phylum, class, order, family, genus, species) %>%
-  group_by(family, genus, species) %>%
-  count() %>%
-  filter(n > 1)
+# species_in_multiple_classes <- m1_species %>%
+#   dplyr::distinct(phylum, class, order, family, genus, species) %>%
+#   group_by(family, genus, species) %>%
+#   count() %>%
+#   filter(n > 1)
 
 m1_clean <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(genus = ifelse(!genus_correct%in%c(NA), genus_correct, genus)) %>%
@@ -135,40 +143,54 @@ m1_clean <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(portal_name = paste(genus_fam, species)) %>%
   dplyr::rename(rls_recorded_name = recorded_species_name, 
                 rls_reporting_name = reporting_name) %>%
+  
+  dplyr::mutate(class = if_else(family %in% "Cheilodactylidae", "Actinopterygii", class)) %>%
+  dplyr::mutate(order = if_else(family %in% "Cheilodactylidae", "Perciformes", order)) %>%
+  
   dplyr::filter(!family %in% "Unknown") %>% # have removed unknowns at the family level
-  dplyr::select(-c(phylum, class, order, genus_fam)) %>%
+  
+  dplyr::filter(phylum %in% "Chordata") %>%
+  dplyr::filter(class %in% c("Actinopterygii", "Elasmobranchii")) %>%
+  
+  dplyr::select(-c(genus_fam)) %>% # phylum, class, order, 
   dplyr::mutate(scientific = paste(family, genus, species)) %>%
   dplyr::filter(!scientific %in% "Monacanthidae Unknown spp")
 # dplyr::filter(!class %in% "Teleostei") # removed species that had multiple classes for Cheilodactylus spectabilis  
 
+unique(m1_clean$phylum)
+unique(m1_clean$class)
+unique(m1_clean$order)
+
 # check species not in CheckEM life history list ----
-m1_species_new_not_observed <- m1_clean %>%
+m1_species_not_observed <- m1_clean %>%
   dplyr::distinct(family, genus, species) %>%
   dplyr::anti_join(., CheckEM::australia_life_history, by = c("family", "genus", "species"))
 
+# Sasha - Helotes over Pelates
+
 # Method 2 Fish----
-m2_species <- m2_fish %>%
+m2_fish_species <- m2_fish %>%
   dplyr::filter(!recorded_species_name %in% c("No species found")) %>%
   tidyr::separate(species_name, into = c("genus", "species"), extra = "merge") %>%
   mutate(species = str_remove_all(species, "\\.")) %>%
   dplyr::mutate(genus = if_else(family == genus, "Unknown", genus)) %>%
   tidyr::replace_na(list(family = "Unknown", genus = "Unknown")) 
 
-# species_in_multiple_classes <- m2_species %>%
+# species_in_multiple_classes <- m2_fish_species %>%
 #   dplyr::distinct(phylum, class, order, family, genus, species) %>%
 #   group_by(family, genus, species) %>%
 #   count() %>%
 #   filter(n > 1) # none
 
 # Check for synonyms using CheckEM list
-# synonyms_in_m2 <- dplyr::left_join(m2_species, CheckEM::aus_synonyms) %>%
+# synonyms_in_m2 <- dplyr::left_join(m2_fish_species, CheckEM::aus_synonyms) %>%
 #   dplyr::filter(!is.na(genus_correct)) %>%
 #   dplyr::mutate('old name' = paste(family, genus, species, sep = " ")) %>%
 #   dplyr::mutate('new name' = paste(family_correct, genus_correct, species_correct, sep = " ")) %>%
 #   dplyr::select('old name', 'new name') %>%
 #   dplyr::distinct()
 
-m2_species_new <- dplyr::left_join(m2_species, CheckEM::aus_synonyms) %>%
+m2_fish_clean <- dplyr::left_join(m2_fish_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(genus = ifelse(!genus_correct%in%c(NA), genus_correct, genus)) %>%
   dplyr::mutate(species = ifelse(!is.na(species_correct), species_correct, species)) %>%
   dplyr::mutate(family = ifelse(!is.na(family_correct), family_correct, family)) %>%
@@ -190,18 +212,98 @@ m2_species_new <- dplyr::left_join(m2_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(family = if_else(genus %in% "Peronedys", "Ophiclinidae", family)) %>%
   dplyr::mutate(family = if_else(genus %in% "Ophiclinus", "Ophiclinidae", family)) %>%
   
+  dplyr::mutate(family = if_else(genus %in% "Neosebastes", "Neosebastidae", family)) %>%
+  
   dplyr::mutate(genus_fam = if_else(genus %in% "Unknown", family, genus)) %>%
   dplyr::mutate(portal_name = paste(genus_fam, species)) %>%
   dplyr::rename(rls_recorded_name = recorded_species_name, rls_reporting_name = reporting_name) %>%
   dplyr::filter(!family %in% "Unknown") %>%
-  dplyr::select(-c(phylum, class, order, genus_fam)) %>%
+  dplyr::select(-c(genus_fam)) %>% # phylum, class, order, 
   dplyr::filter(!species %in% "portusjacksoni egg")
 
-m2_species_new_not_observed <- m2_species_new %>%
+m2_fish_not_observed <- m2_fish_clean %>%
   dplyr::distinct(family, genus, species) %>%
   dplyr::anti_join(., CheckEM::australia_life_history, by = c("family", "genus", "species"))
+# None
+
+unique(m2_fish_clean$phylum)
+unique(m2_fish_clean$class)
+unique(m2_fish_clean$order)
+
+# M2 inverts ----
+m2_species_inverts <- m2_inverts %>%
+  dplyr::filter(!recorded_species_name %in% c("No species found")) %>%
+  tidyr::separate(species_name, into = c("genus", "species"), extra = "merge") %>%
+  mutate(species = str_remove_all(species, "\\.")) %>%
+  dplyr::mutate(genus = if_else(family == genus, "Unknown", genus)) %>%
+  tidyr::replace_na(list(family = "Unknown", genus = "Unknown")) 
+
+species_in_multiple_classes <- m2_species_inverts %>%
+  dplyr::distinct(phylum, class, order, family, genus, species) %>%
+  group_by(family, genus, species) %>%
+  count() %>%
+  filter(n > 1) # a few
+
+m2_inverts_clean <- m2_species_inverts %>%
+  
+  dplyr::mutate(genus = if_else(genus %in% "Ascarosepion", "Sepia", genus)) %>%
+  dplyr::mutate(order = if_else(genus %in% "Turbo", "Vetigastropoda", order)) %>%
+  
+  dplyr::mutate(species = if_else(species %in% "tasmaniae", "spp", species)) %>%
+  
+  dplyr::mutate(genus = if_else(genus %in% "Flabellina", "Flabellinidae", genus)) %>%
+  
+  dplyr::mutate(species = if_else(genus %in% "Pagurus", "spp", species)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pagurus", "Unknown", genus)) %>%
+  
+  dplyr::mutate(species = if_else(species %in% "pelagicus", "armatus", species)) %>%
+  
+  dplyr::mutate(species = if_else(genus %in% "Pseudoceros", "spp", species)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pseudoceros", "Pseudobiceros", genus)) %>%
+  
+  dplyr::mutate(species = if_else(species %in% "porosissimus", "spp", species)) %>%
+  
+  dplyr::mutate(species = if_else(genus %in% "Amblypneustes", "spp", species)) %>%
+  dplyr::mutate(species = if_else(genus %in% "Pyura", "spp", species)) %>%
+  
+  dplyr::mutate(genus_fam = if_else(genus %in% "Unknown", family, genus)) %>%
+  dplyr::mutate(portal_name = paste(genus_fam, species)) %>%
+  dplyr::rename(rls_recorded_name = recorded_species_name, rls_reporting_name = reporting_name) %>%
+  # dplyr::distinct(phylum, class, order, family, genus, species, portal_name, rls_reporting_name) %>% #rls_recorded_name
+  # left_join(dew_species) %>%
+  # dplyr::filter(!order %in% c("Articulata", "Trochida")) %>%
+  dplyr::select(-c(genus_fam)) %>% # phylum, class, order, 
+  dplyr::filter(!family %in% "Unknown")
+
+m2_species_not_observed_inverts <- m2_inverts_clean %>%
+  dplyr::distinct(family, genus, species) %>%
+  dplyr::anti_join(., CheckEM::australia_life_history, by = c("family", "genus", "species"))
+
+unique(m2_inverts_clean$phylum)
+unique(m2_inverts_clean$class)
+unique(m2_inverts_clean$order)
+
+# Find common species ----
+species_in_m1_m2_fish <- semi_join(m1_clean %>% distinct(family, genus, species, portal_name),
+                                   m2_fish_clean %>% distinct(family, genus, species, portal_name)) 
+
+nrow(species_in_m1_m2_fish) # 37 species that are in both
+
+species_in_m1_m2_inverts <- semi_join(m1_clean %>% distinct(family, genus, species, portal_name), 
+                                      m2_inverts_clean%>% distinct(family, genus, species, portal_name))
+
+nrow(species_in_m1_m2_inverts) # 0 species that are in both
+
+species_in_m2_both <- semi_join(m2_fish_clean %>% distinct(family, genus, species, portal_name),
+                                m2_inverts_clean%>% distinct(family, genus, species, portal_name)) 
+
+nrow(species_in_m2_both) # 0 species that are in both
 
 # Save cleaned data ----
 write_rds(m1_clean, "data/tidy/rls_m1_count_and_length.rds")
 write_rds(m2_fish_clean, "data/tidy/rls_m2_fish_count_and_length.rds")
 write_rds(m2_inverts_clean, "data/tidy/rls_m2_inverts_count_and_length.rds")
+
+# Save empty surveys -----
+m1_zeros <- m1 %>%
+  dplyr::filter(recorded_species_name %in% c("No species found"))
