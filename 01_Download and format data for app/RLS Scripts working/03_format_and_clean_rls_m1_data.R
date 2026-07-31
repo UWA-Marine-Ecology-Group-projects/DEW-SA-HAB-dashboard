@@ -1,4 +1,20 @@
+#################################################################
+# Format and Clean RLS M1 Fish data
 
+# Install CheckEM package ----
+options(timeout = 9999999) # the package is large, so need to extend the timeout to enable the download.
+# remotes::install_github("GlobalArchiveManual/CheckEM") # If there has been any updates to the package then CheckEM will install, if not then this line won't do anything
+
+# Load libraries needed -----
+library(CheckEM)
+library(dplyr)
+library(sf)
+library(stringr)
+library(readr)
+library(tidyr)
+library(googlesheets4)
+
+# Read in DEW species list ----
 dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing") %>%
   rename(portal_name = genus_species) %>%
   mutate(genus_species = portal_name)

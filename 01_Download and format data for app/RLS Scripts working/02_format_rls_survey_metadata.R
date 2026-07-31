@@ -1,5 +1,5 @@
 #################################################################
-# Format and Clean RLS data
+# Format and Clean RLS metadata
 
 # Install CheckEM package ----
 options(timeout = 9999999) # the package is large, so need to extend the timeout to enable the download.
@@ -12,7 +12,6 @@ library(sf)
 library(stringr)
 library(readr)
 library(tidyr)
-library(googlesheets4)
 
 # Functions ----
 # Groups sampling dates into the same sampling event if they are within 1 week of eachother
