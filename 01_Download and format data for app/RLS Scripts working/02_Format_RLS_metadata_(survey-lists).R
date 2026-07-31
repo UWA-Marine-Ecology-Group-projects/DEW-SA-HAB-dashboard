@@ -14,52 +14,110 @@ library(readr)
 library(tidyr)
 library(googlesheets4)
 
+# Functions ----
+# Groups sampling dates into the same sampling event if they are within 1 week of eachother
+add_sampling_event <- function(data) {
+  data %>%
+    arrange(site_name, survey_date) %>%
+    group_by(site_name) %>%
+    mutate(
+      sampling_event = cumsum(
+        is.na(lag(survey_date)) |
+          survey_date - lag(survey_date) > 7
+      )
+    ) %>%
+    ungroup()
+}
+
 # Sites from DEW ----
 sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
   clean_names() %>%
   select(site_code, site_name, location_g, bruvsrepor)
 
-dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/1UN03pLMRCRsfRfZXnhY6G4UqWznkWibBXEmi5SBaobE/edit?usp=sharing") %>%
-  rename(portal_name = genus_species) %>%
-  mutate(genus_species = portal_name)
-2
-
-# CheckEM life history list ----
-lh <- CheckEM::australia_life_history
-
-# Read in data ----
-# Survey lists ----
+# Read in survey list data ----
 survey_list <- read_csv("data/raw/RLS/ep_survey_list.csv") %>%
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) 
 
+# NOTE survey list does not have block - assume they always have 2?
+length(unique(survey_list$survey_id))
+length(unique(survey_list$survey_id)) * 2
+
 unique(survey_list$methods)
 
-# TODO split survey list into method specific!
+# Split survey list into method specific lists ---
+survey_list_expanded <- survey_list %>%
+  separate_rows(methods, sep = ",\\s*") %>%
+  mutate(survey_date = as.Date(survey_date))
+
+unique(survey_list_expanded$methods) %>% sort()
+
+# TODO check with Sophie methods 12, 13, and NA - have sent her an email 31/07
+
+sl_m1_raw <- survey_list_expanded %>%
+  filter(methods == 1)
+
+sl_m2_raw <- survey_list_expanded %>%
+  filter(methods == 2)
+
+sl_m3_raw <- survey_list_expanded %>%
+  filter(methods == 3)
 
 # Basic checks ----
 check <- survey_list %>%
   distinct(survey_id, site_code, survey_date, depth) %>%
   group_by(site_code, survey_date) %>%
   summarise(n = n())
+
 hist(check$n)
 
 plot(survey_list$survey_date, survey_list$depth)
 
-
-cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
-
-
-# Check for sampling events - transects that are split over multiple days
 unique(survey_list$depth) # not always 1-4 as the transect some 0, 8 and 9's
 
-survey_dates <- survey_list %>%
-  distinct(site_name, survey_date)
+# Check for sampling events - transects that are split over multiple days
+# e.g. Corny Point Outside in Feb 2004 was sampled on the 10th and 11th (should be grouped into one sampling event) 
 
-# NOTE survey list does not have block - assume they always have 2?
+dates_m1 <- sl_m1_raw %>%
+  distinct(site_name, survey_date) %>%
+  add_sampling_event()
 
-length(unique(survey_list$survey_id))
-length(unique(survey_list$survey_id)) * 2
+# check dups
+dates_m1 %>%
+  group_by(site_name, sampling_event) %>%
+  summarise(n = n()) %>%
+  filter(n > 1)
+
+dates_m2 <- sl_m2_raw %>%
+  distinct(site_name, survey_date) %>%
+  add_sampling_event()
+
+# check dups
+dates_m2 %>%
+  group_by(site_name, sampling_event) %>%
+  summarise(n = n()) %>%
+  filter(n > 1)
+
+dates_m3 <- sl_m3_raw %>%
+  distinct(site_name, survey_date) %>%
+  add_sampling_event()
+
+# check dups
+dates_m3 %>%
+  group_by(site_name, sampling_event) %>%
+  summarise(n = n()) %>%
+  filter(n > 1)
+
+# Survey lits with sampling event ----
+sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("site_name", "survey_date"))
+sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date"))
+sl_m3 <- left_join(sl_m2_raw, dates_m3, by = c("site_name", "survey_date"))
+
+# Remove intermediate objects from the environment ----
+rm(sl_m1_raw, sl_m2_raw, sl_m3_raw, check, dates_m1, dates_m2, dates_m3, sa_sites, survey_list, survey_list_expanded)
 
 
+
+
+cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
 
 
