@@ -1,8 +1,12 @@
+#################################################################
+# Download SA RLS data from amazon ----
+
+# Load libraries needed -----
 library(readr)
 library(purrr)
 library(tibble)
 
-# Create the output folder if it does not already exist
+# Links for downloading ----
 download_links <- tribble(
   ~filename,                         ~url,
   "ep_m1_sa.csv",                    "https://nrmn-prod-shared.s3.ap-southeast-2.amazonaws.com/endpoints/KGZy6iDHuFPLrXugfMcj/ep_m1_sa.csv",
@@ -13,11 +17,12 @@ download_links <- tribble(
   "ep_m0_off_transect_sighting.csv", "https://nrmn-prod-shared.s3.ap-southeast-2.amazonaws.com/endpoints/OJxNLnZWpyBWBx7vnKCU/ep_m0_off_transect_sighting.csv"
 )
 
+# Download files -----
 walk2(
   download_links$url,
   download_links$filename,
   \(url, filename) {
-    destination <- file.path("data/raw/RLS", filename)
+    destination <- file.path("data/raw/RLS", filename) # Folder path
     
     message("Downloading ", filename, "...")
     
@@ -29,5 +34,3 @@ walk2(
     )
   }
 )
-
-message("All files downloaded.")
