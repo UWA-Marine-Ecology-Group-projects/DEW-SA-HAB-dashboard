@@ -6,3 +6,6 @@ dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d
 
 # CheckEM life history list ----
 lh <- CheckEM::australia_life_history
+
+
+cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")

@@ -108,16 +108,23 @@ dates_m3 %>%
   filter(n > 1)
 
 # Survey lits with sampling event ----
-sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("site_name", "survey_date"))
-sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date"))
-sl_m3 <- left_join(sl_m2_raw, dates_m3, by = c("site_name", "survey_date"))
+cols_to_keep <- c("survey_id", "location", "mpa", "site_code", "site_name", "latitude", "longitude", "depth", "survey_date", "sampling_event")
+
+sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("site_name", "survey_date")) %>%
+  select(all_of(cols_to_keep))
+
+sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date")) %>%
+  select(all_of(cols_to_keep))
+
+sl_m3 <- left_join(sl_m3_raw, dates_m3, by = c("site_name", "survey_date")) %>%
+  select(all_of(cols_to_keep))
 
 # Remove intermediate objects from the environment ----
 rm(sl_m1_raw, sl_m2_raw, sl_m3_raw, check, dates_m1, dates_m2, dates_m3, sa_sites, survey_list, survey_list_expanded)
 
+names(sl_m1)
 
-
-
-cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
-
-
+# Save tidy dataframes ----
+write_rds(sl_m1, "data/tidy/rls_m1_survey_list.rds")
+write_rds(sl_m2, "data/tidy/rls_m2_survey_list.rds")
+write_rds(sl_m3, "data/tidy/rls_m3_survey_list.rds")
