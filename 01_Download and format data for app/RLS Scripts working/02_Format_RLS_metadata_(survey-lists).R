@@ -28,21 +28,38 @@ dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d
 lh <- CheckEM::australia_life_history
 
 # Read in data ----
+# Survey lists ----
 survey_list <- read_csv("data/raw/RLS/ep_survey_list.csv") %>%
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) 
+
+unique(survey_list$methods)
+
+# TODO split survey list into method specific!
+
+# Basic checks ----
+check <- survey_list %>%
+  distinct(survey_id, site_code, survey_date, depth) %>%
+  group_by(site_code, survey_date) %>%
+  summarise(n = n())
+hist(check$n)
+
+plot(survey_list$survey_date, survey_list$depth)
 
 
 cols_to_remove <- c("country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon")
 
 
+# Check for sampling events - transects that are split over multiple days
+unique(survey_list$depth) # not always 1-4 as the transect some 0, 8 and 9's
 
-unique(survey_list$methods)
+survey_dates <- survey_list %>%
+  distinct(site_name, survey_date)
 
-check <- survey_list %>%
-  distinct(survey_id, site_code, survey_date, depth) %>%
-  group_by(site_code, survey_date) %>%
-  summarise(n = n())
+# NOTE survey list does not have block - assume they always have 2?
 
-hist(check$n)
+length(unique(survey_list$survey_id))
+length(unique(survey_list$survey_id)) * 2
 
-plot(survey_list$survey_date, survey_list$depth)
+
+
+
