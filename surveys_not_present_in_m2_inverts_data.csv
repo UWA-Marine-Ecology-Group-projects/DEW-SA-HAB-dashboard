@@ -1,338 +1,40 @@
-survey_id,location,mpa,site_code,site_name,latitude,longitude,depth,survey_date,sampling_event,block
-5000356,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,4,2008-02-06,4,2
-5000360,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,4.9,2008-02-06,4,1
-5000361,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5,2008-02-06,4,1
-5000366,Encounter,Encounter Marine Park,GSV93,Aldinga Reef,-35.26825,138.43202,6,2008-02-08,1,2
-812301011,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.1,2005-03-08,1,2
-812301012,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.2,2005-03-08,1,2
-812301013,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.3,2005-03-08,1,2
-812301014,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.4,2005-03-08,1,2
-812301021,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.1,2006-02-23,2,2
-812301022,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.2,2006-02-23,2,2
-812301023,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.3,2006-02-23,2,2
-812301024,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.4,2006-02-23,2,2
-812301031,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.1,2007-03-01,3,2
-812301032,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.2,2007-03-01,3,2
-812301033,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.3,2007-03-01,3,2
-812301034,Encounter,Encounter Marine Park,GSV1,Carrickalinga (toilet),-35.42445,138.31902,5.4,2007-03-01,3,2
-812301041,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.1,2005-03-08,1,2
-812301042,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.2,2005-03-08,1,2
-812301043,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.3,2005-03-08,1,2
-812301044,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.4,2005-03-08,1,2
-812301051,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.1,2006-02-23,2,2
-812301052,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.2,2006-02-23,2,2
-812301053,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.3,2006-02-23,2,2
-812301054,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.4,2006-02-23,2,2
-812301061,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.1,2007-03-01,3,2
-812301062,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.2,2007-03-01,3,2
-812301063,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.3,2007-03-01,3,2
-812301064,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,5.4,2007-03-01,3,2
-812301071,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.1,2005-03-08,1,2
-812301072,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.2,2005-03-08,1,2
-812301073,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.3,2005-03-08,1,2
-812301074,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.4,2005-03-08,1,2
-812301081,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.1,2006-03-20,2,2
-812301082,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.2,2006-03-20,2,2
-812301083,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.3,2006-03-20,2,2
-812301084,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.4,2006-03-20,2,2
-812301091,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.1,2007-02-22,3,2
-812301092,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.2,2007-02-22,3,2
-812301093,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.3,2007-02-22,3,2
-812301094,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.4,2007-02-22,3,2
-812301101,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.1,2005-03-09,1,2
-812301102,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2005-03-09,1,2
-812301103,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.3,2005-03-09,1,2
-812301104,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.4,2005-03-09,1,2
-812301111,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.1,2006-02-28,2,2
-812301112,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2006-02-28,2,2
-812301113,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.3,2006-02-28,2,2
-812301114,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.4,2006-02-28,2,2
-812301121,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.1,2007-02-21,3,2
-812301122,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2007-02-21,3,2
-812301123,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.3,2007-02-21,3,2
-812301124,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.4,2007-02-21,3,2
-812301131,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.1,2005-03-09,1,1
-812301131,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.1,2005-03-09,1,2
-812301132,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.2,2005-03-09,1,2
-812301133,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.3,2005-03-09,1,2
-812301134,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.4,2005-03-09,1,2
-812301171,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.1,2005-03-11,1,2
-812301172,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.2,2005-03-11,1,2
-812301173,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.3,2005-03-11,1,2
-812301174,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.4,2005-03-11,1,2
-812301181,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.1,2006-03-20,2,2
-812301182,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.2,2006-03-20,2,2
-812301183,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.3,2006-03-20,2,2
-812301184,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.4,2006-03-20,2,2
-812301191,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.1,2007-02-22,3,2
-812301192,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.2,2007-02-22,3,2
-812301193,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.3,2007-02-22,3,2
-812301194,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.4,2007-02-22,3,2
-812301231,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.1,2005-03-11,1,2
-812301232,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.2,2005-03-11,1,2
-812301233,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.3,2005-03-11,1,2
-812301234,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.4,2005-03-11,1,2
-812301241,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.1,2006-02-27,2,2
-812301242,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.2,2006-02-27,2,2
-812301243,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.3,2006-02-27,2,2
-812301244,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.4,2006-02-27,2,2
-812301251,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.1,2007-02-25,3,2
-812301252,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.2,2007-02-25,3,2
-812301253,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.3,2007-02-25,3,2
-812301254,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.4,2007-02-25,3,2
-812301301,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.1,2005-03-12,1,2
-812301302,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.2,2005-03-12,1,2
-812301303,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.3,2005-03-12,1,2
-812301304,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.4,2005-03-12,1,2
-812301311,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.1,2006-02-24,2,2
-812301312,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.2,2006-02-24,2,2
-812301313,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.3,2006-02-24,2,2
-812301314,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.4,2006-02-24,2,2
-812301321,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.1,2007-04-10,3,2
-812301322,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.2,2007-04-10,3,2
-812301323,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.3,2007-04-10,3,2
-812301324,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.4,2007-04-10,3,2
-812301331,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.1,2007-09-24,4,2
-812301332,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.2,2007-09-24,4,2
-812301333,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.3,2007-09-24,4,2
-812301334,Encounter,Encounter Marine Park,GSV11,Outside Granite island,-35.56754,138.63158,5.4,2007-09-24,4,2
-812301381,Encounter,Encounter Marine Park,GSV14,Newland Head,-35.64094,138.52662,5.1,2005-03-13,1,2
-812301382,Encounter,Encounter Marine Park,GSV14,Newland Head,-35.64094,138.52662,5.2,2005-03-13,1,2
-812301383,Encounter,Encounter Marine Park,GSV14,Newland Head,-35.64094,138.52662,5.3,2005-03-13,1,2
-812301384,Encounter,Encounter Marine Park,GSV14,Newland Head,-35.64094,138.52662,5.4,2005-03-13,1,2
-812301391,Encounter,Encounter Marine Park,GSV14,Newland Head,-35.64094,138.52662,5.1,2007-11-09,2,2
-812301392,Encounter,Encounter Marine Park,GSV14,Newland Head,-35.64094,138.52662,5.2,2007-11-09,2,2
-812301393,Encounter,Encounter Marine Park,GSV14,Newland Head,-35.64094,138.52662,5.3,2007-11-09,2,2
-812301394,Encounter,Encounter Marine Park,GSV14,Newland Head,-35.64094,138.52662,5.4,2007-11-09,2,2
-812301401,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.1,2005-03-13,1,2
-812301402,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.2,2005-03-13,1,2
-812301403,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.3,2005-03-13,1,2
-812301404,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.4,2005-03-13,1,2
-812301411,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.1,2007-04-10,2,2
-812301412,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.2,2007-04-10,2,2
-812301413,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.3,2007-04-10,2,2
-812301414,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.4,2007-04-10,2,2
-812301421,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.1,2007-11-09,3,2
-812301422,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.2,2007-11-09,3,2
-812301423,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.3,2007-11-09,3,2
-812301424,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.4,2007-11-09,3,2
-812301451,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.1,2005-03-13,1,2
-812301452,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.2,2005-03-13,1,2
-812301453,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.3,2005-03-13,1,2
-812301454,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.4,2005-03-13,1,2
-812301461,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.1,2006-03-24,2,2
-812301462,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.2,2006-03-24,2,2
-812301463,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.3,2006-03-24,2,2
-812301464,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.4,2006-03-24,2,2
-812301471,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.1,2007-02-20,3,2
-812301472,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.2,2007-02-20,3,2
-812301473,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.3,2007-02-20,3,2
-812301474,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.4,2007-02-20,3,2
-812301481,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.1,2007-11-14,4,2
-812301482,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.2,2007-11-14,4,2
-812301483,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.3,2007-11-14,4,2
-812301484,Encounter,Encounter Marine Park,GSV17,The Bluff,-35.58887,138.60553000000002,5.4,2007-11-14,4,2
-812301491,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.1,2005-03-14,1,2
-812301492,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.2,2005-03-14,1,2
-812301493,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.3,2005-03-14,1,2
-812301494,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.4,2005-03-14,1,2
-812301501,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.1,2006-03-10,2,2
-812301502,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.2,2006-03-10,2,2
-812301503,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.3,2006-03-10,2,2
-812301504,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.4,2006-03-10,2,2
-812301511,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.1,2007-02-24,3,2
-812301512,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.2,2007-02-24,3,2
-812301513,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.3,2007-02-24,3,2
-812301514,Encounter,Encounter Marine Park,GSV18,Morgans,-35.58845,138.10838,5.4,2007-02-24,3,2
-812301621,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.1,2005-03-15,1,2
-812301622,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.2,2005-03-15,1,2
-812301623,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.3,2005-03-15,1,2
-812301624,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.4,2005-03-15,1,2
-812301631,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.1,2006-03-07,2,2
-812301632,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.2,2006-03-07,2,2
-812301633,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.3,2006-03-07,2,2
-812301634,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.4,2006-03-07,2,2
-812301641,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.1,2007-02-26,3,2
-812301642,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.2,2007-02-26,3,2
-812301643,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.3,2007-02-26,3,2
-812301644,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.4,2007-02-26,3,2
-812301651,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.1,2005-03-15,1,2
-812301652,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.2,2005-03-15,1,2
-812301653,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.3,2005-03-15,1,2
-812301654,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.4,2005-03-15,1,2
-812301661,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.1,2006-03-07,2,2
-812301662,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.2,2006-03-07,2,2
-812301663,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.3,2006-03-07,2,2
-812301664,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.4,2006-03-07,2,2
-812301671,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.1,2007-02-27,3,2
-812301672,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.2,2007-02-27,3,2
-812301673,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.3,2007-02-27,3,2
-812301674,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,10.4,2007-02-27,3,2
-812301751,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.1,2005-03-17,1,2
-812301752,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.2,2005-03-17,1,2
-812301753,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.3,2005-03-17,1,2
-812301754,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.4,2005-03-17,1,2
-812301761,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.1,2006-03-01,2,2
-812301762,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.2,2006-03-01,2,2
-812301763,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.3,2006-03-01,2,2
-812301764,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.4,2006-03-01,2,2
-812301771,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.1,2007-02-22,3,2
-812301772,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.2,2007-02-22,3,2
-812301773,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.3,2007-02-22,3,2
-812301774,Encounter,Encounter Marine Park,GSV24,Ripple Rock,-35.3841,138.35586999999998,5.4,2007-02-22,3,2
-812301811,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.1,2005-03-17,1,2
-812301812,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.2,2005-03-17,1,2
-812301813,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.3,2005-03-17,1,2
-812301814,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.4,2005-03-17,1,2
-812301821,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.1,2006-02-28,2,2
-812301822,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.2,2006-02-28,2,2
-812301823,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.3,2006-02-28,2,2
-812301824,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.4,2006-02-28,2,2
-812301831,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.1,2007-02-19,3,2
-812301832,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.2,2007-02-19,3,2
-812301833,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.3,2007-02-19,3,2
-812301834,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.4,2007-02-19,3,2
-812301921,Encounter,Encounter Marine Park,GSV30,Porpoise Head,-35.66193,138.21451000000002,5.1,2007-02-23,1,2
-812301922,Encounter,Encounter Marine Park,GSV30,Porpoise Head,-35.66193,138.21451000000002,5.2,2007-02-23,1,2
-812301923,Encounter,Encounter Marine Park,GSV30,Porpoise Head,-35.66193,138.21451000000002,5.3,2007-02-23,1,2
-812301924,Encounter,Encounter Marine Park,GSV30,Porpoise Head,-35.66193,138.21451000000002,5.4,2007-02-23,1,2
-812301961,Encounter,Encounter Marine Park,GSV34,Nev's Windmills,-35.5526,138.12984,5.1,2007-02-24,1,2
-812301962,Encounter,Encounter Marine Park,GSV34,Nev's Windmills,-35.5526,138.12984,5.2,2007-02-24,1,2
-812301963,Encounter,Encounter Marine Park,GSV34,Nev's Windmills,-35.5526,138.12984,5.3,2007-02-24,1,2
-812301964,Encounter,Encounter Marine Park,GSV34,Nev's Windmills,-35.5526,138.12984,5.4,2007-02-24,1,2
-812302011,Encounter,Encounter Marine Park,GSV39,Fishery Beach,-35.63411,138.11183,5.1,2007-03-22,1,2
-812302012,Encounter,Encounter Marine Park,GSV39,Fishery Beach,-35.63411,138.11183,5.2,2007-03-22,1,2
-812302013,Encounter,Encounter Marine Park,GSV39,Fishery Beach,-35.63411,138.11183,5.3,2007-03-22,1,2
-812302014,Encounter,Encounter Marine Park,GSV39,Fishery Beach,-35.63411,138.11183,5.4,2007-03-22,1,2
-812302021,Encounter,Encounter Marine Park,GSV40,Whalebone Reef,-35.5714,138.61166,5.1,2007-09-24,1,2
-812302022,Encounter,Encounter Marine Park,GSV40,Whalebone Reef,-35.5714,138.61166,5.2,2007-09-24,1,2
-812302023,Encounter,Encounter Marine Park,GSV40,Whalebone Reef,-35.5714,138.61166,5.3,2007-09-24,1,2
-812302024,Encounter,Encounter Marine Park,GSV40,Whalebone Reef,-35.5714,138.61166,5.4,2007-09-24,1,2
-812319681,Yorke Peninsula,Southern Spencer Gulf MP,SSG62,Corny Point Outside,-34.8951,137.00183,5.1,2004-02-11,1,2
-812319682,Yorke Peninsula,Southern Spencer Gulf MP,SSG62,Corny Point Outside,-34.8951,137.00183,5.2,2004-02-11,1,2
-812319683,Yorke Peninsula,Southern Spencer Gulf MP,SSG62,Corny Point Outside,-34.8951,137.00183,5.3,2004-02-11,1,2
-812319684,Yorke Peninsula,Southern Spencer Gulf MP,SSG62,Corny Point Outside,-34.8951,137.00183,5.4,2004-02-11,1,2
-812319691,Yorke Peninsula,Southern Spencer Gulf MP,SSG62,Corny Point Outside,-34.8951,137.00183,10.1,2004-02-10,1,2
-812319692,Yorke Peninsula,Southern Spencer Gulf MP,SSG62,Corny Point Outside,-34.8951,137.00183,10.2,2004-02-10,1,2
-812319693,Yorke Peninsula,Southern Spencer Gulf MP,SSG62,Corny Point Outside,-34.8951,137.00183,10.3,2004-02-10,1,2
-812319694,Yorke Peninsula,Southern Spencer Gulf MP,SSG62,Corny Point Outside,-34.8951,137.00183,10.4,2004-02-10,1,2
-812319721,Yorke Peninsula,Lower Yorke Peninsula MP,GSV190,Troubridge Lighthouse,-35.16912,137.63817,6.1,2006-04-27,1,2
-812319722,Yorke Peninsula,Lower Yorke Peninsula MP,GSV190,Troubridge Lighthouse,-35.16912,137.63817,6.2,2006-04-27,1,2
-812319723,Yorke Peninsula,Lower Yorke Peninsula MP,GSV190,Troubridge Lighthouse,-35.16912,137.63817,6.3,2006-04-27,1,2
-812319724,Yorke Peninsula,Lower Yorke Peninsula MP,GSV190,Troubridge Lighthouse,-35.16912,137.63817,6.4,2006-04-27,1,2
-812319731,Yorke Peninsula,Lower Yorke Peninsula MP,GSV189,Troubridge Point,-35.16955,137.67406,6.1,2005-04-12,1,2
-812319732,Yorke Peninsula,Lower Yorke Peninsula MP,GSV189,Troubridge Point,-35.16955,137.67406,6.2,2005-04-12,1,2
-812319733,Yorke Peninsula,Lower Yorke Peninsula MP,GSV189,Troubridge Point,-35.16955,137.67406,6.3,2005-04-12,1,2
-812319734,Yorke Peninsula,Lower Yorke Peninsula MP,GSV189,Troubridge Point,-35.16955,137.67406,6.4,2005-04-12,1,2
-812319741,Yorke Peninsula,Lower Yorke Peninsula MP,GSV189,Troubridge Point,-35.16955,137.67406,6.1,2006-04-27,2,2
-812319742,Yorke Peninsula,Lower Yorke Peninsula MP,GSV189,Troubridge Point,-35.16955,137.67406,6.2,2006-04-27,2,2
-812319743,Yorke Peninsula,Lower Yorke Peninsula MP,GSV189,Troubridge Point,-35.16955,137.67406,6.3,2006-04-27,2,2
-812319744,Yorke Peninsula,Lower Yorke Peninsula MP,GSV189,Troubridge Point,-35.16955,137.67406,6.4,2006-04-27,2,2
-812319831,Yorke Peninsula,NA,GSV194,Port Julia,-34.6629,137.88554,2.1,2006-04-20,1,2
-812319832,Yorke Peninsula,NA,GSV194,Port Julia,-34.6629,137.88554,2.2,2006-04-20,1,2
-812319833,Yorke Peninsula,NA,GSV194,Port Julia,-34.6629,137.88554,2.3,2006-04-20,1,2
-812319834,Yorke Peninsula,NA,GSV194,Port Julia,-34.6629,137.88554,2.4,2006-04-20,1,2
-812319931,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.1,2005-04-11,1,2
-812319932,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.2,2005-04-11,1,2
-812319933,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.3,2005-04-11,1,1
-812319933,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.3,2005-04-11,1,2
-812319934,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.4,2005-04-11,1,1
-812319934,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.4,2005-04-11,1,2
-812319941,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.1,2006-04-05,2,2
-812319942,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.2,2006-04-05,2,2
-812319943,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.3,2006-04-05,2,2
-812319944,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.4,2006-04-05,2,2
-812320051,Yorke Peninsula,Southern Spencer Gulf MP,SSG64,Point Souttar,-34.89345,137.24671999999998,4.1,2005-04-14,1,2
-812320052,Yorke Peninsula,Southern Spencer Gulf MP,SSG64,Point Souttar,-34.89345,137.24671999999998,4.2,2005-04-14,1,2
-812320053,Yorke Peninsula,Southern Spencer Gulf MP,SSG64,Point Souttar,-34.89345,137.24671999999998,4.3,2005-04-14,1,2
-812320054,Yorke Peninsula,Southern Spencer Gulf MP,SSG64,Point Souttar,-34.89345,137.24671999999998,4.4,2005-04-14,1,2
-812320451,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.1,2005-04-12,1,1
-812320451,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.1,2005-04-12,1,2
-812320452,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.2,2005-04-12,1,1
-812320452,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.2,2005-04-12,1,2
-812320453,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.3,2005-04-12,1,2
-812320454,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.4,2005-04-12,1,2
-812324301,Encounter,Encounter Marine Park,GSV34,Nev's Windmills,-35.5526,138.12984,5.1,2012-01-31,2,2
-812324302,Encounter,Encounter Marine Park,GSV34,Nev's Windmills,-35.5526,138.12984,5.2,2012-01-31,2,2
-812324303,Encounter,Encounter Marine Park,GSV34,Nev's Windmills,-35.5526,138.12984,5.3,2012-01-31,2,2
-812324304,Encounter,Encounter Marine Park,GSV34,Nev's Windmills,-35.5526,138.12984,5.4,2012-01-31,2,2
-812324311,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.1,2012-02-10,4,2
-812324312,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.2,2012-02-10,4,2
-812324313,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.3,2012-02-10,4,2
-812324314,Encounter,Encounter Marine Park,GSV9,Dodd's Beach,-35.40416,138.33043,5.4,2012-02-10,4,2
-812324321,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.1,2012-02-01,4,2
-812324322,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.2,2012-02-01,4,2
-812324323,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.3,2012-02-01,4,2
-812324324,Encounter,Encounter Marine Park,GSV7,Myponga South,-35.3882,138.3492,5.4,2012-02-01,4,2
-812324361,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.1,2012-02-06,4,2
-812324362,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.2,2012-02-06,4,2
-812324363,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.3,2012-02-06,4,2
-812324364,Encounter,Encounter Marine Park,GSV3,Carrickalinga Head,-35.398,138.33591,5.4,2012-02-06,4,2
-812324371,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.1,2012-02-08,4,2
-812324372,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.2,2012-02-08,4,2
-812324373,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.3,2012-02-08,4,2
-812324374,Encounter,Encounter Marine Park,GSV15,Flat Irons,-35.61781,138.55721,6.4,2012-02-08,4,2
-812324391,Encounter,Encounter Marine Park,GSV40,Whalebone Reef,-35.5714,138.61166,5.1,2012-02-08,2,2
-812324392,Encounter,Encounter Marine Park,GSV40,Whalebone Reef,-35.5714,138.61166,5.2,2012-02-08,2,2
-812324393,Encounter,Encounter Marine Park,GSV40,Whalebone Reef,-35.5714,138.61166,5.3,2012-02-08,2,2
-812324394,Encounter,Encounter Marine Park,GSV40,Whalebone Reef,-35.5714,138.61166,5.4,2012-02-08,2,2
-812324421,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.1,2012-02-07,4,2
-812324422,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.2,2012-02-07,4,2
-812324423,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.3,2012-02-07,4,2
-812324424,Encounter,Encounter Marine Park,GSV21,Cable Hut,-35.73268,138.0191,5.4,2012-02-07,4,2
-812325191,Encounter,Encounter Marine Park,GSV47,Carrickalinga Nth,-35.371190000000006,138.37876,5.1,2013-02-28,1,2
-812325192,Encounter,Encounter Marine Park,GSV47,Carrickalinga Nth,-35.371190000000006,138.37876,5.2,2013-02-28,1,2
-812325193,Encounter,Encounter Marine Park,GSV47,Carrickalinga Nth,-35.371190000000006,138.37876,5.3,2013-02-28,1,2
-812325194,Encounter,Encounter Marine Park,GSV47,Carrickalinga Nth,-35.371190000000006,138.37876,5.4,2013-02-28,1,2
-812325211,Encounter,Encounter Marine Park,GSV45,Carrickalinga North Site,-35.3777,138.36288000000002,5.1,2013-02-28,1,2
-812325212,Encounter,Encounter Marine Park,GSV45,Carrickalinga North Site,-35.3777,138.36288000000002,5.2,2013-02-28,1,2
-812325213,Encounter,Encounter Marine Park,GSV45,Carrickalinga North Site,-35.3777,138.36288000000002,5.3,2013-02-28,1,2
-812325214,Encounter,Encounter Marine Park,GSV45,Carrickalinga North Site,-35.3777,138.36288000000002,5.4,2013-02-28,1,2
-812325231,Encounter,Encounter Marine Park,GSV46,Carrickalinga North Site 2,-35.37312,138.37358,5.1,2013-02-28,1,2
-812325232,Encounter,Encounter Marine Park,GSV46,Carrickalinga North Site 2,-35.37312,138.37358,5.2,2013-02-28,1,2
-812325233,Encounter,Encounter Marine Park,GSV46,Carrickalinga North Site 2,-35.37312,138.37358,5.3,2013-02-28,1,2
-812325234,Encounter,Encounter Marine Park,GSV46,Carrickalinga North Site 2,-35.37312,138.37358,5.4,2013-02-28,1,2
-812325241,Encounter,Encounter Marine Park,GSV42,Rapid Head SZ Site2,-35.52262,138.16308999999998,5.1,2013-02-24,1,2
-812325242,Encounter,Encounter Marine Park,GSV42,Rapid Head SZ Site2,-35.52262,138.16308999999998,5.2,2013-02-24,1,2
-812325243,Encounter,Encounter Marine Park,GSV42,Rapid Head SZ Site2,-35.52262,138.16308999999998,5.3,2013-02-24,1,2
-812325244,Encounter,Encounter Marine Park,GSV42,Rapid Head SZ Site2,-35.52262,138.16308999999998,5.4,2013-02-24,1,2
-812325251,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.1,2013-02-27,2,2
-812325252,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.2,2013-02-27,2,2
-812325253,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.3,2013-02-27,2,2
-812325254,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.4,2013-02-27,2,2
-812325261,Encounter,Encounter Marine Park,GSV41,Rapid Head East,-35.519459999999995,138.17719,5.1,2013-02-26,1,2
-812325262,Encounter,Encounter Marine Park,GSV41,Rapid Head East,-35.519459999999995,138.17719,5.2,2013-02-26,1,2
-812325263,Encounter,Encounter Marine Park,GSV41,Rapid Head East,-35.519459999999995,138.17719,5.3,2013-02-26,1,2
-812325264,Encounter,Encounter Marine Park,GSV41,Rapid Head East,-35.519459999999995,138.17719,5.4,2013-02-26,1,2
-812327142,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.2,2016-03-10,9,1
-912344063,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,7,2014-01-18,6,2
-912345024,Encounter,Encounter Marine Park,GSV95,Lasseters Reef,-35.508379999999995,138.21873,8,2014-02-05,4,1
-912345624,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.3,2012-10-29,1,2
-912345625,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.4,2012-10-29,1,2
-912345626,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.1,2012-10-29,1,2
-912349693,Encounter,Encounter Marine Park,GSV45,Carrickalinga North Site,-35.3777,138.36288000000002,5.1,2017-03-07,3,2
-912350474,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2,2017-03-15,1,2
-912350488,Encounter,Encounter Marine Park,GSV114,South Shores,-35.45609,138.29939,2.3,2017-03-15,1,1
-912351047,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2,2018-02-06,2,1
-912351050,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2.2,2018-02-06,2,1
-912351050,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2.2,2018-02-06,2,2
-912351054,Encounter,Encounter Marine Park,GSV110,Lady Bay,-35.47356,138.28116,2.3,2018-02-06,2,1
-912352566,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2019-02-20,12,2
-923400299,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.3,2021-03-23,7,2
-923400373,Encounter,Encounter Marine Park,GSV47,Carrickalinga Nth,-35.371190000000006,138.37876,5.1,2021-03-11,7,2
-923400392,Encounter,Encounter Marine Park,GSV116,Aldinga Pinacles,-35.26681,138.43364,12.2,2021-02-15,3,1
-923401841,Encounter,Encounter Marine Park,GSV131,Horseshoe outer,-35.1394,138.45799,12.3,2023-05-15,9,2
-923403614,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,6,2023-12-21,17,1
-923406553,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.3,2026-01-12,10,1
-923406567,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.4,2026-01-12,10,1
-923406615,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.1,2026-02-12,11,1
-923406646,Encounter,Encounter Marine Park,GSV183,Aldinga SZ1,-35.26631,138.43649,5.3,2026-01-29,2,1
-923406748,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.1,2025-12-18,2,1
-923406750,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.3,2025-12-18,2,1
-923406750,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.3,2025-12-18,2,2
-923406751,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.4,2025-12-18,2,1
-923406751,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.4,2025-12-18,2,2
-923406759,Adelaide,NA,GSV115,Port Gawler,-34.61942,138.31052,10.2,2026-01-29,5,1
-923406759,Adelaide,NA,GSV115,Port Gawler,-34.61942,138.31052,10.2,2026-01-29,5,2
-923406796,Encounter,Encounter Marine Park,GSV138,Moana outside,-35.2065,138.4622,6.2,2025-11-15,12,2
-923406808,Encounter,Encounter Marine Park,GSV131,Horseshoe outer,-35.1394,138.45799,12.2,2025-11-14,11,1
+survey_id,location,mpa,site_code,site_name,latitude,longitude,depth,survey_date,sampling_event,program,block,id
+5000356,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,4,2008-02-06,4,RLS,2,5000356 2
+5000360,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,4.9,2008-02-06,4,RLS,1,5000360 1
+5000361,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5,2008-02-06,4,RLS,1,5000361 1
+5000366,Encounter,Encounter Marine Park,GSV93,Aldinga Reef,-35.26825,138.43202,6,2008-02-08,1,RLS,2,5000366 2
+812301131,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.1,2005-03-09,1,ATRC,1,812301131 1
+812319933,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.3,2005-04-11,1,ATRC,1,812319933 1
+812319934,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.4,2005-04-11,1,ATRC,1,812319934 1
+812320451,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.1,2005-04-12,1,ATRC,1,812320451 1
+812320452,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.2,2005-04-12,1,ATRC,1,812320452 1
+812327142,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.2,2016-03-10,9,ATRC,1,812327142 1
+912344063,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,7,2014-01-18,6,RLS,2,912344063 2
+912345024,Encounter,Encounter Marine Park,GSV95,Lasseters Reef,-35.508379999999995,138.21873,8,2014-02-05,4,RLS,1,912345024 1
+912345624,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.3,2012-10-29,1,RLS,2,912345624 2
+912345625,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.4,2012-10-29,1,RLS,2,912345625 2
+912345626,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.1,2012-10-29,1,RLS,2,912345626 2
+912349693,Encounter,Encounter Marine Park,GSV45,Carrickalinga North Site,-35.3777,138.36288000000002,5.1,2017-03-07,3,RLS,2,912349693 2
+912350474,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2,2017-03-15,1,RLS,2,912350474 2
+912350488,Encounter,Encounter Marine Park,GSV114,South Shores,-35.45609,138.29939,2.3,2017-03-15,1,RLS,1,912350488 1
+912351047,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2,2018-02-06,2,RLS,1,912351047 1
+912351050,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2.2,2018-02-06,2,RLS,1,912351050 1
+912351050,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2.2,2018-02-06,2,RLS,2,912351050 2
+912351054,Encounter,Encounter Marine Park,GSV110,Lady Bay,-35.47356,138.28116,2.3,2018-02-06,2,RLS,1,912351054 1
+912352566,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2019-02-20,12,RLS,2,912352566 2
+923400299,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.3,2021-03-23,7,RLS,2,923400299 2
+923400373,Encounter,Encounter Marine Park,GSV47,Carrickalinga Nth,-35.371190000000006,138.37876,5.1,2021-03-11,7,RLS,2,923400373 2
+923400392,Encounter,Encounter Marine Park,GSV116,Aldinga Pinacles,-35.26681,138.43364,12.2,2021-02-15,3,RLS,1,923400392 1
+923401841,Encounter,Encounter Marine Park,GSV131,Horseshoe outer,-35.1394,138.45799,12.3,2023-05-15,9,RLS,2,923401841 2
+923403614,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,6,2023-12-21,17,RLS,1,923403614 1
+923406615,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.1,2026-02-12,11,RLS,1,923406615 1
+923406646,Encounter,Encounter Marine Park,GSV183,Aldinga SZ1,-35.26631,138.43649,5.3,2026-01-29,2,RLS,1,923406646 1
+923406748,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.1,2025-12-18,2,RLS,1,923406748 1
+923406750,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.3,2025-12-18,2,RLS,1,923406750 1
+923406750,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.3,2025-12-18,2,RLS,2,923406750 2
+923406751,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.4,2025-12-18,2,RLS,1,923406751 1
+923406751,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.4,2025-12-18,2,RLS,2,923406751 2
+923406759,Adelaide,NA,GSV115,Port Gawler,-34.61942,138.31052,10.2,2026-01-29,5,RLS,1,923406759 1
+923406759,Adelaide,NA,GSV115,Port Gawler,-34.61942,138.31052,10.2,2026-01-29,5,RLS,2,923406759 2
+923406796,Encounter,Encounter Marine Park,GSV138,Moana outside,-35.2065,138.4622,6.2,2025-11-15,12,RLS,2,923406796 2
+923406808,Encounter,Encounter Marine Park,GSV131,Horseshoe outer,-35.1394,138.45799,12.2,2025-11-14,11,RLS,1,923406808 1

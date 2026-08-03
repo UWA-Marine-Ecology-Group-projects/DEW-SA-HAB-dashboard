@@ -1,11 +1,9 @@
-survey_id,location,mpa,site_code,site_name,latitude,longitude,depth,survey_date,sampling_event,block
-5000363,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2008-02-06,4,2
-5000366,Encounter,Encounter Marine Park,GSV93,Aldinga Reef,-35.26825,138.43202,6,2008-02-08,1,2
-923401322,Adelaide,NA,GSV105,Marino Rocks,-35.0525,138.5027,5.1,2022-08-31,6,1
-923401340,Encounter,Encounter Marine Park,GSV53,Moana inside,-35.2091,138.46428999999998,6.2,2022-09-01,7,1
-923401342,Adelaide,NA,GSV140,Hallett Cove,-35.0736,138.49428999999998,5.1,2022-09-06,6,2
-923401347,Adelaide,NA,GSV105,Marino Rocks,-35.0525,138.5027,5.2,2022-08-31,6,2
-923401360,Encounter,Encounter Marine Park,GSV53,Moana inside,-35.2091,138.46428999999998,6.1,2022-09-01,7,1
-923406553,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.3,2026-01-12,10,1
-923406567,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.4,2026-01-12,10,1
-923406680,Encounter,Encounter Marine Park,GSV117,Cape Jervis South,-35.60447,138.0933,4.2,2026-05-14,4,1
+survey_id,location,mpa,site_code,site_name,latitude,longitude,depth,survey_date,sampling_event,program,block,id
+5000363,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2008-02-06,4,RLS,2,5000363 2
+5000366,Encounter,Encounter Marine Park,GSV93,Aldinga Reef,-35.26825,138.43202,6,2008-02-08,1,RLS,2,5000366 2
+923401322,Adelaide,NA,GSV105,Marino Rocks,-35.0525,138.5027,5.1,2022-08-31,6,RLS,1,923401322 1
+923401340,Encounter,Encounter Marine Park,GSV53,Moana inside,-35.2091,138.46428999999998,6.2,2022-09-01,7,RLS,1,923401340 1
+923401342,Adelaide,NA,GSV140,Hallett Cove,-35.0736,138.49428999999998,5.1,2022-09-06,6,RLS,2,923401342 2
+923401347,Adelaide,NA,GSV105,Marino Rocks,-35.0525,138.5027,5.2,2022-08-31,6,RLS,2,923401347 2
+923401360,Encounter,Encounter Marine Park,GSV53,Moana inside,-35.2091,138.46428999999998,6.1,2022-09-01,7,RLS,1,923401360 1
+923406680,Encounter,Encounter Marine Park,GSV117,Cape Jervis South,-35.60447,138.0933,4.2,2026-05-14,4,RLS,1,923406680 1

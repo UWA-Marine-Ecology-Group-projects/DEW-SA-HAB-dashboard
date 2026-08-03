@@ -29,7 +29,7 @@ sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
   select(site_code, site_name, location_g, bruvsrepor)
 
 # Read in data ----
-cols_to_remove <- c("ecoregion", "country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon", "program", "location", "site_code", "latitude", "longitude") # duplicated with metadata
+cols_to_remove <- c("ecoregion", "country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon", "location", "site_code", "latitude", "longitude") # duplicated with metadata
 
 ## survey lists ----
 sl_m1 <- readRDS("data/tidy/rls_m1_survey_list.rds") %>% dplyr::mutate(id = paste(survey_id, block))
@@ -61,13 +61,28 @@ unique(m2_fish$class)
 unique(m2_inverts$class)
 
 # Check Zeros ----
-m1_no_species <- m1 %>%
+m1_zeros <- m1 %>%
   dplyr::filter(recorded_species_name %in% c("No species found")) # 92 blocks without species
 
 # M1 fish check ----
 surveys_not_present_in_m1_data <- anti_join(sl_m1, m1) 
 # 5000363 Block 2 is not in M1 fish data (should it be "No species found"?)
 # 5000366 Block 2 same
+# 
+# test <- m1_clean %>%
+#   dplyr::filter(survey_id %in% unique(surveys_not_present_in_m1_data$survey_id)) %>%
+#   dplyr::group_by(survey_id, site_name, survey_date, block) %>%
+#   dplyr::summarise(n = n())
+
+manual_fixes_zeros_m1 <- surveys_not_present_in_m1_data %>%
+  dplyr::filter(site_code %in% c("GSV117")) %>% # Add in zero where missing
+  dplyr::select(survey_id, site_name, depth, program, block, id) %>%
+  dplyr::mutate(recorded_species_name = "No species found",
+                species_name = "No species found")
+
+
+m1_all_zeros <- bind_rows(m1_zeros, manual_fixes_zeros_m1) %>%
+  dplyr::mutate(total = 0, size_class = NA)
 
 write_csv(surveys_not_present_in_m1_data, "surveys_not_present_in_m1_data.csv")
 
@@ -76,6 +91,7 @@ m2_fish_no_species <- m2_fish %>%
   dplyr::filter(recorded_species_name %in% c("No species found")) # 22 blocks without species
 
 surveys_not_present_in_m2_fish_data <- anti_join(sl_m2, m2_fish) 
+
 write_csv(surveys_not_present_in_m2_fish_data, "surveys_not_present_in_m2_fish_data.csv")
 
 # M2 inverts check ----
@@ -84,6 +100,14 @@ m2_inverts_no_species <- m2_inverts %>%
 
 surveys_not_present_in_m2_invert_data <- anti_join(sl_m2, m2_inverts) 
 write_csv(surveys_not_present_in_m2_invert_data, "surveys_not_present_in_m2_inverts_data.csv")
+
+# Combine M2 surveys to find true zeros ----
+m2_abundance <- bind_rows(m2_fish, m2_inverts) %>%
+  distinct(survey_id, site_name, survey_date, block) #3382 blocks with some kind of abundance
+
+surveys_not_present_in_m2_all <- anti_join(sl_m2, m2_abundance) 
+
+write_csv(surveys_not_present_in_m2_all, "surveys_not_present_in_either_m2_datasets.csv")
 
 # Check number of surveys
 length(unique(sl_m1$id)) # 3646
@@ -305,5 +329,4 @@ write_rds(m2_fish_clean, "data/tidy/rls_m2_fish_count_and_length.rds")
 write_rds(m2_inverts_clean, "data/tidy/rls_m2_inverts_count_and_length.rds")
 
 # Save empty surveys -----
-m1_zeros <- m1 %>%
-  dplyr::filter(recorded_species_name %in% c("No species found"))
+write_rds(m1_all_zeros, "data/tidy/rls_m1_zeros.rds")
