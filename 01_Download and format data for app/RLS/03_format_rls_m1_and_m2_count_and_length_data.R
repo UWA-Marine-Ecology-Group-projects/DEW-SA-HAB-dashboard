@@ -1,5 +1,5 @@
 #################################################################
-# Format and Clean RLS M1 Fish data
+# Format and Clean RLS data
 
 # Install CheckEM package ----
 options(timeout = 9999999) # the package is large, so need to extend the timeout to enable the download.
@@ -76,7 +76,7 @@ surveys_not_present_in_m1_data <- anti_join(sl_m1, m1)
 
 manual_fixes_zeros_m1 <- surveys_not_present_in_m1_data %>%
   dplyr::filter(site_code %in% c("GSV117")) %>% # Add in zero where missing
-  dplyr::select(survey_id, site_name, depth, program, block, id) %>%
+  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found")
 
@@ -106,19 +106,37 @@ m2_abundance <- bind_rows(m2_fish, m2_inverts) %>%
   distinct(survey_id, site_name, survey_date, block) #3382 blocks with some kind of abundance
 
 surveys_not_present_in_m2_all <- anti_join(sl_m2, m2_abundance) 
-
 write_csv(surveys_not_present_in_m2_all, "surveys_not_present_in_either_m2_datasets.csv")
 
+# Make M2 zero data ----
+m2_inverts_zeros <- m2_inverts %>%
+  dplyr::filter(recorded_species_name %in% c("No species found")) 
+
+m2_inverts_all_zeros <- surveys_not_present_in_m2_invert_data %>%
+  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date) %>%
+  dplyr::mutate(recorded_species_name = "No species found",
+                species_name = "No species found") %>%
+  bind_rows(m2_inverts_zeros, .) %>%
+  dplyr::mutate(total = 0, size_class = NA)
+
+m2_fish_zeros <- m2_fish %>%
+  dplyr::filter(recorded_species_name %in% c("No species found")) 
+
+m2_fish_all_zeros <- surveys_not_present_in_m2_fish_data %>%
+  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date) %>%
+  dplyr::mutate(recorded_species_name = "No species found",
+                species_name = "No species found") %>%
+  bind_rows(m2_fish_zeros, .) %>%
+  dplyr::mutate(total = 0, size_class = NA)
+
+
 # Check number of surveys
-length(unique(sl_m1$id)) # 3646
-length(unique(sl_m2$id)) # 3698
+length(unique(sl_m1$id)) # 3642
+length(unique(sl_m2$id)) # 3398
 
-length(unique(m1$id)) # 3636 (3646 - 3636 = 10)
-length(unique(m2_fish$id)) # 2282 (3698 - 2282 = 1416)
-length(unique(m2_inverts$id)) # 3361 (3698 - 3361 = 337)
-
-# test <- anti_join(m2_fish_no_species, m2_inverts_no_species) # they are exactly the same!
-# TODO something weird is happening here I think
+length(unique(m1$id)) # 3634 (3642 - 3634 = 8) # TODO sophie thinks drop the extras that we don't know if they are actual zeros or not
+length(unique(m2_fish$id)) # 2280 (3398 - 2280 = 1118)
+length(unique(m2_inverts$id)) # 3359 (3398 - 3359 = 39)
 
 # TODO Have emailed Sophie to see if this is a mistake - need someway to tell if 2 blocks are always done for all methods
 
@@ -243,7 +261,10 @@ m2_fish_clean <- dplyr::left_join(m2_fish_species, CheckEM::aus_synonyms) %>%
   dplyr::rename(rls_recorded_name = recorded_species_name, rls_reporting_name = reporting_name) %>%
   dplyr::filter(!family %in% "Unknown") %>%
   dplyr::select(-c(genus_fam)) %>% # phylum, class, order, 
-  dplyr::filter(!species %in% "portusjacksoni egg")
+  dplyr::filter(!species %in% "portusjacksoni egg") %>%
+  dplyr::mutate(
+    scientific = paste(family, genus, species)
+  )
 
 m2_fish_not_observed <- m2_fish_clean %>%
   dplyr::distinct(family, genus, species) %>%
@@ -263,12 +284,53 @@ m2_species_inverts <- m2_inverts %>%
   tidyr::replace_na(list(family = "Unknown", genus = "Unknown")) 
 
 species_in_multiple_classes <- m2_species_inverts %>%
-  dplyr::distinct(phylum, class, order, family, genus, species) %>%
-  group_by(family, genus, species) %>%
-  count() %>%
-  filter(n > 1) # a few
+  dplyr::distinct(
+    phylum, class, order,
+    family, genus, species
+  ) %>%
+  dplyr::group_by(family, genus, species) %>%
+  dplyr::filter(dplyr::n() > 1) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(family, genus, species, phylum, class, order)
+
+family_taxonomy_lookup <- m2_species_inverts %>%
+  dplyr::filter(family %in% ambiguous_families) %>%
+  dplyr::count(family, class, order, name = "n") %>%
+  dplyr::group_by(family) %>%
+  dplyr::arrange(
+    dplyr::desc(n),
+    class,
+    order
+  ) %>%
+  dplyr::slice_head(n = 1) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(
+    family,
+    preferred_class = class,
+    preferred_order = order
+  )
+
+# Find families assigned to more than one class/order combination
+ambiguous_families <- m2_species_inverts %>%
+  dplyr::distinct(family, class, order) %>%
+  dplyr::count(family, name = "n_classifications") %>%
+  dplyr::filter(n_classifications > 1) %>%
+  dplyr::pull(family)
 
 m2_inverts_clean <- m2_species_inverts %>%
+  
+  dplyr::left_join(
+    family_taxonomy_lookup,
+    by = "family"
+  ) %>%
+  dplyr::mutate(
+    class = dplyr::coalesce(preferred_class, class),
+    order = dplyr::coalesce(preferred_order, order)
+  ) %>%
+  dplyr::select(
+    -preferred_class,
+    -preferred_order
+  ) %>%
   
   dplyr::mutate(genus = if_else(genus %in% "Ascarosepion", "Sepia", genus)) %>%
   dplyr::mutate(order = if_else(genus %in% "Turbo", "Vetigastropoda", order)) %>%
@@ -297,7 +359,10 @@ m2_inverts_clean <- m2_species_inverts %>%
   # left_join(dew_species) %>%
   # dplyr::filter(!order %in% c("Articulata", "Trochida")) %>%
   dplyr::select(-c(genus_fam)) %>% # phylum, class, order, 
-  dplyr::filter(!family %in% "Unknown")
+  dplyr::filter(!family %in% "Unknown") %>%
+  dplyr::mutate(
+    scientific = paste(family, genus, species)
+  )
 
 m2_species_not_observed_inverts <- m2_inverts_clean %>%
   dplyr::distinct(family, genus, species) %>%
@@ -330,3 +395,216 @@ write_rds(m2_inverts_clean, "data/tidy/rls_m2_inverts_count_and_length.rds")
 
 # Save empty surveys -----
 write_rds(m1_all_zeros, "data/tidy/rls_m1_zeros.rds")
+write_rds(m2_fish_all_zeros, "data/tidy/rls_m2_fish_zeros.rds")
+write_rds(m2_inverts_all_zeros, "data/tidy/rls_m2_inverts_zeros.rds")
+
+# Complete count ----
+# a dataframe with zeros for each species - no need to have 'No species recorded' because all rows for that block will be zero!
+length(unique(m1_clean$scientific)) # 131 species of fish
+length(unique(m1_clean$id)) # 3538 surveys with fish
+length(unique(m1_all_zeros$id)) # 93 surveys without fish
+length(unique(m1_clean$id)) + length(unique(m1_all_zeros$id)) # 3631 surveys
+3631 * length(unique(m1_clean$scientific)) # 475,661 rows
+
+# Need to combine size data for this dataframe ----
+# Summarise the observed abundance and biomass for each species in each block
+m1_count_summary <- m1_clean %>%
+  dplyr::group_by(
+    survey_id, site_name, survey_date, depth, program, block, id,
+    phylum, class, order, family, genus, species,
+    # rls_recorded_name, rls_reporting_name,
+    scientific, portal_name
+  ) %>%
+  dplyr::summarise(
+    total = sum(total, na.rm = TRUE),
+    biomass_sum = sum(biomass, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# One row for every survey/block, including surveys where no fish were recorded
+m1_surveys <- dplyr::bind_rows(
+  m1_clean %>%
+    dplyr::distinct(
+      survey_id, site_name, survey_date, depth,
+      program, block, id
+    ),
+  m1_all_zeros %>%
+    dplyr::distinct(
+      survey_id, site_name, survey_date, depth,
+      program, block, id
+    )
+) %>%
+  dplyr::distinct()
+
+# List of fish
+m1_species_list <- m1_clean %>%
+  dplyr::filter(
+    !rls_recorded_name %in%
+      c("No species found", "No species recorded")
+  ) %>%
+  dplyr::distinct(
+    phylum, class, order, family, genus, species,
+    scientific, portal_name
+  )
+
+# Create every survey/block × species combination,
+# then add the observed abundance and biomass
+m1_complete_count <- tidyr::crossing(
+  m1_surveys,
+  m1_species_list
+) %>%
+  dplyr::left_join(
+    m1_count_summary,
+    by = c(
+      "survey_id", "site_name", "survey_date", "depth",
+      "program", "block", "id",
+      "phylum", "class", "order", "family", "genus", "species",
+      "scientific", "portal_name"
+    )
+  ) %>%
+  dplyr::mutate(
+    total = tidyr::replace_na(total, 0),
+    biomass_sum = tidyr::replace_na(biomass_sum, 0)
+  ) 
+length(unique(m1_complete_count$id)) 
+length(unique(m1_complete_count$scientific))
+nrow(m1_complete_count)
+
+nrow(m1_complete_count) ==
+  length(unique(m1_complete_count$id)) *
+  length(unique(m1_complete_count$scientific))
+
+# Summarise observed M2 fish abundance and biomass
+m2_fish_count_summary <- m2_fish_clean %>%
+  dplyr::group_by(
+    survey_id, site_name, survey_date, depth, program, block, id,
+    phylum, class, order, family, genus, species,
+    scientific, portal_name
+  ) %>%
+  dplyr::summarise(
+    total = sum(total, na.rm = TRUE),
+    biomass_sum = sum(biomass, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# One row per M2 survey/block, including blocks with no cryptic fish
+m2_fish_surveys <- dplyr::bind_rows(
+  m2_fish_clean %>%
+    dplyr::distinct(
+      survey_id, site_name, survey_date, depth,
+      program, block, id
+    ),
+  m2_fish_all_zeros %>%
+    dplyr::distinct(
+      survey_id, site_name, survey_date, depth,
+      program, block, id
+    )
+) %>%
+  dplyr::distinct()
+
+# Unique corrected fish IDs
+m2_fish_species_list <- m2_fish_clean %>%
+  dplyr::distinct(
+    phylum, class, order, family, genus, species,
+    scientific, portal_name
+  )
+
+# Every survey/block × every M2 fish ID
+m2_fish_complete_count <- tidyr::crossing(
+  m2_fish_surveys,
+  m2_fish_species_list
+) %>%
+  dplyr::left_join(
+    m2_fish_count_summary,
+    by = c(
+      "survey_id", "site_name", "survey_date", "depth",
+      "program", "block", "id",
+      "phylum", "class", "order", "family",
+      "genus", "species", "scientific", "portal_name"
+    )
+  ) %>%
+  dplyr::mutate(
+    total = tidyr::replace_na(total, 0),
+    biomass_sum = tidyr::replace_na(biomass_sum, 0)
+  )
+
+# Summarise observed M2 invertebrate abundance
+m2_inverts_count_summary <- m2_inverts_clean %>%
+  dplyr::group_by(
+    survey_id, site_name, survey_date, depth, program, block, id,
+    phylum, class, order, family, genus, species,
+    scientific, portal_name
+  ) %>%
+  dplyr::summarise(
+    total = sum(total, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# One row per M2 survey/block, including blocks with no invertebrates
+m2_inverts_surveys <- dplyr::bind_rows(
+  m2_inverts_clean %>%
+    dplyr::distinct(
+      survey_id, site_name, survey_date, depth,
+      program, block, id
+    ),
+  m2_inverts_all_zeros %>%
+    dplyr::distinct(
+      survey_id, site_name, survey_date, depth,
+      program, block, id
+    )
+) %>%
+  dplyr::distinct()
+
+# Unique corrected invertebrate IDs
+m2_inverts_species_list <- m2_inverts_clean %>%
+  dplyr::distinct(
+    phylum, class, order, family, genus, species,
+    scientific, portal_name
+  )
+
+# Every survey/block × every M2 invertebrate ID
+m2_inverts_complete_count <- tidyr::crossing(
+  m2_inverts_surveys,
+  m2_inverts_species_list
+) %>%
+  dplyr::left_join(
+    m2_inverts_count_summary,
+    by = c(
+      "survey_id", "site_name", "survey_date", "depth",
+      "program", "block", "id",
+      "phylum", "class", "order", "family",
+      "genus", "species", "scientific", "portal_name"
+    )
+  ) %>%
+  dplyr::mutate(
+    total = tidyr::replace_na(total, 0)
+  )
+
+# M2 fish
+nrow(m2_fish_complete_count)
+
+nrow(m2_fish_complete_count) ==
+  dplyr::n_distinct(m2_fish_complete_count$id) *
+  dplyr::n_distinct(m2_fish_complete_count$scientific)
+
+# M2 invertebrates
+nrow(m2_inverts_complete_count)
+
+nrow(m2_inverts_complete_count) ==
+  dplyr::n_distinct(m2_inverts_complete_count$id) *
+  dplyr::n_distinct(m2_inverts_complete_count$scientific)
+
+m2_fish_complete_count %>%
+  dplyr::count(id, scientific) %>%
+  dplyr::filter(n != 1)
+
+m2_inverts_complete_count %>%
+  dplyr::count(id, scientific) %>%
+  dplyr::filter(n != 1)
+
+# Save complete data ----
+write_rds(m1_complete_count, "data/tidy/rls_m1_complete_count.rds")
+write_rds(m2_fish_complete_count, "data/tidy/rls_m2_fish_complete_count.rds")
+write_rds(m2_inverts_complete_count, "data/tidy/rls_m2_inverts_complete_count.rds")
+
+# TODO create a complete length dataframe ---
