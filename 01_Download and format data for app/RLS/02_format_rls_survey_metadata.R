@@ -15,6 +15,8 @@ library(tidyr)
 
 # Functions ----
 # Groups sampling dates into the same sampling event if they are within 1 week of eachother
+# Groups sampling dates into the same sampling event if they are within
+# one week of each other, and assigns the first date of each event
 add_sampling_event <- function(data) {
   data %>%
     arrange(site_name, survey_date) %>%
@@ -25,7 +27,26 @@ add_sampling_event <- function(data) {
           survey_date - lag(survey_date) > 7
       )
     ) %>%
-    ungroup()
+    group_by(site_name, sampling_event) %>%
+    mutate(
+      sampling_event_start_date = min(survey_date, na.rm = TRUE)
+    ) %>%
+    ungroup() %>%
+    mutate(
+      period = if_else(
+        sampling_event_start_date < as.Date("2025-03-01"),
+        "Pre-bloom",
+        "Bloom"
+      ),
+      start_year_month = format(
+        sampling_event_start_date,
+        "%Y-%m"
+      ),
+      period_split = case_when(
+        period == "Bloom" ~ paste("Bloom", start_year_month),
+        TRUE ~ period
+      )
+    )
 }
 
 # Sites from DEW ----
@@ -110,7 +131,9 @@ dates_m3 %>%
   filter(n > 1)
 
 # Survey lits with sampling event ----
-cols_to_keep <- c("survey_id", "location", "mpa", "site_code", "site_name", "latitude", "longitude", "depth", "survey_date", "sampling_event", "program")
+cols_to_keep <- c("survey_id", "location", "mpa", "site_code", "site_name", 
+                  "latitude", "longitude", "depth", "survey_date", "sampling_event", "program",
+                  "period", "start_year_month", "period_split", "sampling_event_start_date")
 
 sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("site_name", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%

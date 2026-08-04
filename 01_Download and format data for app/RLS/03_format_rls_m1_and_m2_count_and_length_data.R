@@ -39,18 +39,21 @@ sl_m2 <- readRDS("data/tidy/rls_m2_survey_list.rds") %>% dplyr::mutate(id = past
 m1 <- read_csv("data/raw/RLS/ep_M1_SA.csv") %>% 
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
   dplyr::select(!all_of(cols_to_remove)) %>%
-  dplyr::filter(survey_id %in% unique(sl_m1$survey_id))  %>% dplyr::mutate(id = paste(survey_id, block))
+  dplyr::filter(survey_id %in% unique(sl_m1$survey_id))  %>% dplyr::mutate(id = paste(survey_id, block)) %>%
+  dplyr::left_join(sl_m1) # for sampling event
 
 m2_fish <- read_csv("data/raw/RLS/ep_M2_cryptic_fish_SA.csv") %>% 
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
   dplyr::select(!all_of(cols_to_remove))  %>%
-  dplyr::filter(survey_id %in% unique(sl_m2$survey_id))  %>% dplyr::mutate(id = paste(survey_id, block))
+  dplyr::filter(survey_id %in% unique(sl_m2$survey_id))  %>% dplyr::mutate(id = paste(survey_id, block)) %>%
+  dplyr::left_join(sl_m2) # for sampling event
 
 m2_inverts <- read_csv("data/raw/RLS/ep_M2_inverts_SA.csv") %>% 
   dplyr::filter(site_code %in% unique(sa_sites$site_code)) %>%
   dplyr::select(!all_of(cols_to_remove))  %>%
   dplyr::filter(survey_id %in% unique(sl_m2$survey_id)) %>%
-  dplyr::select(-biomass) %>% dplyr::mutate(id = paste(survey_id, block))
+  dplyr::select(-biomass) %>% dplyr::mutate(id = paste(survey_id, block)) %>%
+  dplyr::left_join(sl_m2) # for sampling event
 
 # Checking out the data
 summary(m1)
@@ -293,6 +296,13 @@ species_in_multiple_classes <- m2_species_inverts %>%
   dplyr::ungroup() %>%
   dplyr::arrange(family, genus, species, phylum, class, order)
 
+# Find families assigned to more than one class/order combination
+ambiguous_families <- m2_species_inverts %>%
+  dplyr::distinct(family, class, order) %>%
+  dplyr::count(family, name = "n_classifications") %>%
+  dplyr::filter(n_classifications > 1) %>%
+  dplyr::pull(family)
+
 family_taxonomy_lookup <- m2_species_inverts %>%
   dplyr::filter(family %in% ambiguous_families) %>%
   dplyr::count(family, class, order, name = "n") %>%
@@ -310,12 +320,7 @@ family_taxonomy_lookup <- m2_species_inverts %>%
     preferred_order = order
   )
 
-# Find families assigned to more than one class/order combination
-ambiguous_families <- m2_species_inverts %>%
-  dplyr::distinct(family, class, order) %>%
-  dplyr::count(family, name = "n_classifications") %>%
-  dplyr::filter(n_classifications > 1) %>%
-  dplyr::pull(family)
+
 
 m2_inverts_clean <- m2_species_inverts %>%
   
@@ -410,7 +415,7 @@ length(unique(m1_clean$id)) + length(unique(m1_all_zeros$id)) # 3631 surveys
 # Summarise the observed abundance and biomass for each species in each block
 m1_count_summary <- m1_clean %>%
   dplyr::group_by(
-    survey_id, site_name, survey_date, depth, program, block, id,
+    survey_id, site_name, survey_date, depth, program, block, id, sampling_event,
     phylum, class, order, family, genus, species,
     # rls_recorded_name, rls_reporting_name,
     scientific, portal_name
@@ -425,12 +430,12 @@ m1_count_summary <- m1_clean %>%
 m1_surveys <- dplyr::bind_rows(
   m1_clean %>%
     dplyr::distinct(
-      survey_id, site_name, survey_date, depth,
+      survey_id, site_name, survey_date, depth, sampling_event,
       program, block, id
     ),
   m1_all_zeros %>%
     dplyr::distinct(
-      survey_id, site_name, survey_date, depth,
+      survey_id, site_name, survey_date, depth, sampling_event,
       program, block, id
     )
 ) %>%
@@ -457,7 +462,7 @@ m1_complete_count <- tidyr::crossing(
     m1_count_summary,
     by = c(
       "survey_id", "site_name", "survey_date", "depth",
-      "program", "block", "id",
+      "program", "block", "id", "sampling_event",
       "phylum", "class", "order", "family", "genus", "species",
       "scientific", "portal_name"
     )
@@ -466,6 +471,7 @@ m1_complete_count <- tidyr::crossing(
     total = tidyr::replace_na(total, 0),
     biomass_sum = tidyr::replace_na(biomass_sum, 0)
   ) 
+
 length(unique(m1_complete_count$id)) 
 length(unique(m1_complete_count$scientific))
 nrow(m1_complete_count)
@@ -477,7 +483,7 @@ nrow(m1_complete_count) ==
 # Summarise observed M2 fish abundance and biomass
 m2_fish_count_summary <- m2_fish_clean %>%
   dplyr::group_by(
-    survey_id, site_name, survey_date, depth, program, block, id,
+    survey_id, site_name, survey_date, depth, program, block, id, sampling_event,
     phylum, class, order, family, genus, species,
     scientific, portal_name
   ) %>%
@@ -491,12 +497,12 @@ m2_fish_count_summary <- m2_fish_clean %>%
 m2_fish_surveys <- dplyr::bind_rows(
   m2_fish_clean %>%
     dplyr::distinct(
-      survey_id, site_name, survey_date, depth,
+      survey_id, site_name, survey_date, depth, sampling_event,
       program, block, id
     ),
   m2_fish_all_zeros %>%
     dplyr::distinct(
-      survey_id, site_name, survey_date, depth,
+      survey_id, site_name, survey_date, depth, sampling_event,
       program, block, id
     )
 ) %>%
@@ -518,7 +524,7 @@ m2_fish_complete_count <- tidyr::crossing(
     m2_fish_count_summary,
     by = c(
       "survey_id", "site_name", "survey_date", "depth",
-      "program", "block", "id",
+      "program", "block", "id", "sampling_event",
       "phylum", "class", "order", "family",
       "genus", "species", "scientific", "portal_name"
     )
@@ -531,7 +537,7 @@ m2_fish_complete_count <- tidyr::crossing(
 # Summarise observed M2 invertebrate abundance
 m2_inverts_count_summary <- m2_inverts_clean %>%
   dplyr::group_by(
-    survey_id, site_name, survey_date, depth, program, block, id,
+    survey_id, site_name, survey_date, depth, program, block, id, sampling_event,
     phylum, class, order, family, genus, species,
     scientific, portal_name
   ) %>%
@@ -544,12 +550,12 @@ m2_inverts_count_summary <- m2_inverts_clean %>%
 m2_inverts_surveys <- dplyr::bind_rows(
   m2_inverts_clean %>%
     dplyr::distinct(
-      survey_id, site_name, survey_date, depth,
+      survey_id, site_name, survey_date, depth, sampling_event,
       program, block, id
     ),
   m2_inverts_all_zeros %>%
     dplyr::distinct(
-      survey_id, site_name, survey_date, depth,
+      survey_id, site_name, survey_date, depth, sampling_event,
       program, block, id
     )
 ) %>%
@@ -571,7 +577,7 @@ m2_inverts_complete_count <- tidyr::crossing(
     m2_inverts_count_summary,
     by = c(
       "survey_id", "site_name", "survey_date", "depth",
-      "program", "block", "id",
+      "program", "block", "id", "sampling_event",
       "phylum", "class", "order", "family",
       "genus", "species", "scientific", "portal_name"
     )
