@@ -13,15 +13,14 @@ library(stringr)
 library(readr)
 library(tidyr)
 
-calculate_block_species_richness <- function(
-    data,
-    dataset_name = "dataset"
-) {
+calculate_block_species_richness <- function(data, dataset_name = "dataset") {
   
-  # Combine duplicate records for each taxon within each block
+  # Combine duplicate taxon records within each block
   data_summarised <- data %>%
     dplyr::group_by(
       survey_id,
+      survey_date,
+      depth,
       block,
       family,
       genus,
@@ -33,12 +32,12 @@ calculate_block_species_richness <- function(
       .groups = "drop"
     )
   
-  # Identify block/genus combinations containing both:
-  # 1. an observed spp record, and
-  # 2. an observed species-level record
+  # Find spp and identified-species conflicts within the same block
   samples_with_both <- data_summarised %>%
     dplyr::group_by(
       survey_id,
+      survey_date,
+      depth,
       block,
       family,
       genus
@@ -60,7 +59,12 @@ calculate_block_species_richness <- function(
   if (nrow(samples_with_both) > 0) {
     
     n_blocks <- samples_with_both %>%
-      dplyr::distinct(survey_id, block) %>%
+      dplyr::distinct(
+        survey_id,
+        survey_date,
+        depth,
+        block
+      ) %>%
       nrow()
     
     message(
@@ -81,10 +85,12 @@ calculate_block_species_richness <- function(
     )
   }
   
-  # Calculate richness separately for each block
+  # Calculate species richness separately for every block
   richness <- data_summarised %>%
     dplyr::group_by(
       survey_id,
+      survey_date,
+      depth,
       block,
       family,
       genus
@@ -104,6 +110,8 @@ calculate_block_species_richness <- function(
     dplyr::ungroup() %>%
     dplyr::group_by(
       survey_id,
+      survey_date,
+      depth,
       block
     ) %>%
     dplyr::summarise(
@@ -119,7 +127,7 @@ calculate_block_species_richness <- function(
     "samples_with_both"
   ) <- samples_with_both
   
-  return(richness)
+  richness
 }
 
 calculate_species_richness <- function(data, dataset_name = "dataset") {
@@ -240,27 +248,109 @@ summary(m1_fish_sr_samples)
 m1_spp_conflicts <- attr(m1_fish_sr_samples,"samples_with_both")
 m1_spp_conflicts
 
-## M2 fish ----
-m2_fish_sr_samples <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %>%
-  calculate_species_richness(dataset_name = "M2 fish") %>%
-  left_join(sl_m2)
+## M2 fish (averaged per block!) ----
+# m2_fish_sr_samples <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %>%
+#   calculate_species_richness(dataset_name = "M2 fish") %>%
+#   left_join(sl_m2)
+# 
+# hist(m2_fish_sr_samples$species_richness)
+# summary(m2_fish_sr_samples)
+# 
+# m2_fish_spp_conflicts <- attr(m2_fish_sr_samples, "samples_with_both")
+# m2_fish_spp_conflicts
+
+# M2 fish richness per block
+m2_fish_sr_blocks <- read_rds(
+  "data/tidy/rls_m2_fish_complete_count.rds"
+) %>%
+  calculate_block_species_richness(
+    dataset_name = "M2 fish"
+  )
+
+m2_fish_spp_conflicts <- attr(
+  m2_fish_sr_blocks,
+  "samples_with_both"
+)
+
+m2_fish_sr_samples <- m2_fish_sr_blocks %>%
+  dplyr::group_by(
+    survey_id,
+    survey_date,
+    depth
+  ) %>%
+  dplyr::summarise(
+    species_richness = mean(
+      species_richness,
+      na.rm = TRUE
+    ),
+    n_blocks = dplyr::n_distinct(block),
+    block_sd = stats::sd(
+      species_richness,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) %>%
+  dplyr::left_join(
+    sl_m2,
+    by = c(
+      "survey_id",
+      "survey_date",
+      "depth"
+    )
+  )
 
 hist(m2_fish_sr_samples$species_richness)
-summary(m2_fish_sr_samples)
-
-m2_fish_spp_conflicts <- attr(m2_fish_sr_samples, "samples_with_both")
-m2_fish_spp_conflicts
 
 ## M2 inverts ----
-m2_inverts_sr_samples <- read_rds("data/tidy/rls_m2_inverts_complete_count.rds") %>%
-  calculate_species_richness(dataset_name = "M2 invertebrates") %>%
-  left_join(sl_m2)
+# m2_inverts_sr_samples <- read_rds("data/tidy/rls_m2_inverts_complete_count.rds") %>%
+#   calculate_species_richness(dataset_name = "M2 invertebrates") %>%
+#   left_join(sl_m2)
+# 
+# hist(m2_inverts_sr_samples$species_richness)
+# summary(m2_inverts_sr_samples)
+# 
+# m2_inverts_spp_conflicts <- attr(m2_inverts_sr_samples, "samples_with_both")
+# m2_inverts_spp_conflicts
+m2_inverts_sr_blocks <- read_rds(
+  "data/tidy/rls_m2_inverts_complete_count.rds"
+) %>%
+  calculate_block_species_richness(
+    dataset_name = "M2 invertebrates"
+  )
+
+m2_inverts_spp_conflicts <- attr(
+  m2_inverts_sr_blocks,
+  "samples_with_both"
+)
+
+m2_inverts_sr_samples <- m2_inverts_sr_blocks %>%
+  dplyr::group_by(
+    survey_id,
+    survey_date,
+    depth # not block
+  ) %>%
+  dplyr::summarise(
+    species_richness = mean(
+      species_richness,
+      na.rm = TRUE
+    ),
+    n_blocks = dplyr::n_distinct(block),
+    block_sd = stats::sd(
+      species_richness,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) %>%
+  dplyr::left_join(
+    sl_m2,
+    by = c(
+      "survey_id",
+      "survey_date",
+      "depth"
+    )
+  )
 
 hist(m2_inverts_sr_samples$species_richness)
-summary(m2_inverts_sr_samples)
-
-m2_inverts_spp_conflicts <- attr(m2_inverts_sr_samples, "samples_with_both")
-m2_inverts_spp_conflicts
 
 # Calculate averages per site/sampling event ----
 m1_fish_site_sr_average <- m1_fish_sr_samples %>%
@@ -322,9 +412,9 @@ summarise_site_richness <- function(data, period_variable) {
       ),
       n_transects = dplyr::n_distinct(survey_id),
       .groups = "drop"
-    ) %>%
-    # Retain sampling events with at least four transects
-    dplyr::filter(n_transects >= 4)
+    ) #%>%
+    ## Retain sampling events with at least four transects
+   # dplyr::filter(n_transects >= 4)
   
   # Then average across sampling events within each site-period
   site_period_summary <- event_summary %>%
@@ -1106,3 +1196,4 @@ plot_log %>%
 
 plot_log %>%
   dplyr::filter(status == "Failed")
+
