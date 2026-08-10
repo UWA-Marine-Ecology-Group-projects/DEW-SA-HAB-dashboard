@@ -111,12 +111,18 @@ m2_abundance <- bind_rows(m2_fish, m2_inverts) %>%
 surveys_not_present_in_m2_all <- anti_join(sl_m2, m2_abundance) 
 write_csv(surveys_not_present_in_m2_all, "surveys_not_present_in_either_m2_datasets.csv")
 
+# Checked these with Sophie and the 2025/2026 sites are true zeros, but we are not sure about the others so we will remove them, because we can not tell if they should be zeros or they were not completed
+
+surveys_to_remove <- surveys_not_present_in_m2_all %>%
+  dplyr::filter(survey_date < "2025-01-01")
+
 # Make M2 zero data ----
 m2_inverts_zeros <- m2_inverts %>%
   dplyr::filter(recorded_species_name %in% c("No species found")) 
 
 m2_inverts_all_zeros <- surveys_not_present_in_m2_invert_data %>%
-  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date) %>%
+  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa) %>%
+  anti_join(surveys_to_remove) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found") %>%
   bind_rows(m2_inverts_zeros, .) %>%
@@ -126,7 +132,8 @@ m2_fish_zeros <- m2_fish %>%
   dplyr::filter(recorded_species_name %in% c("No species found")) 
 
 m2_fish_all_zeros <- surveys_not_present_in_m2_fish_data %>%
-  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date) %>%
+  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa) %>%
+  anti_join(surveys_to_remove) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found") %>%
   bind_rows(m2_fish_zeros, .) %>%
@@ -140,8 +147,6 @@ length(unique(sl_m2$id)) # 3398
 length(unique(m1$id)) # 3634 (3642 - 3634 = 8) # TODO sophie thinks drop the extras that we don't know if they are actual zeros or not
 length(unique(m2_fish$id)) # 2280 (3398 - 2280 = 1118)
 length(unique(m2_inverts$id)) # 3359 (3398 - 3359 = 39)
-
-# TODO Have emailed Sophie to see if this is a mistake - need someway to tell if 2 blocks are always done for all methods
 
 # Tidy species names ----
 # Start with method 1 ----
@@ -319,8 +324,6 @@ family_taxonomy_lookup <- m2_species_inverts %>%
     preferred_class = class,
     preferred_order = order
   )
-
-
 
 m2_inverts_clean <- m2_species_inverts %>%
   

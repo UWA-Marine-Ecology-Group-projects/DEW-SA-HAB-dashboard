@@ -13,161 +13,64 @@ library(stringr)
 library(readr)
 library(tidyr)
 
+# Calculates richness of individual blocks to then be averaged ----
 calculate_block_species_richness <- function(data, dataset_name = "dataset") {
   
   # Combine duplicate taxon records within each block
   data_summarised <- data %>%
-    dplyr::group_by(
-      survey_id,
-      survey_date,
-      depth,
-      block,
-      family,
-      genus,
-      species,
-      scientific
-    ) %>%
-    dplyr::summarise(
-      total = sum(total, na.rm = TRUE),
-      .groups = "drop"
-    )
+    dplyr::group_by(survey_id, survey_date, depth, block, family, genus, species, scientific) %>%
+    dplyr::summarise(total = sum(total, na.rm = TRUE), .groups = "drop")
   
   # Find spp and identified-species conflicts within the same block
   samples_with_both <- data_summarised %>%
-    dplyr::group_by(
-      survey_id,
-      survey_date,
-      depth,
-      block,
-      family,
-      genus
-    ) %>%
-    dplyr::summarise(
-      spp_present = any(
-        species == "spp" & total > 0
-      ),
-      identified_species_present = any(
-        species != "spp" & total > 0
-      ),
-      .groups = "drop"
-    ) %>%
-    dplyr::filter(
-      spp_present,
-      identified_species_present
-    )
+    dplyr::group_by(survey_id, survey_date, depth, block, family, genus) %>%
+    dplyr::summarise(spp_present = any(species == "spp" & total > 0),
+                     identified_species_present = any(species != "spp" & total > 0),
+                     .groups = "drop") %>%
+    dplyr::filter(spp_present, identified_species_present)
   
   if (nrow(samples_with_both) > 0) {
     
     n_blocks <- samples_with_both %>%
-      dplyr::distinct(
-        survey_id,
-        survey_date,
-        depth,
-        block
-      ) %>%
+      dplyr::distinct(survey_id, survey_date, depth, block) %>%
       nrow()
     
-    message(
-      dataset_name, ": found ",
-      nrow(samples_with_both),
-      " block/genus combinations across ",
-      n_blocks,
-      " blocks containing both an spp record and an ",
-      "identified species. The spp records will be removed."
-    )
+    message(dataset_name, ": found ", nrow(samples_with_both), " block/genus combinations across ", n_blocks, " blocks containing both an spp record and an identified species. The spp records will be removed.")
     
   } else {
-    
-    message(
-      dataset_name,
-      ": no blocks contained both an spp record and an ",
-      "identified species from the same genus."
-    )
+    message(dataset_name, ": no blocks contained both an spp record and an ", "identified species from the same genus.")
   }
   
   # Calculate species richness separately for every block
   richness <- data_summarised %>%
-    dplyr::group_by(
-      survey_id,
-      survey_date,
-      depth,
-      block,
-      family,
-      genus
-    ) %>%
-    dplyr::mutate(
-      identified_species_present = any(
-        species != "spp" & total > 0
-      )
-    ) %>%
-    dplyr::filter(
-      !(
-        species == "spp" &
-          total > 0 &
-          identified_species_present
-      )
-    ) %>%
+    dplyr::group_by(survey_id, survey_date, depth, block, family, genus) %>%
+    dplyr::mutate(identified_species_present = any(species != "spp" & total > 0)) %>%
+    dplyr::filter(!(species == "spp" & total > 0 & identified_species_present)) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(
-      survey_id,
-      survey_date,
-      depth,
-      block
-    ) %>%
-    dplyr::summarise(
-      species_richness = dplyr::n_distinct(
-        scientific[total > 0],
-        na.rm = TRUE
-      ),
-      .groups = "drop"
-    )
+    dplyr::group_by(survey_id, survey_date, depth, block) %>%
+    dplyr::summarise(species_richness = dplyr::n_distinct(scientific[total > 0], na.rm = TRUE), .groups = "drop")
   
-  attr(
-    richness,
-    "samples_with_both"
-  ) <- samples_with_both
+  attr(richness, "samples_with_both") <- samples_with_both
   
   richness
 }
 
+# Combines blocks together and counts richness ---
 calculate_species_richness <- function(data, dataset_name = "dataset") {
   
   # Combine abundance across blocks for each taxon within a survey
   data_summarised <- data %>%
-    dplyr::group_by(
-      survey_id,
-      family,
-      genus,
-      species,
-      scientific
-    ) %>%
-    dplyr::summarise(
-      total = sum(total, na.rm = TRUE),
-      .groups = "drop"
-    )
+    dplyr::group_by(survey_id, survey_date, depth, family, genus, species, scientific) %>%
+    dplyr::summarise(total = sum(total, na.rm = TRUE), .groups = "drop")
   
   # Identify surveys/genus combinations containing both:
   # 1. an observed spp record, and
   # 2. an observed species-level record
   samples_with_both <- data_summarised %>%
-    dplyr::group_by(
-      survey_id,
-      family,
-      genus
-    ) %>%
-    dplyr::summarise(
-      spp_present = any(
-        species == "spp" & total > 0
-      ),
-      identified_species_present = any(
-        species != "spp" & total > 0
-      ),
-      .groups = "drop"
-    ) %>%
-    dplyr::filter(
-      spp_present,
-      identified_species_present
-    )
+    dplyr::group_by(survey_id, survey_date, depth, family, genus) %>%
+    dplyr::summarise(spp_present = any(species == "spp" & total > 0),
+                     identified_species_present = any(species != "spp" & total > 0), .groups = "drop") %>%
+    dplyr::filter(spp_present, identified_species_present)
   
   if (nrow(samples_with_both) > 0) {
     
@@ -175,52 +78,21 @@ calculate_species_richness <- function(data, dataset_name = "dataset") {
       dplyr::distinct(survey_id) %>%
       nrow()
     
-    message(
-      dataset_name, ": found ",
-      nrow(samples_with_both),
-      " survey/genus combinations across ",
-      n_samples,
-      " surveys containing both an spp record and an ",
-      "identified species. The spp records will be removed."
-    )
+    message(dataset_name, ": found ", nrow(samples_with_both), " survey/genus combinations across ", n_samples, " surveys containing both an spp record and an identified species. The spp records will be removed.")
     
   } else {
-    
-    message(
-      dataset_name,
-      ": no surveys contained both an spp record and an ",
-      "identified species from the same genus."
-    )
+    message(dataset_name, ": no surveys contained both an spp record and an identified species from the same genus.")
   }
   
   # Remove spp only where an identified species from the
   # same genus occurs in the same survey
   richness <- data_summarised %>%
-    dplyr::group_by(
-      survey_id,
-      family,
-      genus
-    ) %>%
-    dplyr::mutate(
-      identified_species_present = any(
-        species != "spp" & total > 0
-      )
-    ) %>%
-    dplyr::filter(
-      !(
-        species == "spp" &
-          total > 0 &
-          identified_species_present
-      )
-    ) %>%
+    dplyr::group_by(survey_id, survey_date, depth, family, genus) %>%
+    dplyr::mutate(identified_species_present = any(species != "spp" & total > 0)) %>%
+    dplyr::filter(!(species == "spp" & total > 0 & identified_species_present)) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(survey_id) %>%
-    dplyr::summarise(
-      species_richness = dplyr::n_distinct(
-        scientific[total > 0]
-      ),
-      .groups = "drop"
-    )
+    dplyr::group_by(survey_id, survey_date, depth) %>%
+    dplyr::summarise(species_richness = dplyr::n_distinct(scientific[total > 0]), .groups = "drop")
   
   attr(richness, "samples_with_both") <- samples_with_both
   
@@ -260,44 +132,18 @@ m1_spp_conflicts
 # m2_fish_spp_conflicts
 
 # M2 fish richness per block
-m2_fish_sr_blocks <- read_rds(
-  "data/tidy/rls_m2_fish_complete_count.rds"
-) %>%
-  calculate_block_species_richness(
-    dataset_name = "M2 fish"
-  )
+m2_fish_sr_blocks <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %>%
+  calculate_block_species_richness(dataset_name = "M2 fish")
 
-m2_fish_spp_conflicts <- attr(
-  m2_fish_sr_blocks,
-  "samples_with_both"
-)
+m2_fish_spp_conflicts <- attr(m2_fish_sr_blocks, "samples_with_both")
 
 m2_fish_sr_samples <- m2_fish_sr_blocks %>%
-  dplyr::group_by(
-    survey_id,
-    survey_date,
-    depth
-  ) %>%
-  dplyr::summarise(
-    species_richness = mean(
-      species_richness,
-      na.rm = TRUE
-    ),
-    n_blocks = dplyr::n_distinct(block),
-    block_sd = stats::sd(
-      species_richness,
-      na.rm = TRUE
-    ),
-    .groups = "drop"
-  ) %>%
-  dplyr::left_join(
-    sl_m2,
-    by = c(
-      "survey_id",
-      "survey_date",
-      "depth"
-    )
-  )
+  dplyr::group_by(survey_id, survey_date, depth) %>%
+  dplyr::summarise(species_richness = mean(species_richness, na.rm = TRUE),
+                   n_blocks = dplyr::n_distinct(block),
+                   block_sd = stats::sd(species_richness, na.rm = TRUE),
+                   .groups = "drop") %>%
+  dplyr::left_join(sl_m2)
 
 hist(m2_fish_sr_samples$species_richness)
 
@@ -311,44 +157,17 @@ hist(m2_fish_sr_samples$species_richness)
 # 
 # m2_inverts_spp_conflicts <- attr(m2_inverts_sr_samples, "samples_with_both")
 # m2_inverts_spp_conflicts
-m2_inverts_sr_blocks <- read_rds(
-  "data/tidy/rls_m2_inverts_complete_count.rds"
-) %>%
-  calculate_block_species_richness(
-    dataset_name = "M2 invertebrates"
-  )
+m2_inverts_sr_blocks <- read_rds("data/tidy/rls_m2_inverts_complete_count.rds") %>%
+  calculate_block_species_richness(dataset_name = "M2 invertebrates")
 
-m2_inverts_spp_conflicts <- attr(
-  m2_inverts_sr_blocks,
-  "samples_with_both"
-)
+m2_inverts_spp_conflicts <- attr(m2_inverts_sr_blocks, "samples_with_both")
 
 m2_inverts_sr_samples <- m2_inverts_sr_blocks %>%
-  dplyr::group_by(
-    survey_id,
-    survey_date,
-    depth # not block
-  ) %>%
-  dplyr::summarise(
-    species_richness = mean(
-      species_richness,
-      na.rm = TRUE
-    ),
-    n_blocks = dplyr::n_distinct(block),
-    block_sd = stats::sd(
-      species_richness,
-      na.rm = TRUE
-    ),
-    .groups = "drop"
-  ) %>%
-  dplyr::left_join(
-    sl_m2,
-    by = c(
-      "survey_id",
-      "survey_date",
-      "depth"
-    )
-  )
+  dplyr::group_by(survey_id, survey_date, depth) %>%  # not block
+  dplyr::summarise(species_richness = mean(species_richness, na.rm = TRUE),
+                   n_blocks = dplyr::n_distinct(block),
+                   block_sd = stats::sd(species_richness, na.rm = TRUE), .groups = "drop") %>%
+  dplyr::left_join(sl_m2, by = c("survey_id", "survey_date", "depth"))
 
 hist(m2_inverts_sr_samples$species_richness)
 
