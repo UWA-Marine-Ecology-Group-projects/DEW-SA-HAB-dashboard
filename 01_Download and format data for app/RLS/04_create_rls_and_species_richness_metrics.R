@@ -110,6 +110,7 @@ sl_m2 <- read_rds("data/tidy/rls_m2_survey_list.rds") %>%
 
 # Species Richness per sample (Not calculated per block!) ----
 ## M1 fish ----
+# Add both blocks together as there is always 2 blocks ----
 m1_fish_sr_samples <- read_rds("data/tidy/rls_m1_complete_count.rds") %>%
   calculate_species_richness(dataset_name = "M1 fish") %>%
   left_join(sl_m1)
@@ -120,18 +121,7 @@ summary(m1_fish_sr_samples)
 m1_spp_conflicts <- attr(m1_fish_sr_samples,"samples_with_both")
 m1_spp_conflicts
 
-## M2 fish (averaged per block!) ----
-# m2_fish_sr_samples <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %>%
-#   calculate_species_richness(dataset_name = "M2 fish") %>%
-#   left_join(sl_m2)
-# 
-# hist(m2_fish_sr_samples$species_richness)
-# summary(m2_fish_sr_samples)
-# 
-# m2_fish_spp_conflicts <- attr(m2_fish_sr_samples, "samples_with_both")
-# m2_fish_spp_conflicts
-
-# M2 fish richness per block
+## M2 fish richness per block
 m2_fish_sr_blocks <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %>%
   calculate_block_species_richness(dataset_name = "M2 fish")
 
@@ -148,15 +138,6 @@ m2_fish_sr_samples <- m2_fish_sr_blocks %>%
 hist(m2_fish_sr_samples$species_richness)
 
 ## M2 inverts ----
-# m2_inverts_sr_samples <- read_rds("data/tidy/rls_m2_inverts_complete_count.rds") %>%
-#   calculate_species_richness(dataset_name = "M2 invertebrates") %>%
-#   left_join(sl_m2)
-# 
-# hist(m2_inverts_sr_samples$species_richness)
-# summary(m2_inverts_sr_samples)
-# 
-# m2_inverts_spp_conflicts <- attr(m2_inverts_sr_samples, "samples_with_both")
-# m2_inverts_spp_conflicts
 m2_inverts_sr_blocks <- read_rds("data/tidy/rls_m2_inverts_complete_count.rds") %>%
   calculate_block_species_richness(dataset_name = "M2 invertebrates")
 
@@ -180,8 +161,8 @@ m1_fish_site_sr_average <- m1_fish_sr_samples %>%
                    se   = sd(species_richness, na.rm = TRUE) /
                      sqrt(sum(!is.na(species_richness))),
                    num_transects = n(),
-                   .groups = "drop") %>%
-  dplyr::filter(num_transects > 3)
+                   .groups = "drop") #%>%
+  #dplyr::filter(num_transects > 3)
 
 m2_fish_site_sr_average <- m2_fish_sr_samples %>%
   ungroup() %>%
@@ -191,8 +172,8 @@ m2_fish_site_sr_average <- m2_fish_sr_samples %>%
                    se   = sd(species_richness, na.rm = TRUE) /
                      sqrt(sum(!is.na(species_richness))),
                    num_transects = n(),
-                   .groups = "drop") %>%
-  dplyr::filter(num_transects > 3)
+                   .groups = "drop") #%>%
+  #dplyr::filter(num_transects > 3)
 
 m2_inverts_site_sr_average <- m2_inverts_sr_samples %>%
   ungroup() %>%
@@ -202,9 +183,15 @@ m2_inverts_site_sr_average <- m2_inverts_sr_samples %>%
                    se   = sd(species_richness, na.rm = TRUE) /
                      sqrt(sum(!is.na(species_richness))),
                    num_transects = n(),
-                   .groups = "drop") %>%
-  dplyr::filter(num_transects > 3)
+                   .groups = "drop") #%>%
+  #dplyr::filter(num_transects > 3)
 
+# Save formatted data ----
+write_rds(m1_fish_site_sr_average, "data/tidy/rls_m1_fish_speciesrichness_average_per_site.rds")
+write_rds(m2_fish_site_sr_average, "data/tidy/rls_m2_fish_speciesrichness_average_per_site.rds")
+write_rds(m2_inverts_site_sr_average, "data/tidy/rls_m2_inverts_speciesrichness_average_per_site.rds")
+
+# Creating summarised values for period and for period split -----
 summarise_site_richness <- function(data, period_variable) {
   
   period_variable <- rlang::ensym(period_variable)
