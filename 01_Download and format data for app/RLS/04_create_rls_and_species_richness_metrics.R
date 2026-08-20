@@ -55,50 +55,6 @@ calculate_block_species_richness <- function(data, dataset_name = "dataset") {
   richness
 }
 
-# Combines blocks together and counts richness ---
-calculate_species_richness <- function(data, dataset_name = "dataset") {
-  
-  # Combine abundance across blocks for each taxon within a survey
-  data_summarised <- data %>%
-    dplyr::group_by(survey_id, survey_date, depth, family, genus, species, scientific) %>%
-    dplyr::summarise(total = sum(total, na.rm = TRUE), .groups = "drop")
-  
-  # Identify surveys/genus combinations containing both:
-  # 1. an observed spp record, and
-  # 2. an observed species-level record
-  samples_with_both <- data_summarised %>%
-    dplyr::group_by(survey_id, survey_date, depth, family, genus) %>%
-    dplyr::summarise(spp_present = any(species == "spp" & total > 0),
-                     identified_species_present = any(species != "spp" & total > 0), .groups = "drop") %>%
-    dplyr::filter(spp_present, identified_species_present)
-  
-  if (nrow(samples_with_both) > 0) {
-    
-    n_samples <- samples_with_both %>%
-      dplyr::distinct(survey_id) %>%
-      nrow()
-    
-    message(dataset_name, ": found ", nrow(samples_with_both), " survey/genus combinations across ", n_samples, " surveys containing both an spp record and an identified species. The spp records will be removed.")
-    
-  } else {
-    message(dataset_name, ": no surveys contained both an spp record and an identified species from the same genus.")
-  }
-  
-  # Remove spp only where an identified species from the
-  # same genus occurs in the same survey
-  richness <- data_summarised %>%
-    dplyr::group_by(survey_id, survey_date, depth, family, genus) %>%
-    dplyr::mutate(identified_species_present = any(species != "spp" & total > 0)) %>%
-    dplyr::filter(!(species == "spp" & total > 0 & identified_species_present)) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(survey_id, survey_date, depth) %>%
-    dplyr::summarise(species_richness = dplyr::n_distinct(scientific[total > 0]), .groups = "drop")
-  
-  attr(richness, "samples_with_both") <- samples_with_both
-  
-  return(richness)
-}
-
 # Read in survey-lists to get grouping variables ----
 sl_m1 <- read_rds("data/tidy/rls_m1_survey_list.rds") %>%
   select(-block) %>%
@@ -110,16 +66,22 @@ sl_m2 <- read_rds("data/tidy/rls_m2_survey_list.rds") %>%
 
 # Species Richness per sample (Not calculated per block!) ----
 ## M1 fish ----
-# Add both blocks together as there is always 2 blocks ----
-m1_fish_sr_samples <- read_rds("data/tidy/rls_m1_complete_count.rds") %>%
-  calculate_species_richness(dataset_name = "M1 fish") %>%
-  left_join(sl_m1)
+# Average blocks together ----
+m1_fish_sr_blocks <- read_rds("data/tidy/rls_m1_complete_count.rds") %>%
+  calculate_block_species_richness(dataset_name = "M1 fish")
+
+m1_fish_spp_conflicts <- attr(m1_fish_sr_blocks, "samples_with_both")
+
+m1_fish_sr_samples <- m1_fish_sr_blocks %>%
+  dplyr::group_by(survey_id, survey_date, depth) %>%
+  dplyr::summarise(species_richness = mean(species_richness, na.rm = TRUE),
+                   n_blocks = dplyr::n_distinct(block),
+                   block_sd = stats::sd(species_richness, na.rm = TRUE),
+                   .groups = "drop") %>%
+  dplyr::left_join(sl_m1)
 
 hist(m1_fish_sr_samples$species_richness)
 summary(m1_fish_sr_samples)
-
-m1_spp_conflicts <- attr(m1_fish_sr_samples,"samples_with_both")
-m1_spp_conflicts
 
 ## M2 fish richness per block
 m2_fish_sr_blocks <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %>%
@@ -600,7 +562,7 @@ plot_observed_period <- function(data) {
       #   "\u00b1 SE among sampling events"
       # ),
       x = NULL,
-      y = "Average species richness",
+      y = "Average sampling-event species richness\n(± SE among events)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +
@@ -665,7 +627,7 @@ plot_observed_period_split <- function(data) {
       #   "\u00b1 SE among sampling events"
       # ),
       x = "Period",
-      y = "Average species richness",
+      y = "Average sampling-event species richness\n(± SE among events)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +
@@ -773,7 +735,7 @@ plot_observed_temporal <- function(data) {
       #   "\u00b1 SE among replicate transects"
       # ),
       x = NULL,
-      y = "Average species richness",
+      y = "Average species richness per sampling event\n(± SE among transects)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +

@@ -12,6 +12,8 @@ library(sf)
 library(stringr)
 library(readr)
 library(tidyr)
+library(todor)
+
 
 # Functions ----
 # Groups sampling dates into the same sampling event if they are within 1 week of eachother
@@ -24,7 +26,7 @@ add_sampling_event <- function(data) {
     mutate(
       sampling_event = cumsum(
         is.na(lag(survey_date)) |
-          survey_date - lag(survey_date) > 7
+          survey_date - lag(survey_date) > 21
       )
     ) %>%
     group_by(site_name, sampling_event) %>%
@@ -110,6 +112,11 @@ dates_m1 %>%
   summarise(n = n()) %>%
   filter(n > 1)
 
+test <- dates_m1 %>%
+  mutate(id = paste(site_name, sampling_event))
+
+length(unique(test$id)) # 493 (out of 507) when using 1 week sep (491 when using 3 weeks)
+
 dates_m2 <- sl_m2_raw %>%
   distinct(site_name, survey_date) %>%
   add_sampling_event()
@@ -130,7 +137,7 @@ dates_m3 %>%
   summarise(n = n()) %>%
   filter(n > 1)
 
-# Survey lits with sampling event ----
+# Survey lists with sampling event ----
 cols_to_keep <- c("survey_id", "location", "mpa", "site_code", "site_name", 
                   "latitude", "longitude", "depth", "survey_date", "sampling_event", "program",
                   "period", "start_year_month", "period_split", "sampling_event_start_date")
@@ -140,7 +147,7 @@ sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("site_name", "survey_date")) %>%
   tidyr::uncount(weights = 2, .id = "block") %>%
   dplyr::filter(!survey_id %in% c("923406553", "923406567")) # Lost data sheet - have removed
 
-# For ATRC M2, only 1 block before 2016
+## For ATRC M2, only 1 block before 2016 ----
 sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
   # tidyr::uncount(weights = 2, .id = "block")
