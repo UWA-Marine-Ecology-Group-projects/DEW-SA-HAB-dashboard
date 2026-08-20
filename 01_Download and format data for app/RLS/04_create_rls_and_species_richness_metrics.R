@@ -1,17 +1,14 @@
 #################################################################
 # Create Species Richness from RLS M1 and M2 data
 
-# Install CheckEM package ----
-options(timeout = 9999999) # the package is large, so need to extend the timeout to enable the download.
-# remotes::install_github("GlobalArchiveManual/CheckEM") # If there has been any updates to the package then CheckEM will install, if not then this line won't do anything
-
 # Load libraries needed -----
-library(CheckEM)
 library(dplyr)
 library(sf)
 library(stringr)
 library(readr)
 library(tidyr)
+library(ggplot2)
+library(purrr)
 
 # Calculates richness of individual blocks to then be averaged ----
 calculate_block_species_richness <- function(data, dataset_name = "dataset") {
@@ -65,8 +62,7 @@ sl_m2 <- read_rds("data/tidy/rls_m2_survey_list.rds") %>%
   distinct()
 
 # Species Richness per sample (Not calculated per block!) ----
-## M1 fish ----
-# Average blocks together ----
+## M1 fish (First average blocks together)----
 m1_fish_sr_blocks <- read_rds("data/tidy/rls_m1_complete_count.rds") %>%
   calculate_block_species_richness(dataset_name = "M1 fish")
 
@@ -83,7 +79,7 @@ m1_fish_sr_samples <- m1_fish_sr_blocks %>%
 hist(m1_fish_sr_samples$species_richness)
 summary(m1_fish_sr_samples)
 
-## M2 fish richness per block
+## M2 fish  (First average blocks together) ----
 m2_fish_sr_blocks <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %>%
   calculate_block_species_richness(dataset_name = "M2 fish")
 
@@ -99,7 +95,7 @@ m2_fish_sr_samples <- m2_fish_sr_blocks %>%
 
 hist(m2_fish_sr_samples$species_richness)
 
-## M2 inverts ----
+## M2 inverts  (First average blocks together) ----
 m2_inverts_sr_blocks <- read_rds("data/tidy/rls_m2_inverts_complete_count.rds") %>%
   calculate_block_species_richness(dataset_name = "M2 invertebrates")
 
@@ -114,7 +110,7 @@ m2_inverts_sr_samples <- m2_inverts_sr_blocks %>%
 
 hist(m2_inverts_sr_samples$species_richness)
 
-# Calculate averages per site/sampling event ----
+## Calculate averages per site/sampling event ----
 m1_fish_site_sr_average <- m1_fish_sr_samples %>%
   ungroup() %>%
   dplyr::group_by(site_name, site_code, sampling_event, latitude, longitude, 
@@ -148,7 +144,7 @@ m2_inverts_site_sr_average <- m2_inverts_sr_samples %>%
                    .groups = "drop") #%>%
   #dplyr::filter(num_transects > 3)
 
-# Save formatted data ----
+## Save formatted data ----
 write_rds(m1_fish_site_sr_average, "data/tidy/rls_m1_fish_speciesrichness_average_per_site.rds")
 write_rds(m2_fish_site_sr_average, "data/tidy/rls_m2_fish_speciesrichness_average_per_site.rds")
 write_rds(m2_inverts_site_sr_average, "data/tidy/rls_m2_inverts_speciesrichness_average_per_site.rds")
@@ -158,34 +154,8 @@ summarise_site_richness <- function(data, period_variable) {
   
   period_variable <- rlang::ensym(period_variable)
   
-  # First average replicate transects within each sampling event
-  event_summary <- data %>%
-    dplyr::group_by(
-      site_name,
-      site_code,
-      latitude,
-      longitude,
-      sampling_event,
-      sampling_event_start_date,
-      !!period_variable
-    ) %>%
-    dplyr::summarise(
-      event_mean_richness = mean(
-        species_richness,
-        na.rm = TRUE
-      ),
-      event_sd_richness = sd(
-        species_richness,
-        na.rm = TRUE
-      ),
-      n_transects = dplyr::n_distinct(survey_id),
-      .groups = "drop"
-    ) #%>%
-    ## Retain sampling events with at least four transects
-   # dplyr::filter(n_transects >= 4)
-  
-  # Then average across sampling events within each site-period
-  site_period_summary <- event_summary %>%
+  # Average transects
+  site_period_summary <- data %>%
     dplyr::group_by(
       site_name,
       site_code,
@@ -195,27 +165,20 @@ summarise_site_richness <- function(data, period_variable) {
     ) %>%
     dplyr::summarise(
       mean_species_richness = mean(
-        event_mean_richness,
+        species_richness,
         na.rm = TRUE
       ),
-      sd_among_events = sd(
-        event_mean_richness,
+      sd = sd(
+        species_richness,
         na.rm = TRUE
       ),
-      se_among_events = sd(
-        event_mean_richness,
+      se = sd(
+        species_richness,
         na.rm = TRUE
-      ) / sqrt(sum(!is.na(event_mean_richness))),
-      min_event_mean = min(
-        event_mean_richness,
-        na.rm = TRUE
-      ),
-      max_event_mean = max(
-        event_mean_richness,
-        na.rm = TRUE
-      ),
-      n_sampling_events = sum(
-        !is.na(event_mean_richness)
+      ) / sqrt(sum(!is.na(species_richness))),
+      
+      n_transects = sum(
+        !is.na(species_richness)
       ),
       .groups = "drop"
     )
@@ -223,7 +186,7 @@ summarise_site_richness <- function(data, period_variable) {
   return(site_period_summary)
 }
 
-# Period comparisons ----
+## Period comparisons ----
 m1_fish_site_period <- m1_fish_sr_samples %>%
   summarise_site_richness(period)
 
@@ -233,7 +196,7 @@ m2_fish_site_period <- m2_fish_sr_samples %>%
 m2_inverts_site_period <- m2_inverts_sr_samples %>%
   summarise_site_richness(period)
 
-# Multiple Period comparisons ----
+## Multiple Period comparisons ----
 m1_fish_site_period_split <- m1_fish_sr_samples %>%
   summarise_site_richness(period_split)
 
@@ -243,20 +206,10 @@ m2_fish_site_period_split <- m2_fish_sr_samples %>%
 m2_inverts_site_period_split <- m2_inverts_sr_samples %>%
   summarise_site_richness(period_split)
 
-# TODO percentage changes of sites ---
+# TODO percentage changes of sites
 
-
-# ============================================================
-# Plot observed species richness by site
-# ============================================================
-
-library(ggplot2)
-library(purrr)
-
-# -----------------------------
-# Plot settings
-# -----------------------------
-
+# Plot observed species richness by site ----
+##  Plot settings ----
 plot_output_root <- file.path(
   "plots",
   "rls_species_richness_observed"
@@ -301,21 +254,10 @@ observed_plot_theme <- theme(
   strip.text = element_text(
     face = "bold",
     size = 13
-  )#,
-  # plot.title = element_text(
-  #   size = 17,
-  #   face = "bold",
-  #   hjust = 0.5
-  # ),
-  # plot.subtitle = element_text(
-  #   size = 11,
-  #   hjust = 0.5
-  # )
+  )
 )
 
-# -----------------------------
-# Broad period plotting data
-# -----------------------------
+# Broad period plotting data ----
 
 period_plot_data <- dplyr::bind_rows(
   
@@ -325,8 +267,8 @@ period_plot_data <- dplyr::bind_rows(
       site_code = as.character(site_code),
       period,
       estimate = mean_species_richness,
-      se = se_among_events,
-      n_sampling_events,
+      se = se,
+      n_transects,
       metric = metric_levels[[1]]
     ),
   
@@ -336,8 +278,8 @@ period_plot_data <- dplyr::bind_rows(
       site_code = as.character(site_code),
       period,
       estimate = mean_species_richness,
-      se = se_among_events,
-      n_sampling_events,
+      se = se,
+      n_transects,
       metric = metric_levels[[2]]
     ),
   
@@ -347,8 +289,8 @@ period_plot_data <- dplyr::bind_rows(
       site_code = as.character(site_code),
       period,
       estimate = mean_species_richness,
-      se = se_among_events,
-      n_sampling_events,
+      se = se,
+      n_transects,
       metric = metric_levels[[3]]
     )
   
@@ -369,10 +311,7 @@ period_plot_data <- dplyr::bind_rows(
     )
   )
 
-# -----------------------------
-# Split-period plotting data
-# -----------------------------
-
+# Split-period plotting data ----
 period_split_plot_data <- dplyr::bind_rows(
   
   m1_fish_site_period_split %>%
@@ -381,8 +320,8 @@ period_split_plot_data <- dplyr::bind_rows(
       site_code = as.character(site_code),
       period_split,
       estimate = mean_species_richness,
-      se = se_among_events,
-      n_sampling_events,
+      se = se,
+      n_transects,
       metric = metric_levels[[1]]
     ),
   
@@ -392,8 +331,8 @@ period_split_plot_data <- dplyr::bind_rows(
       site_code = as.character(site_code),
       period_split,
       estimate = mean_species_richness,
-      se = se_among_events,
-      n_sampling_events,
+      se = se,
+      n_transects,
       metric = metric_levels[[2]]
     ),
   
@@ -403,8 +342,8 @@ period_split_plot_data <- dplyr::bind_rows(
       site_code = as.character(site_code),
       period_split,
       estimate = mean_species_richness,
-      se = se_among_events,
-      n_sampling_events,
+      se = se,
+      n_transects,
       metric = metric_levels[[3]]
     )
   
@@ -448,9 +387,7 @@ period_split_plot_data <- period_split_plot_data %>%
     )
   )
 
-# -----------------------------
-# Temporal plotting data
-# -----------------------------
+# Temporal plotting data ----
 
 temporal_plot_data <- dplyr::bind_rows(
   
@@ -556,13 +493,8 @@ plot_observed_period <- function(data) {
       )
     ) +
     labs(
-      # title = site_title,
-      # subtitle = paste(
-      #   "Observed mean species richness",
-      #   "\u00b1 SE among sampling events"
-      # ),
       x = NULL,
-      y = "Average sampling-event species richness\n(± SE among events)",
+      y = "Average species richness\n(± SE)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +
@@ -621,13 +553,8 @@ plot_observed_period_split <- function(data) {
       )
     ) +
     labs(
-      # title = site_title,
-      # subtitle = paste(
-      #   "Observed mean species richness",
-      #   "\u00b1 SE among sampling events"
-      # ),
       x = "Period",
-      y = "Average sampling-event species richness\n(± SE among events)",
+      y = "Average species richness\n(± SE)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +
@@ -729,13 +656,8 @@ plot_observed_temporal <- function(data) {
       )
     ) +
     labs(
-      # title = site_title,
-      # subtitle = paste(
-      #   "Observed sampling-event mean",
-      #   "\u00b1 SE among replicate transects"
-      # ),
       x = NULL,
-      y = "Average species richness per sampling event\n(± SE among transects)",
+      y = "Average species richness\n(± SE)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +
@@ -749,9 +671,7 @@ plot_observed_temporal <- function(data) {
     )
 }
 
-# -----------------------------
-# Site lookup
-# -----------------------------
+# Site lookup ----
 
 site_lookup <- dplyr::bind_rows(
   period_plot_data %>%
@@ -777,11 +697,7 @@ site_lookup <- dplyr::bind_rows(
 
 site_codes <- site_lookup$site_code
 
-
-# -----------------------------
-# Save one set of plots
-# -----------------------------
-
+# Save one set of plots ----
 save_site_species_richness_plots <- function(site_code_value) {
   
   site_name_value <- site_lookup %>%
@@ -914,9 +830,7 @@ save_site_species_richness_plots <- function(site_code_value) {
   invisible(NULL)
 }
 
-# -----------------------------
-# Run all sites
-# -----------------------------
+# Run all sites ----
 
 plot_log <- purrr::map_dfr(
   site_codes,
@@ -964,4 +878,3 @@ plot_log %>%
 
 plot_log %>%
   dplyr::filter(status == "Failed")
-
