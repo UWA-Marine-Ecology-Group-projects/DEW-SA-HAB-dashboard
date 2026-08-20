@@ -108,6 +108,15 @@ dates_m1 <- sl_m1_raw %>%
   distinct(site_name, survey_date) %>%
   add_sampling_event()
 
+unique(dates_m1$sampling_event_start_date) %>% sort()
+
+months <- dates_m1 %>%
+  mutate(month = as.numeric(str_sub(sampling_event_start_date, 6,7))) %>%
+  mutate(year = as.numeric(str_sub(sampling_event_start_date, 1,4)))
+
+hist(months$month)
+hist(months$year)
+
 # check dups
 dates_m1 %>%
   group_by(site_name, sampling_event) %>%
