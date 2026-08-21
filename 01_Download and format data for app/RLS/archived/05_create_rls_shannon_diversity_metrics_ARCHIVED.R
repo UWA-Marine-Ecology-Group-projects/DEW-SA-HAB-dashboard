@@ -68,7 +68,7 @@ calculate_block_diversity <- function(data, dataset_name = "dataset") {
   samples_with_both <- data %>%
     dplyr::group_by(
       survey_id,
-      survey_date,
+      sampling_event_start_date,
       depth,
       block,
       family,
@@ -84,7 +84,7 @@ calculate_block_diversity <- function(data, dataset_name = "dataset") {
   if (nrow(samples_with_both) > 0) {
     
     n_blocks <- samples_with_both %>%
-      dplyr::distinct(survey_id, survey_date, depth, block) %>%
+      dplyr::distinct(survey_id, sampling_event_start_date, depth, block) %>%
       nrow()
     
     message(
@@ -113,7 +113,7 @@ calculate_block_diversity <- function(data, dataset_name = "dataset") {
   positive_taxa <- data %>%
     dplyr::group_by(
       survey_id,
-      survey_date,
+      sampling_event_start_date,
       depth,
       block,
       family,
@@ -129,7 +129,7 @@ calculate_block_diversity <- function(data, dataset_name = "dataset") {
     dplyr::filter(total > 0)
   
   block_diversity <- positive_taxa %>%
-    dplyr::group_by(survey_id, survey_date, depth, block) %>%
+    dplyr::group_by(survey_id, sampling_event_start_date, depth, block) %>%
     dplyr::summarise(
       total_abundance = sum(total),
       shannon = {
@@ -141,8 +141,8 @@ calculate_block_diversity <- function(data, dataset_name = "dataset") {
   
   diversity <- all_blocks %>%
     dplyr::left_join(
-      block_diversity,
-      by = c("survey_id", "survey_date", "depth", "block")
+      block_diversity#,
+      # by = c("survey_id", "sampling_event_start_date", "depth", "block")
     ) %>%
     dplyr::mutate(
       total_abundance = dplyr::coalesce(total_abundance, 0),
@@ -169,7 +169,7 @@ prepare_diversity_dataset <- function(
   conflicts <- attr(block_diversity, "samples_with_both")
   
   sample_diversity <- block_diversity %>%
-    dplyr::group_by(survey_id, survey_date, depth) %>%
+    dplyr::group_by(survey_id, sampling_event_start_date, depth) %>%
     dplyr::summarise(
       # Use a temporary name so block_sd is calculated from the individual
       # block values rather than from the newly summarised sample mean.
@@ -183,7 +183,7 @@ prepare_diversity_dataset <- function(
     # occur in the survey list but are absent from the count table.
     dplyr::full_join(
       survey_list,
-      by = c("survey_id", "survey_date", "depth")
+      by = c("survey_id", "sampling_event_start_date", "depth")
     ) %>%
     dplyr::mutate(
       shannon = dplyr::coalesce(shannon, 0),
