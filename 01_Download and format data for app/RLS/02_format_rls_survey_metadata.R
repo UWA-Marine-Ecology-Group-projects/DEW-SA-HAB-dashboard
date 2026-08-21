@@ -38,7 +38,7 @@ add_sampling_event <- function(data) {
     ungroup() %>%
     mutate(
       period = if_else(
-        sampling_event_start_date < as.Date("2025-03-01"),
+        sampling_event_start_date < as.Date("2025-04-01"),
         "Pre-bloom",
         "Bloom"
       ),
