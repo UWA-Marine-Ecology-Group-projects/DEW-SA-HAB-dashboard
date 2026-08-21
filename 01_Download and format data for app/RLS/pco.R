@@ -11,30 +11,32 @@ sl_m1 <- readRDS("data/tidy/rls_m1_survey_list.rds") %>%
   dplyr::mutate(id = paste(survey_id, block)) %>%
   dplyr::filter(location %in% "Encounter")
 
+names(sl_m1)
+
 sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
   CheckEM::clean_names() %>%
   select(site_code, site_name, location_g, bruvsrepor)
 
-unique(sa_sites$location_g)
-
-dates <- sl_m1 %>%
-  distinct(period, site_name, sampling_event, sampling_event_start_date)
+# unique(sa_sites$location_g)
+# 
+# dates <- sl_m1 %>%
+#   distinct(period, site_name, sampling_event, sampling_event_start_date)
 
 m1_complete_count <- readRDS("data/tidy/rls_m1_complete_count.rds") %>%
   left_join(sa_sites) %>%
-  left_join(sl_m1) %>%
+  # left_join(dates) %>%
   dplyr::filter(location_g %in% "Metro")  %>% # FOR TESTING
-  dplyr::group_by(period, survey_id, survey_date, site_name, sampling_event, sampling_event_start_date, depth, family, genus, species, scientific) %>% # average blocks
+  dplyr::group_by(period, sampling_event_start_date, survey_id, survey_date, site_name, sampling_event, depth, family, genus, species, scientific) %>% # average blocks
   dplyr::summarise(total_block = mean(total)) %>%
   ungroup() %>%
-  dplyr::group_by(period, site_name, sampling_event, sampling_event_start_date, family, genus, species, scientific) %>% # average site x year
+  dplyr::group_by(period, sampling_event_start_date, site_name, sampling_event, family, genus, species, scientific) %>% # average site x year
   dplyr::summarise(total_site = mean(total_block)) %>%
-  dplyr::filter(total_site > 1)  %>%
-  mutate(
-    id = paste(site_name, sampling_event, sep = "_")
-  ) %>%
   ungroup() %>%
-  left_join(dates)
+  dplyr::filter(total_site > 1)  %>%
+  mutate(id = paste(site_name, sampling_event, sep = "_")) %>%
+  ungroup()
+
+names(m1_complete_count)
 
 # This is already:
 # one row = survey/block x species
@@ -47,24 +49,25 @@ m1_complete_count <- readRDS("data/tidy/rls_m1_complete_count.rds") %>%
 # ============================================================
 # 2. Create metadata for each sample/block
 # ============================================================
-event_dates <- sl_m1 %>%
-  distinct(
-    site_name,
-    sampling_event,
-    sampling_event_start_date
-  )
+# event_dates <- sl_m1 %>%
+#   distinct(
+#     site_name,
+#     sampling_event,
+#     sampling_event_start_date
+#   )
 
 m1_meta <- m1_complete_count %>%
   distinct(
     id,
     site_name,
     sampling_event,
+    sampling_event_start_date,
     period
   ) %>%
-  left_join(
-    event_dates#,
-    # by = "sampling_event"
-  ) %>%
+  # left_join(
+  #   event_dates#,
+  #   # by = "sampling_event"
+  # ) %>%
   mutate(
     survey_date = as.Date(sampling_event_start_date),
     Year = lubridate::year(survey_date)
@@ -228,3 +231,6 @@ pcoa_result <- ecotraj::trajectoryPCoA(
   x,
   lwd = 2
 )
+
+length(unique(m1_complete_count$site_name))
+       

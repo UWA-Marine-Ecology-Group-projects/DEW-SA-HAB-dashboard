@@ -473,7 +473,8 @@ m1_complete_count <- tidyr::crossing(
   dplyr::mutate(
     total = tidyr::replace_na(total, 0),
     biomass_sum = tidyr::replace_na(biomass_sum, 0)
-  ) 
+  )  %>%
+  left_join(sl_m1)
 
 length(unique(m1_complete_count$id)) 
 length(unique(m1_complete_count$scientific))
@@ -535,7 +536,7 @@ m2_fish_complete_count <- tidyr::crossing(
   dplyr::mutate(
     total = tidyr::replace_na(total, 0),
     biomass_sum = tidyr::replace_na(biomass_sum, 0)
-  )
+  ) %>% left_join(sl_m2)
 
 # Summarise observed M2 invertebrate abundance
 m2_inverts_count_summary <- m2_inverts_clean %>%
@@ -587,7 +588,7 @@ m2_inverts_complete_count <- tidyr::crossing(
   ) %>%
   dplyr::mutate(
     total = tidyr::replace_na(total, 0)
-  )
+  ) %>% left_join(sl_m2)
 
 # M2 fish
 nrow(m2_fish_complete_count)
