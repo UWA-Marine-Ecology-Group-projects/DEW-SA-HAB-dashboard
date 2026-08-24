@@ -27,9 +27,9 @@ period_cols <- c(
 )
 
 plot_output_roots <- c(
-  site = file.path("plots", "rls_b20_observed"),
-  location = file.path("plots", "rls_b20_observed_location"),
-  region = file.path("plots", "rls_b20_observed_region")
+  site = file.path("plots", "rls_b20_ste"),
+  location = file.path("plots", "rls_b20_location"),
+  region = file.path("plots", "rls_b20_region")
 )
 
 plot_types <- c("period", "period_split", "temporal")
@@ -91,69 +91,6 @@ make_safe_filename <- function(x) {
   )
 }
 
-# # Standardise columns before the clean and zero tables are combined.
-# normalise_b20_input <- function(data) {
-#   
-#   data <- data %>%
-#     dplyr::rename(biomass_g = biomass)  %>%
-#     dplyr::mutate(
-#       dplyr::across(
-#         dplyr::any_of(
-#           c(
-#             "survey_id",
-#             "site_code",
-#             "site_name",
-#             "sampling_event",
-#             "program",
-#             "block",
-#             "id",
-#             "period",
-#             "period_split"
-#           )
-#         ),
-#         as.character
-#       ),
-#       dplyr::across(
-#         dplyr::any_of(
-#           c("survey_date", "sampling_event_start_date")
-#         ),
-#         ~ as.Date(as.character(.x))
-#       ),
-#       dplyr::across(
-#         dplyr::any_of(c("size_class", "biomass_g")),
-#         ~ as.numeric(as.character(.x))
-#       )
-#     )
-# }
-# 
-# # Where period is missing, recover it from period_split when possible.
-# # Any non-Pre-bloom period_split is treated as a Bloom period.
-# repair_period <- function(data) {
-#   
-#   if (!"period" %in% names(data)) {
-#     data$period <- NA_character_
-#   }
-#   
-#   if (!"period_split" %in% names(data)) {
-#     data$period_split <- NA_character_
-#   }
-#   
-#   data %>%
-#     dplyr::mutate(
-#       period = dplyr::na_if(trimws(as.character(period)), ""),
-#       period_split = dplyr::na_if(
-#         trimws(as.character(period_split)),
-#         ""
-#       ),
-#       period = dplyr::case_when(
-#         !is.na(period) ~ period,
-#         period_split == "Pre-bloom" ~ "Pre-bloom",
-#         !is.na(period_split) ~ "Bloom",
-#         TRUE ~ NA_character_
-#       )
-#     )
-# }
-
 # Create one row for every surveyed block, including empty blocks.
 make_block_registry <- function(clean_data, zero_data) {
   
@@ -162,15 +99,12 @@ make_block_registry <- function(clean_data, zero_data) {
   )
   
   metadata_vars <- c(
-    "survey_id",
-    "survey_date",
-    "depth",
+    "transect",
     "site_code",
     "site_name",
     "sampling_event",
-    "sampling_event_start_date",
+    # "sampling_event_start_date",
     "program",
-    # "id",
     "period",
     "period_split"
   )
@@ -180,80 +114,29 @@ make_block_registry <- function(clean_data, zero_data) {
       dplyr::select(dplyr::any_of(c(block_keys, metadata_vars))),
     zero_data %>%
       dplyr::select(dplyr::any_of(c(block_keys, metadata_vars)))
-  )
-  
-  missing_keys <- setdiff(block_keys, names(block_records))
-  
-  if (length(missing_keys) > 0) {
-    stop(
-      "The following block identifiers are missing: ",
-      paste(missing_keys, collapse = ", ")
-    )
-  }
-  
-  metadata_present <- setdiff(names(block_records), block_keys)
-  
-  # block_records %>%
-  #   dplyr::group_by(
-  #     dplyr::across(dplyr::all_of(block_keys))
-  #   ) %>%
-  #   dplyr::summarise(
-  #     dplyr::across(
-  #       dplyr::all_of(metadata_present),
-  #       first_non_missing
-  #     ),
-  #     .groups = "drop"
-  #   )
+  ) %>%
+    distinct()
 }
 
 # Sum biomass of fish in size classes >= 20 cm within each block.
 calculate_b20_blocks <- function(clean_data, block_registry) {
-  
-  required_columns <- c(
-    "survey_id",
-    "survey_date",
-    "depth",
-    "block",
-    "size_class",
-    "biomass_g"
-  )
-  
-  missing_columns <- setdiff(required_columns, names(clean_data))
-  
-  if (length(missing_columns) > 0) {
-    stop(
-      "The clean count-and-length table is missing: ",
-      paste(missing_columns, collapse = ", ")
-    )
-  }
-  
-  block_keys <- c(
-    "survey_id",
-    "survey_date",
-    "depth",
-    "block"
-  )
-  
+
   observed_b20 <- clean_data %>%
     dplyr::filter(
       !is.na(size_class),
       size_class >= 20
     ) %>%
-    dplyr::group_by(
-      dplyr::across(dplyr::all_of(block_keys))
-    ) %>%
+    ungroup() %>%
+    dplyr::group_by(transect, block) %>%
     dplyr::summarise(
       b20_g = sum(biomass_g, na.rm = TRUE),
       .groups = "drop"
-    )
+    ) %>% glimpse()
   
   # Start from the complete block registry. A block with no fish >= 20 cm
   # therefore receives B20 biomass of zero.
   block_registry %>%
-    dplyr::left_join(
-      observed_b20,
-      by = block_keys
-    ) %>%
+    dplyr::left_join(observed_b20) %>%
     dplyr::mutate(
       b20_g = dplyr::coalesce(b20_g, 0)
     )
@@ -263,9 +146,7 @@ calculate_b20_blocks <- function(clean_data, block_registry) {
 average_b20_blocks <- function(block_data, metric_name) {
   
   sample_keys <- c(
-    "survey_id",
-    "survey_date",
-    "depth"
+    "transect"
   )
   
   message("block vars")
@@ -280,10 +161,10 @@ average_b20_blocks <- function(block_data, metric_name) {
       dplyr::across(dplyr::all_of(sample_keys))
     ) %>%
     dplyr::summarise(
-      dplyr::across(
-        dplyr::all_of(metadata_vars),
-        first_non_missing
-      ),
+      # dplyr::across(
+      #   dplyr::all_of(metadata_vars),
+      #   first_non_missing
+      # ),
       mean_b20_g = mean(b20_g, na.rm = TRUE),
       block_sd_g = stats::sd(b20_g, na.rm = TRUE),
       n_blocks = dplyr::n_distinct(block),
@@ -292,14 +173,13 @@ average_b20_blocks <- function(block_data, metric_name) {
     dplyr::mutate(
       b20_kg = mean_b20_g / 1000,
       block_sd_kg = block_sd_g / 1000,
-      sampling_event_start_date = as.Date(sampling_event_start_date),
-      start_year_month = format(
-        sampling_event_start_date,
-        "%Y-%m"
-      ),
+      # sampling_event_start_date = as.Date(sampling_event_start_date),
+      # start_year_month = format(
+      #   sampling_event_start_date,
+      #   "%Y-%m"
+      # ),
       metric = metric_name
-    ) %>%
-    repair_period()
+    ) 
 }
 
 # Perform all repeated clean data -> block B20 -> sample B20 steps.
@@ -309,11 +189,9 @@ prepare_b20_dataset <- function(
     metric_name) {
   
   clean_data <- readr::read_rds(clean_path) %>%
-    dplyr::rename(biomass_g = biomass)  #%>%
-    #normalise_b20_input()
+    dplyr::rename(biomass_g = biomass) 
   
-  zero_data <- readr::read_rds(zero_path) #%>%
-    #normalise_b20_input()
+  zero_data <- readr::read_rds(zero_path) 
   
   block_registry <- make_block_registry(
     clean_data = clean_data,
@@ -722,6 +600,33 @@ sa_sites <- sf::read_sf(
 # -----------------------------------------------------------------
 # 5. Calculate sample-level B20 for M1 and M2 fish
 # -----------------------------------------------------------------
+
+# TESTING
+clean_path = "data/tidy/rls_m1_count_and_length.rds"
+zero_path = "data/tidy/rls_m1_zeros.rds"
+
+clean_data <- readr::read_rds(clean_path) %>% dplyr::rename(biomass_g = biomass) 
+zero_data <- readr::read_rds(zero_path) 
+
+block_registry <- make_block_registry(
+  clean_data = clean_data,
+  zero_data = zero_data
+)
+
+block_b20 <- calculate_b20_blocks(
+  clean_data = clean_data,
+  block_registry = block_registry
+)
+
+sample_b20 <- average_b20_blocks(
+  block_data = block_b20,
+  metric_name = metric_name
+)
+
+
+length(unique(test_block_registry$id)) # correct number
+
+
 
 m1_b20 <- prepare_b20_dataset(
   clean_path = "data/tidy/rls_m1_count_and_length.rds",
