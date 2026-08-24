@@ -79,7 +79,7 @@ surveys_not_present_in_m1_data <- anti_join(sl_m1, m1)
 
 manual_fixes_zeros_m1 <- surveys_not_present_in_m1_data %>%
   dplyr::filter(site_code %in% c("GSV117")) %>% # Add in zero where missing
-  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, transect, sampling_event) %>%
+  dplyr::select(survey_id, site_name, site_code, depth, program, block, id, survey_date, transect, sampling_event, period, period_split, sampling_event_start_date) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found")
 
@@ -121,7 +121,7 @@ m2_inverts_zeros <- m2_inverts %>%
   dplyr::filter(recorded_species_name %in% c("No species found")) 
 
 m2_inverts_all_zeros <- surveys_not_present_in_m2_invert_data %>%
-  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa, transect, sampling_event) %>%
+  dplyr::select(survey_id, site_name, site_code, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa, transect, period, period_split, sampling_event_start_date) %>%
   anti_join(surveys_to_remove) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found") %>%
@@ -132,7 +132,7 @@ m2_fish_zeros <- m2_fish %>%
   dplyr::filter(recorded_species_name %in% c("No species found")) 
 
 m2_fish_all_zeros <- surveys_not_present_in_m2_fish_data %>%
-  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa, transect, sampling_event) %>%
+  dplyr::select(survey_id, site_code, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa, transect, period, period_split, sampling_event_start_date) %>%
   anti_join(surveys_to_remove) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found") %>%
