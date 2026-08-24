@@ -685,6 +685,107 @@ make_trajectory_plot <- function(location_name) {
       "_$"
     )
   
+  # ==========================================================
+  # PCoA2 THROUGH TIME
+  #
+  # scale_y_reverse() places negative PCoA2 values at the top
+  # while retaining the original PCoA2 values on the axis.
+  # ==========================================================
+  
+  pcoa2_time_plot <- ggplot(
+    pcoa_scores,
+    aes(
+      x = survey_date,
+      y = PCoA2,
+      group = site_name,
+      colour = site_name
+    )
+  ) +
+    
+    # Connect sampling events within each site through time
+    geom_line(
+      linewidth = 0.8,
+      na.rm = TRUE
+    ) +
+    
+    geom_point(
+      size = 3,
+      na.rm = TRUE
+    ) +
+    
+    # Reference line for zero
+    geom_hline(
+      yintercept = 0,
+      linetype = "dashed",
+      linewidth = 0.4,
+      colour = "grey60"
+    ) +
+    
+    # Reverse the PCoA2 axis so negative values are at the top
+    scale_y_reverse() +
+    
+    scale_x_date(
+      date_breaks = "2 years",
+      date_labels = "%Y",
+      expand = expansion(
+        mult = c(0.02, 0.04)
+      )
+    ) +
+    
+    labs(
+      title = location_name,
+      
+      x = "Sampling date",
+      
+      y = paste0(
+        "PCoA2 (",
+        PCoA2_percent,
+        "%; reversed)"
+      ),
+      
+      colour = "Site"
+    ) +
+    
+    theme_classic() +
+    
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1
+      )
+    )
+  
+  
+  # ==========================================================
+  # SAVE PCoA2 TIME PLOT
+  # ==========================================================
+  
+  pcoa2_time_file <- file.path(
+    output_dir,
+    paste0(
+      "M1_PCoA2_through_time_",
+      safe_location_name,
+      ".png"
+    )
+  )
+  
+  
+  ggsave(
+    filename = pcoa2_time_file,
+    plot = pcoa2_time_plot,
+    width = 12,
+    height = 7,
+    units = "in",
+    dpi = 300,
+    bg = "white"
+  )
+  
+  
+  message(
+    "Saved: ",
+    pcoa2_time_file
+  )
+  
   
   output_file <- file.path(
     output_dir,
@@ -772,3 +873,4 @@ for (current_location in locations) {
     }
   )
 }
+
