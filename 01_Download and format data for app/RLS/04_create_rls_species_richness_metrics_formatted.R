@@ -470,20 +470,20 @@ sl_m2_inverts <- readr::read_rds("data/tidy/rls_m2_inverts_surveys_final.rds") %
 # 5. Calculate richness for the three datasets
 # -----------------------------------------------------------------
 
-test_block_richness <- readr::read_rds("data/tidy/rls_m1_complete_count.rds") %>%
-  calculate_block_species_richness(dataset_name = "M1 fish")
-
-test_sample_richness <- test_block_richness %>%
-  dplyr::group_by(transect) %>%
-  dplyr::summarise(
-    mean_species_richness = mean(species_richness, na.rm = TRUE),
-    block_sd = stats::sd(species_richness, na.rm = TRUE),
-    n_blocks = dplyr::n_distinct(block),
-    .groups = "drop"
-  ) %>%
-  dplyr::rename(species_richness = mean_species_richness) %>%
-  dplyr::left_join(sl_m1) %>%
-  dplyr::mutate(metric = metric_levels[[1]])
+# test_block_richness <- readr::read_rds("data/tidy/rls_m1_complete_count.rds") %>%
+#   calculate_block_species_richness(dataset_name = "M1 fish")
+# 
+# test_sample_richness <- test_block_richness %>%
+#   dplyr::group_by(transect) %>%
+#   dplyr::summarise(
+#     mean_species_richness = mean(species_richness, na.rm = TRUE),
+#     block_sd = stats::sd(species_richness, na.rm = TRUE),
+#     n_blocks = dplyr::n_distinct(block),
+#     .groups = "drop"
+#   ) %>%
+#   dplyr::rename(species_richness = mean_species_richness) %>%
+#   dplyr::left_join(sl_m1) %>%
+#   dplyr::mutate(metric = metric_levels[[1]])
 
 m1_fish <- prepare_richness_dataset(
   count_path = "data/tidy/rls_m1_complete_count.rds",
