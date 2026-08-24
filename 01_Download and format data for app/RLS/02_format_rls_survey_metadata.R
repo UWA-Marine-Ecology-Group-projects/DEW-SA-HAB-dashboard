@@ -156,19 +156,21 @@ cols_to_keep <- c("survey_id", "location", "mpa", "site_code", "site_name",
 sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("site_name", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
   tidyr::uncount(weights = 2, .id = "block") %>%
-  dplyr::filter(!survey_id %in% c("923406553", "923406567")) # Lost data sheet - have removed
+  dplyr::filter(!survey_id %in% c("923406553", "923406567")) %>% # Lost data sheet - have removed
+  dplyr::mutate(transect = paste("Transect", survey_id, survey_date, sep = "_"))
 
 ## For ATRC M2, only 1 block before 2016 ----
 sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
   # tidyr::uncount(weights = 2, .id = "block")
   tidyr::uncount(weights = if_else(program == "ATRC" & survey_date < as.Date("2016-01-01"), 1L, 2L), .id = "block") %>%
-  dplyr::filter(!survey_id %in% c("923406553", "923406567")) # Lost data sheet - have removed
+  dplyr::filter(!survey_id %in% c("923406553", "923406567")) %>% # Lost data sheet - have removed
 # was 3698 rows with fix = 3402
+  dplyr::mutate(transect = paste("Transect", survey_id, survey_date, sep = "_"))
 
 sl_m2 %>%
   count(program, survey_date, survey_id, name = "n_blocks") %>%
-  count(program, survey_date < as.Date("2016-01-01"), n_blocks)
+  count(program, survey_date < as.Date("2016-01-01"), n_blocks) 
 
 sl_m3 <- left_join(sl_m3_raw, dates_m3, by = c("site_name", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
@@ -183,3 +185,14 @@ names(sl_m1)
 write_rds(sl_m1, "data/tidy/rls_m1_survey_list.rds")
 write_rds(sl_m2, "data/tidy/rls_m2_survey_list.rds")
 write_rds(sl_m3, "data/tidy/rls_m3_survey_list.rds")
+
+# Number of transects in each ----
+m1_transects <- sl_m1 %>%
+  dplyr::distinct(survey_id, depth, survey_date) %>%
+  nrow() %>%
+  print
+
+m2_transects <- sl_m2 %>%
+  dplyr::distinct(survey_id, depth, survey_date) %>%
+  nrow() %>%
+  print

@@ -79,7 +79,7 @@ surveys_not_present_in_m1_data <- anti_join(sl_m1, m1)
 
 manual_fixes_zeros_m1 <- surveys_not_present_in_m1_data %>%
   dplyr::filter(site_code %in% c("GSV117")) %>% # Add in zero where missing
-  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date) %>%
+  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, transect, sampling_event) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found")
 
@@ -121,7 +121,7 @@ m2_inverts_zeros <- m2_inverts %>%
   dplyr::filter(recorded_species_name %in% c("No species found")) 
 
 m2_inverts_all_zeros <- surveys_not_present_in_m2_invert_data %>%
-  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa) %>%
+  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa, transect, sampling_event) %>%
   anti_join(surveys_to_remove) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found") %>%
@@ -132,7 +132,7 @@ m2_fish_zeros <- m2_fish %>%
   dplyr::filter(recorded_species_name %in% c("No species found")) 
 
 m2_fish_all_zeros <- surveys_not_present_in_m2_fish_data %>%
-  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa) %>%
+  dplyr::select(survey_id, site_name, depth, program, block, id, survey_date, site_code, latitude, longitude, sampling_event, location, mpa, transect, sampling_event) %>%
   anti_join(surveys_to_remove) %>%
   dplyr::mutate(recorded_species_name = "No species found",
                 species_name = "No species found") %>%
@@ -412,6 +412,7 @@ length(unique(m1_clean$scientific)) # 131 species of fish
 length(unique(m1_clean$id)) # 3538 surveys with fish
 length(unique(m1_all_zeros$id)) # 93 surveys without fish
 length(unique(m1_clean$id)) + length(unique(m1_all_zeros$id)) # 3631 surveys
+length(unique(m1_clean$transect)) + length(unique(m1_all_zeros$transect)) # 1,869 surveys
 3631 * length(unique(m1_clean$scientific)) # 475,661 rows
 
 # Need to combine size data for this dataframe ----
@@ -434,15 +435,23 @@ m1_surveys <- dplyr::bind_rows(
   m1_clean %>%
     dplyr::distinct(
       survey_id, site_name, survey_date, depth, sampling_event,
-      program, block, id
+      program, block, id, transect
     ),
   m1_all_zeros %>%
     dplyr::distinct(
       survey_id, site_name, survey_date, depth, sampling_event,
-      program, block, id
+      program, block, id, transect
     )
 ) %>%
   dplyr::distinct()
+
+m1_transects <- m1_surveys %>%
+  dplyr::distinct(transect) %>%
+  nrow()
+
+m1_blocks <- m1_surveys %>%
+  dplyr::distinct(id) %>%
+  nrow()
 
 # List of fish
 m1_species_list <- m1_clean %>%
@@ -502,15 +511,23 @@ m2_fish_surveys <- dplyr::bind_rows(
   m2_fish_clean %>%
     dplyr::distinct(
       survey_id, site_name, survey_date, depth, sampling_event,
-      program, block, id
+      program, block, id, transect
     ),
   m2_fish_all_zeros %>%
     dplyr::distinct(
       survey_id, site_name, survey_date, depth, sampling_event,
-      program, block, id
+      program, block, id, transect
     )
 ) %>%
   dplyr::distinct()
+
+m2_fish_transects <- m2_fish_surveys %>%
+  dplyr::distinct(transect) %>%
+  nrow()
+
+m2_fish_blocks <- m2_fish_surveys %>%
+  dplyr::distinct(id) %>%
+  nrow()
 
 # Unique corrected fish IDs
 m2_fish_species_list <- m2_fish_clean %>%
@@ -555,15 +572,23 @@ m2_inverts_surveys <- dplyr::bind_rows(
   m2_inverts_clean %>%
     dplyr::distinct(
       survey_id, site_name, survey_date, depth, sampling_event,
-      program, block, id
+      program, block, id, transect
     ),
   m2_inverts_all_zeros %>%
     dplyr::distinct(
       survey_id, site_name, survey_date, depth, sampling_event,
-      program, block, id
+      program, block, id, transect
     )
 ) %>%
   dplyr::distinct()
+
+m2_inverts_transects <- m2_inverts_surveys %>%
+  dplyr::distinct(transect) %>%
+  nrow()
+
+m2_inverts_blocks <- m2_inverts_surveys %>%
+  dplyr::distinct(id) %>%
+  nrow()
 
 # Unique corrected invertebrate IDs
 m2_inverts_species_list <- m2_inverts_clean %>%
@@ -616,5 +641,29 @@ m2_inverts_complete_count %>%
 write_rds(m1_complete_count, "data/tidy/rls_m1_complete_count.rds")
 write_rds(m2_fish_complete_count, "data/tidy/rls_m2_fish_complete_count.rds")
 write_rds(m2_inverts_complete_count, "data/tidy/rls_m2_inverts_complete_count.rds")
+
+# Save final survey lists ----
+m1_surveys_with_meta <- m1_surveys %>%
+  left_join(sl_m1)
+
+length(unique(m1_surveys_with_meta$transect))
+
+test <- m1_surveys_with_meta %>%
+  dplyr::select(-c(block, id)) %>%
+  dplyr::distinct()
+
+dups <- test %>%
+  group_by(survey_id) %>%
+  dplyr::summarise(m = n())
+
+m2_fish_surveys_with_meta <- m2_fish_surveys %>%
+  left_join(sl_m2)
+
+m2_inverts_surveys_with_meta <- m2_inverts_surveys %>%
+  left_join(sl_m2)
+
+write_rds(m1_surveys_with_meta , "data/tidy/rls_m1_surveys_final.rds")
+write_rds(m2_fish_surveys_with_meta, "data/tidy/rls_m2_fish_surveys_final.rds")
+write_rds(m2_inverts_surveys_with_meta, "data/tidy/rls_m2_inverts_surveys_final.rds")
 
 # TODO create a complete length dataframe ---

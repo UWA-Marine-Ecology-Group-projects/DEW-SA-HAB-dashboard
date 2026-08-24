@@ -1,13 +1,432 @@
 #################################################################
-# Create and plot observed species richness from RLS M1 and M2 data
-#################################################################
+# Create Species Richness from RLS M1 and M2 data
 
+# Load libraries needed -----
 library(dplyr)
+library(sf)
+library(stringr)
+library(readr)
+library(tidyr)
 library(ggplot2)
+library(purrr)
 
-# -----------------------------------------------------------------
-# 1. Settings
-# -----------------------------------------------------------------
+# Read in locations and regions ----
+sa_sites <- sf::read_sf(
+  "dev/Dive_sites_2026_07_14.shp"
+) %>%
+  CheckEM::clean_names() %>%
+  select(
+    site_code,
+    site_name,
+    location_g,
+    bruvsrepor
+  ) %>%
+  rename(region = bruvsrepor)
+
+# Calculates richness of individual blocks to then be averaged ----
+calculate_block_species_richness <- function(data, dataset_name = "dataset") {
+  
+  # Combine duplicate taxon records within each block
+  data_summarised <- data %>%
+    dplyr::group_by(transect, block, family, genus, species, scientific) %>%
+    dplyr::summarise(total = sum(total, na.rm = TRUE), .groups = "drop")
+  
+  # Find spp and identified-species conflicts within the same block
+  samples_with_both <- data_summarised %>%
+    dplyr::group_by(transect, block, family, genus) %>%
+    dplyr::summarise(spp_present = any(species == "spp" & total > 0),
+                     identified_species_present = any(species != "spp" & total > 0),
+                     .groups = "drop") %>%
+    dplyr::filter(spp_present, identified_species_present)
+  
+  if (nrow(samples_with_both) > 0) {
+    
+    n_blocks <- samples_with_both %>%
+      dplyr::distinct(transect, block) %>%
+      nrow()
+    
+    message(dataset_name, ": found ", nrow(samples_with_both), " block/genus combinations across ", n_blocks, " blocks containing both an spp record and an identified species. The spp records will be removed.")
+    
+  } else {
+    message(dataset_name, ": no blocks contained both an spp record and an ", "identified species from the same genus.")
+  }
+  
+  # Calculate species richness separately for every block
+  richness <- data_summarised %>%
+    dplyr::group_by(transect, block, family, genus) %>%
+    dplyr::mutate(identified_species_present = any(species != "spp" & total > 0)) %>%
+    dplyr::filter(!(species == "spp" & total > 0 & identified_species_present)) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(transect, block) %>%
+    dplyr::summarise(species_richness = dplyr::n_distinct(scientific[total > 0], na.rm = TRUE), .groups = "drop")
+  
+  attr(richness, "samples_with_both") <- samples_with_both
+  
+  richness
+}
+
+# Read in survey-lists to get grouping variables ----
+sl_m1 <- read_rds("data/tidy/rls_m1_survey_list.rds") %>%
+  select(-block) %>%
+  distinct()
+
+sl_m2 <- read_rds("data/tidy/rls_m2_survey_list.rds") %>%
+  select(-block) %>%
+  distinct()
+
+# Species Richness per sample (Not calculated per block!) ----
+## M1 fish (First average blocks together)----
+m1_fish_sr_blocks <- read_rds("data/tidy/rls_m1_complete_count.rds") %>%
+  calculate_block_species_richness(dataset_name = "M1 fish")
+
+m1_fish_spp_conflicts <- attr(m1_fish_sr_blocks, "samples_with_both")
+
+m1_fish_sr_samples <- m1_fish_sr_blocks %>%
+  dplyr::group_by(transect) %>%
+  dplyr::summarise(species_richness = mean(species_richness, na.rm = TRUE),
+                   n_blocks = dplyr::n_distinct(block),
+                   block_sd = stats::sd(species_richness, na.rm = TRUE),
+                   .groups = "drop") %>%
+  dplyr::left_join(sl_m1)
+
+hist(m1_fish_sr_samples$species_richness)
+summary(m1_fish_sr_samples)
+
+## M2 fish  (First average blocks together) ----
+m2_fish_sr_blocks <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %>%
+  calculate_block_species_richness(dataset_name = "M2 fish")
+
+m2_fish_spp_conflicts <- attr(m2_fish_sr_blocks, "samples_with_both")
+
+m2_fish_sr_samples <- m2_fish_sr_blocks %>%
+  dplyr::group_by(transect) %>%
+  dplyr::summarise(species_richness = mean(species_richness, na.rm = TRUE),
+                   n_blocks = dplyr::n_distinct(block),
+                   block_sd = stats::sd(species_richness, na.rm = TRUE),
+                   .groups = "drop") %>%
+  dplyr::left_join(sl_m2)
+
+hist(m2_fish_sr_samples$species_richness)
+
+## M2 inverts  (First average blocks together) ----
+m2_inverts_sr_blocks <- read_rds("data/tidy/rls_m2_inverts_complete_count.rds") %>%
+  calculate_block_species_richness(dataset_name = "M2 invertebrates")
+
+m2_inverts_spp_conflicts <- attr(m2_inverts_sr_blocks, "samples_with_both")
+
+m2_inverts_sr_samples <- m2_inverts_sr_blocks %>%
+  dplyr::group_by(transect) %>%  # not block
+  dplyr::summarise(species_richness = mean(species_richness, na.rm = TRUE),
+                   n_blocks = dplyr::n_distinct(block),
+                   block_sd = stats::sd(species_richness, na.rm = TRUE), .groups = "drop") %>%
+  dplyr::left_join(sl_m2)
+
+hist(m2_inverts_sr_samples$species_richness)
+
+## Calculate averages per site/sampling event ----
+m1_fish_site_sr_average <- m1_fish_sr_samples %>%
+  ungroup() %>%
+  dplyr::group_by(site_name, site_code, sampling_event, latitude, longitude, 
+                  period, period_split, sampling_event_start_date) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop") #%>%
+#dplyr::filter(num_transects > 3)
+
+m2_fish_site_sr_average <- m2_fish_sr_samples %>%
+  ungroup() %>%
+  dplyr::group_by(site_name, site_code, sampling_event, latitude, longitude, 
+                  period, period_split, sampling_event_start_date) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop") #%>%
+#dplyr::filter(num_transects > 3)
+
+m2_inverts_site_sr_average <- m2_inverts_sr_samples %>%
+  ungroup() %>%
+  dplyr::group_by(site_name, site_code, sampling_event, latitude, longitude, 
+                  period, period_split, sampling_event_start_date) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop") #%>%
+#dplyr::filter(num_transects > 3)
+
+## Save formatted data ----
+write_rds(m1_fish_site_sr_average, "data/tidy/rls_m1_fish_speciesrichness_average_per_site.rds")
+write_rds(m2_fish_site_sr_average, "data/tidy/rls_m2_fish_speciesrichness_average_per_site.rds")
+write_rds(m2_inverts_site_sr_average, "data/tidy/rls_m2_inverts_speciesrichness_average_per_site.rds")
+
+## Calculate averages per location/year-month ----
+m1_fish_location_sr_average <- m1_fish_sr_samples %>%
+  ungroup() %>%
+  left_join(sa_sites) %>%
+  dplyr::group_by(location_g, period, period_split, start_year_month) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop")
+
+m2_fish_location_sr_average <- m2_fish_sr_samples %>%
+  ungroup() %>%
+  left_join(sa_sites) %>%
+  dplyr::group_by(location_g, period, period_split, start_year_month) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop")
+
+m2_inverts_location_sr_average <- m2_inverts_sr_samples %>%
+  ungroup() %>%
+  left_join(sa_sites) %>%
+  dplyr::group_by(location_g, period, period_split, start_year_month) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop") 
+
+## Calculate averages per location/year-month ----
+m1_fish_region_sr_average <- m1_fish_sr_samples %>%
+  ungroup() %>%
+  left_join(sa_sites) %>%
+  dplyr::group_by(region, period, period_split, start_year_month) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop")
+
+unique(m1_fish_region_sr_average$region) # seven regions
+
+m2_fish_region_sr_average <- m2_fish_sr_samples %>%
+  ungroup() %>%
+  left_join(sa_sites) %>%
+  dplyr::group_by(region, period, period_split, start_year_month) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop")
+
+m2_inverts_region_sr_average <- m2_inverts_sr_samples %>%
+  ungroup() %>%
+  left_join(sa_sites) %>%
+  dplyr::group_by(region, period, period_split, start_year_month) %>%
+  dplyr::summarise(mean = mean(species_richness, na.rm = TRUE),
+                   se   = sd(species_richness, na.rm = TRUE) /
+                     sqrt(sum(!is.na(species_richness))),
+                   num_transects = n(),
+                   .groups = "drop") 
+
+# Creating summarised values for period and for period split -----
+summarise_site_richness <- function(data, period_variable) {
+  
+  period_variable <- rlang::ensym(period_variable)
+  
+  # Average transects
+  site_period_summary <- data %>%
+    dplyr::group_by(
+      site_name,
+      site_code,
+      latitude,
+      longitude,
+      !!period_variable
+    ) %>%
+    dplyr::summarise(
+      mean_species_richness = mean(
+        species_richness,
+        na.rm = TRUE
+      ),
+      sd = sd(
+        species_richness,
+        na.rm = TRUE
+      ),
+      se = sd(
+        species_richness,
+        na.rm = TRUE
+      ) / sqrt(sum(!is.na(species_richness))),
+      
+      n_transects = sum(
+        !is.na(species_richness)
+      ),
+      .groups = "drop"
+    )
+  
+  return(site_period_summary)
+}
+
+# Creating summarised values for location -----
+summarise_location_richness <- function(data, period_variable) {
+  
+  period_variable <- rlang::ensym(period_variable)
+  
+  # Average transects
+  location_period_summary <- data %>%
+    dplyr::group_by(
+      location_g,
+      !!period_variable
+    ) %>%
+    dplyr::summarise(
+      mean_species_richness = mean(
+        species_richness,
+        na.rm = TRUE
+      ),
+      sd = sd(
+        species_richness,
+        na.rm = TRUE
+      ),
+      se = sd(
+        species_richness,
+        na.rm = TRUE
+      ) / sqrt(sum(!is.na(species_richness))),
+      
+      n_transects = sum(
+        !is.na(species_richness)
+      ),
+      .groups = "drop"
+    )
+  
+  return(location_period_summary)
+}
+
+# Creating summarised values for region -----
+summarise_region_richness <- function(data, period_variable) {
+  
+  period_variable <- rlang::ensym(period_variable)
+  
+  # Average transects
+  region_period_summary <- data %>%
+    dplyr::group_by(
+      region,
+      !!period_variable
+    ) %>%
+    dplyr::summarise(
+      mean_species_richness = mean(
+        species_richness,
+        na.rm = TRUE
+      ),
+      sd = sd(
+        species_richness,
+        na.rm = TRUE
+      ),
+      se = sd(
+        species_richness,
+        na.rm = TRUE
+      ) / sqrt(sum(!is.na(species_richness))),
+      
+      n_transects = sum(
+        !is.na(species_richness)
+      ),
+      .groups = "drop"
+    )
+  
+  return(region_period_summary)
+}
+## Period comparisons ----
+### SITE ----
+m1_fish_site_period <- m1_fish_sr_samples %>%
+  summarise_site_richness(period)
+
+m2_fish_site_period <- m2_fish_sr_samples %>%
+  summarise_site_richness(period)
+
+m2_inverts_site_period <- m2_inverts_sr_samples %>%
+  summarise_site_richness(period)
+
+### LOCATION ----
+m1_fish_location_period <- m1_fish_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_location_richness(period)
+
+m2_fish_location_period <- m2_fish_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_location_richness(period)
+
+m2_inverts_location_period <- m2_inverts_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_location_richness(period)
+
+### REGION ----
+m1_fish_region_period <- m1_fish_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_region_richness(period)
+
+m2_fish_region_period <- m2_fish_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_region_richness(period)
+
+m2_inverts_region_period <- m2_inverts_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_region_richness(period)
+
+## Multiple Period comparisons ----
+### SITE ----
+m1_fish_site_period_split <- m1_fish_sr_samples %>%
+  summarise_site_richness(period_split)
+
+m2_fish_site_period_split <- m2_fish_sr_samples %>%
+  summarise_site_richness(period_split)
+
+m2_inverts_site_period_split <- m2_inverts_sr_samples %>%
+  summarise_site_richness(period_split)
+
+### LOCATION ----
+m1_fish_location_period_split <- m1_fish_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_location_richness(period_split)
+
+m2_fish_location_period_split <- m2_fish_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_location_richness(period_split)
+
+m2_inverts_location_period_split <- m2_inverts_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_location_richness(period_split)
+
+### REGION ----
+m1_fish_region_period_split <- m1_fish_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_region_richness(period_split)
+
+m2_fish_region_period_split <- m2_fish_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_region_richness(period_split)
+
+m2_inverts_region_period_split <- m2_inverts_sr_samples %>%
+  left_join(sa_sites) %>%
+  summarise_region_richness(period_split)
+
+# TODO percentage changes of sites
+
+# Plot observed species richness by SITE ----
+##  Plot settings ----
+plot_output_root <- file.path(
+  "plots",
+  "rls_species_richness_observed"
+)
+
+plot_dirs <- c(
+  period = file.path(plot_output_root, "period"),
+  period_split = file.path(plot_output_root, "period_split"),
+  temporal = file.path(plot_output_root, "temporal")
+)
+
+purrr::walk(
+  unname(plot_dirs),
+  ~ dir.create(
+    .x,
+    recursive = TRUE,
+    showWarnings = FALSE
+  )
+)
 
 metric_levels <- c(
   "M1 fish species richness",
@@ -15,21 +434,10 @@ metric_levels <- c(
   "M2 invertebrate species richness"
 )
 
-period_levels <- c("Pre-bloom", "Bloom")
-
-period_cols <- c(
+metric_period_cols <- c(
   "Pre-bloom" = "#193b73",
   "Bloom" = "#92bd83"
 )
-
-# Keep the existing output-folder names.
-plot_output_roots <- c(
-  site = file.path("plots", "rls_species_richness_site"),
-  location = file.path("plots", "rls_species_richness_location"),
-  region = file.path("plots", "rls_species_richness_region")
-)
-
-plot_types <- c("period", "period_split", "temporal")
 
 observed_plot_theme <- theme(
   axis.line.x = element_line(
@@ -47,224 +455,201 @@ observed_plot_theme <- theme(
   )
 )
 
-# -----------------------------------------------------------------
-# 2. Helper functions
-# -----------------------------------------------------------------
+# Broad period plotting data ----
 
-# Calculates richness of individual blocks before blocks are averaged.
-calculate_block_species_richness <- function(data, dataset_name = "dataset") {
+period_plot_data <- dplyr::bind_rows(
   
-  # Find spp and identified-species conflicts within the same block.
-  samples_with_both <- data %>%
-    dplyr::group_by(
-      survey_id,
-      survey_date,
-      depth,
-      block,
-      family,
-      genus
-    ) %>%
-    dplyr::summarise(
-      spp_present = any(species == "spp" & total > 0),
-      identified_species_present = any(species != "spp" & total > 0),
-      .groups = "drop"
-    ) %>%
-    dplyr::filter(spp_present, identified_species_present)
+  m1_fish_site_period %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[1]]
+    ),
   
-  if (nrow(samples_with_both) > 0) {
-    
-    n_blocks <- samples_with_both %>%
-      dplyr::distinct(survey_id, survey_date, depth, block) %>%
-      nrow()
-    
-    message(
-      dataset_name,
-      ": found ",
-      nrow(samples_with_both),
-      " block/genus combinations across ",
-      n_blocks,
-      paste0(
-        " blocks containing both an spp record and an identified ",
-        "species. The spp records will be removed."
-      )
-    )
-    
-  } else {
-    
-    message(
-      dataset_name,
-      paste0(
-        ": no blocks contained both an spp record and an ",
-        "identified species from the same genus."
-      )
-    )
-  }
+  m2_fish_site_period %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[2]]
+    ),
   
-  richness <- data %>%
-    dplyr::group_by(
-      survey_id,
-      survey_date,
-      depth,
-      block,
-      family,
-      genus
-    ) %>%
-    dplyr::mutate(
-      identified_species_present = any(species != "spp" & total > 0)
-    ) %>%
-    dplyr::filter(
-      !(species == "spp" & total > 0 & identified_species_present)
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(survey_id, survey_date, depth, block) %>%
-    dplyr::summarise(
-      species_richness = dplyr::n_distinct(
-        scientific[total > 0],
-        na.rm = TRUE
-      ),
-      .groups = "drop"
+  m2_inverts_site_period %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[3]]
     )
   
-  attr(richness, "samples_with_both") <- samples_with_both
-  
-  richness
-}
-
-# Performs the repeated count-file -> block richness -> sample richness steps.
-prepare_richness_dataset <- function(
-    count_path,
-    survey_list,
-    dataset_name,
-    metric_name) {
-  
-  block_richness <- readr::read_rds(count_path) %>%
-    calculate_block_species_richness(dataset_name = dataset_name)
-  
-  conflicts <- attr(block_richness, "samples_with_both")
-  
-  sample_richness <- block_richness %>%
-    dplyr::group_by(survey_id, survey_date, depth) %>%
-    dplyr::summarise(
-      # Use a temporary name so block_sd is calculated from block values,
-      # rather than from the newly summarised mean.
-      mean_species_richness = mean(species_richness, na.rm = TRUE),
-      block_sd = stats::sd(species_richness, na.rm = TRUE),
-      n_blocks = dplyr::n_distinct(block),
-      .groups = "drop"
-    ) %>%
-    dplyr::rename(species_richness = mean_species_richness) %>%
-    dplyr::left_join(
-      survey_list,
-      by = c("survey_id", "survey_date", "depth")
-    ) %>%
-    dplyr::mutate(metric = metric_name)
-  
-  list(
-    samples = sample_richness,
-    conflicts = conflicts
-  )
-}
-
-# Convert a YYYY-MM value to the first day of that month.
-month_to_date <- function(x) {
-  x <- as.character(x)
-  as.Date(ifelse(is.na(x), NA_character_, paste0(x, "-01")))
-}
-
-# Convert one sample table into common site, location and region columns.
-# This means all subsequent summaries and plot-saving code can be run once.
-expand_spatial_levels <- function(data) {
-  
-  dplyr::bind_rows(
-    
-    data %>%
-      dplyr::transmute(
-        spatial_level = "site",
-        group_id = as.character(site_code),
-        group_name = dplyr::coalesce(
-          as.character(site_name),
-          as.character(site_code)
-        ),
-        latitude,
-        longitude,
-        time_id = as.character(sampling_event),
-        time_date = as.Date(sampling_event_start_date),
-        metric,
-        species_richness,
-        period = as.character(period),
-        period_split = as.character(period_split)
-      ),
-    
-    data %>%
-      dplyr::transmute(
-        spatial_level = "location",
-        group_id = as.character(location_g),
-        group_name = as.character(location_g),
-        latitude = NA_real_,
-        longitude = NA_real_,
-        time_id = as.character(start_year_month),
-        time_date = month_to_date(start_year_month),
-        metric,
-        species_richness,
-        period = as.character(period),
-        period_split = as.character(period_split)
-      ),
-    
-    data %>%
-      dplyr::transmute(
-        spatial_level = "region",
-        group_id = as.character(region),
-        group_name = as.character(region),
-        latitude = NA_real_,
-        longitude = NA_real_,
-        time_id = as.character(start_year_month),
-        time_date = month_to_date(start_year_month),
-        metric,
-        species_richness,
-        period = as.character(period),
-        period_split = as.character(period_split)
-      )
+) %>%
+  dplyr::filter(
+    !is.na(site_code),
+    !is.na(period),
+    !is.na(estimate)
   ) %>%
-    dplyr::filter(
-      !is.na(group_id),
-      group_id != ""
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
     )
-}
+  )
 
-# Generic mean, SD, SE and sample-size summary for any grouping columns.
-summarise_richness <- function(data, group_vars) {
+# Split-period plotting data ----
+period_split_plot_data <- dplyr::bind_rows(
   
-  data %>%
-    dplyr::group_by(
-      dplyr::across(dplyr::all_of(group_vars))
-    ) %>%
-    dplyr::summarise(
-      n_transects = sum(!is.na(species_richness)),
-      estimate = ifelse(
-        n_transects > 0,
-        mean(species_richness, na.rm = TRUE),
-        NA_real_
-      ),
-      sd = ifelse(
-        n_transects > 1,
-        stats::sd(species_richness, na.rm = TRUE),
-        NA_real_
-      ),
-      se = sd / sqrt(n_transects),
-      .groups = "drop"
+  m1_fish_site_period_split %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[1]]
+    ),
+  
+  m2_fish_site_period_split %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[2]]
+    ),
+  
+  m2_inverts_site_period_split %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[3]]
     )
-}
-
-make_safe_filename <- function(x) {
   
-  x %>%
-    stringr::str_replace_all("[^A-Za-z0-9]+", "_") %>%
-    stringr::str_replace_all("^_+|_+$", "")
-}
+) %>%
+  dplyr::filter(
+    !is.na(site_code),
+    !is.na(period_split),
+    !is.na(estimate)
+  ) %>%
+  dplyr::mutate(
+    period = dplyr::if_else(
+      period_split == "Pre-bloom",
+      "Pre-bloom",
+      "Bloom"
+    )
+  )
 
-# -----------------------------------------------------------------
-# 3. Plot functions
-# -----------------------------------------------------------------
+# Arrange the split periods chronologically
+period_split_levels <- c(
+  "Pre-bloom",
+  period_split_plot_data$period_split %>%
+    unique() %>%
+    stats::na.omit() %>%
+    setdiff("Pre-bloom") %>%
+    sort()
+)
+
+period_split_plot_data <- period_split_plot_data %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")
+    ),
+    period_split = factor(
+      period_split,
+      levels = period_split_levels
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
+  )
+
+# Temporal plotting data ----
+
+temporal_plot_data <- dplyr::bind_rows(
+  
+  m1_fish_site_sr_average %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      sampling_event,
+      sampling_event_start_date =
+        as.Date(sampling_event_start_date),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[1]]
+    ),
+  
+  m2_fish_site_sr_average %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      sampling_event,
+      sampling_event_start_date =
+        as.Date(sampling_event_start_date),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[2]]
+    ),
+  
+  m2_inverts_site_sr_average %>%
+    dplyr::transmute(
+      site_name,
+      site_code = as.character(site_code),
+      sampling_event,
+      sampling_event_start_date =
+        as.Date(sampling_event_start_date),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[3]]
+    )
+  
+) %>%
+  dplyr::filter(
+    !is.na(site_code),
+    !is.na(sampling_event_start_date),
+    !is.na(estimate)
+  ) %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
+  )
 
 plot_observed_period <- function(data) {
   
@@ -297,20 +682,24 @@ plot_observed_period <- function(data) {
       drop = FALSE
     ) +
     scale_fill_manual(
-      values = period_cols,
+      values = metric_period_cols,
       drop = FALSE
     ) +
     scale_y_continuous(
-      expand = expansion(mult = c(0, 0.08))
+      expand = expansion(
+        mult = c(0, 0.08)
+      )
     ) +
     labs(
       x = NULL,
-      y = "Average species richness\n(\u00B1 SE)",
+      y = "Average species richness\n(± SE)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +
     observed_plot_theme +
-    theme(legend.position = "none")
+    theme(
+      legend.position = "none"
+    )
 }
 
 plot_observed_period_split <- function(data) {
@@ -344,20 +733,26 @@ plot_observed_period_split <- function(data) {
       drop = FALSE
     ) +
     scale_fill_manual(
-      values = period_cols,
+      values = metric_period_cols,
       drop = FALSE
     ) +
     scale_x_discrete(
       labels = function(x) {
-        stringr::str_replace(x, "^Bloom ", "")
+        stringr::str_replace(
+          x,
+          "^Bloom ",
+          ""
+        )
       }
     ) +
     scale_y_continuous(
-      expand = expansion(mult = c(0, 0.08))
+      expand = expansion(
+        mult = c(0, 0.08)
+      )
     ) +
     labs(
       x = "Period",
-      y = "Average species richness\n(\u00B1 SE)",
+      y = "Average species richness\n(± SE)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +
@@ -373,21 +768,39 @@ plot_observed_period_split <- function(data) {
 
 plot_observed_temporal <- function(data) {
   
-  event_dates <- sort(unique(data$time_date))
+  event_dates <- sort(
+    unique(data$sampling_event_start_date)
+  )
   
-  # Width is measured in days for a Date x-axis.
+  # Width is measured in days for a Date x-axis
   if (length(event_dates) > 1) {
     
-    date_gaps <- as.numeric(diff(event_dates))
-    date_gaps <- date_gaps[is.finite(date_gaps) & date_gaps > 0]
+    date_gaps <- as.numeric(
+      diff(event_dates)
+    )
+    
+    date_gaps <- date_gaps[
+      is.finite(date_gaps) &
+        date_gaps > 0
+    ]
     
     if (length(date_gaps) > 0) {
-      bar_width <- min(120, max(5, min(date_gaps) * 0.7))
+      
+      bar_width <- min(
+        120,
+        max(
+          5,
+          min(date_gaps) * 0.7
+        )
+      )
+      
     } else {
+      
       bar_width <- 30
     }
     
   } else {
+    
     bar_width <- 30
   }
   
@@ -396,7 +809,7 @@ plot_observed_temporal <- function(data) {
   ggplot(
     data,
     aes(
-      x = time_date,
+      x = sampling_event_start_date,
       y = estimate,
       fill = period
     )
@@ -422,21 +835,27 @@ plot_observed_temporal <- function(data) {
       drop = FALSE
     ) +
     scale_fill_manual(
-      values = period_cols,
+      values = metric_period_cols,
       drop = FALSE
     ) +
     scale_x_date(
       date_breaks = "1 year",
       date_labels = "%Y",
-      expand = expansion(mult = c(0.03, 0.03)),
-      guide = guide_axis(check.overlap = TRUE)
+      expand = expansion(
+        mult = c(0.03, 0.03)
+      ),
+      guide = guide_axis(
+        check.overlap = TRUE
+      )
     ) +
     scale_y_continuous(
-      expand = expansion(mult = c(0, 0.08))
+      expand = expansion(
+        mult = c(0, 0.08)
+      )
     ) +
     labs(
       x = NULL,
-      y = "Average species richness\n(\u00B1 SE)",
+      y = "Average species richness\n(± SE)",
       fill = NULL
     ) +
     theme_minimal(base_size = 15) +
@@ -450,394 +869,193 @@ plot_observed_temporal <- function(data) {
     )
 }
 
-# Save a plot only when that group has data for the requested plot type.
-save_plot_if_present <- function(data, plot_function, filename, width, height) {
+# Site lookup ----
+
+site_lookup <- dplyr::bind_rows(
+  period_plot_data %>%
+    dplyr::select(site_code, site_name),
   
-  if (nrow(data) == 0) {
-    return(FALSE)
+  period_split_plot_data %>%
+    dplyr::select(site_code, site_name),
+  
+  temporal_plot_data %>%
+    dplyr::select(site_code, site_name)
+) %>%
+  dplyr::filter(
+    !is.na(site_code)
+  ) %>%
+  dplyr::arrange(
+    site_code,
+    site_name
+  ) %>%
+  dplyr::distinct(
+    site_code,
+    .keep_all = TRUE
+  )
+
+site_codes <- site_lookup$site_code
+
+# Save one set of plots ----
+save_site_species_richness_plots <- function(site_code_value) {
+  
+  site_name_value <- site_lookup %>%
+    dplyr::filter(
+      site_code == site_code_value
+    ) %>%
+    dplyr::pull(site_name)
+  
+  if (length(site_name_value) == 0) {
+    
+    site_name_value <- site_code_value
+    
+  } else {
+    
+    site_name_value <- site_name_value[[1]]
   }
   
-  ggplot2::ggsave(
-    filename = filename,
-    plot = plot_function(data),
-    width = width,
-    height = height,
+  site_title <- paste0(
+    site_name_value,
+    " (",
+    site_code_value,
+    ")"
+  )
+  
+  safe_site_name <- site_name_value %>%
+    stringr::str_replace_all(
+      "[^A-Za-z0-9]+",
+      "_"
+    ) %>%
+    stringr::str_replace_all(
+      "^_|_$",
+      ""
+    )
+  
+  safe_site_code <- site_code_value %>%
+    stringr::str_replace_all(
+      "[^A-Za-z0-9_-]+",
+      "_"
+    ) %>%
+    stringr::str_replace_all(
+      "^_|_$",
+      ""
+    )
+  
+  safe_site_id <- paste0(
+    safe_site_name,
+    "_",
+    safe_site_code
+  )
+  
+  site_period_data <- period_plot_data %>%
+    dplyr::filter(
+      site_code == site_code_value
+    )
+  
+  site_period_split_data <- period_split_plot_data %>%
+    dplyr::filter(
+      site_code == site_code_value
+    )
+  
+  site_temporal_data <- temporal_plot_data %>%
+    dplyr::filter(
+      site_code == site_code_value
+    ) %>%
+    dplyr::arrange(
+      metric,
+      sampling_event_start_date
+    )
+  
+  period_plot <- plot_observed_period(
+    data = site_period_data#,
+    # site_title = site_title
+  )
+  
+  period_split_plot <- plot_observed_period_split(
+    data = site_period_split_data#,
+    # site_title = site_title
+  )
+  
+  temporal_plot <- plot_observed_temporal(
+    data = site_temporal_data#,
+    # site_title = site_title
+  )
+  
+  ggsave(
+    filename = file.path(
+      plot_dirs[["period"]],
+      paste0(
+        safe_site_id,
+        "_sr_period.png"
+      )
+    ),
+    plot = period_plot,
+    width = 15,
+    height = 5.5,
     dpi = 300,
     bg = "white"
   )
   
-  TRUE
+  ggsave(
+    filename = file.path(
+      plot_dirs[["period_split"]],
+      paste0(
+        safe_site_id,
+        "_sr_period_split.png"
+      )
+    ),
+    plot = period_split_plot,
+    width = 17,
+    height = 6,
+    dpi = 300,
+    bg = "white"
+  )
+  
+  ggsave(
+    filename = file.path(
+      plot_dirs[["temporal"]],
+      paste0(
+        safe_site_id,
+        "_sr_temporal.png"
+      )
+    ),
+    plot = temporal_plot,
+    width = 9,
+    height = 14,
+    dpi = 300,
+    bg = "white"
+  )
+  
+  invisible(NULL)
 }
 
-# -----------------------------------------------------------------
-# 4. Read metadata and survey lists
-# -----------------------------------------------------------------
+# Run all sites ----
 
-sa_sites <- sf::read_sf(
-  "dev/Dive_sites_2026_07_14.shp"
-) %>%
-  CheckEM::clean_names() %>%
-  sf::st_drop_geometry() %>%
-  dplyr::transmute(
-    site_code = as.character(site_code),
-    site_name_lookup = site_name,
-    location_g,
-    region = bruvsrepor
-  ) %>%
-  dplyr::distinct(site_code, .keep_all = TRUE)
-
-sl_m1 <- readr::read_rds(
-  "data/tidy/rls_m1_survey_list.rds"
-) %>%
-  dplyr::select(-block) %>%
-  dplyr::distinct()
-
-sl_m2 <- readr::read_rds(
-  "data/tidy/rls_m2_survey_list.rds"
-) %>%
-  dplyr::select(-block) %>%
-  dplyr::distinct()
-
-# -----------------------------------------------------------------
-# 5. Calculate richness for the three datasets
-# -----------------------------------------------------------------
-
-m1_fish <- prepare_richness_dataset(
-  count_path = "data/tidy/rls_m1_complete_count.rds",
-  survey_list = sl_m1,
-  dataset_name = "M1 fish",
-  metric_name = metric_levels[[1]]
-)
-
-m2_fish <- prepare_richness_dataset(
-  count_path = "data/tidy/rls_m2_fish_complete_count.rds",
-  survey_list = sl_m2,
-  dataset_name = "M2 fish",
-  metric_name = metric_levels[[2]]
-)
-
-m2_inverts <- prepare_richness_dataset(
-  count_path = "data/tidy/rls_m2_inverts_complete_count.rds",
-  survey_list = sl_m2,
-  dataset_name = "M2 invertebrates",
-  metric_name = metric_levels[[3]]
-)
-
-# Retain the conflict tables for inspection.
-spp_conflicts <- list(
-  m1_fish = m1_fish$conflicts,
-  m2_fish = m2_fish$conflicts,
-  m2_inverts = m2_inverts$conflicts
-)
-
-# Combine the metrics now, rather than repeating every later operation.
-species_samples <- dplyr::bind_rows(
-  m1_fish$samples,
-  m2_fish$samples,
-  m2_inverts$samples
-) %>%
-  dplyr::mutate(
-    site_code = as.character(site_code),
-    sampling_event_start_date = as.Date(sampling_event_start_date),
-    metric = factor(metric, levels = metric_levels)
-  ) %>%
-  # Use the shapefile as the single source for location and region.
-  dplyr::select(-dplyr::any_of(c("location_g", "region"))) %>%
-  dplyr::left_join(sa_sites, by = "site_code") %>%
-  dplyr::mutate(
-    site_name = dplyr::coalesce(site_name, site_name_lookup)
-  ) %>%
-  dplyr::select(-site_name_lookup)
-
-# -----------------------------------------------------------------
-# 6. Make one common table for site, location and region
-# -----------------------------------------------------------------
-
-spatial_samples <- expand_spatial_levels(species_samples)
-
-period_split_levels <- c(
-  "Pre-bloom",
-  spatial_samples$period_split %>%
-    unique() %>%
-    stats::na.omit() %>%
-    setdiff("Pre-bloom") %>%
-    sort()
-)
-
-# Broad pre-bloom versus bloom summaries.
-period_summary <- spatial_samples %>%
-  dplyr::filter(!is.na(period)) %>%
-  summarise_richness(
-    group_vars = c(
-      "spatial_level",
-      "group_id",
-      "group_name",
-      "latitude",
-      "longitude",
-      "metric",
-      "period"
-    )
-  ) %>%
-  dplyr::filter(!is.na(estimate)) %>%
-  dplyr::mutate(
-    period = factor(period, levels = period_levels),
-    metric = factor(metric, levels = metric_levels)
-  )
-
-# Pre-bloom plus individual bloom-month summaries.
-period_split_summary <- spatial_samples %>%
-  dplyr::filter(!is.na(period_split)) %>%
-  summarise_richness(
-    group_vars = c(
-      "spatial_level",
-      "group_id",
-      "group_name",
-      "latitude",
-      "longitude",
-      "metric",
-      "period_split"
-    )
-  ) %>%
-  dplyr::filter(!is.na(estimate)) %>%
-  dplyr::mutate(
-    period = dplyr::if_else(
-      period_split == "Pre-bloom",
-      "Pre-bloom",
-      "Bloom"
-    ),
-    period = factor(period, levels = period_levels),
-    period_split = factor(
-      period_split,
-      levels = period_split_levels
-    ),
-    metric = factor(metric, levels = metric_levels)
-  )
-
-# Sampling-event summaries for sites and monthly summaries for
-# locations and regions.
-temporal_summary <- spatial_samples %>%
-  dplyr::filter(!is.na(time_date)) %>%
-  summarise_richness(
-    group_vars = c(
-      "spatial_level",
-      "group_id",
-      "group_name",
-      "latitude",
-      "longitude",
-      "metric",
-      "time_id",
-      "time_date",
-      "period",
-      "period_split"
-    )
-  ) %>%
-  dplyr::filter(!is.na(estimate)) %>%
-  dplyr::mutate(
-    period = factor(period, levels = period_levels),
-    period_split = factor(
-      period_split,
-      levels = period_split_levels
-    ),
-    metric = factor(metric, levels = metric_levels)
-  )
-
-# -----------------------------------------------------------------
-# 7. Save site/sampling-event summaries in the existing file format
-# -----------------------------------------------------------------
-
-site_temporal_output <- temporal_summary %>%
-  dplyr::filter(spatial_level == "site") %>%
-  dplyr::transmute(
-    site_name = group_name,
-    site_code = group_id,
-    sampling_event = type.convert(time_id, as.is = TRUE),
-    latitude,
-    longitude,
-    period = as.character(period),
-    period_split = as.character(period_split),
-    sampling_event_start_date = time_date,
-    mean = estimate,
-    se,
-    num_transects = n_transects,
-    metric
-  )
-
-site_average_paths <- c(
-  "M1 fish species richness" =
-    "data/tidy/rls_m1_fish_speciesrichness_average_per_site.rds",
-  "M2 fish species richness" =
-    "data/tidy/rls_m2_fish_speciesrichness_average_per_site.rds",
-  "M2 invertebrate species richness" =
-    "data/tidy/rls_m2_inverts_speciesrichness_average_per_site.rds"
-)
-
-purrr::iwalk(
-  site_average_paths,
-  function(path, metric_name) {
-    
-    site_temporal_output %>%
-      dplyr::filter(as.character(metric) == metric_name) %>%
-      dplyr::select(-metric) %>%
-      readr::write_rds(path)
-  }
-)
-
-# -----------------------------------------------------------------
-# 8. Create output directories once
-# -----------------------------------------------------------------
-
-purrr::walk(
-  unname(plot_output_roots),
-  function(root) {
-    
-    purrr::walk(
-      file.path(root, plot_types),
-      function(path) {
-        dir.create(
-          path,
-          recursive = TRUE,
-          showWarnings = FALSE
-        )
-      }
-    )
-  }
-)
-
-# One lookup table covers sites, locations and regions.
-# Build it from the actual plot summaries so groups with no usable data
-# are not sent to the saving loop.
-group_lookup <- dplyr::bind_rows(
-  period_summary %>%
-    dplyr::select(spatial_level, group_id, group_name),
-  period_split_summary %>%
-    dplyr::select(spatial_level, group_id, group_name),
-  temporal_summary %>%
-    dplyr::select(spatial_level, group_id, group_name)
-) %>%
-  dplyr::arrange(spatial_level, group_id, group_name) %>%
-  dplyr::distinct(spatial_level, group_id, .keep_all = TRUE) %>%
-  dplyr::mutate(
-    file_stub = dplyr::if_else(
-      spatial_level == "site",
-      paste(group_name, group_id, sep = "_"),
-      group_id
-    ),
-    safe_id = make_safe_filename(file_stub)
-  )
-
-# -----------------------------------------------------------------
-# 9. Save period, split-period and temporal plots for one group
-# -----------------------------------------------------------------
-
-save_species_richness_plots <- function(
-    spatial_level_value,
-    group_id_value,
-    safe_id_value) {
-  
-  output_root <- unname(plot_output_roots[[spatial_level_value]])
-  
-  group_period_data <- period_summary %>%
-    dplyr::filter(
-      spatial_level == spatial_level_value,
-      group_id == group_id_value
-    )
-  
-  group_period_split_data <- period_split_summary %>%
-    dplyr::filter(
-      spatial_level == spatial_level_value,
-      group_id == group_id_value
-    )
-  
-  group_temporal_data <- temporal_summary %>%
-    dplyr::filter(
-      spatial_level == spatial_level_value,
-      group_id == group_id_value
-    ) %>%
-    dplyr::arrange(metric, time_date)
-  
-  saved <- c(
-    period = save_plot_if_present(
-      data = group_period_data,
-      plot_function = plot_observed_period,
-      filename = file.path(
-        output_root,
-        "period",
-        paste0(safe_id_value, "_sr_period.png")
-      ),
-      width = 15,
-      height = 5.5
-    ),
-    period_split = save_plot_if_present(
-      data = group_period_split_data,
-      plot_function = plot_observed_period_split,
-      filename = file.path(
-        output_root,
-        "period_split",
-        paste0(safe_id_value, "_sr_period_split.png")
-      ),
-      width = 17,
-      height = 6
-    ),
-    temporal = save_plot_if_present(
-      data = group_temporal_data,
-      plot_function = plot_observed_temporal,
-      filename = file.path(
-        output_root,
-        "temporal",
-        paste0(safe_id_value, "_sr_temporal.png")
-      ),
-      width = 9,
-      height = 14
-    )
-  )
-  
-  if (!any(saved)) {
-    stop("No plot data were available for this group.")
-  }
-  
-  names(saved)[saved]
-}
-
-# -----------------------------------------------------------------
-# 10. Run all sites, locations and regions with one loop
-# -----------------------------------------------------------------
-
-plot_log <- purrr::pmap_dfr(
-  group_lookup,
-  function(spatial_level, group_id, group_name, file_stub, safe_id) {
+plot_log <- purrr::map_dfr(
+  site_codes,
+  function(site_code_value) {
     
     message(
-      "Creating plots for ",
-      spatial_level,
-      ": ",
-      group_name
+      "Creating plots for site: ",
+      site_code_value
     )
     
     tryCatch(
       {
-        plots_saved <- save_species_richness_plots(
-          spatial_level_value = spatial_level,
-          group_id_value = group_id,
-          safe_id_value = safe_id
+        save_site_species_richness_plots(
+          site_code_value
         )
         
         tibble::tibble(
-          spatial_level = spatial_level,
-          group_id = group_id,
-          group_name = group_name,
+          site_code = site_code_value,
           status = "Saved",
-          plots_saved = paste(plots_saved, collapse = ", "),
           error = NA_character_
         )
       },
       error = function(e) {
         
         tibble::tibble(
-          spatial_level = spatial_level,
-          group_id = group_id,
-          group_name = group_name,
+          site_code = site_code_value,
           status = "Failed",
-          plots_saved = NA_character_,
           error = conditionMessage(e)
         )
       }
@@ -845,19 +1063,983 @@ plot_log <- purrr::pmap_dfr(
   }
 )
 
-# Save one log within each spatial output folder.
-purrr::iwalk(
-  plot_output_roots,
-  function(root, spatial_level_value) {
-    
-    plot_log %>%
-      dplyr::filter(spatial_level == spatial_level_value) %>%
-      readr::write_csv(file.path(root, "plot_log.csv"))
-  }
+readr::write_csv(
+  plot_log,
+  file.path(
+    plot_output_root,
+    "plot_log.csv"
+  )
 )
 
 plot_log %>%
-  dplyr::count(spatial_level, status)
+  dplyr::count(status)
 
 plot_log %>%
   dplyr::filter(status == "Failed")
+
+# Plots species richness by LOCATION ----
+##  Plot settings ----
+plot_output_root <- file.path(
+  "plots",
+  "rls_species_richness_observed_location"
+)
+
+plot_dirs <- c(
+  period = file.path(plot_output_root, "period"),
+  period_split = file.path(plot_output_root, "period_split"),
+  temporal = file.path(plot_output_root, "temporal")
+)
+
+purrr::walk(
+  unname(plot_dirs),
+  ~ dir.create(
+    .x,
+    recursive = TRUE,
+    showWarnings = FALSE
+  )
+)
+
+metric_levels <- c(
+  "M1 fish species richness",
+  "M2 fish species richness",
+  "M2 invertebrate species richness"
+)
+
+metric_period_cols <- c(
+  "Pre-bloom" = "#193b73",
+  "Bloom" = "#92bd83"
+)
+
+observed_plot_theme <- theme(
+  axis.line.x = element_line(
+    colour = "black",
+    linewidth = 0.5
+  ),
+  axis.line.y = element_line(
+    colour = "black",
+    linewidth = 0.5
+  ),
+  panel.grid = element_blank(),
+  strip.text = element_text(
+    face = "bold",
+    size = 13
+  )
+)
+
+# Broad period plotting data ----
+
+period_plot_data_location <- dplyr::bind_rows(
+  
+  m1_fish_location_period %>%
+    dplyr::transmute(
+      location_g,
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[1]]
+    ),
+  
+  m2_fish_location_period %>%
+    dplyr::transmute(
+      location_g,
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[2]]
+    ),
+  
+  m2_inverts_location_period %>%
+    dplyr::transmute(
+      location_g,
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[3]]
+    )
+  
+) %>%
+  dplyr::filter(
+    # !is.na(site_code),
+    !is.na(period),
+    !is.na(estimate)
+  ) %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
+  )
+
+# Split-period plotting data ----
+period_split_plot_data_location <- dplyr::bind_rows(
+  
+  m1_fish_location_period_split %>%
+    dplyr::transmute(
+      location_g,
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[1]]
+    ),
+  
+  m2_fish_location_period_split %>%
+    dplyr::transmute(
+      location_g,
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[2]]
+    ),
+  
+  m2_inverts_location_period_split %>%
+    dplyr::transmute(
+      location_g,
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[3]]
+    )
+  
+) %>%
+  dplyr::filter(
+    # !is.na(site_code),
+    !is.na(period_split),
+    !is.na(estimate)
+  ) %>%
+  dplyr::mutate(
+    period = dplyr::if_else(
+      period_split == "Pre-bloom",
+      "Pre-bloom",
+      "Bloom"
+    )
+  )
+
+# Arrange the split periods chronologically
+period_split_levels <- c(
+  "Pre-bloom",
+  period_split_plot_data_location$period_split %>%
+    unique() %>%
+    stats::na.omit() %>%
+    setdiff("Pre-bloom") %>%
+    sort()
+)
+
+period_split_plot_data_location <- period_split_plot_data_location %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")
+    ),
+    period_split = factor(
+      period_split,
+      levels = period_split_levels
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
+  )
+
+# Temporal plotting data ----
+
+temporal_plot_data_location <- dplyr::bind_rows(
+  
+  m1_fish_location_sr_average %>%
+    dplyr::transmute(
+      location_g,
+      sampling_event_start_date = as.Date(paste0(start_year_month, "-01")),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[1]]
+    ),
+  
+  m2_fish_location_sr_average %>%
+    dplyr::transmute(
+      location_g,
+      sampling_event_start_date = as.Date(paste0(start_year_month, "-01")),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[2]]
+    ),
+  
+  m2_inverts_location_sr_average %>%
+    dplyr::transmute(
+      location_g,
+      sampling_event_start_date = as.Date(paste0(start_year_month, "-01")),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[3]]
+    )) %>%
+  dplyr::filter(
+    # !is.na(site_code),
+    # !is.na(sampling_event_start_date),
+    !is.na(estimate)
+  ) %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
+  )
+
+# plot_observed_period <- function(data) {
+  
+  ggplot(
+    data,
+    aes(
+      x = period,
+      y = estimate,
+      fill = period
+    )
+  ) +
+    geom_col(
+      width = 0.6,
+      colour = "black",
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = pmax(estimate - se, 0),
+        ymax = estimate + se
+      ),
+      width = 0.2,
+      linewidth = 0.6,
+      na.rm = TRUE
+    ) +
+    facet_wrap(
+      vars(metric),
+      nrow = 1,
+      scales = "free_y",
+      drop = FALSE
+    ) +
+    scale_fill_manual(
+      values = metric_period_cols,
+      drop = FALSE
+    ) +
+    scale_y_continuous(
+      expand = expansion(
+        mult = c(0, 0.08)
+      )
+    ) +
+    labs(
+      x = NULL,
+      y = "Average species richness\n(± SE)",
+      fill = NULL
+    ) +
+    theme_minimal(base_size = 15) +
+    observed_plot_theme +
+    theme(
+      legend.position = "none"
+    )
+}
+
+# plot_observed_period_split <- function(data) {
+  
+  ggplot(
+    data,
+    aes(
+      x = period_split,
+      y = estimate,
+      fill = period
+    )
+  ) +
+    geom_col(
+      width = 0.7,
+      colour = "black",
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = pmax(estimate - se, 0),
+        ymax = estimate + se
+      ),
+      width = 0.2,
+      linewidth = 0.6,
+      na.rm = TRUE
+    ) +
+    facet_wrap(
+      vars(metric),
+      nrow = 1,
+      scales = "free_y",
+      drop = FALSE
+    ) +
+    scale_fill_manual(
+      values = metric_period_cols,
+      drop = FALSE
+    ) +
+    scale_x_discrete(
+      labels = function(x) {
+        stringr::str_replace(
+          x,
+          "^Bloom ",
+          ""
+        )
+      }
+    ) +
+    scale_y_continuous(
+      expand = expansion(
+        mult = c(0, 0.08)
+      )
+    ) +
+    labs(
+      x = "Period",
+      y = "Average species richness\n(± SE)",
+      fill = NULL
+    ) +
+    theme_minimal(base_size = 15) +
+    observed_plot_theme +
+    theme(
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1
+      ),
+      legend.position = "bottom"
+    )
+}
+
+# plot_observed_temporal <- function(data) {
+  
+  event_dates <- sort(
+    unique(data$sampling_event_start_date)
+  )
+  
+  # Width is measured in days for a Date x-axis
+  if (length(event_dates) > 1) {
+    
+    date_gaps <- as.numeric(
+      diff(event_dates)
+    )
+    
+    date_gaps <- date_gaps[
+      is.finite(date_gaps) &
+        date_gaps > 0
+    ]
+    
+    if (length(date_gaps) > 0) {
+      
+      bar_width <- min(
+        120,
+        max(
+          5,
+          min(date_gaps) * 0.7
+        )
+      )
+      
+    } else {
+      
+      bar_width <- 30
+    }
+    
+  } else {
+    
+    bar_width <- 30
+  }
+  
+  errorbar_width <- bar_width * 0.35
+  
+  ggplot(
+    data,
+    aes(
+      x = sampling_event_start_date,
+      y = estimate,
+      fill = period
+    )
+  ) +
+    geom_col(
+      width = bar_width,
+      colour = "black",
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = pmax(estimate - se, 0),
+        ymax = estimate + se
+      ),
+      width = errorbar_width,
+      linewidth = 0.6,
+      na.rm = TRUE
+    ) +
+    facet_wrap(
+      vars(metric),
+      ncol = 1,
+      scales = "free_y",
+      drop = FALSE
+    ) +
+    scale_fill_manual(
+      values = metric_period_cols,
+      drop = FALSE
+    ) +
+    scale_x_date(
+      date_breaks = "1 year",
+      date_labels = "%Y",
+      expand = expansion(
+        mult = c(0.03, 0.03)
+      ),
+      guide = guide_axis(
+        check.overlap = TRUE
+      )
+    ) +
+    scale_y_continuous(
+      expand = expansion(
+        mult = c(0, 0.08)
+      )
+    ) +
+    labs(
+      x = NULL,
+      y = "Average species richness\n(± SE)",
+      fill = NULL
+    ) +
+    theme_minimal(base_size = 15) +
+    observed_plot_theme +
+    theme(
+      axis.text.x = element_text(
+        angle = 90,
+        hjust = 1
+      ),
+      legend.position = "bottom"
+    )
+}
+
+# Site lookup ----
+
+location_lookup <- dplyr::bind_rows(
+  period_plot_data_location %>%
+    dplyr::select(location_g),
+  
+  period_split_plot_data_location %>%
+    dplyr::select(location_g),
+  
+  temporal_plot_data_location %>%
+    dplyr::select(location_g)
+) %>%
+  dplyr::arrange(
+    location_g
+  ) %>%
+  dplyr::distinct(
+    location_g,
+    .keep_all = TRUE
+  )
+
+location_codes <- location_lookup$location_g
+
+# Save one set of plots ----
+save_location_species_richness_plots <- function(location_code_value) {
+  
+  location_title <- paste0(
+    location_code_value
+  )
+  
+  safe_location_name <- location_code_value %>%
+    stringr::str_replace_all(
+      "[^A-Za-z0-9]+",
+      "_"
+    ) %>%
+    stringr::str_replace_all(
+      "^_|_$",
+      ""
+    )
+  
+  location_period_data <- period_plot_data_location %>%
+    dplyr::filter(
+      location_g == location_code_value
+    )
+  
+  location_period_split_data <- period_split_plot_data_location %>%
+    dplyr::filter(
+      location_g == location_code_value
+    )
+  
+  location_temporal_data <- temporal_plot_data_location %>%
+    dplyr::filter(
+      location_g == location_code_value
+    ) %>%
+    dplyr::arrange(
+      metric,
+      sampling_event_start_date
+    )
+  
+  period_plot <- plot_observed_period(
+    data = location_period_data#,
+    # site_title = site_title
+  )
+  
+  period_split_plot <- plot_observed_period_split(
+    data = location_period_split_data#,
+    # site_title = site_title
+  )
+  
+  temporal_plot <- plot_observed_temporal(
+    data = location_temporal_data#,
+    # site_title = site_title
+  )
+  
+  ggsave(
+    filename = file.path(
+      plot_dirs[["period"]],
+      paste0(
+        safe_location_name,
+        "_sr_period.png"
+      )
+    ),
+    plot = period_plot,
+    width = 15,
+    height = 5.5,
+    dpi = 300,
+    bg = "white"
+  )
+  
+  ggsave(
+    filename = file.path(
+      plot_dirs[["period_split"]],
+      paste0(
+        safe_location_name,
+        "_sr_period_split.png"
+      )
+    ),
+    plot = period_split_plot,
+    width = 17,
+    height = 6,
+    dpi = 300,
+    bg = "white"
+  )
+  
+  ggsave(
+    filename = file.path(
+      plot_dirs[["temporal"]],
+      paste0(
+        safe_location_name,
+        "_sr_temporal.png"
+      )
+    ),
+    plot = temporal_plot,
+    width = 9,
+    height = 14,
+    dpi = 300,
+    bg = "white"
+  )
+  
+  invisible(NULL)
+}
+
+# Run all sites ----
+
+plot_log <- purrr::map_dfr(
+  location_codes,
+  function(location_code_value) {
+    
+    message(
+      "Creating plots for location: ",
+      location_code_value
+    )
+    
+    tryCatch(
+      {
+        save_location_species_richness_plots(
+          location_code_value
+        )
+        
+        tibble::tibble(
+          location_code = location_code_value,
+          status = "Saved",
+          error = NA_character_
+        )
+      },
+      error = function(e) {
+        
+        tibble::tibble(
+          site_code = location_code_value,
+          status = "Failed",
+          error = conditionMessage(e)
+        )
+      }
+    )
+  }
+)
+
+# Plots species richness by REGION ----
+##  Plot settings ----
+plot_output_root <- file.path(
+  "plots",
+  "rls_species_richness_observed_region"
+)
+
+plot_dirs <- c(
+  period = file.path(plot_output_root, "period"),
+  period_split = file.path(plot_output_root, "period_split"),
+  temporal = file.path(plot_output_root, "temporal")
+)
+
+purrr::walk(
+  unname(plot_dirs),
+  ~ dir.create(
+    .x,
+    recursive = TRUE,
+    showWarnings = FALSE
+  )
+)
+
+metric_levels <- c(
+  "M1 fish species richness",
+  "M2 fish species richness",
+  "M2 invertebrate species richness"
+)
+
+metric_period_cols <- c(
+  "Pre-bloom" = "#193b73",
+  "Bloom" = "#92bd83"
+)
+
+observed_plot_theme <- theme(
+  axis.line.x = element_line(
+    colour = "black",
+    linewidth = 0.5
+  ),
+  axis.line.y = element_line(
+    colour = "black",
+    linewidth = 0.5
+  ),
+  panel.grid = element_blank(),
+  strip.text = element_text(
+    face = "bold",
+    size = 13
+  )
+)
+
+# Broad period plotting data ----
+
+period_plot_data_region <- dplyr::bind_rows(
+  
+  m1_fish_region_period %>%
+    dplyr::transmute(
+      region,
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[1]]
+    ),
+  
+  m2_fish_region_period %>%
+    dplyr::transmute(
+      region,
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[2]]
+    ),
+  
+  m2_inverts_region_period %>%
+    dplyr::transmute(
+      region,
+      period,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[3]])) %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")),
+    metric = factor(
+      metric,
+      levels = metric_levels))
+
+# Split-period plotting data ----
+period_split_plot_data_region <- dplyr::bind_rows(
+  
+  m1_fish_region_period_split %>%
+    dplyr::transmute(
+      region,
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[1]]
+    ),
+  
+  m2_fish_region_period_split %>%
+    dplyr::transmute(
+      region,
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[2]]
+    ),
+  
+  m2_inverts_region_period_split %>%
+    dplyr::transmute(
+      region,
+      period_split,
+      estimate = mean_species_richness,
+      se = se,
+      n_transects,
+      metric = metric_levels[[3]]
+    )
+  
+) %>%
+  dplyr::mutate(
+    period = dplyr::if_else(
+      period_split == "Pre-bloom",
+      "Pre-bloom",
+      "Bloom"
+    )
+  )
+
+# Arrange the split periods chronologically
+period_split_levels <- c(
+  "Pre-bloom",
+  period_split_plot_data_region$period_split %>%
+    unique() %>%
+    stats::na.omit() %>%
+    setdiff("Pre-bloom") %>%
+    sort()
+)
+
+period_split_plot_data_region <- period_split_plot_data_region %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")
+    ),
+    period_split = factor(
+      period_split,
+      levels = period_split_levels
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
+  )
+
+# Temporal plotting data ----
+
+temporal_plot_data_region <- dplyr::bind_rows(
+  
+  m1_fish_region_sr_average %>%
+    dplyr::transmute(
+      region,
+      sampling_event_start_date = as.Date(paste0(start_year_month, "-01")),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[1]]
+    ),
+  
+  m2_fish_region_sr_average %>%
+    dplyr::transmute(
+      region,
+      sampling_event_start_date = as.Date(paste0(start_year_month, "-01")),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[2]]
+    ),
+  
+  m2_inverts_region_sr_average %>%
+    dplyr::transmute(
+      region,
+      sampling_event_start_date = as.Date(paste0(start_year_month, "-01")),
+      period,
+      period_split,
+      estimate = mean,
+      se,
+      num_transects,
+      metric = metric_levels[[3]]
+    )) %>%
+  dplyr::filter(
+    # !is.na(site_code),
+    # !is.na(sampling_event_start_date),
+    !is.na(estimate)
+  ) %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = c("Pre-bloom", "Bloom")
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
+  )
+
+# Site lookup ----
+
+region_lookup <- dplyr::bind_rows(
+  period_plot_data_region %>%
+    dplyr::select(region),
+  
+  period_split_plot_data_region %>%
+    dplyr::select(region),
+  
+  temporal_plot_data_region %>%
+    dplyr::select(region)
+) %>%
+  dplyr::arrange(
+    region
+  ) %>%
+  dplyr::distinct(
+    region,
+    .keep_all = TRUE
+  )
+
+region_codes <- region_lookup$region
+
+# Save one set of plots ----
+save_region_species_richness_plots <- function(region_code_value) {
+  
+  region_title <- paste0(
+    region_code_value
+  )
+  
+  safe_region_name <- region_code_value %>%
+    stringr::str_replace_all(
+      "[^A-Za-z0-9]+",
+      "_"
+    ) %>%
+    stringr::str_replace_all(
+      "^_|_$",
+      ""
+    )
+  
+  region_period_data <- period_plot_data_region %>%
+    dplyr::filter(
+      region == region_code_value
+    )
+  
+  region_period_split_data <- period_split_plot_data_region %>%
+    dplyr::filter(
+      region == region_code_value
+    )
+  
+  region_temporal_data <- temporal_plot_data_region %>%
+    dplyr::filter(
+      region == region_code_value
+    ) %>%
+    dplyr::arrange(
+      metric,
+      sampling_event_start_date
+    )
+  
+  period_plot <- plot_observed_period(
+    data = region_period_data
+  )
+  
+  period_split_plot <- plot_observed_period_split(
+    data = region_period_split_data
+  )
+  
+  temporal_plot <- plot_observed_temporal(
+    data = region_temporal_data
+  )
+  
+  ggsave(
+    filename = file.path(
+      plot_dirs[["period"]],
+      paste0(
+        safe_region_name,
+        "_sr_period.png"
+      )
+    ),
+    plot = period_plot,
+    width = 15,
+    height = 5.5,
+    dpi = 300,
+    bg = "white"
+  )
+  
+  ggsave(
+    filename = file.path(
+      plot_dirs[["period_split"]],
+      paste0(
+        safe_region_name,
+        "_sr_period_split.png"
+      )
+    ),
+    plot = period_split_plot,
+    width = 17,
+    height = 6,
+    dpi = 300,
+    bg = "white"
+  )
+  
+  ggsave(
+    filename = file.path(
+      plot_dirs[["temporal"]],
+      paste0(
+        safe_region_name,
+        "_sr_temporal.png"
+      )
+    ),
+    plot = temporal_plot,
+    width = 9,
+    height = 14,
+    dpi = 300,
+    bg = "white"
+  )
+  
+  invisible(NULL)
+}
+
+# Run all sites ----
+
+plot_log <- purrr::map_dfr(
+  region_codes,
+  function(region_code_value) {
+    
+    message(
+      "Creating plots for location: ",
+      region_code_value
+    )
+    
+    tryCatch(
+      {
+        save_region_species_richness_plots(
+          region_code_value
+        )
+        
+        tibble::tibble(
+          region_code = region_code_value,
+          status = "Saved",
+          error = NA_character_
+        )
+      },
+      error = function(e) {
+        
+        tibble::tibble(
+          site_code = region_code_value,
+          status = "Failed",
+          error = conditionMessage(e)
+        )
+      }
+    )
+  }
+)

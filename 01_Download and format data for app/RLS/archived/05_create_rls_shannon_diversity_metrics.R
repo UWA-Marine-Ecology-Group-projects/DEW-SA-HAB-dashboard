@@ -13,14 +13,9 @@ library(purrr)
 # Calculates shannon diversity of individual blocks to then be averaged ----
 calculate_block_diversity <- function(data, dataset_name = "dataset") {
   
-  # Combine duplicate taxon records within each block
-  data_summarised <- data %>%
-    dplyr::group_by(survey_id, survey_date, depth, block, family, genus, species, scientific) %>%
-    dplyr::summarise(total = sum(total, na.rm = TRUE), .groups = "drop")
-  
   # Find spp and identified-species conflicts within the same block
-  samples_with_both <- data_summarised %>%
-    dplyr::group_by(survey_id, survey_date, depth, block, family, genus) %>%
+  samples_with_both <- data %>%
+    dplyr::group_by(transect, block, family, genus) %>%
     dplyr::summarise(spp_present = any(species == "spp" & total > 0),
                      identified_species_present = any(species != "spp" & total > 0),
                      .groups = "drop") %>%
@@ -29,7 +24,7 @@ calculate_block_diversity <- function(data, dataset_name = "dataset") {
   if (nrow(samples_with_both) > 0) {
     
     n_blocks <- samples_with_both %>%
-      dplyr::distinct(survey_id, survey_date, depth, block) %>%
+      dplyr::distinct(transect, block) %>%
       nrow()
     
     message(dataset_name, ": found ", nrow(samples_with_both), " block/genus combinations across ", n_blocks, " blocks containing both an spp record and an identified species. The spp records will be removed.")
@@ -39,39 +34,63 @@ calculate_block_diversity <- function(data, dataset_name = "dataset") {
   }
   
   # Calculate diversity separately for every block
-  diversity <- data_summarised %>%
-    dplyr::group_by(survey_id, survey_date, depth, block, family, genus) %>%
-    dplyr::mutate(identified_species_present = any(species != "spp" & total > 0)) %>%
-    dplyr::filter(!(species == "spp" & total > 0 & identified_species_present)) %>%
+  diversity <- data %>%
+    dplyr::group_by(
+      transect,
+      block,
+      family,
+      genus
+    ) %>%
+    dplyr::mutate(
+      identified_species_present = any(species != "spp" & total > 0)
+    ) %>%
+    dplyr::filter(
+      !(species == "spp" & total > 0 & identified_species_present)
+    ) %>%
     dplyr::ungroup() %>%
     
-    # Remove taxa absent from the block
-    dplyr::filter(total > 0) %>%
-    
-    dplyr::group_by(survey_id, survey_date, depth, block) %>%
-    
-    dplyr::mutate(
-      p = total / sum(total)
-    ) %>%
-    
-    # Shannon diversity
+    dplyr::group_by(transect, block) %>%
     dplyr::summarise(
-      shannon = -sum(p * log(p)),
+      shannon = {
+        abundance <- total[total > 0]
+        
+        if (length(abundance) == 0) {
+          0
+        } else {
+          p <- abundance / sum(abundance)
+          -sum(p * log(p))
+        }
+      },
       .groups = "drop"
     )
+  
   attr(diversity, "samples_with_both") <- samples_with_both
   
   diversity
 }
 
-# Read in survey-lists to get grouping variables ----
-sl_m1 <- read_rds("data/tidy/rls_m1_survey_list.rds") %>%
-  select(-block) %>%
-  distinct()
+# Read in survey lists to get grouping variables ----
+sl_m1 <- read_rds("data/tidy/rls_m1_surveys_final.rds") %>%
+  dplyr::select(-c(block, id)) %>%
+  dplyr::distinct()
 
-sl_m2 <- read_rds("data/tidy/rls_m2_survey_list.rds") %>%
-  select(-block) %>%
-  distinct()
+sl_m2_fish <- read_rds("data/tidy/rls_m2_fish_surveys_final.rds") %>%
+  dplyr::select(-c(block, id)) %>%
+  dplyr::distinct()
+
+sl_m2_inverts <- read_rds("data/tidy/rls_m2_inverts_surveys_final.rds") %>%
+  dplyr::select(-c(block, id)) %>%
+  dplyr::distinct()
+
+sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
+  CheckEM::clean_names() %>%
+  sf::st_drop_geometry() %>%
+  dplyr::transmute(
+    site_code = as.character(site_code),
+    site_name_lookup = site_name,
+    region = bruvsrepor,
+    location = location_g) %>%
+  dplyr::distinct(site_code, .keep_all = TRUE)
 
 # Shannon Diversity per sample (not calculated per block!) ----
 ## M1 fish (First average blocks together)----
@@ -79,13 +98,14 @@ m1_fish_shannon_blocks <- read_rds("data/tidy/rls_m1_complete_count.rds") %>%
   calculate_block_diversity(dataset_name = "M1 fish")
 
 m1_fish_shannon_samples <- m1_fish_shannon_blocks %>%
-  dplyr::group_by(survey_id, survey_date, depth) %>%
+  dplyr::group_by(transect) %>%
   dplyr::summarise(shannon = mean(shannon, na.rm = TRUE),
                    n_blocks = dplyr::n_distinct(block),
                    block_sd = stats::sd(shannon, na.rm = TRUE),
                    .groups = "drop") %>%
   dplyr::full_join(sl_m1) %>%
-  replace_na(list(shannon = 0))
+  replace_na(list(shannon = 0))%>%
+  dplyr::mutate(metric_name = "M1 fish shannon diversity index")
 
 hist(m1_fish_shannon_samples$shannon)
 summary(m1_fish_shannon_samples)
@@ -95,13 +115,14 @@ m2_fish_shannon_blocks <- read_rds("data/tidy/rls_m2_fish_complete_count.rds") %
   calculate_block_diversity(dataset_name = "M2 fish")
 
 m2_fish_shannon_samples <- m2_fish_shannon_blocks %>%
-  dplyr::group_by(survey_id, survey_date, depth) %>%
+  dplyr::group_by(transect) %>%
   dplyr::summarise(shannon = mean(shannon, na.rm = TRUE),
                    n_blocks = dplyr::n_distinct(block),
                    block_sd = stats::sd(shannon, na.rm = TRUE),
                    .groups = "drop") %>%
-  dplyr::full_join(sl_m2) %>%
-  replace_na(list(shannon = 0))
+  dplyr::full_join(sl_m2_fish) %>%
+  replace_na(list(shannon = 0))%>%
+  dplyr::mutate(metric_name = "M2 fish shannon diversity index")
 
 hist(m2_fish_shannon_samples$shannon)
 
@@ -110,14 +131,31 @@ m2_inverts_shannon_blocks <- read_rds("data/tidy/rls_m2_inverts_complete_count.r
   calculate_block_diversity(dataset_name = "M2 invertebrates")
 
 m2_inverts_shannon_samples <- m2_inverts_shannon_blocks %>%
-  dplyr::group_by(survey_id, survey_date, depth) %>%  # not block
+  dplyr::group_by(transect) %>%  # not block
   dplyr::summarise(shannon = mean(shannon, na.rm = TRUE),
                    n_blocks = dplyr::n_distinct(block),
                    block_sd = stats::sd(shannon, na.rm = TRUE), .groups = "drop") %>%
-  dplyr::full_join(sl_m2) %>%
-  replace_na(list(shannon = 0))
+  dplyr::full_join(sl_m2_inverts) %>%
+  replace_na(list(shannon = 0)) %>%
+  dplyr::mutate(metric_name = "M2 invertebrate shannon diversity index")
 
 hist(m2_inverts_shannon_samples$shannon)
+
+# Combine the metrics now, rather than repeating every later operation.
+shannon_samples <- dplyr::bind_rows(
+  m1_fish_shannon_samples,
+  m2_fish_shannon_samples,
+  m2_inverts_shannon_samples
+) %>%
+  dplyr::mutate(
+    site_code = as.character(site_code),
+    sampling_event_start_date = as.Date(sampling_event_start_date)
+  ) %>%
+  # Use the shapefile as the single source for location and region.
+  dplyr::select(-dplyr::any_of(c("location", "region"))) %>%
+  dplyr::left_join(sa_sites, by = "site_code")
+
+write_rds(shannon_samples, "data/rls_metrics_for_modelling/shannon_diversity.rds")
 
 ## Calculate averages per site/sampling event ----
 m1_fish_site_shannon_average <- m1_fish_shannon_samples %>%
@@ -165,8 +203,6 @@ summarise_site_diversity <- function(data, period_variable) {
     dplyr::group_by(
       site_name,
       site_code,
-      latitude,
-      longitude,
       !!period_variable
     ) %>%
     dplyr::summarise(

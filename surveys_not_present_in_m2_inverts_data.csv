@@ -1,40 +1,40 @@
-survey_id,location,mpa,site_code,site_name,latitude,longitude,depth,survey_date,sampling_event,program,period,start_year_month,period_split,sampling_event_start_date,block,id
-5000356,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,4,2008-02-06,4,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-06,2,5000356 2
-5000360,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,4.9,2008-02-06,4,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-06,1,5000360 1
-5000361,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5,2008-02-06,4,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-06,1,5000361 1
-5000366,Encounter,Encounter Marine Park,GSV93,Aldinga Reef,-35.26825,138.43202,6,2008-02-08,1,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-08,2,5000366 2
-812301131,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.1,2005-03-09,1,ATRC,Pre-bloom,2005-03,Pre-bloom,2005-03-09,1,812301131 1
-812319933,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.3,2005-04-11,1,ATRC,Pre-bloom,2005-04,Pre-bloom,2005-04-11,1,812319933 1
-812319934,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.4,2005-04-11,1,ATRC,Pre-bloom,2005-04,Pre-bloom,2005-04-11,1,812319934 1
-812320451,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.1,2005-04-12,1,ATRC,Pre-bloom,2005-04,Pre-bloom,2005-04-11,1,812320451 1
-812320452,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.2,2005-04-12,1,ATRC,Pre-bloom,2005-04,Pre-bloom,2005-04-11,1,812320452 1
-812327142,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.2,2016-03-10,9,ATRC,Pre-bloom,2016-03,Pre-bloom,2016-03-10,1,812327142 1
-912344063,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,7,2014-01-18,6,RLS,Pre-bloom,2014-01,Pre-bloom,2014-01-18,2,912344063 2
-912345024,Encounter,Encounter Marine Park,GSV95,Lasseters Reef,-35.508379999999995,138.21873,8,2014-02-05,4,RLS,Pre-bloom,2014-02,Pre-bloom,2014-02-02,1,912345024 1
-912345624,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.3,2012-10-29,1,RLS,Pre-bloom,2012-10,Pre-bloom,2012-10-29,2,912345624 2
-912345625,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.4,2012-10-29,1,RLS,Pre-bloom,2012-10,Pre-bloom,2012-10-29,2,912345625 2
-912345626,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.1,2012-10-29,1,RLS,Pre-bloom,2012-10,Pre-bloom,2012-10-29,2,912345626 2
-912349693,Encounter,Encounter Marine Park,GSV45,Carrickalinga North Site,-35.3777,138.36288000000002,5.1,2017-03-07,3,RLS,Pre-bloom,2017-03,Pre-bloom,2017-03-07,2,912349693 2
-912350474,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2,2017-03-15,1,RLS,Pre-bloom,2017-03,Pre-bloom,2017-03-15,2,912350474 2
-912350488,Encounter,Encounter Marine Park,GSV114,South Shores,-35.45609,138.29939,2.3,2017-03-15,1,RLS,Pre-bloom,2017-03,Pre-bloom,2017-03-15,1,912350488 1
-912351047,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2,2018-02-06,2,RLS,Pre-bloom,2018-02,Pre-bloom,2018-02-06,1,912351047 1
-912351050,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2.2,2018-02-06,2,RLS,Pre-bloom,2018-02,Pre-bloom,2018-02-06,1,912351050 1
-912351050,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2.2,2018-02-06,2,RLS,Pre-bloom,2018-02,Pre-bloom,2018-02-06,2,912351050 2
-912351054,Encounter,Encounter Marine Park,GSV110,Lady Bay,-35.47356,138.28116,2.3,2018-02-06,2,RLS,Pre-bloom,2018-02,Pre-bloom,2018-02-06,1,912351054 1
-912352566,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2019-02-20,12,RLS,Pre-bloom,2019-02,Pre-bloom,2019-02-20,2,912352566 2
-923400299,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.3,2021-03-23,7,RLS,Pre-bloom,2021-03,Pre-bloom,2021-03-23,2,923400299 2
-923400373,Encounter,Encounter Marine Park,GSV47,Carrickalinga Nth,-35.371190000000006,138.37876,5.1,2021-03-11,7,RLS,Pre-bloom,2021-03,Pre-bloom,2021-03-11,2,923400373 2
-923400392,Encounter,Encounter Marine Park,GSV116,Aldinga Pinacles,-35.26681,138.43364,12.2,2021-02-15,3,RLS,Pre-bloom,2021-02,Pre-bloom,2021-02-15,1,923400392 1
-923401841,Encounter,Encounter Marine Park,GSV131,Horseshoe outer,-35.1394,138.45799,12.3,2023-05-15,8,RLS,Pre-bloom,2023-05,Pre-bloom,2023-05-15,2,923401841 2
-923403614,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,6,2023-12-21,17,RLS,Pre-bloom,2023-12,Pre-bloom,2023-12-21,1,923403614 1
-923406615,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.1,2026-02-12,11,RLS,Bloom,2026-02,Bloom 2026-02,2026-02-12,1,923406615 1
-923406646,Encounter,Encounter Marine Park,GSV183,Aldinga SZ1,-35.26631,138.43649,5.3,2026-01-29,2,RLS,Bloom,2026-01,Bloom 2026-01,2026-01-29,1,923406646 1
-923406748,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.1,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,1,923406748 1
-923406750,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.3,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,1,923406750 1
-923406750,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.3,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,2,923406750 2
-923406751,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.4,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,1,923406751 1
-923406751,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.4,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,2,923406751 2
-923406759,Adelaide,NA,GSV115,Port Gawler,-34.61942,138.31052,10.2,2026-01-29,5,RLS,Bloom,2026-01,Bloom 2026-01,2026-01-29,1,923406759 1
-923406759,Adelaide,NA,GSV115,Port Gawler,-34.61942,138.31052,10.2,2026-01-29,5,RLS,Bloom,2026-01,Bloom 2026-01,2026-01-29,2,923406759 2
-923406796,Encounter,Encounter Marine Park,GSV138,Moana outside,-35.2065,138.4622,6.2,2025-11-15,12,RLS,Bloom,2025-11,Bloom 2025-11,2025-11-15,2,923406796 2
-923406808,Encounter,Encounter Marine Park,GSV131,Horseshoe outer,-35.1394,138.45799,12.2,2025-11-14,10,RLS,Bloom,2025-11,Bloom 2025-11,2025-11-14,1,923406808 1
+survey_id,location,mpa,site_code,site_name,latitude,longitude,depth,survey_date,sampling_event,program,period,start_year_month,period_split,sampling_event_start_date,block,transect,id
+5000356,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,4,2008-02-06,4,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-06,2,Transect_5000356_2008-02-06,5000356 2
+5000360,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,4.9,2008-02-06,4,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-06,1,Transect_5000360_2008-02-06,5000360 1
+5000361,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5,2008-02-06,4,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-06,1,Transect_5000361_2008-02-06,5000361 1
+5000366,Encounter,Encounter Marine Park,GSV93,Aldinga Reef,-35.26825,138.43202,6,2008-02-08,1,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-08,2,Transect_5000366_2008-02-08,5000366 2
+812301131,Encounter,Encounter Marine Park,GSV5,Rapid Head South,-35.53145,138.1519,5.1,2005-03-09,1,ATRC,Pre-bloom,2005-03,Pre-bloom,2005-03-09,1,Transect_812301131_2005-03-09,812301131 1
+812319933,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.3,2005-04-11,1,ATRC,Pre-bloom,2005-04,Pre-bloom,2005-04-11,1,Transect_812319933_2005-04-11,812319933 1
+812319934,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.4,2005-04-11,1,ATRC,Pre-bloom,2005-04,Pre-bloom,2005-04-11,1,Transect_812319934_2005-04-11,812319934 1
+812320451,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.1,2005-04-12,1,ATRC,Pre-bloom,2005-04,Pre-bloom,2005-04-11,1,Transect_812320451_2005-04-12,812320451 1
+812320452,Yorke Peninsula,Lower Yorke Peninsula MP,GSV191,Edithburgh,-35.08315,137.74876,2.2,2005-04-12,1,ATRC,Pre-bloom,2005-04,Pre-bloom,2005-04-11,1,Transect_812320452_2005-04-12,812320452 1
+812327142,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,5.2,2016-03-10,9,ATRC,Pre-bloom,2016-03,Pre-bloom,2016-03-10,1,Transect_812327142_2016-03-10,812327142 1
+912344063,Encounter,Encounter Marine Park,GSV2,Haycock Point,-35.41506,138.32132,7,2014-01-18,6,RLS,Pre-bloom,2014-01,Pre-bloom,2014-01-18,2,Transect_912344063_2014-01-18,912344063 2
+912345024,Encounter,Encounter Marine Park,GSV95,Lasseters Reef,-35.508379999999995,138.21873,8,2014-02-05,4,RLS,Pre-bloom,2014-02,Pre-bloom,2014-02-02,1,Transect_912345024_2014-02-05,912345024 1
+912345624,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.3,2012-10-29,1,RLS,Pre-bloom,2012-10,Pre-bloom,2012-10-29,2,Transect_912345624_2012-10-29,912345624 2
+912345625,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.4,2012-10-29,1,RLS,Pre-bloom,2012-10,Pre-bloom,2012-10-29,2,Transect_912345625_2012-10-29,912345625 2
+912345626,Encounter,Encounter Marine Park,COO18,Pullen Island,-35.53778,138.69255,5.1,2012-10-29,1,RLS,Pre-bloom,2012-10,Pre-bloom,2012-10-29,2,Transect_912345626_2012-10-29,912345626 2
+912349693,Encounter,Encounter Marine Park,GSV45,Carrickalinga North Site,-35.3777,138.36288000000002,5.1,2017-03-07,3,RLS,Pre-bloom,2017-03,Pre-bloom,2017-03-07,2,Transect_912349693_2017-03-07,912349693 2
+912350474,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2,2017-03-15,1,RLS,Pre-bloom,2017-03,Pre-bloom,2017-03-15,2,Transect_912350474_2017-03-15,912350474 2
+912350488,Encounter,Encounter Marine Park,GSV114,South Shores,-35.45609,138.29939,2.3,2017-03-15,1,RLS,Pre-bloom,2017-03,Pre-bloom,2017-03-15,1,Transect_912350488_2017-03-15,912350488 1
+912351047,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2,2018-02-06,2,RLS,Pre-bloom,2018-02,Pre-bloom,2018-02-06,1,Transect_912351047_2018-02-06,912351047 1
+912351050,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2.2,2018-02-06,2,RLS,Pre-bloom,2018-02,Pre-bloom,2018-02-06,1,Transect_912351050_2018-02-06,912351050 1
+912351050,Encounter,Encounter Marine Park,GSV113,Yankalilla Mouth,-35.4655,138.29465,2.2,2018-02-06,2,RLS,Pre-bloom,2018-02,Pre-bloom,2018-02-06,2,Transect_912351050_2018-02-06,912351050 2
+912351054,Encounter,Encounter Marine Park,GSV110,Lady Bay,-35.47356,138.28116,2.3,2018-02-06,2,RLS,Pre-bloom,2018-02,Pre-bloom,2018-02-06,1,Transect_912351054_2018-02-06,912351054 1
+912352566,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2019-02-20,12,RLS,Pre-bloom,2019-02,Pre-bloom,2019-02-20,2,Transect_912352566_2019-02-20,912352566 2
+923400299,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.3,2021-03-23,7,RLS,Pre-bloom,2021-03,Pre-bloom,2021-03-23,2,Transect_923400299_2021-03-23,923400299 2
+923400373,Encounter,Encounter Marine Park,GSV47,Carrickalinga Nth,-35.371190000000006,138.37876,5.1,2021-03-11,7,RLS,Pre-bloom,2021-03,Pre-bloom,2021-03-11,2,Transect_923400373_2021-03-11,923400373 2
+923400392,Encounter,Encounter Marine Park,GSV116,Aldinga Pinacles,-35.26681,138.43364,12.2,2021-02-15,3,RLS,Pre-bloom,2021-02,Pre-bloom,2021-02-15,1,Transect_923400392_2021-02-15,923400392 1
+923401841,Encounter,Encounter Marine Park,GSV131,Horseshoe outer,-35.1394,138.45799,12.3,2023-05-15,8,RLS,Pre-bloom,2023-05,Pre-bloom,2023-05-15,2,Transect_923401841_2023-05-15,923401841 2
+923403614,Encounter,Encounter Marine Park,GSV26,2nd Valley Boat Shed,-35.50945,138.21448999999998,6,2023-12-21,17,RLS,Pre-bloom,2023-12,Pre-bloom,2023-12-21,1,Transect_923403614_2023-12-21,923403614 1
+923406615,Encounter,Encounter Marine Park,GSV43,Rapid Head SZ,-35.5186,138.17102,5.1,2026-02-12,11,RLS,Bloom,2026-02,Bloom 2026-02,2026-02-12,1,Transect_923406615_2026-02-12,923406615 1
+923406646,Encounter,Encounter Marine Park,GSV183,Aldinga SZ1,-35.26631,138.43649,5.3,2026-01-29,2,RLS,Bloom,2026-01,Bloom 2026-01,2026-01-29,1,Transect_923406646_2026-01-29,923406646 1
+923406748,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.1,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,1,Transect_923406748_2025-12-18,923406748 1
+923406750,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.3,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,1,Transect_923406750_2025-12-18,923406750 1
+923406750,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.3,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,2,Transect_923406750_2025-12-18,923406750 2
+923406751,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.4,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,1,Transect_923406751_2025-12-18,923406751 1
+923406751,Adelaide,NA,GSV109,Outer Harbor breakwater south inside,-34.788509999999995,138.46726,5.4,2025-12-18,2,RLS,Bloom,2025-12,Bloom 2025-12,2025-12-18,2,Transect_923406751_2025-12-18,923406751 2
+923406759,Adelaide,NA,GSV115,Port Gawler,-34.61942,138.31052,10.2,2026-01-29,5,RLS,Bloom,2026-01,Bloom 2026-01,2026-01-29,1,Transect_923406759_2026-01-29,923406759 1
+923406759,Adelaide,NA,GSV115,Port Gawler,-34.61942,138.31052,10.2,2026-01-29,5,RLS,Bloom,2026-01,Bloom 2026-01,2026-01-29,2,Transect_923406759_2026-01-29,923406759 2
+923406796,Encounter,Encounter Marine Park,GSV138,Moana outside,-35.2065,138.4622,6.2,2025-11-15,12,RLS,Bloom,2025-11,Bloom 2025-11,2025-11-15,2,Transect_923406796_2025-11-15,923406796 2
+923406808,Encounter,Encounter Marine Park,GSV131,Horseshoe outer,-35.1394,138.45799,12.2,2025-11-14,10,RLS,Bloom,2025-11,Bloom 2025-11,2025-11-14,1,Transect_923406808_2025-11-14,923406808 1
