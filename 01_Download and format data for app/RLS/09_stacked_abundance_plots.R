@@ -1087,6 +1087,7 @@ plot_theme <- ggplot2::theme_bw(
       face = "bold",
       size = 13
     ),
+    panel.border = element_blank(),
     legend.position = "right",
     legend.text = ggtext::element_markdown(),
     plot.title = element_text(
@@ -1198,7 +1199,7 @@ plot_stacked_abundance <- function(
     
     ggplot2::geom_col(
       position = ggplot2::position_stack(
-        reverse = TRUE
+        reverse = FALSE # TODO check here if Sophie wants most abundant at top or bottom?
       ),
       width = 0.75,
       colour = "black",
