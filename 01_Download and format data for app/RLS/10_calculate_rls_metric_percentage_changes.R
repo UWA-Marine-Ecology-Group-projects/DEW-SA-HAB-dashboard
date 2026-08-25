@@ -522,11 +522,11 @@ for (column_name in c(
 }
 
 rls_metric_changes_wide <- rls_metric_changes_wide %>%
-  dplyr::mutate(
-    # Positive values mean the No-take percentage change was more positive
-    # (or less negative) than the Fished percentage change.
-    difference_no_take_minus_fished = change_no_take - change_fished
-  ) %>%
+  # dplyr::mutate(
+  #   # Positive values mean the No-take percentage change was more positive
+  #   # (or less negative) than the Fished percentage change.
+  #   difference_no_take_minus_fished = change_no_take - change_fished
+  # ) %>%
   dplyr::arrange(
     spatial_level,
     spatial_group,
