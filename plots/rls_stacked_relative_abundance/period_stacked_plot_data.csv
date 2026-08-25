@@ -1,62 +1,4 @@
 spatial_level,group_name,method,period_name,taxon_plot,mean_abundance,total_mean_abundance,percent
-location,Aldinga,M1 fish,Bloom,Austrolabrus maculatus,3,62.57142857142857,4.794520547945206
-location,Aldinga,M1 fish,Bloom,Girella zebra,6.125,62.57142857142857,9.788812785388128
-location,Aldinga,M1 fish,Bloom,Notolabrus parilus,2.375,62.57142857142857,3.7956621004566213
-location,Aldinga,M1 fish,Bloom,Other,10.178571428571429,62.57142857142857,16.267123287671232
-location,Aldinga,M1 fish,Bloom,Parapriacanthus elongatus,0,62.57142857142857,0
-location,Aldinga,M1 fish,Bloom,Scorpis aequipinnis,7.535714285714286,62.57142857142857,12.04337899543379
-location,Aldinga,M1 fish,Bloom,Siphonognathus beddomei,0,62.57142857142857,0
-location,Aldinga,M1 fish,Bloom,Trachinops noarlungae,33.357142857142854,62.57142857142857,53.310502283105016
-location,Aldinga,M1 fish,Pre-bloom,Austrolabrus maculatus,2.074468085106383,220.5159574468085,0.940733772342427
-location,Aldinga,M1 fish,Pre-bloom,Girella zebra,0.3670212765957447,220.5159574468085,0.16643751356827555
-location,Aldinga,M1 fish,Pre-bloom,Notolabrus parilus,0.48936170212765956,220.5159574468085,0.22191668475770077
-location,Aldinga,M1 fish,Pre-bloom,Other,18,220.5159574468085,8.162674578478907
-location,Aldinga,M1 fish,Pre-bloom,Parapriacanthus elongatus,12.127659574468085,220.5159574468085,5.4996743613864965
-location,Aldinga,M1 fish,Pre-bloom,Scorpis aequipinnis,2.4308510638297873,220.5159574468085,1.1023470101551005
-location,Aldinga,M1 fish,Pre-bloom,Siphonognathus beddomei,3.898936170212766,220.5159574468085,1.7680970644282028
-location,Aldinga,M1 fish,Pre-bloom,Trachinops noarlungae,181.12765957446808,220.5159574468085,82.1381190148829
-location,Aldinga,M2 fish,Bloom,Eocallionymus papilio,0.05357142857142857,0.6071428571428571,8.823529411764707
-location,Aldinga,M2 fish,Bloom,Helcogramma decurrens,0.125,0.6071428571428571,20.58823529411765
-location,Aldinga,M2 fish,Bloom,Hypoplectrodes nigroruber,0.05357142857142857,0.6071428571428571,8.823529411764707
-location,Aldinga,M2 fish,Bloom,Nesogobius spp,0,0.6071428571428571,0
-location,Aldinga,M2 fish,Bloom,Other,0.125,0.6071428571428571,20.58823529411765
-location,Aldinga,M2 fish,Bloom,Parapercis haackei,0,0.6071428571428571,0
-location,Aldinga,M2 fish,Bloom,Pempheris klunzingeri,0.017857142857142856,0.6071428571428571,2.9411764705882355
-location,Aldinga,M2 fish,Bloom,Trinorfolkia clarkei,0.16071428571428573,0.6071428571428571,26.470588235294123
-location,Aldinga,M2 fish,Bloom,Trinorfolkia cristata,0.07142857142857142,0.6071428571428571,11.764705882352942
-location,Aldinga,M2 fish,Bloom,Tripterygiidae spp,0,0.6071428571428571,0
-location,Aldinga,M2 fish,Pre-bloom,Eocallionymus papilio,0.23369565217391305,4.070652173913043,5.740987983978639
-location,Aldinga,M2 fish,Pre-bloom,Helcogramma decurrens,1.1304347826086956,4.070652173913043,27.770360480640857
-location,Aldinga,M2 fish,Pre-bloom,Hypoplectrodes nigroruber,0.07065217391304347,4.070652173913043,1.7356475300400536
-location,Aldinga,M2 fish,Pre-bloom,Nesogobius spp,0.3532608695652174,4.070652173913043,8.678237650200268
-location,Aldinga,M2 fish,Pre-bloom,Other,0.44565217391304346,4.070652173913043,10.947930574098798
-location,Aldinga,M2 fish,Pre-bloom,Parapercis haackei,0.6086956521739131,4.070652173913043,14.953271028037387
-location,Aldinga,M2 fish,Pre-bloom,Pempheris klunzingeri,0.6739130434782609,4.070652173913043,16.55540720961282
-location,Aldinga,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.16847826086956522,4.070652173913043,4.138851802403205
-location,Aldinga,M2 fish,Pre-bloom,Trinorfolkia cristata,0.043478260869565216,4.070652173913043,1.068090787716956
-location,Aldinga,M2 fish,Pre-bloom,Tripterygiidae spp,0.3423913043478261,4.070652173913043,8.41121495327103
-location,Aldinga,M2 invertebrates,Bloom,Astralium spp,1.3035714285714286,7.196428571428571,18.114143920595534
-location,Aldinga,M2 invertebrates,Bloom,Equichlamys bifrons,0,7.196428571428571,0
-location,Aldinga,M2 invertebrates,Bloom,Fusinus australis,0.5714285714285714,7.196428571428571,7.940446650124069
-location,Aldinga,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.4642857142857143,7.196428571428571,6.451612903225807
-location,Aldinga,M2 invertebrates,Bloom,Mimachlamys asperrima,0,7.196428571428571,0
-location,Aldinga,M2 invertebrates,Bloom,Other,2.071428571428571,7.196428571428571,28.784119106699748
-location,Aldinga,M2 invertebrates,Bloom,Paguristes frontalis,0.9464285714285714,7.196428571428571,13.15136476426799
-location,Aldinga,M2 invertebrates,Bloom,Paguristes spp,1,7.196428571428571,13.895781637717121
-location,Aldinga,M2 invertebrates,Bloom,Pentagonaster duebeni,0,7.196428571428571,0
-location,Aldinga,M2 invertebrates,Bloom,Pleuroploca australasia,0.7142857142857143,7.196428571428571,9.925558312655088
-location,Aldinga,M2 invertebrates,Bloom,Tosia australis,0.125,7.196428571428571,1.7369727047146402
-location,Aldinga,M2 invertebrates,Pre-bloom,Astralium spp,0.14893617021276595,27.154255319148938,0.5484818805093046
-location,Aldinga,M2 invertebrates,Pre-bloom,Equichlamys bifrons,1.3191489361702127,27.154255319148938,4.857982370225269
-location,Aldinga,M2 invertebrates,Pre-bloom,Fusinus australis,0.047872340425531915,27.154255319148938,0.1762977473065622
-location,Aldinga,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,11.085106382978724,27.154255319148938,40.82272282076396
-location,Aldinga,M2 invertebrates,Pre-bloom,Mimachlamys asperrima,3.074468085106383,27.154255319148938,11.322233104799215
-location,Aldinga,M2 invertebrates,Pre-bloom,Other,8.047872340425531,27.154255319148938,29.63761018609206
-location,Aldinga,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.6861702127659575,27.154255319148938,2.5269343780607247
-location,Aldinga,M2 invertebrates,Pre-bloom,Paguristes spp,0,27.154255319148938,0
-location,Aldinga,M2 invertebrates,Pre-bloom,Pentagonaster duebeni,0.9521276595744681,27.154255319148938,3.5063663075416254
-location,Aldinga,M2 invertebrates,Pre-bloom,Pleuroploca australasia,0.8723404255319149,27.154255319148938,3.212536728697356
-location,Aldinga,M2 invertebrates,Pre-bloom,Tosia australis,0.9202127659574468,27.154255319148938,3.3888344760039177
 location,Carrickalinga,M1 fish,Bloom,Austrolabrus maculatus,2.2734375,22.859375,9.945317840054683
 location,Carrickalinga,M1 fish,Bloom,Cheilodactylus nigripes,2.1484375,22.859375,9.398496240601503
 location,Carrickalinga,M1 fish,Bloom,Notolabrus parilus,3.34375,22.859375,14.627477785372522
@@ -109,174 +51,174 @@ location,Carrickalinga,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.6455026
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Paguristes spp,0,25.654761904761905,0
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Phasianella ventricosa,1.7103174603174602,25.654761904761905,6.666666666666666
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Pleuroploca australasia,2.167989417989418,25.654761904761905,8.450631606084043
-location,Metro,M1 fish,Bloom,Acanthopagrus butcheri,0.6875,3.3125,20.754716981132077
-location,Metro,M1 fish,Bloom,Austrolabrus maculatus,0,3.3125,0
-location,Metro,M1 fish,Bloom,Girella zebra,0.5,3.3125,15.09433962264151
-location,Metro,M1 fish,Bloom,Kyphosus sydneyanus,0.5,3.3125,15.09433962264151
-location,Metro,M1 fish,Bloom,Other,0.84375,3.3125,25.471698113207548
-location,Metro,M1 fish,Bloom,Parapriacanthus elongatus,0,3.3125,0
-location,Metro,M1 fish,Bloom,Pempheris klunzingeri,0.3125,3.3125,9.433962264150944
-location,Metro,M1 fish,Bloom,Siphamia cephalotes,0,3.3125,0
-location,Metro,M1 fish,Bloom,Thamnaconus degeni,0.46875,3.3125,14.150943396226415
-location,Metro,M1 fish,Bloom,Trachinops noarlungae,0,3.3125,0
-location,Metro,M1 fish,Pre-bloom,Acanthopagrus butcheri,0,155.4659090909091,0
-location,Metro,M1 fish,Pre-bloom,Austrolabrus maculatus,1.2329545454545454,155.4659090909091,0.7930706819676924
-location,Metro,M1 fish,Pre-bloom,Girella zebra,0.2215909090909091,155.4659090909091,0.14253344053797237
-location,Metro,M1 fish,Pre-bloom,Kyphosus sydneyanus,0.03409090909090909,155.4659090909091,0.021928221621226516
-location,Metro,M1 fish,Pre-bloom,Other,9.522727272727273,155.4659090909091,6.125283239529275
-location,Metro,M1 fish,Pre-bloom,Parapriacanthus elongatus,15.545454545454545,155.4659090909091,9.999269059279293
-location,Metro,M1 fish,Pre-bloom,Pempheris klunzingeri,2.3125,155.4659090909091,1.4874643666398655
-location,Metro,M1 fish,Pre-bloom,Siphamia cephalotes,12.482954545454545,155.4659090909091,8.029383816972443
-location,Metro,M1 fish,Pre-bloom,Thamnaconus degeni,0,155.4659090909091,0
-location,Metro,M1 fish,Pre-bloom,Trachinops noarlungae,114.11363636363636,155.4659090909091,73.40106717345223
-location,Metro,M2 fish,Bloom,Diodon nicthemerus,0.03125,0.53125,5.882352941176471
-location,Metro,M2 fish,Bloom,Eocallionymus papilio,0,0.53125,0
-location,Metro,M2 fish,Bloom,Gobiidae spp,0.09375,0.53125,17.647058823529413
-location,Metro,M2 fish,Bloom,Helcogramma decurrens,0,0.53125,0
-location,Metro,M2 fish,Bloom,Nesogobius spp,0,0.53125,0
-location,Metro,M2 fish,Bloom,Other,0,0.53125,0
-location,Metro,M2 fish,Bloom,Parapercis haackei,0,0.53125,0
-location,Metro,M2 fish,Bloom,Pempheris klunzingeri,0.125,0.53125,23.529411764705884
-location,Metro,M2 fish,Bloom,Trinorfolkia clarkei,0.21875,0.53125,41.1764705882353
-location,Metro,M2 fish,Bloom,Trinorfolkia cristata,0.0625,0.53125,11.764705882352942
-location,Metro,M2 fish,Pre-bloom,Diodon nicthemerus,0,6.5,0
-location,Metro,M2 fish,Pre-bloom,Eocallionymus papilio,0.5340909090909091,6.5,8.216783216783217
-location,Metro,M2 fish,Pre-bloom,Gobiidae spp,0,6.5,0
-location,Metro,M2 fish,Pre-bloom,Helcogramma decurrens,1.8806818181818181,6.5,28.933566433566433
-location,Metro,M2 fish,Pre-bloom,Nesogobius spp,1.0454545454545454,6.5,16.083916083916083
-location,Metro,M2 fish,Pre-bloom,Other,0.3181818181818182,6.5,4.895104895104895
-location,Metro,M2 fish,Pre-bloom,Parapercis haackei,2.1363636363636362,6.5,32.86713286713287
-location,Metro,M2 fish,Pre-bloom,Pempheris klunzingeri,0.375,6.5,5.769230769230769
-location,Metro,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.11931818181818182,6.5,1.8356643356643356
-location,Metro,M2 fish,Pre-bloom,Trinorfolkia cristata,0.09090909090909091,6.5,1.3986013986013988
-location,Metro,M2 invertebrates,Bloom,Astralium spp,0.3125,4.65625,6.7114093959731544
-location,Metro,M2 invertebrates,Bloom,Australostichopus mollis,0,4.65625,0
-location,Metro,M2 invertebrates,Bloom,Equichlamys bifrons,0.15625,4.65625,3.3557046979865772
-location,Metro,M2 invertebrates,Bloom,Haliotis scalaris,0.40625,4.65625,8.724832214765101
-location,Metro,M2 invertebrates,Bloom,Haliotis spp,0,4.65625,0
-location,Metro,M2 invertebrates,Bloom,Meridiastra gunnii,0.25,4.65625,5.369127516778524
-location,Metro,M2 invertebrates,Bloom,Other,0.96875,4.65625,20.80536912751678
-location,Metro,M2 invertebrates,Bloom,Paguridae spp,0.9375,4.65625,20.13422818791946
-location,Metro,M2 invertebrates,Bloom,Paguristes frontalis,1.125,4.65625,24.161073825503355
-location,Metro,M2 invertebrates,Bloom,Portunus armatus,0.5,4.65625,10.738255033557047
-location,Metro,M2 invertebrates,Pre-bloom,Astralium spp,1.8295454545454546,26.375,6.936665230504094
-location,Metro,M2 invertebrates,Pre-bloom,Australostichopus mollis,2.0113636363636362,26.375,7.626023265833692
-location,Metro,M2 invertebrates,Pre-bloom,Equichlamys bifrons,3.965909090909091,26.375,15.036622145626884
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis scalaris,3.039772727272727,26.375,11.525204653166737
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis spp,2.2556818181818183,26.375,8.552348125807843
-location,Metro,M2 invertebrates,Pre-bloom,Meridiastra gunnii,1.9715909090909092,26.375,7.475226195605343
-location,Metro,M2 invertebrates,Pre-bloom,Other,9.022727272727273,26.375,34.20939250323137
-location,Metro,M2 invertebrates,Pre-bloom,Paguridae spp,0,26.375,0
-location,Metro,M2 invertebrates,Pre-bloom,Paguristes frontalis,1.5454545454545454,26.375,5.859543300301594
-location,Metro,M2 invertebrates,Pre-bloom,Portunus armatus,0.7329545454545454,26.375,2.7789745799224472
-location,Point Turton,M1 fish,Bloom,Girella zebra,0.9583333333333334,9.791666666666666,9.787234042553193
-location,Point Turton,M1 fish,Bloom,Kyphosus sydneyanus,0.3333333333333333,9.791666666666666,3.4042553191489358
-location,Point Turton,M1 fish,Bloom,Neoodax balteatus,0.9166666666666666,9.791666666666666,9.361702127659575
-location,Point Turton,M1 fish,Bloom,Notolabrus tetricus,2.3333333333333335,9.791666666666666,23.829787234042556
-location,Point Turton,M1 fish,Bloom,Other,1.4583333333333333,9.791666666666666,14.893617021276595
-location,Point Turton,M1 fish,Bloom,Scorpis aequipinnis,1.9583333333333333,9.791666666666666,20
-location,Point Turton,M1 fish,Bloom,Siphonognathus beddomei,0.041666666666666664,9.791666666666666,0.42553191489361697
-location,Point Turton,M1 fish,Bloom,Trachinops noarlungae,1.7916666666666667,9.791666666666666,18.297872340425535
-location,Point Turton,M1 fish,Pre-bloom,Girella zebra,0.13636363636363635,22.545454545454547,0.6048387096774193
-location,Point Turton,M1 fish,Pre-bloom,Kyphosus sydneyanus,2.272727272727273,22.545454545454547,10.080645161290322
-location,Point Turton,M1 fish,Pre-bloom,Neoodax balteatus,0.4090909090909091,22.545454545454547,1.8145161290322582
-location,Point Turton,M1 fish,Pre-bloom,Notolabrus tetricus,3.272727272727273,22.545454545454547,14.516129032258066
-location,Point Turton,M1 fish,Pre-bloom,Other,8.045454545454545,22.545454545454547,35.68548387096774
-location,Point Turton,M1 fish,Pre-bloom,Scorpis aequipinnis,2.272727272727273,22.545454545454547,10.080645161290322
-location,Point Turton,M1 fish,Pre-bloom,Siphonognathus beddomei,2.6818181818181817,22.545454545454547,11.89516129032258
-location,Point Turton,M1 fish,Pre-bloom,Trachinops noarlungae,3.4545454545454546,22.545454545454547,15.322580645161288
-location,Point Turton,M2 fish,Bloom,Callionymidae spp,0,2.4166666666666665,0
-location,Point Turton,M2 fish,Bloom,Eocallionymus papilio,0.20833333333333334,2.4166666666666665,8.620689655172415
-location,Point Turton,M2 fish,Bloom,Gobiidae spp,0.25,2.4166666666666665,10.344827586206897
-location,Point Turton,M2 fish,Bloom,Heteroclinus spp,0,2.4166666666666665,0
-location,Point Turton,M2 fish,Bloom,Other,0.041666666666666664,2.4166666666666665,1.7241379310344827
-location,Point Turton,M2 fish,Bloom,Parapercis haackei,1,2.4166666666666665,41.37931034482759
-location,Point Turton,M2 fish,Bloom,Trinorfolkia clarkei,0.5,2.4166666666666665,20.689655172413794
-location,Point Turton,M2 fish,Bloom,Trinorfolkia cristata,0.4166666666666667,2.4166666666666665,17.24137931034483
-location,Point Turton,M2 fish,Pre-bloom,Callionymidae spp,0.13333333333333333,1.8666666666666667,7.142857142857143
-location,Point Turton,M2 fish,Pre-bloom,Eocallionymus papilio,0.06666666666666667,1.8666666666666667,3.5714285714285716
-location,Point Turton,M2 fish,Pre-bloom,Gobiidae spp,0.6666666666666666,1.8666666666666667,35.71428571428571
-location,Point Turton,M2 fish,Pre-bloom,Heteroclinus spp,0.13333333333333333,1.8666666666666667,7.142857142857143
-location,Point Turton,M2 fish,Pre-bloom,Other,0.26666666666666666,1.8666666666666667,14.285714285714286
-location,Point Turton,M2 fish,Pre-bloom,Parapercis haackei,0.26666666666666666,1.8666666666666667,14.285714285714286
-location,Point Turton,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.3333333333333333,1.8666666666666667,17.857142857142854
-location,Point Turton,M2 fish,Pre-bloom,Trinorfolkia cristata,0,1.8666666666666667,0
-location,Point Turton,M2 invertebrates,Bloom,Cenolia trichoptera,0,7.708333333333333,0
-location,Point Turton,M2 invertebrates,Bloom,Equichlamys bifrons,0.875,7.708333333333333,11.351351351351353
-location,Point Turton,M2 invertebrates,Bloom,Haliotis rubra,1.375,7.708333333333333,17.83783783783784
-location,Point Turton,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0,7.708333333333333,0
-location,Point Turton,M2 invertebrates,Bloom,Nectocarcinus integrifrons,0.625,7.708333333333333,8.108108108108109
-location,Point Turton,M2 invertebrates,Bloom,Neothyonidium dearmatum,0,7.708333333333333,0
-location,Point Turton,M2 invertebrates,Bloom,Other,2.375,7.708333333333333,30.81081081081081
-location,Point Turton,M2 invertebrates,Bloom,Paguristes frontalis,0.875,7.708333333333333,11.351351351351353
-location,Point Turton,M2 invertebrates,Bloom,Paguristes spp,1.5833333333333333,7.708333333333333,20.54054054054054
-location,Point Turton,M2 invertebrates,Bloom,Tosia australis,0,7.708333333333333,0
-location,Point Turton,M2 invertebrates,Pre-bloom,Cenolia trichoptera,19.466666666666665,51.43333333333333,37.84834737524303
-location,Point Turton,M2 invertebrates,Pre-bloom,Equichlamys bifrons,1.1333333333333333,51.43333333333333,2.20349967595593
-location,Point Turton,M2 invertebrates,Pre-bloom,Haliotis rubra,2.8333333333333335,51.43333333333333,5.508749189889826
-location,Point Turton,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,4.033333333333333,51.43333333333333,7.841866493843162
-location,Point Turton,M2 invertebrates,Pre-bloom,Nectocarcinus integrifrons,0,51.43333333333333,0
-location,Point Turton,M2 invertebrates,Pre-bloom,Neothyonidium dearmatum,10.466666666666667,51.43333333333333,20.349967595593004
-location,Point Turton,M2 invertebrates,Pre-bloom,Other,12.066666666666666,51.43333333333333,23.460790667530787
-location,Point Turton,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.13333333333333333,51.43333333333333,0.25923525599481534
-location,Point Turton,M2 invertebrates,Pre-bloom,Paguristes spp,0,51.43333333333333,0
-location,Point Turton,M2 invertebrates,Pre-bloom,Tosia australis,1.3,51.43333333333333,2.5275437459494494
-location,Port Noarlunga,M1 fish,Bloom,Girella zebra,1.1875,17.3125,6.859205776173285
-location,Port Noarlunga,M1 fish,Bloom,Kyphosus sydneyanus,1.59375,17.3125,9.205776173285198
-location,Port Noarlunga,M1 fish,Bloom,Notolabrus parilus,3.84375,17.3125,22.20216606498195
-location,Port Noarlunga,M1 fish,Bloom,Other,1.34375,17.3125,7.76173285198556
-location,Port Noarlunga,M1 fish,Bloom,Parapriacanthus elongatus,0,17.3125,0
-location,Port Noarlunga,M1 fish,Bloom,Parma victoriae,1.03125,17.3125,5.956678700361011
-location,Port Noarlunga,M1 fish,Bloom,Pempheris klunzingeri,0.09375,17.3125,0.5415162454873647
-location,Port Noarlunga,M1 fish,Bloom,Scorpis aequipinnis,8.21875,17.3125,47.47292418772563
-location,Port Noarlunga,M1 fish,Bloom,Trachinops noarlungae,0,17.3125,0
-location,Port Noarlunga,M1 fish,Pre-bloom,Girella zebra,1.1171875,83.44140625,1.3388886288095128
-location,Port Noarlunga,M1 fish,Pre-bloom,Kyphosus sydneyanus,2.56640625,83.44140625,3.07569870324423
-location,Port Noarlunga,M1 fish,Pre-bloom,Notolabrus parilus,0.875,83.44140625,1.0486400449417161
-location,Port Noarlunga,M1 fish,Pre-bloom,Other,16.42578125,83.44140625,19.685407986517486
-location,Port Noarlunga,M1 fish,Pre-bloom,Parapriacanthus elongatus,3.0078125,83.44140625,3.6047001544871495
-location,Port Noarlunga,M1 fish,Pre-bloom,Parma victoriae,0.74609375,83.44140625,0.8941528954636955
-location,Port Noarlunga,M1 fish,Pre-bloom,Pempheris klunzingeri,4.2734375,83.44140625,5.121483076634989
-location,Port Noarlunga,M1 fish,Pre-bloom,Scorpis aequipinnis,5.90234375,83.44140625,7.073638874584523
-location,Port Noarlunga,M1 fish,Pre-bloom,Trachinops noarlungae,48.52734375,83.44140625,58.1573896353167
-location,Port Noarlunga,M2 fish,Bloom,Eocallionymus papilio,0.25,1.28125,19.51219512195122
-location,Port Noarlunga,M2 fish,Bloom,Gymnapistes marmoratus,0.0625,1.28125,4.878048780487805
-location,Port Noarlunga,M2 fish,Bloom,Helcogramma decurrens,0.78125,1.28125,60.97560975609756
-location,Port Noarlunga,M2 fish,Bloom,Other,0.03125,1.28125,2.4390243902439024
-location,Port Noarlunga,M2 fish,Bloom,Parablennius tasmanianus,0.0625,1.28125,4.878048780487805
-location,Port Noarlunga,M2 fish,Bloom,Parapercis haackei,0.03125,1.28125,2.4390243902439024
-location,Port Noarlunga,M2 fish,Bloom,Parapriacanthus elongatus,0,1.28125,0
-location,Port Noarlunga,M2 fish,Bloom,Pempheris klunzingeri,0,1.28125,0
-location,Port Noarlunga,M2 fish,Bloom,Pempheris multiradiata,0,1.28125,0
-location,Port Noarlunga,M2 fish,Bloom,Trinorfolkia clarkei,0.0625,1.28125,4.878048780487805
-location,Port Noarlunga,M2 fish,Pre-bloom,Eocallionymus papilio,0.25390625,12.1953125,2.081998718770019
-location,Port Noarlunga,M2 fish,Pre-bloom,Gymnapistes marmoratus,0,12.1953125,0
-location,Port Noarlunga,M2 fish,Pre-bloom,Helcogramma decurrens,7.671875,12.1953125,62.90839205637412
-location,Port Noarlunga,M2 fish,Pre-bloom,Other,0.44921875,12.1953125,3.683536194746957
-location,Port Noarlunga,M2 fish,Pre-bloom,Parablennius tasmanianus,0.00390625,12.1953125,0.032030749519538756
-location,Port Noarlunga,M2 fish,Pre-bloom,Parapercis haackei,0.53515625,12.1953125,4.38821268417681
-location,Port Noarlunga,M2 fish,Pre-bloom,Parapriacanthus elongatus,1.12109375,12.1953125,9.192825112107624
-location,Port Noarlunga,M2 fish,Pre-bloom,Pempheris klunzingeri,1.65234375,12.1953125,13.549007046764894
-location,Port Noarlunga,M2 fish,Pre-bloom,Pempheris multiradiata,0.39453125,12.1953125,3.2351057014734144
-location,Port Noarlunga,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.11328125,12.1953125,0.928891736066624
-location,Port Noarlunga,M2 invertebrates,Bloom,Astralium spp,0.34375,8.15625,4.21455938697318
-location,Port Noarlunga,M2 invertebrates,Bloom,Dicathais orbita,0.5,8.15625,6.130268199233717
-location,Port Noarlunga,M2 invertebrates,Bloom,Haliotis spp,0,8.15625,0
-location,Port Noarlunga,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.0625,8.15625,0.7662835249042146
-location,Port Noarlunga,M2 invertebrates,Bloom,Lunella undulata,0.15625,8.15625,1.9157088122605364
-location,Port Noarlunga,M2 invertebrates,Bloom,Other,1.59375,8.15625,19.54022988505747
-location,Port Noarlunga,M2 invertebrates,Bloom,Paguridae spp,2.0625,8.15625,25.28735632183908
-location,Port Noarlunga,M2 invertebrates,Bloom,Paguristes frontalis,2.375,8.15625,29.118773946360154
-location,Port Noarlunga,M2 invertebrates,Bloom,Pleuroploca australasia,1.0625,8.15625,13.026819923371647
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Astralium spp,0.66015625,131.04296875,0.5037708289861985
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Dicathais orbita,2.07421875,131.04296875,1.582853906459594
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Haliotis spp,3.015625,131.04296875,2.3012489939487883
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,25.94140625,131.04296875,19.796106954422154
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Lunella undulata,76.640625,131.04296875,58.48511044206636
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Other,17.0859375,131.04296875,13.038423704056994
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Paguridae spp,0.03125,131.04296875,0.0238471398336662
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Paguristes frontalis,2.72265625,131.04296875,2.077682058008168
-location,Port Noarlunga,M2 invertebrates,Pre-bloom,Pleuroploca australasia,2.87109375,131.04296875,2.1909559722180822
+location,Eastern Spencer Gulf,M1 fish,Bloom,Girella zebra,0.9583333333333334,9.791666666666666,9.787234042553193
+location,Eastern Spencer Gulf,M1 fish,Bloom,Kyphosus sydneyanus,0.3333333333333333,9.791666666666666,3.4042553191489358
+location,Eastern Spencer Gulf,M1 fish,Bloom,Neoodax balteatus,0.9166666666666666,9.791666666666666,9.361702127659575
+location,Eastern Spencer Gulf,M1 fish,Bloom,Notolabrus tetricus,2.3333333333333335,9.791666666666666,23.829787234042556
+location,Eastern Spencer Gulf,M1 fish,Bloom,Other,1.4583333333333333,9.791666666666666,14.893617021276595
+location,Eastern Spencer Gulf,M1 fish,Bloom,Scorpis aequipinnis,1.9583333333333333,9.791666666666666,20
+location,Eastern Spencer Gulf,M1 fish,Bloom,Siphonognathus beddomei,0.041666666666666664,9.791666666666666,0.42553191489361697
+location,Eastern Spencer Gulf,M1 fish,Bloom,Trachinops noarlungae,1.7916666666666667,9.791666666666666,18.297872340425535
+location,Eastern Spencer Gulf,M1 fish,Pre-bloom,Girella zebra,0.13636363636363635,22.545454545454547,0.6048387096774193
+location,Eastern Spencer Gulf,M1 fish,Pre-bloom,Kyphosus sydneyanus,2.272727272727273,22.545454545454547,10.080645161290322
+location,Eastern Spencer Gulf,M1 fish,Pre-bloom,Neoodax balteatus,0.4090909090909091,22.545454545454547,1.8145161290322582
+location,Eastern Spencer Gulf,M1 fish,Pre-bloom,Notolabrus tetricus,3.272727272727273,22.545454545454547,14.516129032258066
+location,Eastern Spencer Gulf,M1 fish,Pre-bloom,Other,8.045454545454545,22.545454545454547,35.68548387096774
+location,Eastern Spencer Gulf,M1 fish,Pre-bloom,Scorpis aequipinnis,2.272727272727273,22.545454545454547,10.080645161290322
+location,Eastern Spencer Gulf,M1 fish,Pre-bloom,Siphonognathus beddomei,2.6818181818181817,22.545454545454547,11.89516129032258
+location,Eastern Spencer Gulf,M1 fish,Pre-bloom,Trachinops noarlungae,3.4545454545454546,22.545454545454547,15.322580645161288
+location,Eastern Spencer Gulf,M2 fish,Bloom,Callionymidae spp,0,2.4166666666666665,0
+location,Eastern Spencer Gulf,M2 fish,Bloom,Eocallionymus papilio,0.20833333333333334,2.4166666666666665,8.620689655172415
+location,Eastern Spencer Gulf,M2 fish,Bloom,Gobiidae spp,0.25,2.4166666666666665,10.344827586206897
+location,Eastern Spencer Gulf,M2 fish,Bloom,Heteroclinus spp,0,2.4166666666666665,0
+location,Eastern Spencer Gulf,M2 fish,Bloom,Other,0.041666666666666664,2.4166666666666665,1.7241379310344827
+location,Eastern Spencer Gulf,M2 fish,Bloom,Parapercis haackei,1,2.4166666666666665,41.37931034482759
+location,Eastern Spencer Gulf,M2 fish,Bloom,Trinorfolkia clarkei,0.5,2.4166666666666665,20.689655172413794
+location,Eastern Spencer Gulf,M2 fish,Bloom,Trinorfolkia cristata,0.4166666666666667,2.4166666666666665,17.24137931034483
+location,Eastern Spencer Gulf,M2 fish,Pre-bloom,Callionymidae spp,0.13333333333333333,1.8666666666666667,7.142857142857143
+location,Eastern Spencer Gulf,M2 fish,Pre-bloom,Eocallionymus papilio,0.06666666666666667,1.8666666666666667,3.5714285714285716
+location,Eastern Spencer Gulf,M2 fish,Pre-bloom,Gobiidae spp,0.6666666666666666,1.8666666666666667,35.71428571428571
+location,Eastern Spencer Gulf,M2 fish,Pre-bloom,Heteroclinus spp,0.13333333333333333,1.8666666666666667,7.142857142857143
+location,Eastern Spencer Gulf,M2 fish,Pre-bloom,Other,0.26666666666666666,1.8666666666666667,14.285714285714286
+location,Eastern Spencer Gulf,M2 fish,Pre-bloom,Parapercis haackei,0.26666666666666666,1.8666666666666667,14.285714285714286
+location,Eastern Spencer Gulf,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.3333333333333333,1.8666666666666667,17.857142857142854
+location,Eastern Spencer Gulf,M2 fish,Pre-bloom,Trinorfolkia cristata,0,1.8666666666666667,0
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Cenolia trichoptera,0,7.708333333333333,0
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Equichlamys bifrons,0.875,7.708333333333333,11.351351351351353
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Haliotis rubra,1.375,7.708333333333333,17.83783783783784
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0,7.708333333333333,0
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Nectocarcinus integrifrons,0.625,7.708333333333333,8.108108108108109
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Neothyonidium dearmatum,0,7.708333333333333,0
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Other,2.375,7.708333333333333,30.81081081081081
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Paguristes frontalis,0.875,7.708333333333333,11.351351351351353
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Paguristes spp,1.5833333333333333,7.708333333333333,20.54054054054054
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom,Tosia australis,0,7.708333333333333,0
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Cenolia trichoptera,19.466666666666665,51.43333333333333,37.84834737524303
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Equichlamys bifrons,1.1333333333333333,51.43333333333333,2.20349967595593
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis rubra,2.8333333333333335,51.43333333333333,5.508749189889826
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,4.033333333333333,51.43333333333333,7.841866493843162
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Nectocarcinus integrifrons,0,51.43333333333333,0
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Neothyonidium dearmatum,10.466666666666667,51.43333333333333,20.349967595593004
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Other,12.066666666666666,51.43333333333333,23.460790667530787
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.13333333333333333,51.43333333333333,0.25923525599481534
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Paguristes spp,0,51.43333333333333,0
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Tosia australis,1.3,51.43333333333333,2.5275437459494494
+location,Encounter Bay,M1 fish,Bloom,Arripis georgianus,4.361111111111111,15.041666666666666,28.993536472760848
+location,Encounter Bay,M1 fish,Bloom,Cheilodactylus nigripes,0.5972222222222222,15.041666666666666,3.970452446906741
+location,Encounter Bay,M1 fish,Bloom,Enoplosus armatus,0.1527777777777778,15.041666666666666,1.0156971375807942
+location,Encounter Bay,M1 fish,Bloom,Kyphosus sydneyanus,0.6388888888888888,15.041666666666666,4.247460757156048
+location,Encounter Bay,M1 fish,Bloom,Notolabrus tetricus,0.8888888888888888,15.041666666666666,5.909510618651893
+location,Encounter Bay,M1 fish,Bloom,Olisthops cyanomelas,0.1527777777777778,15.041666666666666,1.0156971375807942
+location,Encounter Bay,M1 fish,Bloom,Other,1.5138888888888888,15.041666666666666,10.064635272391506
+location,Encounter Bay,M1 fish,Bloom,Scorpis aequipinnis,6.736111111111111,15.041666666666666,44.78301015697138
+location,Encounter Bay,M1 fish,Bloom,Siphamia cephalotes,0,15.041666666666666,0
+location,Encounter Bay,M1 fish,Pre-bloom,Arripis georgianus,0.7635658914728682,23.348837209302324,3.270252324037185
+location,Encounter Bay,M1 fish,Pre-bloom,Cheilodactylus nigripes,0.7635658914728682,23.348837209302324,3.270252324037185
+location,Encounter Bay,M1 fish,Pre-bloom,Enoplosus armatus,1.1007751937984496,23.348837209302324,4.714475431606906
+location,Encounter Bay,M1 fish,Pre-bloom,Kyphosus sydneyanus,0.9069767441860465,23.348837209302324,3.8844621513944224
+location,Encounter Bay,M1 fish,Pre-bloom,Notolabrus tetricus,3.1705426356589146,23.348837209302324,13.579017264276228
+location,Encounter Bay,M1 fish,Pre-bloom,Olisthops cyanomelas,1.073643410852713,23.348837209302324,4.598273572377158
+location,Encounter Bay,M1 fish,Pre-bloom,Other,8.655038759689923,23.348837209302324,37.06839309428951
+location,Encounter Bay,M1 fish,Pre-bloom,Scorpis aequipinnis,5.368217054263566,23.348837209302324,22.991367861885788
+location,Encounter Bay,M1 fish,Pre-bloom,Siphamia cephalotes,1.5465116279069768,23.348837209302324,6.623505976095619
+location,Encounter Bay,M2 fish,Bloom,Bovichtus angustifrons,0.013888888888888888,0.2777777777777778,5
+location,Encounter Bay,M2 fish,Bloom,Helcogramma decurrens,0.027777777777777776,0.2777777777777778,10
+location,Encounter Bay,M2 fish,Bloom,Other,0.013888888888888888,0.2777777777777778,5
+location,Encounter Bay,M2 fish,Bloom,Parapriacanthus elongatus,0,0.2777777777777778,0
+location,Encounter Bay,M2 fish,Bloom,Pempheris klunzingeri,0.041666666666666664,0.2777777777777778,14.999999999999996
+location,Encounter Bay,M2 fish,Bloom,Pempheris multiradiata,0.1388888888888889,0.2777777777777778,50
+location,Encounter Bay,M2 fish,Bloom,Trinorfolkia cristata,0.041666666666666664,0.2777777777777778,14.999999999999996
+location,Encounter Bay,M2 fish,Bloom,Vincentia conspersa,0,0.2777777777777778,0
+location,Encounter Bay,M2 fish,Pre-bloom,Bovichtus angustifrons,0.03546099290780142,1.9042553191489362,1.86219739292365
+location,Encounter Bay,M2 fish,Pre-bloom,Helcogramma decurrens,0.12056737588652482,1.9042553191489362,6.331471135940409
+location,Encounter Bay,M2 fish,Pre-bloom,Other,0.1631205673758865,1.9042553191489362,8.56610800744879
+location,Encounter Bay,M2 fish,Pre-bloom,Parapriacanthus elongatus,0.04964539007092199,1.9042553191489362,2.6070763500931102
+location,Encounter Bay,M2 fish,Pre-bloom,Pempheris klunzingeri,0.1595744680851064,1.9042553191489362,8.379888268156424
+location,Encounter Bay,M2 fish,Pre-bloom,Pempheris multiradiata,1.25177304964539,1.9042553191489362,65.73556797020484
+location,Encounter Bay,M2 fish,Pre-bloom,Trinorfolkia cristata,0.0070921985815602835,1.9042553191489362,0.37243947858473
+location,Encounter Bay,M2 fish,Pre-bloom,Vincentia conspersa,0.11702127659574468,1.9042553191489362,6.145251396648045
+location,Encounter Bay,M2 invertebrates,Bloom,Cenolia trichoptera,0.6388888888888888,11.23611111111111,5.686032138442521
+location,Encounter Bay,M2 invertebrates,Bloom,Dicathais orbita,3.5555555555555554,11.23611111111111,31.644004944375773
+location,Encounter Bay,M2 invertebrates,Bloom,Guinusia chabrus,3.1527777777777777,11.23611111111111,28.059332509270703
+location,Encounter Bay,M2 invertebrates,Bloom,Haliotis rubra,0.5,11.23611111111111,4.449938195302843
+location,Encounter Bay,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.1527777777777778,11.23611111111111,1.3597033374536467
+location,Encounter Bay,M2 invertebrates,Bloom,Herdmania grandis,0,11.23611111111111,0
+location,Encounter Bay,M2 invertebrates,Bloom,Lunella torquata,0,11.23611111111111,0
+location,Encounter Bay,M2 invertebrates,Bloom,Lunella undulata,0.08333333333333333,11.23611111111111,0.7416563658838071
+location,Encounter Bay,M2 invertebrates,Bloom,Meridiastra gunnii,0.9722222222222222,11.23611111111111,8.652657601977749
+location,Encounter Bay,M2 invertebrates,Bloom,Other,2.1805555555555554,11.23611111111111,19.406674907292953
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Cenolia trichoptera,12.308510638297872,56.08510638297872,21.946130500758724
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Dicathais orbita,1.4361702127659575,56.08510638297872,2.5606980273141122
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Guinusia chabrus,2.0531914893617023,56.08510638297872,3.660849772382398
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis rubra,1.5141843971631206,56.08510638297872,2.6997976732422866
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,14.904255319148936,56.08510638297872,26.574355083459785
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Herdmania grandis,3.351063829787234,56.08510638297872,5.974962063732929
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Lunella torquata,3.9326241134751774,56.08510638297872,7.01188669701568
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Lunella undulata,4.897163120567376,56.08510638297872,8.731664137582195
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Meridiastra gunnii,1.3652482269503545,56.08510638297872,2.434243803743045
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Other,10.322695035460994,56.08510638297872,18.405412240768843
+location,Metro,M1 fish,Bloom,Aracana ornata,0.0625,1.75,3.5714285714285716
+location,Metro,M1 fish,Bloom,Austrolabrus maculatus,0,1.75,0
+location,Metro,M1 fish,Bloom,Notolabrus parilus,0.25,1.75,14.285714285714286
+location,Metro,M1 fish,Bloom,Other,0.0625,1.75,3.5714285714285716
+location,Metro,M1 fish,Bloom,Parapriacanthus elongatus,0,1.75,0
+location,Metro,M1 fish,Bloom,Parma victoriae,0.1875,1.75,10.714285714285714
+location,Metro,M1 fish,Bloom,Pempheris klunzingeri,0,1.75,0
+location,Metro,M1 fish,Bloom,Scorpis aequipinnis,0.25,1.75,14.285714285714286
+location,Metro,M1 fish,Bloom,Siphamia cephalotes,0,1.75,0
+location,Metro,M1 fish,Bloom,Thamnaconus degeni,0.9375,1.75,53.57142857142857
+location,Metro,M1 fish,Bloom,Trachinops noarlungae,0,1.75,0
+location,Metro,M1 fish,Pre-bloom,Aracana ornata,0.041666666666666664,206,0.020226537216828475
+location,Metro,M1 fish,Pre-bloom,Austrolabrus maculatus,1.7166666666666666,206,0.8333333333333333
+location,Metro,M1 fish,Pre-bloom,Notolabrus parilus,0.375,206,0.1820388349514563
+location,Metro,M1 fish,Pre-bloom,Other,9.433333333333334,206,4.5792880258899675
+location,Metro,M1 fish,Pre-bloom,Parapriacanthus elongatus,21.658333333333335,206,10.513754045307444
+location,Metro,M1 fish,Pre-bloom,Parma victoriae,0.65,206,0.3155339805825243
+location,Metro,M1 fish,Pre-bloom,Pempheris klunzingeri,2.3666666666666667,206,1.1488673139158576
+location,Metro,M1 fish,Pre-bloom,Scorpis aequipinnis,0.016666666666666666,206,0.008090614886731393
+location,Metro,M1 fish,Pre-bloom,Siphamia cephalotes,5.9,206,2.8640776699029127
+location,Metro,M1 fish,Pre-bloom,Thamnaconus degeni,0,206,0
+location,Metro,M1 fish,Pre-bloom,Trachinops noarlungae,163.84166666666667,206,79.53478964401295
+location,Metro,M2 fish,Bloom,Aetapcus maculatus,0,0.25,0
+location,Metro,M2 fish,Bloom,Aploactisoma milesii,0,0.25,0
+location,Metro,M2 fish,Bloom,Aspasmogaster spp,0,0.25,0
+location,Metro,M2 fish,Bloom,Bathygobius krefftii,0,0.25,0
+location,Metro,M2 fish,Bloom,Eocallionymus papilio,0,0.25,0
+location,Metro,M2 fish,Bloom,Helcogramma decurrens,0,0.25,0
+location,Metro,M2 fish,Bloom,Nesogobius spp,0,0.25,0
+location,Metro,M2 fish,Bloom,Other,0,0.25,0
+location,Metro,M2 fish,Bloom,Parapercis haackei,0,0.25,0
+location,Metro,M2 fish,Bloom,Pempheris klunzingeri,0,0.25,0
+location,Metro,M2 fish,Bloom,Trinorfolkia clarkei,0.25,0.25,100
+location,Metro,M2 fish,Pre-bloom,Aetapcus maculatus,0.016666666666666666,8.424999999999999,0.1978239366963403
+location,Metro,M2 fish,Pre-bloom,Aploactisoma milesii,0.008333333333333333,8.424999999999999,0.09891196834817015
+location,Metro,M2 fish,Pre-bloom,Aspasmogaster spp,0,8.424999999999999,0
+location,Metro,M2 fish,Pre-bloom,Bathygobius krefftii,0,8.424999999999999,0
+location,Metro,M2 fish,Pre-bloom,Eocallionymus papilio,0.6083333333333333,8.424999999999999,7.22057368941642
+location,Metro,M2 fish,Pre-bloom,Helcogramma decurrens,2.433333333333333,8.424999999999999,28.88229475766568
+location,Metro,M2 fish,Pre-bloom,Nesogobius spp,1.475,8.424999999999999,17.507418397626115
+location,Metro,M2 fish,Pre-bloom,Other,0.2833333333333333,8.424999999999999,3.363006923837785
+location,Metro,M2 fish,Pre-bloom,Parapercis haackei,2.908333333333333,8.424999999999999,34.52027695351138
+location,Metro,M2 fish,Pre-bloom,Pempheris klunzingeri,0.55,8.424999999999999,6.52818991097923
+location,Metro,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.14166666666666666,8.424999999999999,1.6815034619188924
+location,Metro,M2 invertebrates,Bloom,Astralium spp,0.5625,7.375,7.627118644067797
+location,Metro,M2 invertebrates,Bloom,Equichlamys bifrons,0.0625,7.375,0.847457627118644
+location,Metro,M2 invertebrates,Bloom,Haliotis scalaris,0.8125,7.375,11.016949152542374
+location,Metro,M2 invertebrates,Bloom,Haliotis spp,0,7.375,0
+location,Metro,M2 invertebrates,Bloom,Leptomithrax gaimardii,0.5,7.375,6.779661016949152
+location,Metro,M2 invertebrates,Bloom,Meridiastra gunnii,0.5,7.375,6.779661016949152
+location,Metro,M2 invertebrates,Bloom,Other,1.375,7.375,18.64406779661017
+location,Metro,M2 invertebrates,Bloom,Paguridae spp,1.4375,7.375,19.491525423728813
+location,Metro,M2 invertebrates,Bloom,Paguristes frontalis,2.125,7.375,28.8135593220339
+location,Metro,M2 invertebrates,Pre-bloom,Astralium spp,2.683333333333333,32.8,8.18089430894309
+location,Metro,M2 invertebrates,Pre-bloom,Equichlamys bifrons,4.033333333333333,32.8,12.296747967479675
+location,Metro,M2 invertebrates,Pre-bloom,Haliotis scalaris,4.225,32.8,12.88109756097561
+location,Metro,M2 invertebrates,Pre-bloom,Haliotis spp,3,32.8,9.146341463414634
+location,Metro,M2 invertebrates,Pre-bloom,Leptomithrax gaimardii,0.025,32.8,0.07621951219512196
+location,Metro,M2 invertebrates,Pre-bloom,Meridiastra gunnii,2.8916666666666666,32.8,8.816056910569108
+location,Metro,M2 invertebrates,Pre-bloom,Other,14.016666666666667,32.8,42.73373983739838
+location,Metro,M2 invertebrates,Pre-bloom,Paguridae spp,0,32.8,0
+location,Metro,M2 invertebrates,Pre-bloom,Paguristes frontalis,1.925,32.8,5.8689024390243905
 location,Rapid Head,M1 fish,Bloom,Notolabrus parilus,2.647727272727273,65.22727272727273,4.059233449477352
 location,Rapid Head,M1 fish,Bloom,Notolabrus tetricus,6.261363636363637,65.22727272727273,9.599303135888501
 location,Rapid Head,M1 fish,Bloom,Other,11.022727272727273,65.22727272727273,16.89895470383275
@@ -333,62 +275,166 @@ location,Rapid Head,M2 invertebrates,Pre-bloom,Paguristes spp,0,11.5,0
 location,Rapid Head,M2 invertebrates,Pre-bloom,Pentagonaster duebeni,1.2352941176470589,11.5,10.741687979539643
 location,Rapid Head,M2 invertebrates,Pre-bloom,Phasianella australis,1.5611764705882354,11.5,13.575447570332482
 location,Rapid Head,M2 invertebrates,Pre-bloom,Pleuroploca australasia,0.9470588235294117,11.5,8.235294117647058
-location,Southern Fleurieu,M1 fish,Bloom,Cheilodactylus nigripes,1.53125,33.4375,4.579439252336448
-location,Southern Fleurieu,M1 fish,Bloom,Girella zebra,2.375,33.4375,7.102803738317757
-location,Southern Fleurieu,M1 fish,Bloom,Kyphosus sydneyanus,2.25,33.4375,6.728971962616822
-location,Southern Fleurieu,M1 fish,Bloom,Meuschenia hippocrepis,0.125,33.4375,0.37383177570093457
-location,Southern Fleurieu,M1 fish,Bloom,Notolabrus tetricus,6.5625,33.4375,19.626168224299064
-location,Southern Fleurieu,M1 fish,Bloom,Other,3.84375,33.4375,11.495327102803738
-location,Southern Fleurieu,M1 fish,Bloom,Scorpis aequipinnis,16.75,33.4375,50.09345794392523
-location,Southern Fleurieu,M1 fish,Bloom,Siphonognathus beddomei,0,33.4375,0
-location,Southern Fleurieu,M1 fish,Pre-bloom,Cheilodactylus nigripes,0.8020833333333334,27.354166666666668,2.9322162985529325
-location,Southern Fleurieu,M1 fish,Pre-bloom,Girella zebra,1.625,27.354166666666668,5.9405940594059405
-location,Southern Fleurieu,M1 fish,Pre-bloom,Kyphosus sydneyanus,1.15625,27.354166666666668,4.226961157654227
-location,Southern Fleurieu,M1 fish,Pre-bloom,Meuschenia hippocrepis,3.03125,27.354166666666668,11.08149276466108
-location,Southern Fleurieu,M1 fish,Pre-bloom,Notolabrus tetricus,5.6875,27.354166666666668,20.792079207920793
-location,Southern Fleurieu,M1 fish,Pre-bloom,Other,7.0625,27.354166666666668,25.81873571972582
-location,Southern Fleurieu,M1 fish,Pre-bloom,Scorpis aequipinnis,6.489583333333333,27.354166666666668,23.72429550647372
-location,Southern Fleurieu,M1 fish,Pre-bloom,Siphonognathus beddomei,1.5,27.354166666666668,5.483625285605483
-location,Southern Fleurieu,M2 fish,Bloom,Aetapcus maculatus,0,0.0625,0
-location,Southern Fleurieu,M2 fish,Bloom,Aploactisoma milesii,0,0.0625,0
-location,Southern Fleurieu,M2 fish,Bloom,Aspasmogaster spp,0,0.0625,0
-location,Southern Fleurieu,M2 fish,Bloom,Bovichtus angustifrons,0,0.0625,0
-location,Southern Fleurieu,M2 fish,Bloom,Helcogramma decurrens,0.03125,0.0625,50
-location,Southern Fleurieu,M2 fish,Bloom,Other,0,0.0625,0
-location,Southern Fleurieu,M2 fish,Bloom,Pempheris klunzingeri,0,0.0625,0
-location,Southern Fleurieu,M2 fish,Bloom,Pempheris multiradiata,0,0.0625,0
-location,Southern Fleurieu,M2 fish,Bloom,Trachichthys australis,0,0.0625,0
-location,Southern Fleurieu,M2 fish,Bloom,Trinorfolkia clarkei,0.03125,0.0625,50
-location,Southern Fleurieu,M2 fish,Pre-bloom,Aetapcus maculatus,0,1.297872340425532,0
-location,Southern Fleurieu,M2 fish,Pre-bloom,Aploactisoma milesii,0,1.297872340425532,0
-location,Southern Fleurieu,M2 fish,Pre-bloom,Aspasmogaster spp,0,1.297872340425532,0
-location,Southern Fleurieu,M2 fish,Pre-bloom,Bovichtus angustifrons,0.031914893617021274,1.297872340425532,2.459016393442623
-location,Southern Fleurieu,M2 fish,Pre-bloom,Helcogramma decurrens,0.0851063829787234,1.297872340425532,6.557377049180328
-location,Southern Fleurieu,M2 fish,Pre-bloom,Other,0.20212765957446807,1.297872340425532,15.573770491803277
-location,Southern Fleurieu,M2 fish,Pre-bloom,Pempheris klunzingeri,0.3191489361702128,1.297872340425532,24.59016393442623
-location,Southern Fleurieu,M2 fish,Pre-bloom,Pempheris multiradiata,0.6170212765957447,1.297872340425532,47.540983606557376
-location,Southern Fleurieu,M2 fish,Pre-bloom,Trachichthys australis,0.0425531914893617,1.297872340425532,3.278688524590164
-location,Southern Fleurieu,M2 fish,Pre-bloom,Trinorfolkia clarkei,0,1.297872340425532,0
-location,Southern Fleurieu,M2 invertebrates,Bloom,Cenolia trichoptera,0.03125,24.03125,0.13003901170351106
-location,Southern Fleurieu,M2 invertebrates,Bloom,Dicathais orbita,10.96875,24.03125,45.64369310793238
-location,Southern Fleurieu,M2 invertebrates,Bloom,Guinusia chabrus,6.34375,24.03125,26.397919375812744
-location,Southern Fleurieu,M2 invertebrates,Bloom,Haliotis rubra,0.8125,24.03125,3.3810143042912872
-location,Southern Fleurieu,M2 invertebrates,Bloom,Haliotis spp,0,24.03125,0
-location,Southern Fleurieu,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.21875,24.03125,0.9102730819245773
-location,Southern Fleurieu,M2 invertebrates,Bloom,Lunella torquata,0,24.03125,0
-location,Southern Fleurieu,M2 invertebrates,Bloom,Meridiastra gunnii,0.59375,24.03125,2.4707412223667102
-location,Southern Fleurieu,M2 invertebrates,Bloom,Other,2.25,24.03125,9.362808842652797
-location,Southern Fleurieu,M2 invertebrates,Bloom,Paguristes spp,2.8125,24.03125,11.703511053315994
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Cenolia trichoptera,1.7765957446808511,30.79787234042553,5.768566493955095
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Dicathais orbita,1.5319148936170213,30.79787234042553,4.9740932642487055
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Guinusia chabrus,1,30.79787234042553,3.2469775474956823
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis rubra,5.638297872340425,30.79787234042553,18.307426597582037
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis spp,1.6808510638297873,30.79787234042553,5.457685664939551
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,4.404255319148936,30.79787234042553,14.300518134715023
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Lunella torquata,4.425531914893617,30.79787234042553,14.369602763385148
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Meridiastra gunnii,0.11702127659574468,30.79787234042553,0.379965457685665
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Other,10.22340425531915,30.79787234042553,33.19516407599309
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Paguristes spp,0,30.79787234042553,0
+location,Southern Fleurieu,M1 fish,Bloom,Cheilodactylus nigripes,2.6964285714285716,42.69642857142857,6.315349226265162
+location,Southern Fleurieu,M1 fish,Bloom,Girella zebra,1.7321428571428572,42.69642857142857,4.056879966541197
+location,Southern Fleurieu,M1 fish,Bloom,Kyphosus sydneyanus,2.1607142857142856,42.69642857142857,5.060644081974069
+location,Southern Fleurieu,M1 fish,Bloom,Meuschenia hippocrepis,0.42857142857142855,42.69642857142857,1.0037641154328734
+location,Southern Fleurieu,M1 fish,Bloom,Notolabrus tetricus,7.392857142857143,42.69642857142857,17.314930991217064
+location,Southern Fleurieu,M1 fish,Bloom,Olisthops cyanomelas,0.017857142857142856,42.69642857142857,0.04182350480970305
+location,Southern Fleurieu,M1 fish,Bloom,Other,3.5,42.69642857142857,8.197406942701798
+location,Southern Fleurieu,M1 fish,Bloom,Parma victoriae,1.3928571428571428,42.69642857142857,3.262233375156838
+location,Southern Fleurieu,M1 fish,Bloom,Scorpis aequipinnis,23.375,42.69642857142857,54.7469677959013
+location,Southern Fleurieu,M1 fish,Pre-bloom,Cheilodactylus nigripes,1.1348314606741574,28.213483146067418,4.022301871764237
+location,Southern Fleurieu,M1 fish,Pre-bloom,Girella zebra,1.0449438202247192,28.213483146067418,3.703703703703704
+location,Southern Fleurieu,M1 fish,Pre-bloom,Kyphosus sydneyanus,0.8707865168539326,28.213483146067418,3.0864197530864192
+location,Southern Fleurieu,M1 fish,Pre-bloom,Meuschenia hippocrepis,1.949438202247191,28.213483146067418,6.909597769812823
+location,Southern Fleurieu,M1 fish,Pre-bloom,Notolabrus tetricus,6.623595505617978,28.213483146067418,23.47670250896057
+location,Southern Fleurieu,M1 fish,Pre-bloom,Olisthops cyanomelas,1.646067415730337,28.213483146067418,5.834328952608522
+location,Southern Fleurieu,M1 fish,Pre-bloom,Other,4.3033707865168545,28.213483146067418,15.252887295898049
+location,Southern Fleurieu,M1 fish,Pre-bloom,Parma victoriae,1.4887640449438202,28.213483146067418,5.276782158502589
+location,Southern Fleurieu,M1 fish,Pre-bloom,Scorpis aequipinnis,9.151685393258427,28.213483146067418,32.437275985663085
+location,Southern Fleurieu,M2 fish,Bloom,Aetapcus maculatus,0,0.125,0
+location,Southern Fleurieu,M2 fish,Bloom,Aploactisoma milesii,0,0.125,0
+location,Southern Fleurieu,M2 fish,Bloom,Helcogramma decurrens,0.017857142857142856,0.125,14.285714285714285
+location,Southern Fleurieu,M2 fish,Bloom,Hypoplectrodes nigroruber,0,0.125,0
+location,Southern Fleurieu,M2 fish,Bloom,Other,0,0.125,0
+location,Southern Fleurieu,M2 fish,Bloom,Pempheris klunzingeri,0.08928571428571429,0.125,71.42857142857143
+location,Southern Fleurieu,M2 fish,Bloom,Pempheris multiradiata,0,0.125,0
+location,Southern Fleurieu,M2 fish,Bloom,Trachichthys australis,0,0.125,0
+location,Southern Fleurieu,M2 fish,Bloom,Trinorfolkia clarkei,0.017857142857142856,0.125,14.285714285714285
+location,Southern Fleurieu,M2 fish,Pre-bloom,Aetapcus maculatus,0,1.1593406593406594,0
+location,Southern Fleurieu,M2 fish,Pre-bloom,Aploactisoma milesii,0,1.1593406593406594,0
+location,Southern Fleurieu,M2 fish,Pre-bloom,Helcogramma decurrens,0.09340659340659341,1.1593406593406594,8.056872037914692
+location,Southern Fleurieu,M2 fish,Pre-bloom,Hypoplectrodes nigroruber,0.06043956043956044,1.1593406593406594,5.213270142180094
+location,Southern Fleurieu,M2 fish,Pre-bloom,Other,0.14285714285714288,1.1593406593406594,12.32227488151659
+location,Southern Fleurieu,M2 fish,Pre-bloom,Pempheris klunzingeri,0.24725274725274726,1.1593406593406594,21.327014218009477
+location,Southern Fleurieu,M2 fish,Pre-bloom,Pempheris multiradiata,0.5879120879120879,1.1593406593406594,50.71090047393365
+location,Southern Fleurieu,M2 fish,Pre-bloom,Trachichthys australis,0.027472527472527472,1.1593406593406594,2.3696682464454972
+location,Southern Fleurieu,M2 fish,Pre-bloom,Trinorfolkia clarkei,0,1.1593406593406594,0
+location,Southern Fleurieu,M2 invertebrates,Bloom,Cenolia trichoptera,0.4107142857142857,25.232142857142858,1.627742392073602
+location,Southern Fleurieu,M2 invertebrates,Bloom,Dicathais orbita,10.928571428571429,25.232142857142858,43.31210191082803
+location,Southern Fleurieu,M2 invertebrates,Bloom,Guinusia chabrus,5.964285714285714,25.232142857142858,23.637650389242747
+location,Southern Fleurieu,M2 invertebrates,Bloom,Haliotis rubra,1.9285714285714286,25.232142857142858,7.643312101910828
+location,Southern Fleurieu,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.5535714285714286,25.232142857142858,2.193913658881812
+location,Southern Fleurieu,M2 invertebrates,Bloom,Lunella torquata,0.017857142857142856,25.232142857142858,0.07077140835102617
+location,Southern Fleurieu,M2 invertebrates,Bloom,Lunella undulata,0.23214285714285715,25.232142857142858,0.9200283085633404
+location,Southern Fleurieu,M2 invertebrates,Bloom,Other,2.982142857142857,25.232142857142858,11.818825194621374
+location,Southern Fleurieu,M2 invertebrates,Bloom,Paguristes spp,2.2142857142857144,25.232142857142858,8.775654635527248
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Cenolia trichoptera,3.241758241758242,36.94505494505494,8.774538964901845
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Dicathais orbita,1.5879120879120878,36.94505494505494,4.298036882807852
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Guinusia chabrus,1.2032967032967032,36.94505494505494,3.2569898869720406
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis rubra,8.131868131868131,36.94505494505494,22.01070791195717
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,2.857142857142857,36.94505494505494,7.733491969066033
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Lunella torquata,3.923076923076923,36.94505494505494,10.618679357525282
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Lunella undulata,3.934065934065934,36.94505494505494,10.648423557406307
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Other,12.065934065934066,36.94505494505494,32.65913146936348
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Paguristes spp,0,36.94505494505494,0
+location,Southern Metro,M1 fish,Bloom,Austrolabrus maculatus,1.9659090909090908,46.11363636363636,4.263183834401183
+location,Southern Metro,M1 fish,Bloom,Girella zebra,4.329545454545454,46.11363636363636,9.388861508132086
+location,Southern Metro,M1 fish,Bloom,Kyphosus sydneyanus,1.4659090909090908,46.11363636363636,3.1789058649581077
+location,Southern Metro,M1 fish,Bloom,Notolabrus parilus,2.909090909090909,46.11363636363636,6.3085263676688035
+location,Southern Metro,M1 fish,Bloom,Other,6.329545454545454,46.11363636363636,13.725973385904386
+location,Southern Metro,M1 fish,Bloom,Parapriacanthus elongatus,0,46.11363636363636,0
+location,Southern Metro,M1 fish,Bloom,Pempheris klunzingeri,0.10227272727272728,46.11363636363636,0.22178413011335638
+location,Southern Metro,M1 fish,Bloom,Scorpis aequipinnis,7.784090909090909,46.11363636363636,16.880236569738788
+location,Southern Metro,M1 fish,Bloom,Trachinops noarlungae,21.227272727272727,46.11363636363636,46.03252833908329
+location,Southern Metro,M1 fish,Pre-bloom,Austrolabrus maculatus,2.119369369369369,141.481981981982,1.4979782864783977
+location,Southern Metro,M1 fish,Pre-bloom,Girella zebra,0.7995495495495496,141.481981981982,0.5651246458021586
+location,Southern Metro,M1 fish,Pre-bloom,Kyphosus sydneyanus,2.315315315315315,141.481981981982,1.6364736222101943
+location,Southern Metro,M1 fish,Pre-bloom,Notolabrus parilus,0.7117117117117117,141.481981981982,0.5030405297844567
+location,Southern Metro,M1 fish,Pre-bloom,Other,16.283783783783782,141.481981981982,11.509439969435512
+location,Southern Metro,M1 fish,Pre-bloom,Parapriacanthus elongatus,6.86936936936937,141.481981981982,4.855296252666433
+location,Southern Metro,M1 fish,Pre-bloom,Pempheris klunzingeri,3.277027027027027,141.481981981982,2.316215097583495
+location,Southern Metro,M1 fish,Pre-bloom,Scorpis aequipinnis,4.4324324324324325,141.481981981982,3.132860008277882
+location,Southern Metro,M1 fish,Pre-bloom,Trachinops noarlungae,104.67342342342343,141.481981981982,73.98357158776147
+location,Southern Metro,M2 fish,Bloom,Eocallionymus papilio,0.125,0.8522727272727273,14.666666666666666
+location,Southern Metro,M2 fish,Bloom,Helcogramma decurrens,0.36363636363636365,0.8522727272727273,42.66666666666667
+location,Southern Metro,M2 fish,Bloom,Other,0.125,0.8522727272727273,14.666666666666666
+location,Southern Metro,M2 fish,Bloom,Parablennius tasmanianus,0.045454545454545456,0.8522727272727273,5.333333333333334
+location,Southern Metro,M2 fish,Bloom,Parapercis haackei,0.011363636363636364,0.8522727272727273,1.3333333333333335
+location,Southern Metro,M2 fish,Bloom,Parapriacanthus elongatus,0,0.8522727272727273,0
+location,Southern Metro,M2 fish,Bloom,Pempheris klunzingeri,0.011363636363636364,0.8522727272727273,1.3333333333333335
+location,Southern Metro,M2 fish,Bloom,Pempheris multiradiata,0,0.8522727272727273,0
+location,Southern Metro,M2 fish,Bloom,Trinorfolkia clarkei,0.125,0.8522727272727273,14.666666666666666
+location,Southern Metro,M2 fish,Bloom,Trinorfolkia cristata,0.045454545454545456,0.8522727272727273,5.333333333333334
+location,Southern Metro,M2 fish,Pre-bloom,Eocallionymus papilio,0.24545454545454545,8.797727272727272,2.7899767501937487
+location,Southern Metro,M2 fish,Pre-bloom,Helcogramma decurrens,4.9363636363636365,8.797727272727272,56.10953242056316
+location,Southern Metro,M2 fish,Pre-bloom,Other,0.6772727272727272,8.797727272727272,7.698269181090158
+location,Southern Metro,M2 fish,Pre-bloom,Parablennius tasmanianus,0.0022727272727272726,8.797727272727272,0.025833118057349523
+location,Southern Metro,M2 fish,Pre-bloom,Parapercis haackei,0.5659090909090909,8.797727272727272,6.432446396280032
+location,Southern Metro,M2 fish,Pre-bloom,Parapriacanthus elongatus,0.6522727272727272,8.797727272727272,7.414104882459313
+location,Southern Metro,M2 fish,Pre-bloom,Pempheris klunzingeri,1.2431818181818182,8.797727272727272,14.13071557737019
+location,Southern Metro,M2 fish,Pre-bloom,Pempheris multiradiata,0.2863636363636364,8.797727272727272,3.25497287522604
+location,Southern Metro,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.13636363636363635,8.797727272727272,1.5499870834409712
+location,Southern Metro,M2 fish,Pre-bloom,Trinorfolkia cristata,0.05227272727272727,8.797727272727272,0.5941617153190389
+location,Southern Metro,M2 invertebrates,Bloom,Astralium spp,0.9545454545454546,7.545454545454545,12.650602409638555
+location,Southern Metro,M2 invertebrates,Bloom,Haliotis spp,0,7.545454545454545,0
+location,Southern Metro,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.3181818181818182,7.545454545454545,4.216867469879518
+location,Southern Metro,M2 invertebrates,Bloom,Lunella undulata,0.056818181818181816,7.545454545454545,0.7530120481927711
+location,Southern Metro,M2 invertebrates,Bloom,Other,2.2045454545454546,7.545454545454545,29.21686746987952
+location,Southern Metro,M2 invertebrates,Bloom,Paguridae spp,1.0681818181818181,7.545454545454545,14.156626506024097
+location,Southern Metro,M2 invertebrates,Bloom,Paguristes frontalis,1.4659090909090908,7.545454545454545,19.427710843373497
+location,Southern Metro,M2 invertebrates,Bloom,Paguristes spp,0.6363636363636364,7.545454545454545,8.433734939759036
+location,Southern Metro,M2 invertebrates,Bloom,Pleuroploca australasia,0.8409090909090909,7.545454545454545,11.144578313253014
+location,Southern Metro,M2 invertebrates,Pre-bloom,Astralium spp,0.4436936936936937,87.05405405405405,0.5096760840318743
+location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis spp,1.8243243243243243,87.05405405405405,2.0956224774914625
+location,Southern Metro,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,19.6509009009009,87.05405405405405,22.573217427300012
+location,Southern Metro,M2 invertebrates,Pre-bloom,Lunella undulata,44.48198198198198,87.05405405405405,51.09696781537825
+location,Southern Metro,M2 invertebrates,Pre-bloom,Other,16.722972972972972,87.05405405405405,19.209872710338406
+location,Southern Metro,M2 invertebrates,Pre-bloom,Paguridae spp,0.04504504504504504,87.05405405405405,0.05174376487633241
+location,Southern Metro,M2 invertebrates,Pre-bloom,Paguristes frontalis,1.8603603603603605,87.05405405405405,2.1370174893925284
+location,Southern Metro,M2 invertebrates,Pre-bloom,Paguristes spp,0,87.05405405405405,0
+location,Southern Metro,M2 invertebrates,Pre-bloom,Pleuroploca australasia,2.024774774774775,87.05405405405405,2.325882231191142
+location,Southern Yorke,M1 fish,Bloom,Cheilodactylus nigripes,1.7142857142857142,40.60714285714286,4.221635883905012
+location,Southern Yorke,M1 fish,Bloom,Kyphosus sydneyanus,4.75,40.60714285714286,11.69744942832014
+location,Southern Yorke,M1 fish,Bloom,Meuschenia hippocrepis,2.0357142857142856,40.60714285714286,5.013192612137202
+location,Southern Yorke,M1 fish,Bloom,Notolabrus tetricus,1,40.60714285714286,2.462620932277924
+location,Southern Yorke,M1 fish,Bloom,Other,11.035714285714286,40.60714285714286,27.17678100263852
+location,Southern Yorke,M1 fish,Bloom,Parapriacanthus elongatus,0,40.60714285714286,0
+location,Southern Yorke,M1 fish,Bloom,Scorpis aequipinnis,8.285714285714286,40.60714285714286,20.40457343887423
+location,Southern Yorke,M1 fish,Bloom,Trachinops noarlungae,11.785714285714286,40.60714285714286,29.023746701846964
+location,Southern Yorke,M1 fish,Pre-bloom,Cheilodactylus nigripes,1.125,63.041666666666664,1.784534038334435
+location,Southern Yorke,M1 fish,Pre-bloom,Kyphosus sydneyanus,3.2083333333333335,63.041666666666664,5.089226701916722
+location,Southern Yorke,M1 fish,Pre-bloom,Meuschenia hippocrepis,4.666666666666667,63.041666666666664,7.402511566424323
+location,Southern Yorke,M1 fish,Pre-bloom,Notolabrus tetricus,7.708333333333333,63.041666666666664,12.22736285525446
+location,Southern Yorke,M1 fish,Pre-bloom,Other,16.833333333333332,63.041666666666664,26.701916721744876
+location,Southern Yorke,M1 fish,Pre-bloom,Parapriacanthus elongatus,14.166666666666666,63.041666666666664,22.47191011235955
+location,Southern Yorke,M1 fish,Pre-bloom,Scorpis aequipinnis,7.5,63.041666666666664,11.896893588896233
+location,Southern Yorke,M1 fish,Pre-bloom,Trachinops noarlungae,7.833333333333333,63.041666666666664,12.425644415069398
+location,Southern Yorke,M2 fish,Bloom,Aetapcus maculatus,0,4.7,0
+location,Southern Yorke,M2 fish,Bloom,Gobiidae spp,0.03333333333333333,4.7,0.7092198581560284
+location,Southern Yorke,M2 fish,Bloom,Helcogramma decurrens,2.6666666666666665,4.7,56.73758865248226
+location,Southern Yorke,M2 fish,Bloom,Other,0.16666666666666666,4.7,3.546099290780141
+location,Southern Yorke,M2 fish,Bloom,Pempheris klunzingeri,0.23333333333333334,4.7,4.964539007092198
+location,Southern Yorke,M2 fish,Bloom,Pempheris multiradiata,0.3333333333333333,4.7,7.092198581560282
+location,Southern Yorke,M2 fish,Bloom,Trinorfolkia clarkei,0.9,4.7,19.148936170212764
+location,Southern Yorke,M2 fish,Bloom,Trinorfolkia cristata,0.36666666666666664,4.7,7.801418439716311
+location,Southern Yorke,M2 fish,Bloom,Tripterygiidae spp,0,4.7,0
+location,Southern Yorke,M2 fish,Pre-bloom,Aetapcus maculatus,0.05263157894736842,1.526315789473684,3.4482758620689653
+location,Southern Yorke,M2 fish,Pre-bloom,Gobiidae spp,0.47368421052631576,1.526315789473684,31.03448275862069
+location,Southern Yorke,M2 fish,Pre-bloom,Helcogramma decurrens,0,1.526315789473684,0
+location,Southern Yorke,M2 fish,Pre-bloom,Other,0.15789473684210525,1.526315789473684,10.344827586206897
+location,Southern Yorke,M2 fish,Pre-bloom,Pempheris klunzingeri,0.05263157894736842,1.526315789473684,3.4482758620689653
+location,Southern Yorke,M2 fish,Pre-bloom,Pempheris multiradiata,0.21052631578947367,1.526315789473684,13.793103448275861
+location,Southern Yorke,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.3157894736842105,1.526315789473684,20.689655172413794
+location,Southern Yorke,M2 fish,Pre-bloom,Trinorfolkia cristata,0,1.526315789473684,0
+location,Southern Yorke,M2 fish,Pre-bloom,Tripterygiidae spp,0.2631578947368421,1.526315789473684,17.24137931034483
+location,Southern Yorke,M2 invertebrates,Bloom,Australostichopus mollis,0.43333333333333335,22.7,1.9089574155653453
+location,Southern Yorke,M2 invertebrates,Bloom,Cenolia trichoptera,1.5333333333333334,22.7,6.754772393538914
+location,Southern Yorke,M2 invertebrates,Bloom,Dicathais orbita,3.2333333333333334,22.7,14.243759177679882
+location,Southern Yorke,M2 invertebrates,Bloom,Guinusia chabrus,2.4,22.7,10.572687224669604
+location,Southern Yorke,M2 invertebrates,Bloom,Heliocidaris erythrogramma,1.6,22.7,7.048458149779736
+location,Southern Yorke,M2 invertebrates,Bloom,Meridiastra gunnii,5.8,22.7,25.550660792951543
+location,Southern Yorke,M2 invertebrates,Bloom,Other,6.733333333333333,22.7,29.662261380323056
+location,Southern Yorke,M2 invertebrates,Bloom,Tosia australis,0.9666666666666667,22.7,4.258443465491924
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Australostichopus mollis,2.15,56.800000000000004,3.7852112676056335
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Cenolia trichoptera,17.05,56.800000000000004,30.017605633802816
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Dicathais orbita,0.6,56.800000000000004,1.056338028169014
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Guinusia chabrus,0.55,56.800000000000004,0.9683098591549296
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,13.1,56.800000000000004,23.06338028169014
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Meridiastra gunnii,3.15,56.800000000000004,5.545774647887323
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Other,14.3,56.800000000000004,25.176056338028168
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Tosia australis,5.9,56.800000000000004,10.38732394366197
 location,Sponge Gardens,M1 fish,Bloom,Kyphosus sydneyanus,3.575,67.9,5.265095729013255
 location,Sponge Gardens,M1 fish,Bloom,Notolabrus tetricus,20.55,67.9,30.265095729013254
 location,Sponge Gardens,M1 fish,Bloom,Other,12.075,67.9,17.783505154639172
@@ -443,539 +489,59 @@ location,Sponge Gardens,M2 invertebrates,Pre-bloom,Other,3.96484375,19.1015625,2
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Paguridae spp,0.0859375,19.1015625,0.4498977505112474
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Paguristes spp,0,19.1015625,0
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Petricia vernicina,0.9375,19.1015625,4.9079754601226995
-location,Troubridge Point,M1 fish,Bloom,Cheilodactylus nigripes,1.7142857142857142,40.60714285714286,4.221635883905012
-location,Troubridge Point,M1 fish,Bloom,Kyphosus sydneyanus,4.75,40.60714285714286,11.69744942832014
-location,Troubridge Point,M1 fish,Bloom,Meuschenia hippocrepis,2.0357142857142856,40.60714285714286,5.013192612137202
-location,Troubridge Point,M1 fish,Bloom,Notolabrus tetricus,1,40.60714285714286,2.462620932277924
-location,Troubridge Point,M1 fish,Bloom,Other,11.035714285714286,40.60714285714286,27.17678100263852
-location,Troubridge Point,M1 fish,Bloom,Parapriacanthus elongatus,0,40.60714285714286,0
-location,Troubridge Point,M1 fish,Bloom,Scorpis aequipinnis,8.285714285714286,40.60714285714286,20.40457343887423
-location,Troubridge Point,M1 fish,Bloom,Trachinops noarlungae,11.785714285714286,40.60714285714286,29.023746701846964
-location,Troubridge Point,M1 fish,Pre-bloom,Cheilodactylus nigripes,1.125,63.041666666666664,1.784534038334435
-location,Troubridge Point,M1 fish,Pre-bloom,Kyphosus sydneyanus,3.2083333333333335,63.041666666666664,5.089226701916722
-location,Troubridge Point,M1 fish,Pre-bloom,Meuschenia hippocrepis,4.666666666666667,63.041666666666664,7.402511566424323
-location,Troubridge Point,M1 fish,Pre-bloom,Notolabrus tetricus,7.708333333333333,63.041666666666664,12.22736285525446
-location,Troubridge Point,M1 fish,Pre-bloom,Other,16.833333333333332,63.041666666666664,26.701916721744876
-location,Troubridge Point,M1 fish,Pre-bloom,Parapriacanthus elongatus,14.166666666666666,63.041666666666664,22.47191011235955
-location,Troubridge Point,M1 fish,Pre-bloom,Scorpis aequipinnis,7.5,63.041666666666664,11.896893588896233
-location,Troubridge Point,M1 fish,Pre-bloom,Trachinops noarlungae,7.833333333333333,63.041666666666664,12.425644415069398
-location,Troubridge Point,M2 fish,Bloom,Aetapcus maculatus,0,4.7,0
-location,Troubridge Point,M2 fish,Bloom,Gobiidae spp,0.03333333333333333,4.7,0.7092198581560284
-location,Troubridge Point,M2 fish,Bloom,Helcogramma decurrens,2.6666666666666665,4.7,56.73758865248226
-location,Troubridge Point,M2 fish,Bloom,Other,0.16666666666666666,4.7,3.546099290780141
-location,Troubridge Point,M2 fish,Bloom,Pempheris klunzingeri,0.23333333333333334,4.7,4.964539007092198
-location,Troubridge Point,M2 fish,Bloom,Pempheris multiradiata,0.3333333333333333,4.7,7.092198581560282
-location,Troubridge Point,M2 fish,Bloom,Trinorfolkia clarkei,0.9,4.7,19.148936170212764
-location,Troubridge Point,M2 fish,Bloom,Trinorfolkia cristata,0.36666666666666664,4.7,7.801418439716311
-location,Troubridge Point,M2 fish,Bloom,Tripterygiidae spp,0,4.7,0
-location,Troubridge Point,M2 fish,Pre-bloom,Aetapcus maculatus,0.05263157894736842,1.526315789473684,3.4482758620689653
-location,Troubridge Point,M2 fish,Pre-bloom,Gobiidae spp,0.47368421052631576,1.526315789473684,31.03448275862069
-location,Troubridge Point,M2 fish,Pre-bloom,Helcogramma decurrens,0,1.526315789473684,0
-location,Troubridge Point,M2 fish,Pre-bloom,Other,0.15789473684210525,1.526315789473684,10.344827586206897
-location,Troubridge Point,M2 fish,Pre-bloom,Pempheris klunzingeri,0.05263157894736842,1.526315789473684,3.4482758620689653
-location,Troubridge Point,M2 fish,Pre-bloom,Pempheris multiradiata,0.21052631578947367,1.526315789473684,13.793103448275861
-location,Troubridge Point,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.3157894736842105,1.526315789473684,20.689655172413794
-location,Troubridge Point,M2 fish,Pre-bloom,Trinorfolkia cristata,0,1.526315789473684,0
-location,Troubridge Point,M2 fish,Pre-bloom,Tripterygiidae spp,0.2631578947368421,1.526315789473684,17.24137931034483
-location,Troubridge Point,M2 invertebrates,Bloom,Australostichopus mollis,0.43333333333333335,22.7,1.9089574155653453
-location,Troubridge Point,M2 invertebrates,Bloom,Cenolia trichoptera,1.5333333333333334,22.7,6.754772393538914
-location,Troubridge Point,M2 invertebrates,Bloom,Dicathais orbita,3.2333333333333334,22.7,14.243759177679882
-location,Troubridge Point,M2 invertebrates,Bloom,Guinusia chabrus,2.4,22.7,10.572687224669604
-location,Troubridge Point,M2 invertebrates,Bloom,Heliocidaris erythrogramma,1.6,22.7,7.048458149779736
-location,Troubridge Point,M2 invertebrates,Bloom,Meridiastra gunnii,5.8,22.7,25.550660792951543
-location,Troubridge Point,M2 invertebrates,Bloom,Other,6.733333333333333,22.7,29.662261380323056
-location,Troubridge Point,M2 invertebrates,Bloom,Tosia australis,0.9666666666666667,22.7,4.258443465491924
-location,Troubridge Point,M2 invertebrates,Pre-bloom,Australostichopus mollis,2.15,56.800000000000004,3.7852112676056335
-location,Troubridge Point,M2 invertebrates,Pre-bloom,Cenolia trichoptera,17.05,56.800000000000004,30.017605633802816
-location,Troubridge Point,M2 invertebrates,Pre-bloom,Dicathais orbita,0.6,56.800000000000004,1.056338028169014
-location,Troubridge Point,M2 invertebrates,Pre-bloom,Guinusia chabrus,0.55,56.800000000000004,0.9683098591549296
-location,Troubridge Point,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,13.1,56.800000000000004,23.06338028169014
-location,Troubridge Point,M2 invertebrates,Pre-bloom,Meridiastra gunnii,3.15,56.800000000000004,5.545774647887323
-location,Troubridge Point,M2 invertebrates,Pre-bloom,Other,14.3,56.800000000000004,25.176056338028168
-location,Troubridge Point,M2 invertebrates,Pre-bloom,Tosia australis,5.9,56.800000000000004,10.38732394366197
-location,Upper GSV,M1 fish,Bloom,Arripis truttaceus,5,6.083333333333333,82.19178082191782
-location,Upper GSV,M1 fish,Bloom,Chrysophrys auratus,0.16666666666666666,6.083333333333333,2.73972602739726
-location,Upper GSV,M1 fish,Bloom,Neoodax balteatus,0.375,6.083333333333333,6.164383561643836
-location,Upper GSV,M1 fish,Bloom,Other,0.041666666666666664,6.083333333333333,0.684931506849315
-location,Upper GSV,M1 fish,Bloom,Parapriacanthus elongatus,0,6.083333333333333,0
-location,Upper GSV,M1 fish,Bloom,Pempheris klunzingeri,0,6.083333333333333,0
-location,Upper GSV,M1 fish,Bloom,Pseudocaranx spp,0.25,6.083333333333333,4.109589041095891
-location,Upper GSV,M1 fish,Bloom,Sillaginidae spp,0.25,6.083333333333333,4.109589041095891
-location,Upper GSV,M1 fish,Bloom,Siphamia cephalotes,0,6.083333333333333,0
-location,Upper GSV,M1 fish,Bloom,Trachinops noarlungae,0,6.083333333333333,0
-location,Upper GSV,M1 fish,Pre-bloom,Arripis truttaceus,0,32.17045454545455,0
-location,Upper GSV,M1 fish,Pre-bloom,Chrysophrys auratus,0.2159090909090909,32.17045454545455,0.6711409395973154
-location,Upper GSV,M1 fish,Pre-bloom,Neoodax balteatus,5.4772727272727275,32.17045454545455,17.025785941363477
-location,Upper GSV,M1 fish,Pre-bloom,Other,3.3181818181818183,32.17045454545455,10.31437654539032
-location,Upper GSV,M1 fish,Pre-bloom,Parapriacanthus elongatus,12.272727272727273,32.17045454545455,38.149063935005294
-location,Upper GSV,M1 fish,Pre-bloom,Pempheris klunzingeri,0.8863636363636364,32.17045454545455,2.755210173083716
-location,Upper GSV,M1 fish,Pre-bloom,Pseudocaranx spp,0,32.17045454545455,0
-location,Upper GSV,M1 fish,Pre-bloom,Sillaginidae spp,0,32.17045454545455,0
-location,Upper GSV,M1 fish,Pre-bloom,Siphamia cephalotes,8.715909090909092,32.17045454545455,27.092900035323208
-location,Upper GSV,M1 fish,Pre-bloom,Trachinops noarlungae,1.2840909090909092,32.17045454545455,3.991522430236665
-location,Upper GSV,M2 fish,Bloom,Aetapcus maculatus,0,0.75,0
-location,Upper GSV,M2 fish,Bloom,Aploactisoma milesii,0,0.75,0
-location,Upper GSV,M2 fish,Bloom,Eocallionymus papilio,0.041666666666666664,0.75,5.5555555555555545
-location,Upper GSV,M2 fish,Bloom,Gobiidae spp,0.20833333333333334,0.75,27.777777777777782
-location,Upper GSV,M2 fish,Bloom,Nesogobius spp,0,0.75,0
-location,Upper GSV,M2 fish,Bloom,Other,0,0.75,0
-location,Upper GSV,M2 fish,Bloom,Parapercis haackei,0.5,0.75,66.66666666666667
-location,Upper GSV,M2 fish,Bloom,Vincentia conspersa,0,0.75,0
-location,Upper GSV,M2 fish,Pre-bloom,Aetapcus maculatus,0.011363636363636364,7.25,0.15673981191222572
-location,Upper GSV,M2 fish,Pre-bloom,Aploactisoma milesii,0.011363636363636364,7.25,0.15673981191222572
-location,Upper GSV,M2 fish,Pre-bloom,Eocallionymus papilio,0.38636363636363635,7.25,5.329153605015674
-location,Upper GSV,M2 fish,Pre-bloom,Gobiidae spp,0.3409090909090909,7.25,4.70219435736677
-location,Upper GSV,M2 fish,Pre-bloom,Nesogobius spp,1.7272727272727273,7.25,23.824451410658305
-location,Upper GSV,M2 fish,Pre-bloom,Other,0.3068181818181818,7.25,4.231974921630094
-location,Upper GSV,M2 fish,Pre-bloom,Parapercis haackei,4.363636363636363,7.25,60.188087774294665
-location,Upper GSV,M2 fish,Pre-bloom,Vincentia conspersa,0.10227272727272728,7.25,1.4106583072100316
-location,Upper GSV,M2 invertebrates,Bloom,Astralium spp,2.75,8,34.375
-location,Upper GSV,M2 invertebrates,Bloom,Australostichopus mollis,0,8,0
-location,Upper GSV,M2 invertebrates,Bloom,Equichlamys bifrons,0.16666666666666666,8,2.083333333333333
-location,Upper GSV,M2 invertebrates,Bloom,Haliotis cyclobates,1,8,12.5
-location,Upper GSV,M2 invertebrates,Bloom,Haliotis laevigata,0.7916666666666666,8,9.895833333333332
-location,Upper GSV,M2 invertebrates,Bloom,Other,1.5833333333333333,8,19.791666666666664
-location,Upper GSV,M2 invertebrates,Bloom,Paguristes frontalis,0.8333333333333334,8,10.416666666666668
-location,Upper GSV,M2 invertebrates,Bloom,Pinna bicolor,0,8,0
-location,Upper GSV,M2 invertebrates,Bloom,Portunus armatus,0.875,8,10.9375
-location,Upper GSV,M2 invertebrates,Bloom,Tosia australis,0,8,0
-location,Upper GSV,M2 invertebrates,Pre-bloom,Astralium spp,0,10.227272727272727,0
-location,Upper GSV,M2 invertebrates,Pre-bloom,Australostichopus mollis,1.8068181818181819,10.227272727272727,17.666666666666668
-location,Upper GSV,M2 invertebrates,Pre-bloom,Equichlamys bifrons,0.5909090909090909,10.227272727272727,5.777777777777779
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0.056818181818181816,10.227272727272727,0.5555555555555556
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis laevigata,0.11363636363636363,10.227272727272727,1.1111111111111112
-location,Upper GSV,M2 invertebrates,Pre-bloom,Other,3.7954545454545454,10.227272727272727,37.111111111111114
-location,Upper GSV,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.4318181818181818,10.227272727272727,4.222222222222222
-location,Upper GSV,M2 invertebrates,Pre-bloom,Pinna bicolor,0.5681818181818182,10.227272727272727,5.555555555555556
-location,Upper GSV,M2 invertebrates,Pre-bloom,Portunus armatus,2.1363636363636362,10.227272727272727,20.88888888888889
-location,Upper GSV,M2 invertebrates,Pre-bloom,Tosia australis,0.7272727272727273,10.227272727272727,7.1111111111111125
-location,Victor Harbor,M1 fish,Bloom,Arripis georgianus,3.2708333333333335,25.041666666666668,13.061564059900167
-location,Victor Harbor,M1 fish,Bloom,Cheilodactylus nigripes,1.5104166666666667,25.041666666666668,6.031613976705492
-location,Victor Harbor,M1 fish,Bloom,Kyphosus sydneyanus,0.9895833333333334,25.041666666666668,3.951747088186356
-location,Victor Harbor,M1 fish,Bloom,Notolabrus tetricus,2.7916666666666665,25.041666666666668,11.14808652246256
-location,Victor Harbor,M1 fish,Bloom,Olisthops cyanomelas,0.125,25.041666666666668,0.49916805324459235
-location,Victor Harbor,M1 fish,Bloom,Other,3.25,25.041666666666668,12.9783693843594
-location,Victor Harbor,M1 fish,Bloom,Scorpis aequipinnis,13.104166666666666,25.041666666666668,52.32945091514142
-location,Victor Harbor,M1 fish,Bloom,Siphamia cephalotes,0,25.041666666666668,0
-location,Victor Harbor,M1 fish,Pre-bloom,Arripis georgianus,0.5823529411764706,24.764705882352942,2.3515439429928744
-location,Victor Harbor,M1 fish,Pre-bloom,Cheilodactylus nigripes,0.9470588235294117,24.764705882352942,3.824228028503563
-location,Victor Harbor,M1 fish,Pre-bloom,Kyphosus sydneyanus,0.8176470588235294,24.764705882352942,3.3016627078384797
-location,Victor Harbor,M1 fish,Pre-bloom,Notolabrus tetricus,4.267647058823529,24.764705882352942,17.232779097387173
-location,Victor Harbor,M1 fish,Pre-bloom,Olisthops cyanomelas,1.388235294117647,24.764705882352942,5.605700712589073
-location,Victor Harbor,M1 fish,Pre-bloom,Other,8.541176470588235,24.764705882352942,34.489311163895486
-location,Victor Harbor,M1 fish,Pre-bloom,Scorpis aequipinnis,7.0323529411764705,24.764705882352942,28.39667458432304
-location,Victor Harbor,M1 fish,Pre-bloom,Siphamia cephalotes,1.188235294117647,24.764705882352942,4.798099762470309
-location,Victor Harbor,M2 fish,Bloom,Bovichtus angustifrons,0.010416666666666666,0.2604166666666667,3.999999999999999
-location,Victor Harbor,M2 fish,Bloom,Helcogramma decurrens,0.020833333333333332,0.2604166666666667,7.999999999999998
-location,Victor Harbor,M2 fish,Bloom,Other,0.010416666666666666,0.2604166666666667,3.999999999999999
-location,Victor Harbor,M2 fish,Bloom,Parapriacanthus elongatus,0,0.2604166666666667,0
-location,Victor Harbor,M2 fish,Bloom,Pempheris klunzingeri,0.08333333333333333,0.2604166666666667,31.999999999999993
-location,Victor Harbor,M2 fish,Bloom,Pempheris multiradiata,0.10416666666666667,0.2604166666666667,40
-location,Victor Harbor,M2 fish,Bloom,Trinorfolkia cristata,0.03125,0.2604166666666667,12
-location,Victor Harbor,M2 fish,Bloom,Vincentia conspersa,0,0.2604166666666667,0
-location,Victor Harbor,M2 fish,Pre-bloom,Bovichtus angustifrons,0.02972972972972973,1.691891891891892,1.757188498402556
-location,Victor Harbor,M2 fish,Pre-bloom,Helcogramma decurrens,0.11621621621621622,1.691891891891892,6.869009584664537
-location,Victor Harbor,M2 fish,Pre-bloom,Other,0.16486486486486487,1.691891891891892,9.744408945686901
-location,Victor Harbor,M2 fish,Pre-bloom,Parapriacanthus elongatus,0.03783783783783784,1.691891891891892,2.236421725239617
-location,Victor Harbor,M2 fish,Pre-bloom,Pempheris klunzingeri,0.16216216216216217,1.691891891891892,9.584664536741215
-location,Victor Harbor,M2 fish,Pre-bloom,Pempheris multiradiata,1.0864864864864865,1.691891891891892,64.21725239616613
-location,Victor Harbor,M2 fish,Pre-bloom,Trinorfolkia cristata,0.005405405405405406,1.691891891891892,0.3194888178913738
-location,Victor Harbor,M2 fish,Pre-bloom,Vincentia conspersa,0.0891891891891892,1.691891891891892,5.271565495207668
-location,Victor Harbor,M2 invertebrates,Bloom,Cenolia trichoptera,0.7083333333333334,15.135416666666666,4.679972470750173
-location,Victor Harbor,M2 invertebrates,Bloom,Dicathais orbita,5.385416666666667,15.135416666666666,35.58155540261529
-location,Victor Harbor,M2 invertebrates,Bloom,Guinusia chabrus,3.7291666666666665,15.135416666666666,24.63867859600826
-location,Victor Harbor,M2 invertebrates,Bloom,Haliotis rubra,1.2291666666666667,15.135416666666666,8.121128699242947
-location,Victor Harbor,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.3645833333333333,15.135416666666666,2.408809359944941
-location,Victor Harbor,M2 invertebrates,Bloom,Lunella torquata,0.010416666666666666,15.135416666666666,0.06882312456985547
-location,Victor Harbor,M2 invertebrates,Bloom,Lunella undulata,0.1875,15.135416666666666,1.2388162422573985
-location,Victor Harbor,M2 invertebrates,Bloom,Meridiastra gunnii,0.75,15.135416666666666,4.955264969029594
-location,Victor Harbor,M2 invertebrates,Bloom,Other,2.0416666666666665,15.135416666666666,13.489332415691672
-location,Victor Harbor,M2 invertebrates,Bloom,Paguristes spp,0.7291666666666666,15.135416666666666,4.817618719889882
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Cenolia trichoptera,10.524324324324324,53.0945945945946,19.82183761771443
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Dicathais orbita,1.4864864864864864,53.0945945945946,2.7996945787732246
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Guinusia chabrus,1.9027027027027028,53.0945945945946,3.583609060829728
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Haliotis rubra,3.7216216216216216,53.0945945945946,7.009417154492237
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,11.645945945945947,53.0945945945946,21.93433443624332
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Lunella torquata,3.8027027027027027,53.0945945945946,7.162127767879867
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Lunella undulata,5.3108108108108105,53.0945945945946,10.002545176889793
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Meridiastra gunnii,1.0405405405405406,53.0945945945946,1.9597862051412573
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Other,13.659459459459459,53.0945945945946,25.72664800203614
-location,Victor Harbor,M2 invertebrates,Pre-bloom,Paguristes spp,0,53.0945945945946,0
-region,Adelaide Metro,M1 fish,Bloom,Austrolabrus maculatus,1.4416666666666667,34.699999999999996,4.1546589817483195
-region,Adelaide Metro,M1 fish,Bloom,Girella zebra,3.308333333333333,34.699999999999996,9.534101825168108
-region,Adelaide Metro,M1 fish,Bloom,Notolabrus parilus,2.175,34.699999999999996,6.268011527377522
-region,Adelaide Metro,M1 fish,Bloom,Other,6.283333333333333,34.699999999999996,18.1075888568684
-region,Adelaide Metro,M1 fish,Bloom,Parapriacanthus elongatus,0,34.699999999999996,0
-region,Adelaide Metro,M1 fish,Bloom,Pempheris klunzingeri,0.15833333333333333,34.699999999999996,0.45629202689721426
-region,Adelaide Metro,M1 fish,Bloom,Scorpis aequipinnis,5.766666666666667,34.699999999999996,16.618635926993278
-region,Adelaide Metro,M1 fish,Bloom,Siphamia cephalotes,0,34.699999999999996,0
-region,Adelaide Metro,M1 fish,Bloom,Trachinops noarlungae,15.566666666666666,34.699999999999996,44.86071085494717
-region,Adelaide Metro,M1 fish,Pre-bloom,Austrolabrus maculatus,1.867741935483871,145.45161290322582,1.2840984697272122
-region,Adelaide Metro,M1 fish,Pre-bloom,Girella zebra,0.635483870967742,145.45161290322582,0.43690396983810154
-region,Adelaide Metro,M1 fish,Pre-bloom,Notolabrus parilus,0.5919354838709677,145.45161290322582,0.4069638500776225
-region,Adelaide Metro,M1 fish,Pre-bloom,Other,15.533870967741935,145.45161290322582,10.679751607895318
-region,Adelaide Metro,M1 fish,Pre-bloom,Parapriacanthus elongatus,9.332258064516129,145.45161290322582,6.416056775338212
-region,Adelaide Metro,M1 fish,Pre-bloom,Pempheris klunzingeri,3.003225806451613,145.45161290322582,2.0647593701485913
-region,Adelaide Metro,M1 fish,Pre-bloom,Scorpis aequipinnis,3.1774193548387095,145.45161290322582,2.1845198491905076
-region,Adelaide Metro,M1 fish,Pre-bloom,Siphamia cephalotes,3.956451612903226,145.45161290322582,2.7201153249057435
-region,Adelaide Metro,M1 fish,Pre-bloom,Trachinops noarlungae,107.35322580645162,145.45161290322582,73.80683078287868
-region,Adelaide Metro,M2 fish,Bloom,Eocallionymus papilio,0.09166666666666666,0.7666666666666666,11.956521739130435
-region,Adelaide Metro,M2 fish,Bloom,Helcogramma decurrens,0.26666666666666666,0.7666666666666666,34.78260869565218
-region,Adelaide Metro,M2 fish,Bloom,Nesogobius spp,0,0.7666666666666666,0
-region,Adelaide Metro,M2 fish,Bloom,Other,0.15833333333333333,0.7666666666666666,20.652173913043477
-region,Adelaide Metro,M2 fish,Bloom,Parapercis haackei,0.008333333333333333,0.7666666666666666,1.0869565217391306
-region,Adelaide Metro,M2 fish,Bloom,Parapriacanthus elongatus,0,0.7666666666666666,0
-region,Adelaide Metro,M2 fish,Bloom,Pempheris klunzingeri,0.041666666666666664,0.7666666666666666,5.434782608695651
-region,Adelaide Metro,M2 fish,Bloom,Trinorfolkia clarkei,0.15,0.7666666666666666,19.565217391304348
-region,Adelaide Metro,M2 fish,Bloom,Trinorfolkia cristata,0.05,0.7666666666666666,6.521739130434783
-region,Adelaide Metro,M2 fish,Pre-bloom,Eocallionymus papilio,0.32792207792207795,8.141233766233766,4.027916251246262
-region,Adelaide Metro,M2 fish,Pre-bloom,Helcogramma decurrens,4.063311688311688,8.141233766233766,49.91026919242273
-region,Adelaide Metro,M2 fish,Pre-bloom,Nesogobius spp,0.4431818181818182,8.141233766233766,5.443668993020937
-region,Adelaide Metro,M2 fish,Pre-bloom,Other,0.6347402597402597,8.141233766233766,7.796610169491525
-region,Adelaide Metro,M2 fish,Pre-bloom,Parapercis haackei,1.0146103896103895,8.141233766233766,12.46261216350947
-region,Adelaide Metro,M2 fish,Pre-bloom,Parapriacanthus elongatus,0.4675324675324675,8.141233766233766,5.742771684945164
-region,Adelaide Metro,M2 fish,Pre-bloom,Pempheris klunzingeri,0.9951298701298701,8.141233766233766,12.22333000997009
-region,Adelaide Metro,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.1314935064935065,8.141233766233766,1.6151545363908277
-region,Adelaide Metro,M2 fish,Pre-bloom,Trinorfolkia cristata,0.0633116883116883,8.141233766233766,0.777666999002991
-region,Adelaide Metro,M2 invertebrates,Bloom,Astralium spp,0.7833333333333333,6.775,11.56211562115621
-region,Adelaide Metro,M2 invertebrates,Bloom,Haliotis scalaris,0.20833333333333334,6.775,3.075030750307503
-region,Adelaide Metro,M2 invertebrates,Bloom,Haliotis spp,0,6.775,0
-region,Adelaide Metro,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.23333333333333334,6.775,3.444034440344403
-region,Adelaide Metro,M2 invertebrates,Bloom,Lunella undulata,0.041666666666666664,6.775,0.6150061500615005
-region,Adelaide Metro,M2 invertebrates,Bloom,Other,1.9916666666666667,6.775,29.397293972939725
-region,Adelaide Metro,M2 invertebrates,Bloom,Paguridae spp,1.0333333333333334,6.775,15.252152521525216
-region,Adelaide Metro,M2 invertebrates,Bloom,Paguristes frontalis,1.375,6.775,20.29520295202952
-region,Adelaide Metro,M2 invertebrates,Bloom,Paguristes spp,0.4666666666666667,6.775,6.888068880688806
-region,Adelaide Metro,M2 invertebrates,Bloom,Pleuroploca australasia,0.6416666666666667,6.775,9.47109471094711
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Astralium spp,0.8370967741935483,69.82903225806452,1.1987804314685637
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis scalaris,2.032258064516129,69.82903225806452,2.9103339954728136
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis spp,1.946774193548387,69.82903225806452,2.787915184552132
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,14.148387096774194,69.82903225806452,20.261468101815492
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Lunella undulata,31.96451612903226,69.82903225806452,45.77539612879383
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Other,15.564516129032258,69.82903225806452,22.289462743105283
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Paguridae spp,0.03225806451612903,69.82903225806452,0.04619577770591768
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Paguristes frontalis,1.770967741935484,69.82903225806452,2.5361481960548806
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Paguristes spp,0,69.82903225806452,0
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Pleuroploca australasia,1.532258064516129,69.82903225806452,2.19429944103109
-region,Eastern Spencer Gulf,M1 fish,Bloom,Girella zebra,0.9583333333333334,9.791666666666666,9.787234042553193
-region,Eastern Spencer Gulf,M1 fish,Bloom,Kyphosus sydneyanus,0.3333333333333333,9.791666666666666,3.4042553191489358
-region,Eastern Spencer Gulf,M1 fish,Bloom,Neoodax balteatus,0.9166666666666666,9.791666666666666,9.361702127659575
-region,Eastern Spencer Gulf,M1 fish,Bloom,Notolabrus tetricus,2.3333333333333335,9.791666666666666,23.829787234042556
-region,Eastern Spencer Gulf,M1 fish,Bloom,Other,1.4583333333333333,9.791666666666666,14.893617021276595
-region,Eastern Spencer Gulf,M1 fish,Bloom,Scorpis aequipinnis,1.9583333333333333,9.791666666666666,20
-region,Eastern Spencer Gulf,M1 fish,Bloom,Siphonognathus beddomei,0.041666666666666664,9.791666666666666,0.42553191489361697
-region,Eastern Spencer Gulf,M1 fish,Bloom,Trachinops noarlungae,1.7916666666666667,9.791666666666666,18.297872340425535
-region,Eastern Spencer Gulf,M1 fish,Pre-bloom,Girella zebra,0.13636363636363635,22.545454545454547,0.6048387096774193
-region,Eastern Spencer Gulf,M1 fish,Pre-bloom,Kyphosus sydneyanus,2.272727272727273,22.545454545454547,10.080645161290322
-region,Eastern Spencer Gulf,M1 fish,Pre-bloom,Neoodax balteatus,0.4090909090909091,22.545454545454547,1.8145161290322582
-region,Eastern Spencer Gulf,M1 fish,Pre-bloom,Notolabrus tetricus,3.272727272727273,22.545454545454547,14.516129032258066
-region,Eastern Spencer Gulf,M1 fish,Pre-bloom,Other,8.045454545454545,22.545454545454547,35.68548387096774
-region,Eastern Spencer Gulf,M1 fish,Pre-bloom,Scorpis aequipinnis,2.272727272727273,22.545454545454547,10.080645161290322
-region,Eastern Spencer Gulf,M1 fish,Pre-bloom,Siphonognathus beddomei,2.6818181818181817,22.545454545454547,11.89516129032258
-region,Eastern Spencer Gulf,M1 fish,Pre-bloom,Trachinops noarlungae,3.4545454545454546,22.545454545454547,15.322580645161288
-region,Eastern Spencer Gulf,M2 fish,Bloom,Callionymidae spp,0,2.4166666666666665,0
-region,Eastern Spencer Gulf,M2 fish,Bloom,Eocallionymus papilio,0.20833333333333334,2.4166666666666665,8.620689655172415
-region,Eastern Spencer Gulf,M2 fish,Bloom,Gobiidae spp,0.25,2.4166666666666665,10.344827586206897
-region,Eastern Spencer Gulf,M2 fish,Bloom,Heteroclinus spp,0,2.4166666666666665,0
-region,Eastern Spencer Gulf,M2 fish,Bloom,Other,0.041666666666666664,2.4166666666666665,1.7241379310344827
-region,Eastern Spencer Gulf,M2 fish,Bloom,Parapercis haackei,1,2.4166666666666665,41.37931034482759
-region,Eastern Spencer Gulf,M2 fish,Bloom,Trinorfolkia clarkei,0.5,2.4166666666666665,20.689655172413794
-region,Eastern Spencer Gulf,M2 fish,Bloom,Trinorfolkia cristata,0.4166666666666667,2.4166666666666665,17.24137931034483
-region,Eastern Spencer Gulf,M2 fish,Pre-bloom,Callionymidae spp,0.13333333333333333,1.8666666666666667,7.142857142857143
-region,Eastern Spencer Gulf,M2 fish,Pre-bloom,Eocallionymus papilio,0.06666666666666667,1.8666666666666667,3.5714285714285716
-region,Eastern Spencer Gulf,M2 fish,Pre-bloom,Gobiidae spp,0.6666666666666666,1.8666666666666667,35.71428571428571
-region,Eastern Spencer Gulf,M2 fish,Pre-bloom,Heteroclinus spp,0.13333333333333333,1.8666666666666667,7.142857142857143
-region,Eastern Spencer Gulf,M2 fish,Pre-bloom,Other,0.26666666666666666,1.8666666666666667,14.285714285714286
-region,Eastern Spencer Gulf,M2 fish,Pre-bloom,Parapercis haackei,0.26666666666666666,1.8666666666666667,14.285714285714286
-region,Eastern Spencer Gulf,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.3333333333333333,1.8666666666666667,17.857142857142854
-region,Eastern Spencer Gulf,M2 fish,Pre-bloom,Trinorfolkia cristata,0,1.8666666666666667,0
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Cenolia trichoptera,0,7.708333333333333,0
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Equichlamys bifrons,0.875,7.708333333333333,11.351351351351353
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Haliotis rubra,1.375,7.708333333333333,17.83783783783784
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0,7.708333333333333,0
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Nectocarcinus integrifrons,0.625,7.708333333333333,8.108108108108109
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Neothyonidium dearmatum,0,7.708333333333333,0
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Other,2.375,7.708333333333333,30.81081081081081
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Paguristes frontalis,0.875,7.708333333333333,11.351351351351353
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Paguristes spp,1.5833333333333333,7.708333333333333,20.54054054054054
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom,Tosia australis,0,7.708333333333333,0
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Cenolia trichoptera,19.466666666666665,51.43333333333333,37.84834737524303
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Equichlamys bifrons,1.1333333333333333,51.43333333333333,2.20349967595593
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis rubra,2.8333333333333335,51.43333333333333,5.508749189889826
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,4.033333333333333,51.43333333333333,7.841866493843162
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Nectocarcinus integrifrons,0,51.43333333333333,0
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Neothyonidium dearmatum,10.466666666666667,51.43333333333333,20.349967595593004
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Other,12.066666666666666,51.43333333333333,23.460790667530787
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.13333333333333333,51.43333333333333,0.25923525599481534
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Paguristes spp,0,51.43333333333333,0
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Tosia australis,1.3,51.43333333333333,2.5275437459494494
-region,Fleurieu,M1 fish,Bloom,Austrolabrus maculatus,2.412037037037037,40.120370370370374,6.0120009231479346
-region,Fleurieu,M1 fish,Bloom,Notolabrus parilus,3.060185185185185,40.120370370370374,7.627509808446804
-region,Fleurieu,M1 fish,Bloom,Notolabrus tetricus,3.064814814814815,40.120370370370374,7.639049157627508
-region,Fleurieu,M1 fish,Bloom,Other,9.01388888888889,40.120370370370374,22.467112854834987
-region,Fleurieu,M1 fish,Bloom,Parapriacanthus elongatus,0.009259259259259259,40.120370370370374,0.023078698361412412
-region,Fleurieu,M1 fish,Bloom,Pempheris klunzingeri,0.013888888888888888,40.120370370370374,0.03461804754211862
-region,Fleurieu,M1 fish,Bloom,Scorpis aequipinnis,5.694444444444445,40.120370370370374,14.193399492268636
-region,Fleurieu,M1 fish,Bloom,Siphamia cephalotes,0,40.120370370370374,0
-region,Fleurieu,M1 fish,Bloom,Trachinops noarlungae,16.85185185185185,40.120370370370374,42.003231017770595
-region,Fleurieu,M1 fish,Pre-bloom,Austrolabrus maculatus,1.6955445544554455,183.41398514851485,0.9244358073799668
-region,Fleurieu,M1 fish,Pre-bloom,Notolabrus parilus,0.8465346534653465,183.41398514851485,0.46154313302766214
-region,Fleurieu,M1 fish,Pre-bloom,Notolabrus tetricus,3.7363861386138613,183.41398514851485,2.0371326295475325
-region,Fleurieu,M1 fish,Pre-bloom,Other,27.582301980198018,183.41398514851485,15.038276365820165
-region,Fleurieu,M1 fish,Pre-bloom,Parapriacanthus elongatus,21.465346534653467,183.41398514851485,11.703222367297915
-region,Fleurieu,M1 fish,Pre-bloom,Pempheris klunzingeri,4.19740099009901,183.41398514851485,2.2884847012621585
-region,Fleurieu,M1 fish,Pre-bloom,Scorpis aequipinnis,3.113861386138614,183.41398514851485,1.6977229863999974
-region,Fleurieu,M1 fish,Pre-bloom,Siphamia cephalotes,9.392326732673267,183.41398514851485,5.120834556355158
-region,Fleurieu,M1 fish,Pre-bloom,Trachinops noarlungae,111.38428217821782,183.41398514851485,60.72834745290944
-region,Fleurieu,M2 fish,Bloom,Helcogramma decurrens,0.1588785046728972,1.0981308411214952,14.46808510638298
-region,Fleurieu,M2 fish,Bloom,Other,0.2570093457943925,1.0981308411214952,23.404255319148938
-region,Fleurieu,M2 fish,Bloom,Paraplesiops meleagris,0.34579439252336447,1.0981308411214952,31.489361702127663
-region,Fleurieu,M2 fish,Bloom,Parapriacanthus elongatus,0,1.0981308411214952,0
-region,Fleurieu,M2 fish,Bloom,Pempheris klunzingeri,0.014018691588785047,1.0981308411214952,1.2765957446808511
-region,Fleurieu,M2 fish,Bloom,Pempheris multiradiata,0.056074766355140186,1.0981308411214952,5.1063829787234045
-region,Fleurieu,M2 fish,Bloom,Pempheris spp,0.09345794392523364,1.0981308411214952,8.510638297872342
-region,Fleurieu,M2 fish,Bloom,Trinorfolkia clarkei,0.17289719626168223,1.0981308411214952,15.744680851063832
-region,Fleurieu,M2 fish,Bloom,Tripterygiidae spp,0,1.0981308411214952,0
-region,Fleurieu,M2 fish,Pre-bloom,Helcogramma decurrens,2.0518102372034956,5.4225967540574285,37.838148958213424
-region,Fleurieu,M2 fish,Pre-bloom,Other,0.966916354556804,5.4225967540574285,17.831242085875445
-region,Fleurieu,M2 fish,Pre-bloom,Paraplesiops meleagris,0.19350811485642946,5.4225967540574285,3.5685507079544143
-region,Fleurieu,M2 fish,Pre-bloom,Parapriacanthus elongatus,0.3114856429463171,5.4225967540574285,5.744215494416944
-region,Fleurieu,M2 fish,Pre-bloom,Pempheris klunzingeri,0.6048689138576779,5.4225967540574285,11.154598825831702
-region,Fleurieu,M2 fish,Pre-bloom,Pempheris multiradiata,0.5274656679151061,5.4225967540574285,9.727178542649936
-region,Fleurieu,M2 fish,Pre-bloom,Pempheris spp,0,5.4225967540574285,0
-region,Fleurieu,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.2908863920099875,5.4225967540574285,5.3643375158282485
-region,Fleurieu,M2 fish,Pre-bloom,Tripterygiidae spp,0.4756554307116105,5.4225967540574285,8.771727869229883
-region,Fleurieu,M2 invertebrates,Bloom,Astralium spp,2.5046296296296298,13.98611111111111,17.907977490897057
-region,Fleurieu,M2 invertebrates,Bloom,Cenolia trichoptera,0.06018518518518518,13.98611111111111,0.43032108573320094
-region,Fleurieu,M2 invertebrates,Bloom,Chlorodiloma odontis,1.7083333333333333,13.98611111111111,12.21449851042701
-region,Fleurieu,M2 invertebrates,Bloom,Lunella undulata,0.375,13.98611111111111,2.6812313803376364
-region,Fleurieu,M2 invertebrates,Bloom,Other,4.981481481481482,13.98611111111111,35.61734524991725
-region,Fleurieu,M2 invertebrates,Bloom,Paguristes frontalis,1.162037037037037,13.98611111111111,8.308507116848725
-region,Fleurieu,M2 invertebrates,Bloom,Paguristes spp,1.837962962962963,13.98611111111111,13.141343925852368
-region,Fleurieu,M2 invertebrates,Bloom,Phasianella australis,0.041666666666666664,13.98611111111111,0.2979145978152929
-region,Fleurieu,M2 invertebrates,Bloom,Phasianella ventricosa,0.009259259259259259,13.98611111111111,0.06620324395895398
-region,Fleurieu,M2 invertebrates,Bloom,Pleuroploca australasia,1.3055555555555556,13.98611111111111,9.334657398212514
-region,Fleurieu,M2 invertebrates,Pre-bloom,Astralium spp,0.057285180572851806,18.163138231631383,0.3153925265683922
-region,Fleurieu,M2 invertebrates,Pre-bloom,Cenolia trichoptera,0.9059775840597758,18.163138231631383,4.988001371271855
-region,Fleurieu,M2 invertebrates,Pre-bloom,Chlorodiloma odontis,0,18.163138231631383,0
-region,Fleurieu,M2 invertebrates,Pre-bloom,Lunella undulata,6.345579078455791,18.163138231631383,34.93657867672266
-region,Fleurieu,M2 invertebrates,Pre-bloom,Other,6.569738480697385,18.163138231631383,36.170723345903326
-region,Fleurieu,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.4794520547945205,18.163138231631383,2.639698320191978
-region,Fleurieu,M2 invertebrates,Pre-bloom,Paguristes spp,0,18.163138231631383,0
-region,Fleurieu,M2 invertebrates,Pre-bloom,Phasianella australis,1.0778331257783313,18.163138231631383,5.9341789509770315
-region,Fleurieu,M2 invertebrates,Pre-bloom,Phasianella ventricosa,1.2054794520547945,18.163138231631383,6.636955776482687
-region,Fleurieu,M2 invertebrates,Pre-bloom,Pleuroploca australasia,1.5217932752179328,18.163138231631383,8.378471031882071
-region,Kangaroo Island,M1 fish,Bloom,Kyphosus sydneyanus,3.575,67.9,5.265095729013255
-region,Kangaroo Island,M1 fish,Bloom,Notolabrus tetricus,20.55,67.9,30.265095729013254
-region,Kangaroo Island,M1 fish,Bloom,Other,12.075,67.9,17.783505154639172
-region,Kangaroo Island,M1 fish,Bloom,Parapriacanthus elongatus,0,67.9,0
-region,Kangaroo Island,M1 fish,Bloom,Pempheris multiradiata,1.525,67.9,2.2459499263622975
-region,Kangaroo Island,M1 fish,Bloom,Pictilabrus laticlavius,4.375,67.9,6.443298969072164
-region,Kangaroo Island,M1 fish,Bloom,Scorpis aequipinnis,22,67.9,32.40058910162003
-region,Kangaroo Island,M1 fish,Bloom,Siphonognathus beddomei,0.675,67.9,0.9941089837997054
-region,Kangaroo Island,M1 fish,Bloom,Trachinops noarlungae,3.125,67.9,4.6023564064801175
-region,Kangaroo Island,M1 fish,Pre-bloom,Kyphosus sydneyanus,2.26171875,95.34765625,2.3720758736531606
-region,Kangaroo Island,M1 fish,Pre-bloom,Notolabrus tetricus,13.51953125,95.34765625,14.179196198123643
-region,Kangaroo Island,M1 fish,Pre-bloom,Other,30.8359375,95.34765625,32.34053013232824
-region,Kangaroo Island,M1 fish,Pre-bloom,Parapriacanthus elongatus,14.39453125,95.34765625,15.096890491212259
-region,Kangaroo Island,M1 fish,Pre-bloom,Pempheris multiradiata,5.59765625,95.34765625,5.8707853660535045
-region,Kangaroo Island,M1 fish,Pre-bloom,Pictilabrus laticlavius,1.37890625,95.34765625,1.4461878815191118
-region,Kangaroo Island,M1 fish,Pre-bloom,Scorpis aequipinnis,11.71484375,95.34765625,12.286451718628374
-region,Kangaroo Island,M1 fish,Pre-bloom,Siphonognathus beddomei,12.1953125,95.34765625,12.79036420992257
-region,Kangaroo Island,M1 fish,Pre-bloom,Trachinops noarlungae,3.44921875,95.34765625,3.617518128559138
-region,Kangaroo Island,M2 fish,Bloom,Bovichtus angustifrons,0.125,4.575,2.73224043715847
-region,Kangaroo Island,M2 fish,Bloom,Helcogramma decurrens,0.1,4.575,2.1857923497267757
-region,Kangaroo Island,M2 fish,Bloom,Other,0.3,4.575,6.557377049180328
-region,Kangaroo Island,M2 fish,Bloom,Othos dentex,0.05,4.575,1.0928961748633879
-region,Kangaroo Island,M2 fish,Bloom,Paraplesiops meleagris,0.525,4.575,11.475409836065573
-region,Kangaroo Island,M2 fish,Bloom,Parapriacanthus elongatus,0,4.575,0
-region,Kangaroo Island,M2 fish,Bloom,Pempheris multiradiata,3.325,4.575,72.6775956284153
-region,Kangaroo Island,M2 fish,Bloom,Pempheris ornata,0,4.575,0
-region,Kangaroo Island,M2 fish,Bloom,Trinorfolkia cristata,0.15,4.575,3.278688524590164
-region,Kangaroo Island,M2 fish,Pre-bloom,Bovichtus angustifrons,0,9.62890625,0
-region,Kangaroo Island,M2 fish,Pre-bloom,Helcogramma decurrens,0.0703125,9.62890625,0.7302231237322515
-region,Kangaroo Island,M2 fish,Pre-bloom,Other,0.4609375,9.62890625,4.787018255578094
-region,Kangaroo Island,M2 fish,Pre-bloom,Othos dentex,0.12890625,9.62890625,1.3387423935091278
-region,Kangaroo Island,M2 fish,Pre-bloom,Paraplesiops meleagris,0.9609375,9.62890625,9.979716024340771
-region,Kangaroo Island,M2 fish,Pre-bloom,Parapriacanthus elongatus,0.359375,9.62890625,3.7322515212981746
-region,Kangaroo Island,M2 fish,Pre-bloom,Pempheris multiradiata,7.4765625,9.62890625,77.6470588235294
-region,Kangaroo Island,M2 fish,Pre-bloom,Pempheris ornata,0.15625,9.62890625,1.6227180527383367
-region,Kangaroo Island,M2 fish,Pre-bloom,Trinorfolkia cristata,0.015625,9.62890625,0.16227180527383367
-region,Kangaroo Island,M2 invertebrates,Bloom,Astralium spp,4.475,15.45,28.96440129449838
-region,Kangaroo Island,M2 invertebrates,Bloom,Cenolia trichoptera,0.975,15.45,6.310679611650485
-region,Kangaroo Island,M2 invertebrates,Bloom,Guinusia chabrus,2.625,15.45,16.990291262135923
-region,Kangaroo Island,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.475,15.45,3.074433656957929
-region,Kangaroo Island,M2 invertebrates,Bloom,Lunella torquata,0,15.45,0
-region,Kangaroo Island,M2 invertebrates,Bloom,Other,4.5,15.45,29.12621359223301
-region,Kangaroo Island,M2 invertebrates,Bloom,Paguridae spp,1.3,15.45,8.414239482200648
-region,Kangaroo Island,M2 invertebrates,Bloom,Paguristes spp,0.775,15.45,5.016181229773463
-region,Kangaroo Island,M2 invertebrates,Bloom,Petricia vernicina,0.325,15.45,2.103559870550162
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Astralium spp,0.0703125,19.1015625,0.36809815950920244
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Cenolia trichoptera,10.93359375,19.1015625,57.239263803680984
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Guinusia chabrus,0.59765625,19.1015625,3.128834355828221
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,1.77734375,19.1015625,9.304703476482617
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Lunella torquata,0.734375,19.1015625,3.8445807770961147
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Other,3.96484375,19.1015625,20.756646216768917
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Paguridae spp,0.0859375,19.1015625,0.4498977505112474
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Paguristes spp,0,19.1015625,0
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Petricia vernicina,0.9375,19.1015625,4.9079754601226995
-region,South Coast,M1 fish,Bloom,Arripis georgianus,2.453125,27.140625,9.038572251007484
-region,South Coast,M1 fish,Bloom,Cheilodactylus nigripes,1.515625,27.140625,5.584340817501439
-region,South Coast,M1 fish,Bloom,Kyphosus sydneyanus,1.3046875,27.140625,4.807138744962579
-region,South Coast,M1 fish,Bloom,Meuschenia hippocrepis,0.234375,27.140625,0.8635578583765112
-region,South Coast,M1 fish,Bloom,Notolabrus tetricus,3.734375,27.140625,13.759355210132412
-region,South Coast,M1 fish,Bloom,Olisthops cyanomelas,0.09375,27.140625,0.3454231433506045
-region,South Coast,M1 fish,Bloom,Other,3.7890625,27.140625,13.960852043753599
-region,South Coast,M1 fish,Bloom,Scorpis aequipinnis,14.015625,27.140625,51.64075993091537
-region,South Coast,M1 fish,Bloom,Siphamia cephalotes,0,27.140625,0
-region,South Coast,M1 fish,Pre-bloom,Arripis georgianus,0.4541284403669725,25.3348623853211,1.7925040738728952
-region,South Coast,M1 fish,Pre-bloom,Cheilodactylus nigripes,0.9151376146788991,25.3348623853211,3.6121673003802286
-region,South Coast,M1 fish,Pre-bloom,Kyphosus sydneyanus,0.8922018348623854,25.3348623853211,3.521636791598769
-region,South Coast,M1 fish,Pre-bloom,Meuschenia hippocrepis,1.3463302752293578,25.3348623853211,5.314140865471664
-region,South Coast,M1 fish,Pre-bloom,Notolabrus tetricus,4.580275229357798,25.3348623853211,18.078942603657435
-region,South Coast,M1 fish,Pre-bloom,Olisthops cyanomelas,1.3073394495412844,25.3348623853211,5.160239000543184
-region,South Coast,M1 fish,Pre-bloom,Other,7.729357798165137,25.3348623853211,30.508781459351802
-region,South Coast,M1 fish,Pre-bloom,Scorpis aequipinnis,6.912844036697248,25.3348623853211,27.28589534673185
-region,South Coast,M1 fish,Pre-bloom,Siphamia cephalotes,1.1972477064220184,25.3348623853211,4.725692558392178
-region,South Coast,M2 fish,Bloom,Helcogramma decurrens,0.0234375,0.2109375,11.11111111111111
-region,South Coast,M2 fish,Bloom,Other,0.0078125,0.2109375,3.7037037037037037
-region,South Coast,M2 fish,Bloom,Parascyllium variolatum,0,0.2109375,0
-region,South Coast,M2 fish,Bloom,Pempheris klunzingeri,0.0625,0.2109375,29.62962962962963
-region,South Coast,M2 fish,Bloom,Pempheris multiradiata,0.078125,0.2109375,37.03703703703704
-region,South Coast,M2 fish,Bloom,Trinorfolkia clarkei,0.015625,0.2109375,7.407407407407407
-region,South Coast,M2 fish,Bloom,Trinorfolkia cristata,0.0234375,0.2109375,11.11111111111111
-region,South Coast,M2 fish,Bloom,Vincentia conspersa,0,0.2109375,0
-region,South Coast,M2 fish,Pre-bloom,Helcogramma decurrens,0.10991379310344827,1.6120689655172413,6.818181818181818
-region,South Coast,M2 fish,Pre-bloom,Other,0.2025862068965517,1.6120689655172413,12.566844919786096
-region,South Coast,M2 fish,Pre-bloom,Parascyllium variolatum,0.034482758620689655,1.6120689655172413,2.1390374331550803
-region,South Coast,M2 fish,Pre-bloom,Pempheris klunzingeri,0.1939655172413793,1.6120689655172413,12.032085561497327
-region,South Coast,M2 fish,Pre-bloom,Pempheris multiradiata,0.9913793103448276,1.6120689655172413,61.49732620320856
-region,South Coast,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.004310344827586207,1.6120689655172413,0.26737967914438504
-region,South Coast,M2 fish,Pre-bloom,Trinorfolkia cristata,0.004310344827586207,1.6120689655172413,0.26737967914438504
-region,South Coast,M2 fish,Pre-bloom,Vincentia conspersa,0.07112068965517242,1.6120689655172413,4.411764705882353
-region,South Coast,M2 invertebrates,Bloom,Cenolia trichoptera,0.5390625,17.359375,3.1053105310531053
-region,South Coast,M2 invertebrates,Bloom,Dicathais orbita,6.78125,17.359375,39.06390639063906
-region,South Coast,M2 invertebrates,Bloom,Guinusia chabrus,4.3828125,17.359375,25.247524752475247
-region,South Coast,M2 invertebrates,Bloom,Haliotis rubra,1.125,17.359375,6.480648064806481
-region,South Coast,M2 invertebrates,Bloom,Heliocidaris erythrogramma,0.328125,17.359375,1.8901890189018902
-region,South Coast,M2 invertebrates,Bloom,Lunella torquata,0.0078125,17.359375,0.045004500450045004
-region,South Coast,M2 invertebrates,Bloom,Lunella undulata,0.1484375,17.359375,0.8550855085508551
-region,South Coast,M2 invertebrates,Bloom,Meridiastra gunnii,0.7109375,17.359375,4.095409540954096
-region,South Coast,M2 invertebrates,Bloom,Other,2.0859375,17.359375,12.016201620162017
-region,South Coast,M2 invertebrates,Bloom,Paguristes spp,1.25,17.359375,7.200720072007201
-region,South Coast,M2 invertebrates,Pre-bloom,Cenolia trichoptera,8.752155172413794,48.57758620689655,18.016858917480036
-region,South Coast,M2 invertebrates,Pre-bloom,Dicathais orbita,1.4956896551724137,48.57758620689655,3.0789707187222715
-region,South Coast,M2 invertebrates,Pre-bloom,Guinusia chabrus,1.7198275862068966,48.57758620689655,3.5403726708074537
-region,South Coast,M2 invertebrates,Pre-bloom,Haliotis rubra,4.109913793103448,48.57758620689655,8.460514640638864
-region,South Coast,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,10.178879310344827,48.57758620689655,20.953859804791485
-region,South Coast,M2 invertebrates,Pre-bloom,Lunella torquata,3.9288793103448274,48.57758620689655,8.087843833185449
-region,South Coast,M2 invertebrates,Pre-bloom,Lunella undulata,4.519396551724138,48.57758620689655,9.303460514640639
-region,South Coast,M2 invertebrates,Pre-bloom,Meridiastra gunnii,0.853448275862069,48.57758620689655,1.756876663708962
-region,South Coast,M2 invertebrates,Pre-bloom,Other,13.019396551724137,48.57758620689655,26.801242236024844
-region,South Coast,M2 invertebrates,Pre-bloom,Paguristes spp,0,48.57758620689655,0
-region,Southern Yorke,M1 fish,Bloom,Cheilodactylus nigripes,1.7142857142857142,40.60714285714286,4.221635883905012
-region,Southern Yorke,M1 fish,Bloom,Kyphosus sydneyanus,4.75,40.60714285714286,11.69744942832014
-region,Southern Yorke,M1 fish,Bloom,Meuschenia hippocrepis,2.0357142857142856,40.60714285714286,5.013192612137202
-region,Southern Yorke,M1 fish,Bloom,Notolabrus tetricus,1,40.60714285714286,2.462620932277924
-region,Southern Yorke,M1 fish,Bloom,Other,11.035714285714286,40.60714285714286,27.17678100263852
-region,Southern Yorke,M1 fish,Bloom,Parapriacanthus elongatus,0,40.60714285714286,0
-region,Southern Yorke,M1 fish,Bloom,Scorpis aequipinnis,8.285714285714286,40.60714285714286,20.40457343887423
-region,Southern Yorke,M1 fish,Bloom,Trachinops noarlungae,11.785714285714286,40.60714285714286,29.023746701846964
-region,Southern Yorke,M1 fish,Pre-bloom,Cheilodactylus nigripes,1.125,63.041666666666664,1.784534038334435
-region,Southern Yorke,M1 fish,Pre-bloom,Kyphosus sydneyanus,3.2083333333333335,63.041666666666664,5.089226701916722
-region,Southern Yorke,M1 fish,Pre-bloom,Meuschenia hippocrepis,4.666666666666667,63.041666666666664,7.402511566424323
-region,Southern Yorke,M1 fish,Pre-bloom,Notolabrus tetricus,7.708333333333333,63.041666666666664,12.22736285525446
-region,Southern Yorke,M1 fish,Pre-bloom,Other,16.833333333333332,63.041666666666664,26.701916721744876
-region,Southern Yorke,M1 fish,Pre-bloom,Parapriacanthus elongatus,14.166666666666666,63.041666666666664,22.47191011235955
-region,Southern Yorke,M1 fish,Pre-bloom,Scorpis aequipinnis,7.5,63.041666666666664,11.896893588896233
-region,Southern Yorke,M1 fish,Pre-bloom,Trachinops noarlungae,7.833333333333333,63.041666666666664,12.425644415069398
-region,Southern Yorke,M2 fish,Bloom,Aetapcus maculatus,0,4.7,0
-region,Southern Yorke,M2 fish,Bloom,Gobiidae spp,0.03333333333333333,4.7,0.7092198581560284
-region,Southern Yorke,M2 fish,Bloom,Helcogramma decurrens,2.6666666666666665,4.7,56.73758865248226
-region,Southern Yorke,M2 fish,Bloom,Other,0.16666666666666666,4.7,3.546099290780141
-region,Southern Yorke,M2 fish,Bloom,Pempheris klunzingeri,0.23333333333333334,4.7,4.964539007092198
-region,Southern Yorke,M2 fish,Bloom,Pempheris multiradiata,0.3333333333333333,4.7,7.092198581560282
-region,Southern Yorke,M2 fish,Bloom,Trinorfolkia clarkei,0.9,4.7,19.148936170212764
-region,Southern Yorke,M2 fish,Bloom,Trinorfolkia cristata,0.36666666666666664,4.7,7.801418439716311
-region,Southern Yorke,M2 fish,Bloom,Tripterygiidae spp,0,4.7,0
-region,Southern Yorke,M2 fish,Pre-bloom,Aetapcus maculatus,0.05263157894736842,1.526315789473684,3.4482758620689653
-region,Southern Yorke,M2 fish,Pre-bloom,Gobiidae spp,0.47368421052631576,1.526315789473684,31.03448275862069
-region,Southern Yorke,M2 fish,Pre-bloom,Helcogramma decurrens,0,1.526315789473684,0
-region,Southern Yorke,M2 fish,Pre-bloom,Other,0.15789473684210525,1.526315789473684,10.344827586206897
-region,Southern Yorke,M2 fish,Pre-bloom,Pempheris klunzingeri,0.05263157894736842,1.526315789473684,3.4482758620689653
-region,Southern Yorke,M2 fish,Pre-bloom,Pempheris multiradiata,0.21052631578947367,1.526315789473684,13.793103448275861
-region,Southern Yorke,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.3157894736842105,1.526315789473684,20.689655172413794
-region,Southern Yorke,M2 fish,Pre-bloom,Trinorfolkia cristata,0,1.526315789473684,0
-region,Southern Yorke,M2 fish,Pre-bloom,Tripterygiidae spp,0.2631578947368421,1.526315789473684,17.24137931034483
-region,Southern Yorke,M2 invertebrates,Bloom,Australostichopus mollis,0.43333333333333335,22.7,1.9089574155653453
-region,Southern Yorke,M2 invertebrates,Bloom,Cenolia trichoptera,1.5333333333333334,22.7,6.754772393538914
-region,Southern Yorke,M2 invertebrates,Bloom,Dicathais orbita,3.2333333333333334,22.7,14.243759177679882
-region,Southern Yorke,M2 invertebrates,Bloom,Guinusia chabrus,2.4,22.7,10.572687224669604
-region,Southern Yorke,M2 invertebrates,Bloom,Heliocidaris erythrogramma,1.6,22.7,7.048458149779736
-region,Southern Yorke,M2 invertebrates,Bloom,Meridiastra gunnii,5.8,22.7,25.550660792951543
-region,Southern Yorke,M2 invertebrates,Bloom,Other,6.733333333333333,22.7,29.662261380323056
-region,Southern Yorke,M2 invertebrates,Bloom,Tosia australis,0.9666666666666667,22.7,4.258443465491924
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Australostichopus mollis,2.15,56.800000000000004,3.7852112676056335
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Cenolia trichoptera,17.05,56.800000000000004,30.017605633802816
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Dicathais orbita,0.6,56.800000000000004,1.056338028169014
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Guinusia chabrus,0.55,56.800000000000004,0.9683098591549296
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,13.1,56.800000000000004,23.06338028169014
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Meridiastra gunnii,3.15,56.800000000000004,5.545774647887323
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Other,14.3,56.800000000000004,25.176056338028168
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Tosia australis,5.9,56.800000000000004,10.38732394366197
-region,Upper Gulf St Vincent,M1 fish,Bloom,Arripis truttaceus,5,6.083333333333333,82.19178082191782
-region,Upper Gulf St Vincent,M1 fish,Bloom,Chrysophrys auratus,0.16666666666666666,6.083333333333333,2.73972602739726
-region,Upper Gulf St Vincent,M1 fish,Bloom,Neoodax balteatus,0.375,6.083333333333333,6.164383561643836
-region,Upper Gulf St Vincent,M1 fish,Bloom,Other,0.041666666666666664,6.083333333333333,0.684931506849315
-region,Upper Gulf St Vincent,M1 fish,Bloom,Parapriacanthus elongatus,0,6.083333333333333,0
-region,Upper Gulf St Vincent,M1 fish,Bloom,Pempheris klunzingeri,0,6.083333333333333,0
-region,Upper Gulf St Vincent,M1 fish,Bloom,Pseudocaranx spp,0.25,6.083333333333333,4.109589041095891
-region,Upper Gulf St Vincent,M1 fish,Bloom,Sillaginidae spp,0.25,6.083333333333333,4.109589041095891
-region,Upper Gulf St Vincent,M1 fish,Bloom,Siphamia cephalotes,0,6.083333333333333,0
-region,Upper Gulf St Vincent,M1 fish,Bloom,Trachinops noarlungae,0,6.083333333333333,0
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Arripis truttaceus,0,32.17045454545455,0
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Chrysophrys auratus,0.2159090909090909,32.17045454545455,0.6711409395973154
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Neoodax balteatus,5.4772727272727275,32.17045454545455,17.025785941363477
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Other,3.3181818181818183,32.17045454545455,10.31437654539032
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Parapriacanthus elongatus,12.272727272727273,32.17045454545455,38.149063935005294
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Pempheris klunzingeri,0.8863636363636364,32.17045454545455,2.755210173083716
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Pseudocaranx spp,0,32.17045454545455,0
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Sillaginidae spp,0,32.17045454545455,0
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Siphamia cephalotes,8.715909090909092,32.17045454545455,27.092900035323208
-region,Upper Gulf St Vincent,M1 fish,Pre-bloom,Trachinops noarlungae,1.2840909090909092,32.17045454545455,3.991522430236665
-region,Upper Gulf St Vincent,M2 fish,Bloom,Aetapcus maculatus,0,0.75,0
-region,Upper Gulf St Vincent,M2 fish,Bloom,Aploactisoma milesii,0,0.75,0
-region,Upper Gulf St Vincent,M2 fish,Bloom,Eocallionymus papilio,0.041666666666666664,0.75,5.5555555555555545
-region,Upper Gulf St Vincent,M2 fish,Bloom,Gobiidae spp,0.20833333333333334,0.75,27.777777777777782
-region,Upper Gulf St Vincent,M2 fish,Bloom,Nesogobius spp,0,0.75,0
-region,Upper Gulf St Vincent,M2 fish,Bloom,Other,0,0.75,0
-region,Upper Gulf St Vincent,M2 fish,Bloom,Parapercis haackei,0.5,0.75,66.66666666666667
-region,Upper Gulf St Vincent,M2 fish,Bloom,Vincentia conspersa,0,0.75,0
-region,Upper Gulf St Vincent,M2 fish,Pre-bloom,Aetapcus maculatus,0.011363636363636364,7.25,0.15673981191222572
-region,Upper Gulf St Vincent,M2 fish,Pre-bloom,Aploactisoma milesii,0.011363636363636364,7.25,0.15673981191222572
-region,Upper Gulf St Vincent,M2 fish,Pre-bloom,Eocallionymus papilio,0.38636363636363635,7.25,5.329153605015674
-region,Upper Gulf St Vincent,M2 fish,Pre-bloom,Gobiidae spp,0.3409090909090909,7.25,4.70219435736677
-region,Upper Gulf St Vincent,M2 fish,Pre-bloom,Nesogobius spp,1.7272727272727273,7.25,23.824451410658305
-region,Upper Gulf St Vincent,M2 fish,Pre-bloom,Other,0.3068181818181818,7.25,4.231974921630094
-region,Upper Gulf St Vincent,M2 fish,Pre-bloom,Parapercis haackei,4.363636363636363,7.25,60.188087774294665
-region,Upper Gulf St Vincent,M2 fish,Pre-bloom,Vincentia conspersa,0.10227272727272728,7.25,1.4106583072100316
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Astralium spp,2.75,8,34.375
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Australostichopus mollis,0,8,0
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Equichlamys bifrons,0.16666666666666666,8,2.083333333333333
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Haliotis cyclobates,1,8,12.5
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Haliotis laevigata,0.7916666666666666,8,9.895833333333332
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Other,1.5833333333333333,8,19.791666666666664
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Paguristes frontalis,0.8333333333333334,8,10.416666666666668
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Pinna bicolor,0,8,0
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Portunus armatus,0.875,8,10.9375
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom,Tosia australis,0,8,0
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Astralium spp,0,10.227272727272727,0
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Australostichopus mollis,1.8068181818181819,10.227272727272727,17.666666666666668
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Equichlamys bifrons,0.5909090909090909,10.227272727272727,5.777777777777779
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0.056818181818181816,10.227272727272727,0.5555555555555556
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis laevigata,0.11363636363636363,10.227272727272727,1.1111111111111112
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Other,3.7954545454545454,10.227272727272727,37.111111111111114
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.4318181818181818,10.227272727272727,4.222222222222222
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Pinna bicolor,0.5681818181818182,10.227272727272727,5.555555555555556
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Portunus armatus,2.1363636363636362,10.227272727272727,20.88888888888889
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Tosia australis,0.7272727272727273,10.227272727272727,7.1111111111111125
+location,Upper GSV,M1 fish,Bloom,Acanthopagrus butcheri,0.55,5.6000000000000005,9.821428571428571
+location,Upper GSV,M1 fish,Bloom,Arripis truttaceus,3,5.6000000000000005,53.57142857142857
+location,Upper GSV,M1 fish,Bloom,Girella zebra,0.4,5.6000000000000005,7.142857142857142
+location,Upper GSV,M1 fish,Bloom,Kyphosus sydneyanus,0.4,5.6000000000000005,7.142857142857142
+location,Upper GSV,M1 fish,Bloom,Neoodax balteatus,0.225,5.6000000000000005,4.017857142857142
+location,Upper GSV,M1 fish,Bloom,Other,0.775,5.6000000000000005,13.839285714285714
+location,Upper GSV,M1 fish,Bloom,Parapriacanthus elongatus,0,5.6000000000000005,0
+location,Upper GSV,M1 fish,Bloom,Pempheris klunzingeri,0.25,5.6000000000000005,4.4642857142857135
+location,Upper GSV,M1 fish,Bloom,Siphamia cephalotes,0,5.6000000000000005,0
+location,Upper GSV,M1 fish,Bloom,Trachinops noarlungae,0,5.6000000000000005,0
+location,Upper GSV,M1 fish,Pre-bloom,Acanthopagrus butcheri,0,38.00694444444444,0
+location,Upper GSV,M1 fish,Pre-bloom,Arripis truttaceus,0,38.00694444444444,0
+location,Upper GSV,M1 fish,Pre-bloom,Girella zebra,0.20833333333333334,38.00694444444444,0.5481454412570803
+location,Upper GSV,M1 fish,Pre-bloom,Kyphosus sydneyanus,0,38.00694444444444,0
+location,Upper GSV,M1 fish,Pre-bloom,Neoodax balteatus,3.736111111111111,38.00694444444444,9.830074913210307
+location,Upper GSV,M1 fish,Pre-bloom,Other,4.826388888888889,38.00694444444444,12.698702722455693
+location,Upper GSV,M1 fish,Pre-bloom,Parapriacanthus elongatus,8.45138888888889,38.00694444444444,22.236433400328888
+location,Upper GSV,M1 fish,Pre-bloom,Pempheris klunzingeri,1.3958333333333333,38.00694444444444,3.672574456422437
+location,Upper GSV,M1 fish,Pre-bloom,Siphamia cephalotes,15.666666666666666,38.00694444444444,41.22053718253243
+location,Upper GSV,M1 fish,Pre-bloom,Trachinops noarlungae,3.7222222222222223,38.00694444444444,9.793531883793166
+location,Upper GSV,M2 fish,Bloom,Eocallionymus papilio,0.025,0.775,3.225806451612903
+location,Upper GSV,M2 fish,Bloom,Gobiidae spp,0.2,0.775,25.806451612903224
+location,Upper GSV,M2 fish,Bloom,Helcogramma decurrens,0,0.775,0
+location,Upper GSV,M2 fish,Bloom,Nesogobius spp,0,0.775,0
+location,Upper GSV,M2 fish,Bloom,Other,0.025,0.775,3.225806451612903
+location,Upper GSV,M2 fish,Bloom,Parapercis haackei,0.3,0.775,38.70967741935484
+location,Upper GSV,M2 fish,Bloom,Pempheris klunzingeri,0.1,0.775,12.903225806451612
+location,Upper GSV,M2 fish,Bloom,Trinorfolkia clarkei,0.075,0.775,9.67741935483871
+location,Upper GSV,M2 fish,Bloom,Trinorfolkia cristata,0.05,0.775,6.451612903225806
+location,Upper GSV,M2 fish,Pre-bloom,Eocallionymus papilio,0.3819444444444444,5.354166666666667,7.133592736705577
+location,Upper GSV,M2 fish,Pre-bloom,Gobiidae spp,0.20833333333333334,5.354166666666667,3.891050583657588
+location,Upper GSV,M2 fish,Pre-bloom,Helcogramma decurrens,0.2777777777777778,5.354166666666667,5.188067444876784
+location,Upper GSV,M2 fish,Pre-bloom,Nesogobius spp,1.1041666666666667,5.354166666666667,20.622568093385215
+location,Upper GSV,M2 fish,Pre-bloom,Other,0.4097222222222222,5.354166666666667,7.652399481193255
+location,Upper GSV,M2 fish,Pre-bloom,Parapercis haackei,2.8541666666666665,5.354166666666667,53.30739299610894
+location,Upper GSV,M2 fish,Pre-bloom,Pempheris klunzingeri,0,5.354166666666667,0
+location,Upper GSV,M2 fish,Pre-bloom,Trinorfolkia clarkei,0.027777777777777776,5.354166666666667,0.5188067444876783
+location,Upper GSV,M2 fish,Pre-bloom,Trinorfolkia cristata,0.09027777777777778,5.354166666666667,1.6861219195849544
+location,Upper GSV,M2 invertebrates,Bloom,Astralium spp,1.675,5.575,30.044843049327355
+location,Upper GSV,M2 invertebrates,Bloom,Australostichopus mollis,0,5.575,0
+location,Upper GSV,M2 invertebrates,Bloom,Equichlamys bifrons,0.2,5.575,3.5874439461883405
+location,Upper GSV,M2 invertebrates,Bloom,Haliotis cyclobates,0.6,5.575,10.762331838565022
+location,Upper GSV,M2 invertebrates,Bloom,Other,1.25,5.575,22.42152466367713
+location,Upper GSV,M2 invertebrates,Bloom,Paguridae spp,0.5,5.575,8.968609865470851
+location,Upper GSV,M2 invertebrates,Bloom,Paguristes frontalis,0.55,5.575,9.865470852017939
+location,Upper GSV,M2 invertebrates,Bloom,Portunus armatus,0.775,5.575,13.90134529147982
+location,Upper GSV,M2 invertebrates,Bloom,Tosia australis,0.025,5.575,0.44843049327354256
+location,Upper GSV,M2 invertebrates,Pre-bloom,Astralium spp,0,11.152777777777779,0
+location,Upper GSV,M2 invertebrates,Pre-bloom,Australostichopus mollis,1.5694444444444444,11.152777777777779,14.072229140722289
+location,Upper GSV,M2 invertebrates,Pre-bloom,Equichlamys bifrons,1.8472222222222223,11.152777777777779,16.562889165628892
+location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0.06944444444444445,11.152777777777779,0.62266500622665
+location,Upper GSV,M2 invertebrates,Pre-bloom,Other,4.993055555555555,11.152777777777779,44.769613947696136
+location,Upper GSV,M2 invertebrates,Pre-bloom,Paguridae spp,0.027777777777777776,11.152777777777779,0.24906600249066
+location,Upper GSV,M2 invertebrates,Pre-bloom,Paguristes frontalis,0.5486111111111112,11.152777777777779,4.919053549190536
+location,Upper GSV,M2 invertebrates,Pre-bloom,Portunus armatus,1.5763888888888888,11.152777777777779,14.134495641344955
+location,Upper GSV,M2 invertebrates,Pre-bloom,Tosia australis,0.5208333333333334,11.152777777777779,4.6699875466998755

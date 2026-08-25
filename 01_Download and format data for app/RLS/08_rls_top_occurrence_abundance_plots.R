@@ -54,7 +54,7 @@ dataset_settings <- tibble::tribble(
   "m2_inverts",  "M2 invertebrates",  "data/tidy/rls_m2_inverts_complete_count.rds",     "data/tidy/rls_m2_inverts_surveys_final.rds"
 )
 
-site_lookup_file <- "dev/Dive_sites_2026_07_14.shp"
+site_lookup_file <- "dev/Dive_sites_2026_08_25.shp"
 
 # Output folder.
 output_root <- file.path(
@@ -184,16 +184,7 @@ first_non_missing <- function(x) {
 # 3. Read site, location and region lookup
 # ============================================================
 
-sa_sites <- sf::read_sf(site_lookup_file) %>%
-  CheckEM::clean_names() %>%
-  sf::st_drop_geometry() %>%
-  dplyr::transmute(
-    site_code = as.character(site_code),
-    site_name_lookup = as.character(site_name),
-    location = as.character(location_g),
-    region = as.character(bruvsrepor)
-  ) %>%
-  dplyr::distinct(site_code, .keep_all = TRUE)
+sa_sites <- read_rds("data/tidy/sa_sites.rds") # Made in script 2
 
 
 # Use CheckEM common names where available. Unmatched invertebrate taxa

@@ -1,12 +1,11 @@
 spatial_level,group_id,group_name,status,plots_saved,error
-location,Aldinga,Aldinga,Saved,"period, period_split, temporal",NA
-location,Carrickalinga,Carrickalinga,Saved,"period, period_split, temporal",NA
-location,Metro,Metro,Saved,"period, period_split, temporal",NA
-location,Point Turton,Point Turton,Saved,"period, period_split, temporal",NA
-location,Port Noarlunga,Port Noarlunga,Saved,"period, period_split, temporal",NA
-location,Rapid Head,Rapid Head,Saved,"period, period_split, temporal",NA
-location,Southern Fleurieu,Southern Fleurieu,Saved,"period, period_split, temporal",NA
-location,Sponge Gardens,Sponge Gardens,Saved,"period, period_split, temporal",NA
-location,Troubridge Point,Troubridge Point,Saved,"period, period_split, temporal",NA
-location,Upper GSV,Upper GSV,Saved,"period, period_split, temporal",NA
-location,Victor Harbor,Victor Harbor,Saved,"period, period_split, temporal",NA
+location,Carrickalinga,Carrickalinga,Saved,"period, period_status, period_split, temporal",NA
+location,Eastern Spencer Gulf,Eastern Spencer Gulf,Saved,"period, period_status, period_split, temporal",NA
+location,Encounter Bay,Encounter Bay,Saved,"period, period_status, period_split, temporal",NA
+location,Metro,Metro,Saved,"period, period_status, period_split, temporal",NA
+location,Rapid Head,Rapid Head,Saved,"period, period_status, period_split, temporal",NA
+location,Southern Fleurieu,Southern Fleurieu,Saved,"period, period_status, period_split, temporal",NA
+location,Southern Metro,Southern Metro,Saved,"period, period_status, period_split, temporal",NA
+location,Southern Yorke,Southern Yorke,Saved,"period, period_status, period_split, temporal",NA
+location,Sponge Gardens,Sponge Gardens,Saved,"period, period_status, period_split, temporal",NA
+location,Upper GSV,Upper GSV,Saved,"period, period_status, period_split, temporal",NA

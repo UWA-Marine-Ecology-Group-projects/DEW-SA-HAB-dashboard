@@ -26,13 +26,20 @@ period_cols <- c(
   "Bloom" = "#92bd83"
 )
 
+status_levels <- c("Fished", "No-take")
+
+status_cols <- c(
+  "Fished" = "#D98C3F",
+  "No-take" = "#4FA08F"
+)
+
 plot_output_roots <- c(
-  site = file.path("plots", "rls_b20_ste"),
+  # site = file.path("plots", "rls_b20_ste"),
   location = file.path("plots", "rls_b20_location"),
   region = file.path("plots", "rls_b20_region")
 )
 
-plot_types <- c("period", "period_split", "temporal")
+plot_types <- c("period", "period_status", "period_split", "temporal")
 
 observed_plot_theme <- theme(
   axis.line.x = element_line(
@@ -279,24 +286,24 @@ expand_spatial_levels <- function(data) {
   
   dplyr::bind_rows(
     
-    data %>%
-      dplyr::transmute(
-        spatial_level = "site",
-        group_id = dplyr::coalesce(
-          as.character(site_code),
-          as.character(site_name)
-        ),
-        group_name = dplyr::coalesce(
-          as.character(site_name),
-          as.character(site_code)
-        ),
-        time_id = as.character(sampling_event),
-        time_date = as.Date(sampling_event_start_date),
-        metric,
-        b20_kg,
-        period = as.character(period),
-        period_split = as.character(period_split)
-      ),
+    # data %>%
+    #   dplyr::transmute(
+    #     spatial_level = "site",
+    #     group_id = dplyr::coalesce(
+    #       as.character(site_code),
+    #       as.character(site_name)
+    #     ),
+    #     group_name = dplyr::coalesce(
+    #       as.character(site_name),
+    #       as.character(site_code)
+    #     ),
+    #     time_id = as.character(sampling_event),
+    #     time_date = as.Date(sampling_event_start_date),
+    #     metric,
+    #     b20_kg,
+    #     period = as.character(period),
+    #     period_split = as.character(period_split)
+    #   ),
     
     data %>%
       dplyr::transmute(
@@ -308,7 +315,8 @@ expand_spatial_levels <- function(data) {
         metric,
         b20_kg,
         period = as.character(period),
-        period_split = as.character(period_split)
+        period_split = as.character(period_split),
+        status = as.character(status)
       ),
     
     data %>%
@@ -321,7 +329,8 @@ expand_spatial_levels <- function(data) {
         metric,
         b20_kg,
         period = as.character(period),
-        period_split = as.character(period_split)
+        period_split = as.character(period_split),
+        status = as.character(status)
       )
   ) %>%
     dplyr::filter(
@@ -411,6 +420,60 @@ plot_observed_period <- function(data) {
     theme_minimal(base_size = 15) +
     observed_plot_theme +
     theme(legend.position = "none")
+}
+
+plot_observed_period_status <- function(data) {
+  
+  dodge <- position_dodge(width = 0.8)
+  
+  ggplot(
+    data,
+    aes(
+      x = period,
+      y = estimate,
+      fill = status,
+      group = status
+    )
+  ) +
+    geom_col(
+      position = dodge,
+      width = 0.7,
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = pmax(estimate - se, 0),
+        ymax = estimate + se
+      ),
+      position = dodge,
+      width = 0.2,
+      linewidth = 0.6,
+      na.rm = TRUE
+    ) +
+    facet_wrap(
+      vars(metric),
+      nrow = 1,
+      scales = "free_y",
+      drop = FALSE
+    ) +
+    scale_fill_manual(
+      values = status_cols,
+      breaks = status_levels,
+      drop = FALSE
+    ) +
+    scale_y_continuous(
+      expand = expansion(mult = c(0, 0.08))
+    ) +
+    labs(
+      x = NULL,
+      y = "Average B20 biomass (kg)\n(± SE)",
+      fill = NULL
+    ) +
+    theme_minimal(base_size = 15) +
+    observed_plot_theme +
+    theme(
+      legend.position = "right"
+    )
 }
 
 plot_observed_period_split <- function(data) {
@@ -580,16 +643,7 @@ save_plot_if_present <- function(
 # 4. Read spatial lookup
 # -----------------------------------------------------------------
 
-sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
-  CheckEM::clean_names() %>%
-  sf::st_drop_geometry() %>%
-  dplyr::transmute(
-    site_code = as.character(site_code),
-    site_name_lookup = site_name,
-    region = bruvsrepor,
-    location = location_g
-  ) %>%
-  dplyr::distinct(site_code, .keep_all = TRUE)
+sa_sites <- read_rds("data/tidy/sa_sites.rds") # Made in script 2
 
 # -----------------------------------------------------------------
 # 5. Calculate sample-level B20 for M1 and M2 fish
@@ -632,6 +686,11 @@ nrow(m2_b20_samples)
 b20_samples <- dplyr::bind_rows(m1_b20_samples, m2_b20_samples) %>%
   left_join(sa_sites) %>%
   dplyr::mutate(metric = factor(metric, levels = metric_levels))
+
+readr::write_rds(
+  b20_samples,
+  "data/rls_metrics_for_modelling/b20.rds"
+)
 
 # Sites listed here could not be matched to a location and/or region. They
 # can still produce site plots, but cannot be included at broader levels.
@@ -705,6 +764,34 @@ period_summary <- spatial_samples %>%
   dplyr::mutate(
     period = factor(period, levels = period_levels),
     metric = factor(metric, levels = metric_levels)
+  )
+
+# Broad pre-bloom versus bloom summaries split by management status.
+period_status_summary <- spatial_samples %>%
+  summarise_b20(
+    group_vars = c(
+      "spatial_level",
+      "group_id",
+      "group_name",
+      "metric",
+      "period",
+      "status"
+    )
+  ) %>%
+  dplyr::filter(!is.na(estimate)) %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = period_levels
+    ),
+    status = factor(
+      status,
+      levels = status_levels
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
   )
 
 # Pre-bloom plus individual bloom-period summaries.
@@ -818,23 +905,56 @@ purrr::walk(
   }
 )
 
-# One lookup table covers sites, locations and regions.
+# One lookup table covers locations and regions.
 group_lookup <- dplyr::bind_rows(
+  
   period_summary %>%
-    dplyr::select(spatial_level, group_id, group_name),
+    dplyr::select(
+      spatial_level,
+      group_id,
+      group_name
+    ),
+  
+  period_status_summary %>%
+    dplyr::select(
+      spatial_level,
+      group_id,
+      group_name
+    ),
+  
   period_split_summary %>%
-    dplyr::select(spatial_level, group_id, group_name),
+    dplyr::select(
+      spatial_level,
+      group_id,
+      group_name
+    ),
+  
   temporal_summary %>%
-    dplyr::select(spatial_level, group_id, group_name)
+    dplyr::select(
+      spatial_level,
+      group_id,
+      group_name
+    )
+  
 ) %>%
-  dplyr::arrange(spatial_level, group_id, group_name) %>%
-  dplyr::distinct(spatial_level, group_id, .keep_all = TRUE) %>%
+  dplyr::arrange(
+    spatial_level,
+    group_id,
+    group_name
+  ) %>%
+  dplyr::distinct(
+    spatial_level,
+    group_id,
+    .keep_all = TRUE
+  ) %>%
   dplyr::mutate(
+    
     file_stub = dplyr::if_else(
       spatial_level == "site",
       paste(group_name, group_id, sep = "_"),
       group_id
     ),
+    
     safe_id = make_safe_filename(file_stub)
   )
 
@@ -857,6 +977,12 @@ save_b20_plots <- function(
       group_id == group_id_value
     )
   
+  group_period_status_data <- period_status_summary %>%
+    dplyr::filter(
+      spatial_level == spatial_level_value,
+      group_id == group_id_value
+    )
+  
   group_period_split_data <- period_split_summary %>%
     dplyr::filter(
       spatial_level == spatial_level_value,
@@ -871,6 +997,7 @@ save_b20_plots <- function(
     dplyr::arrange(metric, time_date)
   
   saved <- c(
+    
     period = save_plot_if_present(
       data = group_period_data,
       plot_function = plot_observed_period,
@@ -882,6 +1009,19 @@ save_b20_plots <- function(
       width = 12,
       height = 5.5
     ),
+    
+    period_status = save_plot_if_present(
+      data = group_period_status_data,
+      plot_function = plot_observed_period_status,
+      filename = file.path(
+        output_root,
+        "period_status",
+        paste0(safe_id_value, "_b20_period_status.png")
+      ),
+      width = 12,
+      height = 5.5
+    ),
+    
     period_split = save_plot_if_present(
       data = group_period_split_data,
       plot_function = plot_observed_period_split,
@@ -893,6 +1033,7 @@ save_b20_plots <- function(
       width = 14,
       height = 6
     ),
+    
     temporal = save_plot_if_present(
       data = group_temporal_data,
       plot_function = plot_observed_temporal,

@@ -16,7 +16,6 @@ library(readr)
 library(tidyr)
 library(todor)
 
-
 # Functions ----
 # Groups sampling dates into the same sampling event if they are within 1 week of eachother
 # Groups sampling dates into the same sampling event if they are within
@@ -53,10 +52,27 @@ add_sampling_event <- function(data) {
     )
 }
 
-# Sites from DEW ----
-sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
+# No-take zones (Manually made in QGIS because CAPAD has some as IUCN II)
+sa_status <- sf::read_sf("data/spatial/sa_no_take_zones.shp") %>%
   clean_names() %>%
-  select(site_code, site_name, location_g, bruvsrepor)
+  dplyr::mutate(status = "No-take") %>%
+  select(-id)
+
+# Sites from DEW ----
+sa_sites <- sf::read_sf("dev/Dive_sites_2026_08_25.shp") %>%
+  clean_names() %>%
+  select(site_code, site_name, location_g, region) %>%
+  dplyr::transmute(
+    site_code = as.character(site_code),
+    site_name_lookup = site_name,
+    region = region,
+    location = location_g) %>%
+  sf::st_join(sa_status) %>%
+  sf::st_drop_geometry() %>%
+  dplyr::distinct(site_code, .keep_all = TRUE) %>%
+  dplyr::mutate(status = dplyr::coalesce(status, "Fished"))
+
+write_rds(sa_sites, "data/tidy/sa_sites.rds")
 
 # Read in survey list data ----
 survey_list <- read_csv("data/raw/RLS/ep_survey_list.csv") %>%
@@ -157,7 +173,7 @@ sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("site_name", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
   tidyr::uncount(weights = 2, .id = "block") %>%
   dplyr::filter(!survey_id %in% c("923406553", "923406567")) %>% # Lost data sheet - have removed
-  dplyr::mutate(transect = paste("Transect", survey_id, survey_date, sep = "_"))
+  dplyr::mutate(transect = paste("Transect", survey_id, survey_date, depth, sep = "_"))
 
 ## For ATRC M2, only 1 block before 2016 ----
 sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date")) %>%
@@ -166,7 +182,7 @@ sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date")) %>%
   tidyr::uncount(weights = if_else(program == "ATRC" & survey_date < as.Date("2016-01-01"), 1L, 2L), .id = "block") %>%
   dplyr::filter(!survey_id %in% c("923406553", "923406567")) %>% # Lost data sheet - have removed
 # was 3698 rows with fix = 3402
-  dplyr::mutate(transect = paste("Transect", survey_id, survey_date, sep = "_"))
+  dplyr::mutate(transect = paste("Transect", survey_id, survey_date, depth, sep = "_"))
 
 sl_m2 %>%
   count(program, survey_date, survey_id, name = "n_blocks") %>%
@@ -196,3 +212,4 @@ m2_transects <- sl_m2 %>%
   dplyr::distinct(survey_id, depth, survey_date) %>%
   nrow() %>%
   print
+

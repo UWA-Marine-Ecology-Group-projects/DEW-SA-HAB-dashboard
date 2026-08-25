@@ -1,8 +1,8 @@
 spatial_level,group_id,group_name,status,plots_saved,error
-region,Adelaide Metro,Adelaide Metro,Saved,"period, period_split, temporal",NA
-region,Eastern Spencer Gulf,Eastern Spencer Gulf,Saved,"period, period_split, temporal",NA
-region,Fleurieu,Fleurieu,Saved,"period, period_split, temporal",NA
-region,Kangaroo Island,Kangaroo Island,Saved,"period, period_split, temporal",NA
-region,South Coast,South Coast,Saved,"period, period_split, temporal",NA
-region,Southern Yorke,Southern Yorke,Saved,"period, period_split, temporal",NA
-region,Upper Gulf St Vincent,Upper Gulf St Vincent,Saved,"period, period_split, temporal",NA
+region,Adelaide Metro,Adelaide Metro,Saved,"period, period_status, period_split, temporal",NA
+region,Eastern Spencer Gulf,Eastern Spencer Gulf,Saved,"period, period_status, period_split, temporal",NA
+region,Fleurieu,Fleurieu,Saved,"period, period_status, period_split, temporal",NA
+region,Kangaroo Island,Kangaroo Island,Saved,"period, period_status, period_split, temporal",NA
+region,South Coast,South Coast,Saved,"period, period_status, period_split, temporal",NA
+region,Southern Yorke,Southern Yorke,Saved,"period, period_status, period_split, temporal",NA
+region,Upper Gulf St Vincent,Upper Gulf St Vincent,Saved,"period, period_status, period_split, temporal",NA

@@ -39,7 +39,8 @@ output_root <- file.path(
 top_n <- 5
 
 # Site plots deliberately excluded.
-spatial_levels_to_plot <- c("location", "region")
+spatial_levels_to_plot <- c("location"#, "region"
+                            )
 
 method_levels <- c(
   "M1 fish",
@@ -133,21 +134,7 @@ check_one_row_per_transect <- function(data, dataset_name) {
 # 3. Read spatial metadata and survey lists
 # -----------------------------------------------------------------
 
-sa_sites <- sf::read_sf(
-  "dev/Dive_sites_2026_07_14.shp"
-) %>%
-  CheckEM::clean_names() %>%
-  sf::st_drop_geometry() %>%
-  dplyr::transmute(
-    site_code = as.character(site_code),
-    site_name_lookup = site_name,
-    region = bruvsrepor,
-    location = location_g
-  ) %>%
-  dplyr::distinct(
-    site_code,
-    .keep_all = TRUE
-  )
+sa_sites <- read_rds("data/tidy/sa_sites.rds") # Made in script 2
 
 
 sl_m1 <- readr::read_rds(

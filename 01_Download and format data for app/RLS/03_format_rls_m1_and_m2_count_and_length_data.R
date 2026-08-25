@@ -24,9 +24,7 @@ dew_species <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d
 lh <- CheckEM::australia_life_history
 
 # Sites from DEW ----
-sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
-  clean_names() %>%
-  select(site_code, site_name, location_g, bruvsrepor)
+sa_sites <- read_rds("data/tidy/sa_sites.rds") # Made in script 2
 
 # Read in data ----
 cols_to_remove <- c("ecoregion", "country", "area", "realm", "geom", 'visibility', "hour", "survey_latitude", 'survey_longitude', "diver", "method", "taxon", "location", "site_code", "latitude", "longitude") # duplicated with metadata

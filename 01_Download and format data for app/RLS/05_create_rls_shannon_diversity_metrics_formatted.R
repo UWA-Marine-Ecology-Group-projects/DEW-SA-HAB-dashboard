@@ -28,13 +28,20 @@ period_cols <- c(
   "Bloom" = "#92bd83"
 )
 
+status_levels <- c("Fished", "No-take")
+
+status_cols <- c(
+  "Fished" = "#D98C3F",
+  "No-take" = "#4FA08F"
+)
+
 plot_output_roots <- c(
-  site = file.path("plots", "rls_shannon_diversity_site"),
+  # site = file.path("plots", "rls_shannon_diversity_site"),
   location = file.path("plots", "rls_shannon_diversity_location"),
   region = file.path("plots", "rls_shannon_diversity_region")
 )
 
-plot_types <- c("period", "period_split", "temporal")
+plot_types <- c("period", "period_status", "period_split", "temporal")
 
 observed_plot_theme <- theme(
   axis.line.x = element_line(
@@ -164,21 +171,21 @@ expand_spatial_levels <- function(data) {
   
   dplyr::bind_rows(
     
-    data %>%
-      dplyr::transmute(
-        spatial_level = "site",
-        group_id = as.character(site_code),
-        group_name = dplyr::coalesce(
-          as.character(site_name),
-          as.character(site_code)
-        ),
-        time_id = as.character(sampling_event),
-        time_date = as.Date(sampling_event_start_date),
-        metric,
-        shannon,
-        period = as.character(period),
-        period_split = as.character(period_split)
-      ),
+    # data %>%
+    #   dplyr::transmute(
+    #     spatial_level = "site",
+    #     group_id = as.character(site_code),
+    #     group_name = dplyr::coalesce(
+    #       as.character(site_name),
+    #       as.character(site_code)
+    #     ),
+    #     time_id = as.character(sampling_event),
+    #     time_date = as.Date(sampling_event_start_date),
+    #     metric,
+    #     shannon,
+    #     period = as.character(period),
+    #     period_split = as.character(period_split)
+    #   ),
     
     data %>%
       dplyr::transmute(
@@ -190,7 +197,8 @@ expand_spatial_levels <- function(data) {
         metric,
         shannon,
         period = as.character(period),
-        period_split = as.character(period_split)
+        period_split = as.character(period_split),
+        status = as.character(status)
       ),
     
     data %>%
@@ -203,7 +211,8 @@ expand_spatial_levels <- function(data) {
         metric,
         shannon,
         period = as.character(period),
-        period_split = as.character(period_split)
+        period_split = as.character(period_split),
+        status = as.character(status)
       )
   ) %>%
     dplyr::filter(
@@ -292,6 +301,60 @@ plot_observed_period <- function(data) {
     theme_minimal(base_size = 15) +
     observed_plot_theme +
     theme(legend.position = "none")
+}
+
+plot_observed_period_status <- function(data) {
+  
+  dodge <- position_dodge(width = 0.8)
+  
+  ggplot(
+    data,
+    aes(
+      x = period,
+      y = estimate,
+      fill = status,
+      group = status
+    )
+  ) +
+    geom_col(
+      position = dodge,
+      width = 0.7,
+      alpha = 0.85
+    ) +
+    geom_errorbar(
+      aes(
+        ymin = pmax(estimate - se, 0),
+        ymax = estimate + se
+      ),
+      position = dodge,
+      width = 0.2,
+      linewidth = 0.6,
+      na.rm = TRUE
+    ) +
+    facet_wrap(
+      vars(metric),
+      nrow = 1,
+      scales = "free_y",
+      drop = FALSE
+    ) +
+    scale_fill_manual(
+      values = status_cols,
+      breaks = status_levels,
+      drop = FALSE
+    ) +
+    scale_y_continuous(
+      expand = expansion(mult = c(0, 0.08))
+    ) +
+    labs(
+      x = NULL,
+      y = "Average Shannon diversity index\n(± SE)",
+      fill = NULL
+    ) +
+    theme_minimal(base_size = 15) +
+    observed_plot_theme +
+    theme(
+      legend.position = "right"
+    )
 }
 
 plot_observed_period_split <- function(data) {
@@ -453,16 +516,7 @@ save_plot_if_present <- function(data, plot_function, filename, width, height) {
 # -----------------------------------------------------------------
 # 4. Read metadata and survey lists
 # -----------------------------------------------------------------
-sa_sites <- sf::read_sf("dev/Dive_sites_2026_07_14.shp") %>%
-  CheckEM::clean_names() %>%
-  sf::st_drop_geometry() %>%
-  dplyr::transmute(
-    site_code = as.character(site_code),
-    site_name_lookup = site_name,
-    region = bruvsrepor,
-    location = location_g
-  ) %>%
-  dplyr::distinct(site_code, .keep_all = TRUE)
+sa_sites <- read_rds("data/tidy/sa_sites.rds") # Made in script 2
 
 unique(sa_sites$location)
 unique(sa_sites$region)
@@ -572,6 +626,39 @@ period_summary <- spatial_samples %>%
   dplyr::mutate(
     period = factor(period, levels = period_levels),
     metric = factor(metric, levels = metric_levels)
+  )
+
+# Broad pre-bloom versus bloom summaries split by management status.
+period_status_summary <- spatial_samples %>%
+  dplyr::filter(
+    !is.na(period),
+    !is.na(status),
+    status %in% status_levels
+  ) %>%
+  summarise_shannon(
+    group_vars = c(
+      "spatial_level",
+      "group_id",
+      "group_name",
+      "metric",
+      "period",
+      "status"
+    )
+  ) %>%
+  dplyr::filter(!is.na(estimate)) %>%
+  dplyr::mutate(
+    period = factor(
+      period,
+      levels = period_levels
+    ),
+    status = factor(
+      status,
+      levels = status_levels
+    ),
+    metric = factor(
+      metric,
+      levels = metric_levels
+    )
   )
 
 # Pre-bloom plus individual bloom-month summaries.
@@ -691,15 +778,46 @@ purrr::walk(
 # Build it from the actual summaries so groups with no usable data
 # are not sent to the saving loop.
 group_lookup <- dplyr::bind_rows(
+  
   period_summary %>%
-    dplyr::select(spatial_level, group_id, group_name),
+    dplyr::select(
+      spatial_level,
+      group_id,
+      group_name
+    ),
+  
+  period_status_summary %>%
+    dplyr::select(
+      spatial_level,
+      group_id,
+      group_name
+    ),
+  
   period_split_summary %>%
-    dplyr::select(spatial_level, group_id, group_name),
+    dplyr::select(
+      spatial_level,
+      group_id,
+      group_name
+    ),
+  
   temporal_summary %>%
-    dplyr::select(spatial_level, group_id, group_name)
+    dplyr::select(
+      spatial_level,
+      group_id,
+      group_name
+    )
+  
 ) %>%
-  dplyr::arrange(spatial_level, group_id, group_name) %>%
-  dplyr::distinct(spatial_level, group_id, .keep_all = TRUE) %>%
+  dplyr::arrange(
+    spatial_level,
+    group_id,
+    group_name
+  ) %>%
+  dplyr::distinct(
+    spatial_level,
+    group_id,
+    .keep_all = TRUE
+  ) %>%
   dplyr::mutate(
     file_stub = dplyr::if_else(
       spatial_level == "site",
@@ -726,6 +844,12 @@ save_shannon_plots <- function(
       group_id == group_id_value
     )
   
+  group_period_status_data <- period_status_summary %>%
+    dplyr::filter(
+      spatial_level == spatial_level_value,
+      group_id == group_id_value
+    )
+  
   group_period_split_data <- period_split_summary %>%
     dplyr::filter(
       spatial_level == spatial_level_value,
@@ -747,6 +871,18 @@ save_shannon_plots <- function(
         output_root,
         "period",
         paste0(safe_id_value, "_shannon_period.png")
+      ),
+      width = 15,
+      height = 5.5
+    ),
+    
+    period_status = save_plot_if_present(
+      data = group_period_status_data,
+      plot_function = plot_observed_period_status,
+      filename = file.path(
+        output_root,
+        "period_status",
+        paste0(safe_id_value, "_shannon_period_status.png")
       ),
       width = 15,
       height = 5.5

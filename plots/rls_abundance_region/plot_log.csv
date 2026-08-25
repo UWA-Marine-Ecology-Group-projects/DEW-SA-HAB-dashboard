@@ -1,8 +1,8 @@
 spatial_level,group_id,group_name,status,plots_saved,error
-region,Adelaide Metro,Adelaide Metro,Saved,"total_abundance/period, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_split, m2_inverts/temporal",NA
-region,Eastern Spencer Gulf,Eastern Spencer Gulf,Saved,"total_abundance/period, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_split, m2_inverts/temporal",NA
-region,Fleurieu,Fleurieu,Saved,"total_abundance/period, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_split, m2_inverts/temporal",NA
-region,Kangaroo Island,Kangaroo Island,Saved,"total_abundance/period, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_split, m2_inverts/temporal",NA
-region,South Coast,South Coast,Saved,"total_abundance/period, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_split, m2_inverts/temporal",NA
-region,Southern Yorke,Southern Yorke,Saved,"total_abundance/period, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_split, m2_inverts/temporal",NA
-region,Upper Gulf St Vincent,Upper Gulf St Vincent,Saved,"total_abundance/period, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_split, m2_inverts/temporal",NA
+region,Adelaide Metro,Adelaide Metro,Saved,"total_abundance/period, total_abundance/period_status, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_status, m2_inverts/period_split, m2_inverts/temporal",NA
+region,Eastern Spencer Gulf,Eastern Spencer Gulf,Saved,"total_abundance/period, total_abundance/period_status, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_status, m2_inverts/period_split, m2_inverts/temporal",NA
+region,Fleurieu,Fleurieu,Saved,"total_abundance/period, total_abundance/period_status, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_status, m2_inverts/period_split, m2_inverts/temporal",NA
+region,Kangaroo Island,Kangaroo Island,Saved,"total_abundance/period, total_abundance/period_status, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_status, m2_inverts/period_split, m2_inverts/temporal",NA
+region,South Coast,South Coast,Saved,"total_abundance/period, total_abundance/period_status, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_status, m2_inverts/period_split, m2_inverts/temporal",NA
+region,Southern Yorke,Southern Yorke,Saved,"total_abundance/period, total_abundance/period_status, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_status, m2_inverts/period_split, m2_inverts/temporal",NA
+region,Upper Gulf St Vincent,Upper Gulf St Vincent,Saved,"total_abundance/period, total_abundance/period_status, total_abundance/period_split, total_abundance/temporal, m2_inverts/period, m2_inverts/period_status, m2_inverts/period_split, m2_inverts/temporal",NA

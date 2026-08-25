@@ -1,9 +1,9 @@
 survey_id,location,mpa,site_code,site_name,latitude,longitude,depth,survey_date,sampling_event,program,period,start_year_month,period_split,sampling_event_start_date,block,transect,id
-5000363,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2008-02-06,4,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-06,2,Transect_5000363_2008-02-06,5000363 2
-5000366,Encounter,Encounter Marine Park,GSV93,Aldinga Reef,-35.26825,138.43202,6,2008-02-08,1,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-08,2,Transect_5000366_2008-02-08,5000366 2
-923401322,Adelaide,NA,GSV105,Marino Rocks,-35.0525,138.5027,5.1,2022-08-31,6,RLS,Pre-bloom,2022-08,Pre-bloom,2022-08-31,1,Transect_923401322_2022-08-31,923401322 1
-923401340,Encounter,Encounter Marine Park,GSV53,Moana inside,-35.2091,138.46428999999998,6.2,2022-09-01,6,RLS,Pre-bloom,2022-09,Pre-bloom,2022-09-01,1,Transect_923401340_2022-09-01,923401340 1
-923401342,Adelaide,NA,GSV140,Hallett Cove,-35.0736,138.49428999999998,5.1,2022-09-06,6,RLS,Pre-bloom,2022-09,Pre-bloom,2022-09-06,2,Transect_923401342_2022-09-06,923401342 2
-923401347,Adelaide,NA,GSV105,Marino Rocks,-35.0525,138.5027,5.2,2022-08-31,6,RLS,Pre-bloom,2022-08,Pre-bloom,2022-08-31,2,Transect_923401347_2022-08-31,923401347 2
-923401360,Encounter,Encounter Marine Park,GSV53,Moana inside,-35.2091,138.46428999999998,6.1,2022-09-01,6,RLS,Pre-bloom,2022-09,Pre-bloom,2022-09-01,1,Transect_923401360_2022-09-01,923401360 1
-923406680,Encounter,Encounter Marine Park,GSV117,Cape Jervis South,-35.60447,138.0933,4.2,2026-05-14,4,RLS,Bloom,2026-05,Bloom 2026-05,2026-05-14,1,Transect_923406680_2026-05-14,923406680 1
+5000363,Encounter,Encounter Marine Park,GSV4,Rapid Head,-35.52045,138.16443,5.2,2008-02-06,4,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-06,2,Transect_5000363_2008-02-06_5.2,5000363 2
+5000366,Encounter,Encounter Marine Park,GSV93,Aldinga Reef,-35.26825,138.43202,6,2008-02-08,1,RLS,Pre-bloom,2008-02,Pre-bloom,2008-02-08,2,Transect_5000366_2008-02-08_6,5000366 2
+923401322,Adelaide,NA,GSV105,Marino Rocks,-35.0525,138.5027,5.1,2022-08-31,6,RLS,Pre-bloom,2022-08,Pre-bloom,2022-08-31,1,Transect_923401322_2022-08-31_5.1,923401322 1
+923401340,Encounter,Encounter Marine Park,GSV53,Moana inside,-35.2091,138.46428999999998,6.2,2022-09-01,6,RLS,Pre-bloom,2022-09,Pre-bloom,2022-09-01,1,Transect_923401340_2022-09-01_6.2,923401340 1
+923401342,Adelaide,NA,GSV140,Hallett Cove,-35.0736,138.49428999999998,5.1,2022-09-06,6,RLS,Pre-bloom,2022-09,Pre-bloom,2022-09-06,2,Transect_923401342_2022-09-06_5.1,923401342 2
+923401347,Adelaide,NA,GSV105,Marino Rocks,-35.0525,138.5027,5.2,2022-08-31,6,RLS,Pre-bloom,2022-08,Pre-bloom,2022-08-31,2,Transect_923401347_2022-08-31_5.2,923401347 2
+923401360,Encounter,Encounter Marine Park,GSV53,Moana inside,-35.2091,138.46428999999998,6.1,2022-09-01,6,RLS,Pre-bloom,2022-09,Pre-bloom,2022-09-01,1,Transect_923401360_2022-09-01_6.1,923401360 1
+923406680,Encounter,Encounter Marine Park,GSV117,Cape Jervis South,-35.60447,138.0933,4.2,2026-05-14,4,RLS,Bloom,2026-05,Bloom 2026-05,2026-05-14,1,Transect_923406680_2026-05-14_4.2,923406680 1
