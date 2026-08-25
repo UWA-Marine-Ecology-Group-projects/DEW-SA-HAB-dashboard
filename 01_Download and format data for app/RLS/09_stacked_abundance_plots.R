@@ -31,6 +31,10 @@ library(CheckEM)
 # -----------------------------------------------------------------
 # 1. Settings
 # -----------------------------------------------------------------
+output_root <- file.path(
+  "plots",
+  "rls_stacked_relative_abundance"
+)
 
 top_n <- 5
 
@@ -48,14 +52,35 @@ period_levels <- c(
   "Bloom"
 )
 
-master_colour_file <- "sasha example/master_species_colours.rds"
-
-output_root <- file.path(
-  "plots",
-  "rls_stacked_relative_abundance"
+# Colours used in priority order within each plot
+priority_colours <- c(
+  "#4F7CC9", # Blue
+  "#D98C3F", # Orange
+  "#4FA08F", # Teal
+  "#D06D93", # Pink
+  "#E0B938", # Yellow
+  "#6A717A", # Grey
+  "#9A7A5B", # Brown
+  "#98B55E", # Olive
+  "#8AA2DA", # Light Blue
+  "#8F667A", # Mauve
+  "#B04A7A", # Magenta
+  "#69B86E", # Green
+  "#E5A34A",  # Amber
+  "black",
+  "white",
+  "grey",
+  "purple",
+  "orange",
+  "pink",
+  "gold"
 )
 
-plot_width <- 16
+other_colour <- "#d9d9d9"
+
+# Separate plots no longer need to be 16 inches wide
+plot_width_period <- 8
+plot_width_period_split <- 12
 plot_height <- 7
 plot_dpi <- 300
 
@@ -940,82 +965,104 @@ stacked_period_split$plot_df <- stacked_period_split$plot_df %>%
 
 
 # -----------------------------------------------------------------
-# 11. Build ONE reproducible palette for both plot types
+# 11. Build colour palette for each location/region x method
 # -----------------------------------------------------------------
-
-all_selected_taxa <- unique(
-  c(
-    as.character(
-      stacked_period$plot_df$taxon_plot
-    ),
-    as.character(
-      stacked_period_split$plot_df$taxon_plot
-    )
-  )
-)
-
-all_selected_taxa <- sort(
-  setdiff(
-    all_selected_taxa,
-    "Other"
-  )
-)
-
-
-if (file.exists(master_colour_file)) {
-  
-  colour_pool <- unname(
-    readRDS(master_colour_file)
-  )
-  
-} else {
-  
-  message(
-    "Could not find ",
-    master_colour_file,
-    ". Using an automatically generated qualitative palette instead."
-  )
-  
-  colour_pool <- grDevices::hcl.colors(
-    max(
-      20,
-      length(all_selected_taxa)
-    ),
-    palette = "Dynamic"
-  )
-}
-
-
-if (length(colour_pool) < length(all_selected_taxa)) {
-  
-  message(
-    "Master colour file has fewer colours than selected taxa. ",
-    "Generating a larger palette."
-  )
-  
-  colour_pool <- grDevices::hcl.colors(
-    length(all_selected_taxa),
-    palette = "Dynamic"
-  )
-}
-
-
-taxon_palette <- stats::setNames(
-  colour_pool[
-    seq_along(
-      all_selected_taxa
-    )
-  ],
-  all_selected_taxa
-)
-
-taxon_palette["Other"] <- "grey70"
-
 
 # Display-name vector used only for legend labels.
 legend_labels <- taxon_display_lookup$display_name
 names(legend_labels) <- taxon_display_lookup$taxon_key
 legend_labels["Other"] <- "Other"
+
+
+make_method_palette <- function(
+    spatial_level_value,
+    group_name_value,
+    method_value) {
+  
+  # Use taxa appearing in EITHER the period or period_split plot so
+  # the same taxon keeps the same colour between the two figures.
+  palette_data <- dplyr::bind_rows(
+    
+    stacked_period$plot_df %>%
+      dplyr::filter(
+        spatial_level == spatial_level_value,
+        group_name == group_name_value,
+        method == method_value,
+        taxon_plot != "Other"
+      ) %>%
+      dplyr::select(
+        taxon_plot,
+        mean_abundance
+      ),
+    
+    stacked_period_split$plot_df %>%
+      dplyr::filter(
+        spatial_level == spatial_level_value,
+        group_name == group_name_value,
+        method == method_value,
+        taxon_plot != "Other"
+      ) %>%
+      dplyr::select(
+        taxon_plot,
+        mean_abundance
+      )
+    
+  ) %>%
+    dplyr::group_by(
+      taxon_plot
+    ) %>%
+    dplyr::summarise(
+      priority_score = sum(
+        mean_abundance,
+        na.rm = TRUE
+      ),
+      .groups = "drop"
+    ) %>%
+    dplyr::arrange(
+      dplyr::desc(priority_score),
+      taxon_plot
+    )
+  
+  
+  plot_taxa <- as.character(
+    palette_data$taxon_plot
+  )
+  
+  
+  # There are 13 supplied taxon colours.
+  # Do not silently reuse a colour for two taxa in the same plot.
+  if (length(plot_taxa) > length(priority_colours)) {
+    
+    stop(
+      group_name_value,
+      " / ",
+      method_value,
+      " requires ",
+      length(plot_taxa),
+      " taxon colours, but only ",
+      length(priority_colours),
+      " priority colours were supplied. ",
+      "Reduce top_n or add more colours."
+    )
+  }
+  
+  
+  taxon_palette <- stats::setNames(
+    priority_colours[
+      seq_along(plot_taxa)
+    ],
+    plot_taxa
+  )
+  
+  
+  taxon_palette <- c(
+    taxon_palette,
+    "Other" = other_colour
+  )
+  
+  
+  taxon_palette
+}
 
 
 # -----------------------------------------------------------------
@@ -1040,7 +1087,7 @@ plot_theme <- ggplot2::theme_bw(
       face = "bold",
       size = 13
     ),
-    legend.position = "bottom",
+    legend.position = "right",
     legend.text = ggtext::element_markdown(),
     plot.title = element_text(
       face = "bold"
@@ -1049,13 +1096,15 @@ plot_theme <- ggplot2::theme_bw(
 
 
 # -----------------------------------------------------------------
-# 13. Plot one location/region
+# 13. Plot one location/region x method
 # -----------------------------------------------------------------
 
 plot_stacked_abundance <- function(
     stacked_data,
     spatial_level_value,
     group_name_value,
+    method_value,
+    taxon_palette,
     period_type = c(
       "period",
       "period_split"
@@ -1065,10 +1114,12 @@ plot_stacked_abundance <- function(
     period_type
   )
   
+  
   plot_dat <- stacked_data$plot_df %>%
     dplyr::filter(
       spatial_level == spatial_level_value,
-      group_name == group_name_value
+      group_name == group_name_value,
+      method == method_value
     ) %>%
     dplyr::mutate(
       method = factor(
@@ -1083,18 +1134,24 @@ plot_stacked_abundance <- function(
   }
   
   
-  # Use only taxa actually required by this plot, but keep colours consistent
-  # with every other plot produced by this script.
-  plot_taxa <- plot_dat$taxon_plot %>%
-    as.character() %>%
-    unique()
+  # Keep palette order, but only include taxa present in this plot.
+  taxa_present <- unique(
+    as.character(
+      plot_dat$taxon_plot
+    )
+  )
   
+  
+  plot_taxa <- names(taxon_palette)[
+    names(taxon_palette) %in% taxa_present
+  ]
+  
+  
+  # Always keep Other at the end of the legend/stack.
   plot_taxa <- c(
-    sort(
-      setdiff(
-        plot_taxa,
-        "Other"
-      )
+    setdiff(
+      plot_taxa,
+      "Other"
     ),
     intersect(
       "Other",
@@ -1118,7 +1175,6 @@ plot_stacked_abundance <- function(
     
   } else {
     
-    # Match the style of your BRUV example:
     # Bloom 2025-05 -> Bloom
     #                  2025-05
     x_labels <- function(x) {
@@ -1139,6 +1195,7 @@ plot_stacked_abundance <- function(
       fill = taxon_plot
     )
   ) +
+    
     ggplot2::geom_col(
       position = ggplot2::position_stack(
         reverse = TRUE
@@ -1147,11 +1204,14 @@ plot_stacked_abundance <- function(
       colour = "black",
       linewidth = 0.25
     ) +
-    ggplot2::facet_wrap(
-      ggplot2::vars(method),
-      nrow = 1,
-      drop = FALSE
-    ) +
+    
+    # # Retain the method heading, but only one panel is shown
+    # ggplot2::facet_wrap(
+    #   ggplot2::vars(method),
+    #   nrow = 1,
+    #   drop = TRUE
+    # ) +
+    
     ggplot2::scale_fill_manual(
       values = taxon_palette,
       breaks = plot_taxa,
@@ -1161,15 +1221,13 @@ plot_stacked_abundance <- function(
       drop = TRUE,
       na.translate = FALSE
     ) +
+    
     ggplot2::scale_x_discrete(
       labels = x_labels,
       drop = TRUE
     ) +
+    
     ggplot2::scale_y_continuous(
-      limits = c(
-        0,
-        100
-      ),
       breaks = c(
         0,
         25,
@@ -1183,13 +1241,17 @@ plot_stacked_abundance <- function(
           "%"
         )
       },
+      
+      # Small amount of room above 100% so the top
+      # border of the stacked bar is not clipped.
       expand = ggplot2::expansion(
         mult = c(
           0,
-          0
+          0.03
         )
       )
     ) +
+    
     ggplot2::labs(
       title = if (
         isTRUE(
@@ -1204,10 +1266,12 @@ plot_stacked_abundance <- function(
       y = "Relative abundance (%)",
       fill = "Taxon"
     ) +
+    
     plot_theme +
+    
     ggplot2::guides(
       fill = ggplot2::guide_legend(
-        ncol = 3,
+        ncol = 1,
         byrow = TRUE
       )
     )
@@ -1218,7 +1282,7 @@ plot_stacked_abundance <- function(
 
 
 # -----------------------------------------------------------------
-# 14. Save TWO plots for every location and region
+# 14. Save SIX plots for every location and region
 # -----------------------------------------------------------------
 
 group_lookup <- spatial_samples %>%
@@ -1236,23 +1300,48 @@ group_lookup <- spatial_samples %>%
   )
 
 
-save_one_group <- function(
+# Every location/region x method combination
+plot_lookup <- tidyr::crossing(
+  group_lookup,
+  method_value = method_levels
+)
+
+
+save_one_group_method <- function(
     spatial_level,
-    group_name) {
+    group_name,
+    method_value) {
   
   safe_group <- make_safe_filename(
     group_name
   )
+  
+  safe_method <- make_safe_filename(
+    method_value
+  )
+  
   
   output_dir <- file.path(
     output_root,
     spatial_level
   )
   
+  
   dir.create(
     output_dir,
     recursive = TRUE,
     showWarnings = FALSE
+  )
+  
+  
+  # ---------------------------------------------------------------
+  # Create one colour mapping shared by BOTH plot types
+  # ---------------------------------------------------------------
+  
+  method_palette <- make_method_palette(
+    spatial_level_value = spatial_level,
+    group_name_value = group_name,
+    method_value = method_value
   )
   
   
@@ -1264,6 +1353,8 @@ save_one_group <- function(
     stacked_data = stacked_period,
     spatial_level_value = spatial_level,
     group_name_value = group_name,
+    method_value = method_value,
+    taxon_palette = method_palette,
     period_type = "period"
   )
   
@@ -1276,6 +1367,8 @@ save_one_group <- function(
     stacked_data = stacked_period_split,
     spatial_level_value = spatial_level,
     group_name_value = group_name,
+    method_value = method_value,
+    taxon_palette = method_palette,
     period_type = "period_split"
   )
   
@@ -1283,31 +1376,43 @@ save_one_group <- function(
   saved <- character(0)
   
   
+  # ---------------------------------------------------------------
+  # Save period plot
+  # ---------------------------------------------------------------
+  
   if (!is.null(period_plot)) {
     
     period_file <- file.path(
       output_dir,
       paste0(
         safe_group,
+        "_",
+        safe_method,
         "_stacked_abundance_period.png"
       )
     )
     
+    
     ggplot2::ggsave(
       filename = period_file,
       plot = period_plot,
-      width = plot_width,
+      width = plot_width_period,
       height = plot_height,
       dpi = plot_dpi,
       bg = "white"
     )
     
+    
     saved <- c(
       saved,
-      "period"
+      basename(period_file)
     )
   }
   
+  
+  # ---------------------------------------------------------------
+  # Save period-split plot
+  # ---------------------------------------------------------------
   
   if (!is.null(period_split_plot)) {
     
@@ -1315,22 +1420,26 @@ save_one_group <- function(
       output_dir,
       paste0(
         safe_group,
+        "_",
+        safe_method,
         "_stacked_abundance_period_split.png"
       )
     )
     
+    
     ggplot2::ggsave(
       filename = period_split_file,
       plot = period_split_plot,
-      width = plot_width,
+      width = plot_width_period_split,
       height = plot_height,
       dpi = plot_dpi,
       bg = "white"
     )
     
+    
     saved <- c(
       saved,
-      "period_split"
+      basename(period_split_file)
     )
   }
   
@@ -1338,6 +1447,7 @@ save_one_group <- function(
   tibble::tibble(
     spatial_level = spatial_level,
     group_name = group_name,
+    method = method_value,
     plots_saved = paste(
       saved,
       collapse = ", "
@@ -1352,10 +1462,9 @@ save_one_group <- function(
 
 
 plot_log <- purrr::pmap_dfr(
-  group_lookup,
-  save_one_group
+  plot_lookup,
+  save_one_group_method
 )
-
 
 # -----------------------------------------------------------------
 # 15. Save validation tables

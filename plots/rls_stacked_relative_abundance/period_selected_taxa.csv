@@ -1,0 +1,437 @@
+spatial_level,group_name,method,taxon_key,is_selected
+location,Aldinga,M1 fish,Trachinops noarlungae,TRUE
+location,Aldinga,M1 fish,Scorpis aequipinnis,TRUE
+location,Aldinga,M1 fish,Girella zebra,TRUE
+location,Aldinga,M1 fish,Austrolabrus maculatus,TRUE
+location,Aldinga,M1 fish,Notolabrus parilus,TRUE
+location,Aldinga,M1 fish,Parapriacanthus elongatus,TRUE
+location,Aldinga,M1 fish,Siphonognathus beddomei,TRUE
+location,Aldinga,M2 fish,Trinorfolkia clarkei,TRUE
+location,Aldinga,M2 fish,Helcogramma decurrens,TRUE
+location,Aldinga,M2 fish,Trinorfolkia cristata,TRUE
+location,Aldinga,M2 fish,Eocallionymus papilio,TRUE
+location,Aldinga,M2 fish,Hypoplectrodes nigroruber,TRUE
+location,Aldinga,M2 fish,Pempheris klunzingeri,TRUE
+location,Aldinga,M2 fish,Parapercis haackei,TRUE
+location,Aldinga,M2 fish,Nesogobius spp,TRUE
+location,Aldinga,M2 fish,Tripterygiidae spp,TRUE
+location,Aldinga,M2 invertebrates,Astralium spp,TRUE
+location,Aldinga,M2 invertebrates,Paguristes spp,TRUE
+location,Aldinga,M2 invertebrates,Paguristes frontalis,TRUE
+location,Aldinga,M2 invertebrates,Pleuroploca australasia,TRUE
+location,Aldinga,M2 invertebrates,Fusinus australis,TRUE
+location,Aldinga,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+location,Aldinga,M2 invertebrates,Mimachlamys asperrima,TRUE
+location,Aldinga,M2 invertebrates,Equichlamys bifrons,TRUE
+location,Aldinga,M2 invertebrates,Pentagonaster duebeni,TRUE
+location,Aldinga,M2 invertebrates,Tosia australis,TRUE
+location,Carrickalinga,M1 fish,Trachinops noarlungae,TRUE
+location,Carrickalinga,M1 fish,Scorpis aequipinnis,TRUE
+location,Carrickalinga,M1 fish,Notolabrus parilus,TRUE
+location,Carrickalinga,M1 fish,Austrolabrus maculatus,TRUE
+location,Carrickalinga,M1 fish,Cheilodactylus nigripes,TRUE
+location,Carrickalinga,M1 fish,Siphamia cephalotes,TRUE
+location,Carrickalinga,M1 fish,Parapriacanthus elongatus,TRUE
+location,Carrickalinga,M1 fish,Siphonognathus beddomei,TRUE
+location,Carrickalinga,M2 fish,Helcogramma decurrens,TRUE
+location,Carrickalinga,M2 fish,Trinorfolkia clarkei,TRUE
+location,Carrickalinga,M2 fish,Pempheris multiradiata,TRUE
+location,Carrickalinga,M2 fish,Hypoplectrodes nigroruber,TRUE
+location,Carrickalinga,M2 fish,Eocallionymus papilio,TRUE
+location,Carrickalinga,M2 fish,Tripterygiidae spp,TRUE
+location,Carrickalinga,M2 invertebrates,Chlorodiloma odontis,TRUE
+location,Carrickalinga,M2 invertebrates,Paguristes spp,TRUE
+location,Carrickalinga,M2 invertebrates,Pleuroploca australasia,TRUE
+location,Carrickalinga,M2 invertebrates,Astralium spp,TRUE
+location,Carrickalinga,M2 invertebrates,Paguristes frontalis,TRUE
+location,Carrickalinga,M2 invertebrates,Lunella undulata,TRUE
+location,Carrickalinga,M2 invertebrates,Cenolia trichoptera,TRUE
+location,Carrickalinga,M2 invertebrates,Phasianella ventricosa,TRUE
+location,Carrickalinga,M2 invertebrates,Comanthus spp,TRUE
+location,Metro,M1 fish,Acanthopagrus butcheri,TRUE
+location,Metro,M1 fish,Girella zebra,TRUE
+location,Metro,M1 fish,Kyphosus sydneyanus,TRUE
+location,Metro,M1 fish,Thamnaconus degeni,TRUE
+location,Metro,M1 fish,Pempheris klunzingeri,TRUE
+location,Metro,M1 fish,Trachinops noarlungae,TRUE
+location,Metro,M1 fish,Parapriacanthus elongatus,TRUE
+location,Metro,M1 fish,Siphamia cephalotes,TRUE
+location,Metro,M1 fish,Austrolabrus maculatus,TRUE
+location,Metro,M2 fish,Trinorfolkia clarkei,TRUE
+location,Metro,M2 fish,Pempheris klunzingeri,TRUE
+location,Metro,M2 fish,Gobiidae spp,TRUE
+location,Metro,M2 fish,Trinorfolkia cristata,TRUE
+location,Metro,M2 fish,Diodon nicthemerus,TRUE
+location,Metro,M2 fish,Parapercis haackei,TRUE
+location,Metro,M2 fish,Helcogramma decurrens,TRUE
+location,Metro,M2 fish,Nesogobius spp,TRUE
+location,Metro,M2 fish,Eocallionymus papilio,TRUE
+location,Metro,M2 invertebrates,Paguristes frontalis,TRUE
+location,Metro,M2 invertebrates,Paguridae spp,TRUE
+location,Metro,M2 invertebrates,Portunus armatus,TRUE
+location,Metro,M2 invertebrates,Haliotis scalaris,TRUE
+location,Metro,M2 invertebrates,Astralium spp,TRUE
+location,Metro,M2 invertebrates,Equichlamys bifrons,TRUE
+location,Metro,M2 invertebrates,Haliotis spp,TRUE
+location,Metro,M2 invertebrates,Australostichopus mollis,TRUE
+location,Metro,M2 invertebrates,Meridiastra gunnii,TRUE
+location,Point Turton,M1 fish,Notolabrus tetricus,TRUE
+location,Point Turton,M1 fish,Scorpis aequipinnis,TRUE
+location,Point Turton,M1 fish,Trachinops noarlungae,TRUE
+location,Point Turton,M1 fish,Girella zebra,TRUE
+location,Point Turton,M1 fish,Neoodax balteatus,TRUE
+location,Point Turton,M1 fish,Siphonognathus beddomei,TRUE
+location,Point Turton,M1 fish,Kyphosus sydneyanus,TRUE
+location,Point Turton,M2 fish,Parapercis haackei,TRUE
+location,Point Turton,M2 fish,Trinorfolkia clarkei,TRUE
+location,Point Turton,M2 fish,Trinorfolkia cristata,TRUE
+location,Point Turton,M2 fish,Gobiidae spp,TRUE
+location,Point Turton,M2 fish,Eocallionymus papilio,TRUE
+location,Point Turton,M2 fish,Callionymidae spp,TRUE
+location,Point Turton,M2 fish,Heteroclinus spp,TRUE
+location,Point Turton,M2 invertebrates,Paguristes spp,TRUE
+location,Point Turton,M2 invertebrates,Haliotis rubra,TRUE
+location,Point Turton,M2 invertebrates,Equichlamys bifrons,TRUE
+location,Point Turton,M2 invertebrates,Paguristes frontalis,TRUE
+location,Point Turton,M2 invertebrates,Nectocarcinus integrifrons,TRUE
+location,Point Turton,M2 invertebrates,Cenolia trichoptera,TRUE
+location,Point Turton,M2 invertebrates,Neothyonidium dearmatum,TRUE
+location,Point Turton,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+location,Point Turton,M2 invertebrates,Tosia australis,TRUE
+location,Port Noarlunga,M1 fish,Scorpis aequipinnis,TRUE
+location,Port Noarlunga,M1 fish,Notolabrus parilus,TRUE
+location,Port Noarlunga,M1 fish,Kyphosus sydneyanus,TRUE
+location,Port Noarlunga,M1 fish,Girella zebra,TRUE
+location,Port Noarlunga,M1 fish,Parma victoriae,TRUE
+location,Port Noarlunga,M1 fish,Trachinops noarlungae,TRUE
+location,Port Noarlunga,M1 fish,Pempheris klunzingeri,TRUE
+location,Port Noarlunga,M1 fish,Parapriacanthus elongatus,TRUE
+location,Port Noarlunga,M2 fish,Helcogramma decurrens,TRUE
+location,Port Noarlunga,M2 fish,Eocallionymus papilio,TRUE
+location,Port Noarlunga,M2 fish,Gymnapistes marmoratus,TRUE
+location,Port Noarlunga,M2 fish,Parablennius tasmanianus,TRUE
+location,Port Noarlunga,M2 fish,Trinorfolkia clarkei,TRUE
+location,Port Noarlunga,M2 fish,Pempheris klunzingeri,TRUE
+location,Port Noarlunga,M2 fish,Parapriacanthus elongatus,TRUE
+location,Port Noarlunga,M2 fish,Parapercis haackei,TRUE
+location,Port Noarlunga,M2 fish,Pempheris multiradiata,TRUE
+location,Port Noarlunga,M2 invertebrates,Paguristes frontalis,TRUE
+location,Port Noarlunga,M2 invertebrates,Paguridae spp,TRUE
+location,Port Noarlunga,M2 invertebrates,Pleuroploca australasia,TRUE
+location,Port Noarlunga,M2 invertebrates,Dicathais orbita,TRUE
+location,Port Noarlunga,M2 invertebrates,Astralium spp,TRUE
+location,Port Noarlunga,M2 invertebrates,Lunella undulata,TRUE
+location,Port Noarlunga,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+location,Port Noarlunga,M2 invertebrates,Haliotis spp,TRUE
+location,Rapid Head,M1 fish,Trachinops noarlungae,TRUE
+location,Rapid Head,M1 fish,Scorpis aequipinnis,TRUE
+location,Rapid Head,M1 fish,Notolabrus tetricus,TRUE
+location,Rapid Head,M1 fish,Pictilabrus laticlavius,TRUE
+location,Rapid Head,M1 fish,Notolabrus parilus,TRUE
+location,Rapid Head,M1 fish,Parapriacanthus elongatus,TRUE
+location,Rapid Head,M1 fish,Siphamia cephalotes,TRUE
+location,Rapid Head,M1 fish,Pempheris klunzingeri,TRUE
+location,Rapid Head,M2 fish,Paraplesiops meleagris,TRUE
+location,Rapid Head,M2 fish,Pempheris spp,TRUE
+location,Rapid Head,M2 fish,Trinorfolkia clarkei,TRUE
+location,Rapid Head,M2 fish,Helcogramma decurrens,TRUE
+location,Rapid Head,M2 fish,Trinorfolkia cristata,TRUE
+location,Rapid Head,M2 fish,Pempheris klunzingeri,TRUE
+location,Rapid Head,M2 fish,Pempheris multiradiata,TRUE
+location,Rapid Head,M2 fish,Parapriacanthus elongatus,TRUE
+location,Rapid Head,M2 invertebrates,Astralium spp,TRUE
+location,Rapid Head,M2 invertebrates,Paguristes spp,TRUE
+location,Rapid Head,M2 invertebrates,Chlorodiloma odontis,TRUE
+location,Rapid Head,M2 invertebrates,Guinusia chabrus,TRUE
+location,Rapid Head,M2 invertebrates,Pleuroploca australasia,TRUE
+location,Rapid Head,M2 invertebrates,Phasianella australis,TRUE
+location,Rapid Head,M2 invertebrates,Pentagonaster duebeni,TRUE
+location,Rapid Head,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+location,Rapid Head,M2 invertebrates,Haliotis rubra,TRUE
+location,Southern Fleurieu,M1 fish,Scorpis aequipinnis,TRUE
+location,Southern Fleurieu,M1 fish,Notolabrus tetricus,TRUE
+location,Southern Fleurieu,M1 fish,Girella zebra,TRUE
+location,Southern Fleurieu,M1 fish,Kyphosus sydneyanus,TRUE
+location,Southern Fleurieu,M1 fish,Cheilodactylus nigripes,TRUE
+location,Southern Fleurieu,M1 fish,Meuschenia hippocrepis,TRUE
+location,Southern Fleurieu,M1 fish,Siphonognathus beddomei,TRUE
+location,Southern Fleurieu,M2 fish,Helcogramma decurrens,TRUE
+location,Southern Fleurieu,M2 fish,Trinorfolkia clarkei,TRUE
+location,Southern Fleurieu,M2 fish,Aetapcus maculatus,TRUE
+location,Southern Fleurieu,M2 fish,Aploactisoma milesii,TRUE
+location,Southern Fleurieu,M2 fish,Aspasmogaster spp,TRUE
+location,Southern Fleurieu,M2 fish,Pempheris multiradiata,TRUE
+location,Southern Fleurieu,M2 fish,Pempheris klunzingeri,TRUE
+location,Southern Fleurieu,M2 fish,Trachichthys australis,TRUE
+location,Southern Fleurieu,M2 fish,Bovichtus angustifrons,TRUE
+location,Southern Fleurieu,M2 invertebrates,Dicathais orbita,TRUE
+location,Southern Fleurieu,M2 invertebrates,Guinusia chabrus,TRUE
+location,Southern Fleurieu,M2 invertebrates,Paguristes spp,TRUE
+location,Southern Fleurieu,M2 invertebrates,Haliotis rubra,TRUE
+location,Southern Fleurieu,M2 invertebrates,Meridiastra gunnii,TRUE
+location,Southern Fleurieu,M2 invertebrates,Lunella torquata,TRUE
+location,Southern Fleurieu,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+location,Southern Fleurieu,M2 invertebrates,Cenolia trichoptera,TRUE
+location,Southern Fleurieu,M2 invertebrates,Haliotis spp,TRUE
+location,Sponge Gardens,M1 fish,Scorpis aequipinnis,TRUE
+location,Sponge Gardens,M1 fish,Notolabrus tetricus,TRUE
+location,Sponge Gardens,M1 fish,Pictilabrus laticlavius,TRUE
+location,Sponge Gardens,M1 fish,Kyphosus sydneyanus,TRUE
+location,Sponge Gardens,M1 fish,Trachinops noarlungae,TRUE
+location,Sponge Gardens,M1 fish,Parapriacanthus elongatus,TRUE
+location,Sponge Gardens,M1 fish,Siphonognathus beddomei,TRUE
+location,Sponge Gardens,M1 fish,Pempheris multiradiata,TRUE
+location,Sponge Gardens,M2 fish,Pempheris multiradiata,TRUE
+location,Sponge Gardens,M2 fish,Paraplesiops meleagris,TRUE
+location,Sponge Gardens,M2 fish,Trinorfolkia cristata,TRUE
+location,Sponge Gardens,M2 fish,Bovichtus angustifrons,TRUE
+location,Sponge Gardens,M2 fish,Helcogramma decurrens,TRUE
+location,Sponge Gardens,M2 fish,Parapriacanthus elongatus,TRUE
+location,Sponge Gardens,M2 fish,Pempheris ornata,TRUE
+location,Sponge Gardens,M2 fish,Othos dentex,TRUE
+location,Sponge Gardens,M2 invertebrates,Astralium spp,TRUE
+location,Sponge Gardens,M2 invertebrates,Guinusia chabrus,TRUE
+location,Sponge Gardens,M2 invertebrates,Paguridae spp,TRUE
+location,Sponge Gardens,M2 invertebrates,Cenolia trichoptera,TRUE
+location,Sponge Gardens,M2 invertebrates,Paguristes spp,TRUE
+location,Sponge Gardens,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+location,Sponge Gardens,M2 invertebrates,Petricia vernicina,TRUE
+location,Sponge Gardens,M2 invertebrates,Lunella torquata,TRUE
+location,Troubridge Point,M1 fish,Trachinops noarlungae,TRUE
+location,Troubridge Point,M1 fish,Scorpis aequipinnis,TRUE
+location,Troubridge Point,M1 fish,Kyphosus sydneyanus,TRUE
+location,Troubridge Point,M1 fish,Meuschenia hippocrepis,TRUE
+location,Troubridge Point,M1 fish,Cheilodactylus nigripes,TRUE
+location,Troubridge Point,M1 fish,Parapriacanthus elongatus,TRUE
+location,Troubridge Point,M1 fish,Notolabrus tetricus,TRUE
+location,Troubridge Point,M2 fish,Helcogramma decurrens,TRUE
+location,Troubridge Point,M2 fish,Trinorfolkia clarkei,TRUE
+location,Troubridge Point,M2 fish,Trinorfolkia cristata,TRUE
+location,Troubridge Point,M2 fish,Pempheris multiradiata,TRUE
+location,Troubridge Point,M2 fish,Pempheris klunzingeri,TRUE
+location,Troubridge Point,M2 fish,Gobiidae spp,TRUE
+location,Troubridge Point,M2 fish,Tripterygiidae spp,TRUE
+location,Troubridge Point,M2 fish,Aetapcus maculatus,TRUE
+location,Troubridge Point,M2 invertebrates,Meridiastra gunnii,TRUE
+location,Troubridge Point,M2 invertebrates,Dicathais orbita,TRUE
+location,Troubridge Point,M2 invertebrates,Guinusia chabrus,TRUE
+location,Troubridge Point,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+location,Troubridge Point,M2 invertebrates,Cenolia trichoptera,TRUE
+location,Troubridge Point,M2 invertebrates,Tosia australis,TRUE
+location,Troubridge Point,M2 invertebrates,Australostichopus mollis,TRUE
+location,Upper GSV,M1 fish,Arripis truttaceus,TRUE
+location,Upper GSV,M1 fish,Neoodax balteatus,TRUE
+location,Upper GSV,M1 fish,Pseudocaranx spp,TRUE
+location,Upper GSV,M1 fish,Sillaginidae spp,TRUE
+location,Upper GSV,M1 fish,Chrysophrys auratus,TRUE
+location,Upper GSV,M1 fish,Parapriacanthus elongatus,TRUE
+location,Upper GSV,M1 fish,Siphamia cephalotes,TRUE
+location,Upper GSV,M1 fish,Trachinops noarlungae,TRUE
+location,Upper GSV,M1 fish,Pempheris klunzingeri,TRUE
+location,Upper GSV,M2 fish,Parapercis haackei,TRUE
+location,Upper GSV,M2 fish,Gobiidae spp,TRUE
+location,Upper GSV,M2 fish,Eocallionymus papilio,TRUE
+location,Upper GSV,M2 fish,Aetapcus maculatus,TRUE
+location,Upper GSV,M2 fish,Aploactisoma milesii,TRUE
+location,Upper GSV,M2 fish,Nesogobius spp,TRUE
+location,Upper GSV,M2 fish,Vincentia conspersa,TRUE
+location,Upper GSV,M2 invertebrates,Astralium spp,TRUE
+location,Upper GSV,M2 invertebrates,Haliotis cyclobates,TRUE
+location,Upper GSV,M2 invertebrates,Portunus armatus,TRUE
+location,Upper GSV,M2 invertebrates,Paguristes frontalis,TRUE
+location,Upper GSV,M2 invertebrates,Haliotis laevigata,TRUE
+location,Upper GSV,M2 invertebrates,Australostichopus mollis,TRUE
+location,Upper GSV,M2 invertebrates,Tosia australis,TRUE
+location,Upper GSV,M2 invertebrates,Equichlamys bifrons,TRUE
+location,Upper GSV,M2 invertebrates,Pinna bicolor,TRUE
+location,Victor Harbor,M1 fish,Scorpis aequipinnis,TRUE
+location,Victor Harbor,M1 fish,Arripis georgianus,TRUE
+location,Victor Harbor,M1 fish,Notolabrus tetricus,TRUE
+location,Victor Harbor,M1 fish,Cheilodactylus nigripes,TRUE
+location,Victor Harbor,M1 fish,Kyphosus sydneyanus,TRUE
+location,Victor Harbor,M1 fish,Olisthops cyanomelas,TRUE
+location,Victor Harbor,M1 fish,Siphamia cephalotes,TRUE
+location,Victor Harbor,M2 fish,Pempheris multiradiata,TRUE
+location,Victor Harbor,M2 fish,Pempheris klunzingeri,TRUE
+location,Victor Harbor,M2 fish,Trinorfolkia cristata,TRUE
+location,Victor Harbor,M2 fish,Helcogramma decurrens,TRUE
+location,Victor Harbor,M2 fish,Bovichtus angustifrons,TRUE
+location,Victor Harbor,M2 fish,Vincentia conspersa,TRUE
+location,Victor Harbor,M2 fish,Parapriacanthus elongatus,TRUE
+location,Victor Harbor,M2 invertebrates,Dicathais orbita,TRUE
+location,Victor Harbor,M2 invertebrates,Guinusia chabrus,TRUE
+location,Victor Harbor,M2 invertebrates,Haliotis rubra,TRUE
+location,Victor Harbor,M2 invertebrates,Meridiastra gunnii,TRUE
+location,Victor Harbor,M2 invertebrates,Paguristes spp,TRUE
+location,Victor Harbor,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+location,Victor Harbor,M2 invertebrates,Cenolia trichoptera,TRUE
+location,Victor Harbor,M2 invertebrates,Lunella undulata,TRUE
+location,Victor Harbor,M2 invertebrates,Lunella torquata,TRUE
+region,Adelaide Metro,M1 fish,Trachinops noarlungae,TRUE
+region,Adelaide Metro,M1 fish,Scorpis aequipinnis,TRUE
+region,Adelaide Metro,M1 fish,Girella zebra,TRUE
+region,Adelaide Metro,M1 fish,Notolabrus parilus,TRUE
+region,Adelaide Metro,M1 fish,Austrolabrus maculatus,TRUE
+region,Adelaide Metro,M1 fish,Parapriacanthus elongatus,TRUE
+region,Adelaide Metro,M1 fish,Siphamia cephalotes,TRUE
+region,Adelaide Metro,M1 fish,Pempheris klunzingeri,TRUE
+region,Adelaide Metro,M2 fish,Helcogramma decurrens,TRUE
+region,Adelaide Metro,M2 fish,Trinorfolkia clarkei,TRUE
+region,Adelaide Metro,M2 fish,Eocallionymus papilio,TRUE
+region,Adelaide Metro,M2 fish,Trinorfolkia cristata,TRUE
+region,Adelaide Metro,M2 fish,Pempheris klunzingeri,TRUE
+region,Adelaide Metro,M2 fish,Parapercis haackei,TRUE
+region,Adelaide Metro,M2 fish,Parapriacanthus elongatus,TRUE
+region,Adelaide Metro,M2 fish,Nesogobius spp,TRUE
+region,Adelaide Metro,M2 invertebrates,Paguristes frontalis,TRUE
+region,Adelaide Metro,M2 invertebrates,Paguridae spp,TRUE
+region,Adelaide Metro,M2 invertebrates,Astralium spp,TRUE
+region,Adelaide Metro,M2 invertebrates,Pleuroploca australasia,TRUE
+region,Adelaide Metro,M2 invertebrates,Paguristes spp,TRUE
+region,Adelaide Metro,M2 invertebrates,Lunella undulata,TRUE
+region,Adelaide Metro,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+region,Adelaide Metro,M2 invertebrates,Haliotis scalaris,TRUE
+region,Adelaide Metro,M2 invertebrates,Haliotis spp,TRUE
+region,Eastern Spencer Gulf,M1 fish,Notolabrus tetricus,TRUE
+region,Eastern Spencer Gulf,M1 fish,Scorpis aequipinnis,TRUE
+region,Eastern Spencer Gulf,M1 fish,Trachinops noarlungae,TRUE
+region,Eastern Spencer Gulf,M1 fish,Girella zebra,TRUE
+region,Eastern Spencer Gulf,M1 fish,Neoodax balteatus,TRUE
+region,Eastern Spencer Gulf,M1 fish,Siphonognathus beddomei,TRUE
+region,Eastern Spencer Gulf,M1 fish,Kyphosus sydneyanus,TRUE
+region,Eastern Spencer Gulf,M2 fish,Parapercis haackei,TRUE
+region,Eastern Spencer Gulf,M2 fish,Trinorfolkia clarkei,TRUE
+region,Eastern Spencer Gulf,M2 fish,Trinorfolkia cristata,TRUE
+region,Eastern Spencer Gulf,M2 fish,Gobiidae spp,TRUE
+region,Eastern Spencer Gulf,M2 fish,Eocallionymus papilio,TRUE
+region,Eastern Spencer Gulf,M2 fish,Callionymidae spp,TRUE
+region,Eastern Spencer Gulf,M2 fish,Heteroclinus spp,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Paguristes spp,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Haliotis rubra,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Equichlamys bifrons,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Paguristes frontalis,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Nectocarcinus integrifrons,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Cenolia trichoptera,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Neothyonidium dearmatum,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+region,Eastern Spencer Gulf,M2 invertebrates,Tosia australis,TRUE
+region,Fleurieu,M1 fish,Trachinops noarlungae,TRUE
+region,Fleurieu,M1 fish,Scorpis aequipinnis,TRUE
+region,Fleurieu,M1 fish,Notolabrus tetricus,TRUE
+region,Fleurieu,M1 fish,Notolabrus parilus,TRUE
+region,Fleurieu,M1 fish,Austrolabrus maculatus,TRUE
+region,Fleurieu,M1 fish,Parapriacanthus elongatus,TRUE
+region,Fleurieu,M1 fish,Siphamia cephalotes,TRUE
+region,Fleurieu,M1 fish,Pempheris klunzingeri,TRUE
+region,Fleurieu,M2 fish,Paraplesiops meleagris,TRUE
+region,Fleurieu,M2 fish,Trinorfolkia clarkei,TRUE
+region,Fleurieu,M2 fish,Helcogramma decurrens,TRUE
+region,Fleurieu,M2 fish,Pempheris spp,TRUE
+region,Fleurieu,M2 fish,Pempheris multiradiata,TRUE
+region,Fleurieu,M2 fish,Pempheris klunzingeri,TRUE
+region,Fleurieu,M2 fish,Tripterygiidae spp,TRUE
+region,Fleurieu,M2 fish,Parapriacanthus elongatus,TRUE
+region,Fleurieu,M2 invertebrates,Astralium spp,TRUE
+region,Fleurieu,M2 invertebrates,Paguristes spp,TRUE
+region,Fleurieu,M2 invertebrates,Chlorodiloma odontis,TRUE
+region,Fleurieu,M2 invertebrates,Pleuroploca australasia,TRUE
+region,Fleurieu,M2 invertebrates,Paguristes frontalis,TRUE
+region,Fleurieu,M2 invertebrates,Lunella undulata,TRUE
+region,Fleurieu,M2 invertebrates,Phasianella ventricosa,TRUE
+region,Fleurieu,M2 invertebrates,Phasianella australis,TRUE
+region,Fleurieu,M2 invertebrates,Cenolia trichoptera,TRUE
+region,Kangaroo Island,M1 fish,Scorpis aequipinnis,TRUE
+region,Kangaroo Island,M1 fish,Notolabrus tetricus,TRUE
+region,Kangaroo Island,M1 fish,Pictilabrus laticlavius,TRUE
+region,Kangaroo Island,M1 fish,Kyphosus sydneyanus,TRUE
+region,Kangaroo Island,M1 fish,Trachinops noarlungae,TRUE
+region,Kangaroo Island,M1 fish,Parapriacanthus elongatus,TRUE
+region,Kangaroo Island,M1 fish,Siphonognathus beddomei,TRUE
+region,Kangaroo Island,M1 fish,Pempheris multiradiata,TRUE
+region,Kangaroo Island,M2 fish,Pempheris multiradiata,TRUE
+region,Kangaroo Island,M2 fish,Paraplesiops meleagris,TRUE
+region,Kangaroo Island,M2 fish,Trinorfolkia cristata,TRUE
+region,Kangaroo Island,M2 fish,Bovichtus angustifrons,TRUE
+region,Kangaroo Island,M2 fish,Helcogramma decurrens,TRUE
+region,Kangaroo Island,M2 fish,Parapriacanthus elongatus,TRUE
+region,Kangaroo Island,M2 fish,Pempheris ornata,TRUE
+region,Kangaroo Island,M2 fish,Othos dentex,TRUE
+region,Kangaroo Island,M2 invertebrates,Astralium spp,TRUE
+region,Kangaroo Island,M2 invertebrates,Guinusia chabrus,TRUE
+region,Kangaroo Island,M2 invertebrates,Paguridae spp,TRUE
+region,Kangaroo Island,M2 invertebrates,Cenolia trichoptera,TRUE
+region,Kangaroo Island,M2 invertebrates,Paguristes spp,TRUE
+region,Kangaroo Island,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+region,Kangaroo Island,M2 invertebrates,Petricia vernicina,TRUE
+region,Kangaroo Island,M2 invertebrates,Lunella torquata,TRUE
+region,South Coast,M1 fish,Scorpis aequipinnis,TRUE
+region,South Coast,M1 fish,Notolabrus tetricus,TRUE
+region,South Coast,M1 fish,Arripis georgianus,TRUE
+region,South Coast,M1 fish,Cheilodactylus nigripes,TRUE
+region,South Coast,M1 fish,Kyphosus sydneyanus,TRUE
+region,South Coast,M1 fish,Meuschenia hippocrepis,TRUE
+region,South Coast,M1 fish,Olisthops cyanomelas,TRUE
+region,South Coast,M1 fish,Siphamia cephalotes,TRUE
+region,South Coast,M2 fish,Pempheris multiradiata,TRUE
+region,South Coast,M2 fish,Pempheris klunzingeri,TRUE
+region,South Coast,M2 fish,Helcogramma decurrens,TRUE
+region,South Coast,M2 fish,Trinorfolkia cristata,TRUE
+region,South Coast,M2 fish,Trinorfolkia clarkei,TRUE
+region,South Coast,M2 fish,Vincentia conspersa,TRUE
+region,South Coast,M2 fish,Parascyllium variolatum,TRUE
+region,South Coast,M2 invertebrates,Dicathais orbita,TRUE
+region,South Coast,M2 invertebrates,Guinusia chabrus,TRUE
+region,South Coast,M2 invertebrates,Paguristes spp,TRUE
+region,South Coast,M2 invertebrates,Haliotis rubra,TRUE
+region,South Coast,M2 invertebrates,Meridiastra gunnii,TRUE
+region,South Coast,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+region,South Coast,M2 invertebrates,Cenolia trichoptera,TRUE
+region,South Coast,M2 invertebrates,Lunella undulata,TRUE
+region,South Coast,M2 invertebrates,Lunella torquata,TRUE
+region,Southern Yorke,M1 fish,Trachinops noarlungae,TRUE
+region,Southern Yorke,M1 fish,Scorpis aequipinnis,TRUE
+region,Southern Yorke,M1 fish,Kyphosus sydneyanus,TRUE
+region,Southern Yorke,M1 fish,Meuschenia hippocrepis,TRUE
+region,Southern Yorke,M1 fish,Cheilodactylus nigripes,TRUE
+region,Southern Yorke,M1 fish,Parapriacanthus elongatus,TRUE
+region,Southern Yorke,M1 fish,Notolabrus tetricus,TRUE
+region,Southern Yorke,M2 fish,Helcogramma decurrens,TRUE
+region,Southern Yorke,M2 fish,Trinorfolkia clarkei,TRUE
+region,Southern Yorke,M2 fish,Trinorfolkia cristata,TRUE
+region,Southern Yorke,M2 fish,Pempheris multiradiata,TRUE
+region,Southern Yorke,M2 fish,Pempheris klunzingeri,TRUE
+region,Southern Yorke,M2 fish,Gobiidae spp,TRUE
+region,Southern Yorke,M2 fish,Tripterygiidae spp,TRUE
+region,Southern Yorke,M2 fish,Aetapcus maculatus,TRUE
+region,Southern Yorke,M2 invertebrates,Meridiastra gunnii,TRUE
+region,Southern Yorke,M2 invertebrates,Dicathais orbita,TRUE
+region,Southern Yorke,M2 invertebrates,Guinusia chabrus,TRUE
+region,Southern Yorke,M2 invertebrates,Heliocidaris erythrogramma,TRUE
+region,Southern Yorke,M2 invertebrates,Cenolia trichoptera,TRUE
+region,Southern Yorke,M2 invertebrates,Tosia australis,TRUE
+region,Southern Yorke,M2 invertebrates,Australostichopus mollis,TRUE
+region,Upper Gulf St Vincent,M1 fish,Arripis truttaceus,TRUE
+region,Upper Gulf St Vincent,M1 fish,Neoodax balteatus,TRUE
+region,Upper Gulf St Vincent,M1 fish,Pseudocaranx spp,TRUE
+region,Upper Gulf St Vincent,M1 fish,Sillaginidae spp,TRUE
+region,Upper Gulf St Vincent,M1 fish,Chrysophrys auratus,TRUE
+region,Upper Gulf St Vincent,M1 fish,Parapriacanthus elongatus,TRUE
+region,Upper Gulf St Vincent,M1 fish,Siphamia cephalotes,TRUE
+region,Upper Gulf St Vincent,M1 fish,Trachinops noarlungae,TRUE
+region,Upper Gulf St Vincent,M1 fish,Pempheris klunzingeri,TRUE
+region,Upper Gulf St Vincent,M2 fish,Parapercis haackei,TRUE
+region,Upper Gulf St Vincent,M2 fish,Gobiidae spp,TRUE
+region,Upper Gulf St Vincent,M2 fish,Eocallionymus papilio,TRUE
+region,Upper Gulf St Vincent,M2 fish,Aetapcus maculatus,TRUE
+region,Upper Gulf St Vincent,M2 fish,Aploactisoma milesii,TRUE
+region,Upper Gulf St Vincent,M2 fish,Nesogobius spp,TRUE
+region,Upper Gulf St Vincent,M2 fish,Vincentia conspersa,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Astralium spp,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Haliotis cyclobates,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Portunus armatus,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Paguristes frontalis,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Haliotis laevigata,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Australostichopus mollis,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Tosia australis,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Equichlamys bifrons,TRUE
+region,Upper Gulf St Vincent,M2 invertebrates,Pinna bicolor,TRUE
