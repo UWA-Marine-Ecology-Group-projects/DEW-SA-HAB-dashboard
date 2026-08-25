@@ -1264,7 +1264,7 @@ plot_stacked_abundance <- function(
         NULL
       },
       x = NULL,
-      y = "Relative abundance (%)",
+      y = "Percentage of observations",
       fill = "Taxon"
     ) +
     
