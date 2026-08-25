@@ -1265,7 +1265,7 @@ plot_stacked_abundance <- function(
       },
       x = NULL,
       y = "Percentage of observations",
-      fill = "Taxon"
+      fill = "Species"
     ) +
     
     plot_theme +
