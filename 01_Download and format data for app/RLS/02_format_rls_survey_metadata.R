@@ -20,36 +20,134 @@ library(todor)
 # Groups sampling dates into the same sampling event if they are within 1 week of eachother
 # Groups sampling dates into the same sampling event if they are within
 # one week of each other, and assigns the first date of each event
+# add_sampling_event <- function(data) {
+#   data %>%
+#     arrange(site_name, survey_date) %>%
+#     group_by(site_name) %>%
+#     mutate(
+#       sampling_event = cumsum(
+#         is.na(lag(survey_date)) |
+#           survey_date - lag(survey_date) > 21
+#       )
+#     ) %>%
+#     group_by(site_name, sampling_event) %>%
+#     mutate(
+#       sampling_event_start_date = min(survey_date, na.rm = TRUE)
+#     ) %>%
+#     ungroup() %>%
+#     mutate(
+#       period = if_else(
+#         sampling_event_start_date < as.Date("2025-04-01"),
+#         "Pre-bloom",
+#         "Bloom"
+#       ),
+#       start_year_month = format(
+#         sampling_event_start_date,
+#         "%Y-%m"
+#       ),
+#       period_split = case_when(
+#         period == "Bloom" ~ paste("Bloom", start_year_month),
+#         TRUE ~ period
+#       )
+#     )
+# }
+
 add_sampling_event <- function(data) {
-  data %>%
-    arrange(site_name, survey_date) %>%
-    group_by(site_name) %>%
-    mutate(
+  
+  # ==========================================================
+  # 1. Work out sampling events from unique LOCATION x DATE
+  #    combinations.
+  #
+  # This means that sites sampled during the same location-level
+  # field trip share the same sampling_event.
+  # ==========================================================
+  
+  event_lookup <- data %>%
+    dplyr::distinct(
+      location,
+      survey_date
+    ) %>%
+    dplyr::arrange(
+      location,
+      survey_date
+    ) %>%
+    dplyr::group_by(location) %>%
+    dplyr::mutate(
+      
+      # Start a new sampling event when there has been a gap
+      # of more than 21 days since the previous sampling date
+      # at this LOCATION.
       sampling_event = cumsum(
-        is.na(lag(survey_date)) |
-          survey_date - lag(survey_date) > 21
+        is.na(dplyr::lag(survey_date)) |
+          survey_date - dplyr::lag(survey_date) > 21
+      )
+      
+    ) %>%
+    dplyr::group_by(
+      location,
+      sampling_event
+    ) %>%
+    dplyr::mutate(
+      
+      # Every site/date belonging to this field trip receives
+      # the same event start date.
+      sampling_event_start_date =
+        min(survey_date, na.rm = TRUE)
+      
+    ) %>%
+    dplyr::ungroup()
+  
+  
+  # ==========================================================
+  # 2. Join the location-level sampling event back onto every
+  #    transect.
+  # ==========================================================
+  
+  data %>%
+    dplyr::select(
+      -dplyr::any_of(
+        c(
+          "sampling_event",
+          "sampling_event_start_date",
+          "period",
+          "start_year_month",
+          "period_split"
+        )
       )
     ) %>%
-    group_by(site_name, sampling_event) %>%
-    mutate(
-      sampling_event_start_date = min(survey_date, na.rm = TRUE)
-    ) %>%
-    ungroup() %>%
-    mutate(
-      period = if_else(
-        sampling_event_start_date < as.Date("2025-04-01"),
-        "Pre-bloom",
-        "Bloom"
-      ),
-      start_year_month = format(
-        sampling_event_start_date,
-        "%Y-%m"
-      ),
-      period_split = case_when(
-        period == "Bloom" ~ paste("Bloom", start_year_month),
-        TRUE ~ period
+    
+    dplyr::left_join(
+      event_lookup,
+      by = c(
+        "location",
+        "survey_date"
       )
+    ) %>%
+    
+    # ========================================================
+  # 3. Derive Period variables
+  # ========================================================
+  
+  dplyr::mutate(
+    
+    period = dplyr::if_else(
+      sampling_event_start_date < as.Date("2025-04-01"),
+      "Pre-bloom",
+      "Bloom"
+    ),
+    
+    start_year_month = format(
+      sampling_event_start_date,
+      "%Y-%m"
+    ),
+    
+    period_split = dplyr::case_when(
+      period == "Bloom" ~
+        paste("Bloom", start_year_month),
+      
+      TRUE ~ period
     )
+  )
 }
 
 # No-take zones (Manually made in QGIS because CAPAD has some as IUCN II)
@@ -121,7 +219,7 @@ unique(survey_list$depth) # not always 1-4 as the transect some 0, 8 and 9's
 # e.g. Corny Point Outside in Feb 2004 was sampled on the 10th and 11th (should be grouped into one sampling event) 
 
 dates_m1 <- sl_m1_raw %>%
-  distinct(site_name, survey_date) %>%
+  distinct(location, survey_date) %>%
   add_sampling_event()
 
 unique(dates_m1$sampling_event_start_date) %>% sort()
@@ -135,32 +233,32 @@ hist(months$year)
 
 # check dups
 dates_m1 %>%
-  group_by(site_name, sampling_event) %>%
+  group_by(location, sampling_event) %>%
   summarise(n = n()) %>%
   filter(n > 1)
 
 test <- dates_m1 %>%
-  mutate(id = paste(site_name, sampling_event))
+  mutate(id = paste(location, sampling_event))
 
 length(unique(test$id)) # 493 (out of 507) when using 1 week sep (491 when using 3 weeks)
 
 dates_m2 <- sl_m2_raw %>%
-  distinct(site_name, survey_date) %>%
+  distinct(location, survey_date) %>%
   add_sampling_event()
 
 # check dups
 dates_m2 %>%
-  group_by(site_name, sampling_event) %>%
+  group_by(location, sampling_event) %>%
   summarise(n = n()) %>%
   filter(n > 1)
 
 dates_m3 <- sl_m3_raw %>%
-  distinct(site_name, survey_date) %>%
+  distinct(location, survey_date) %>%
   add_sampling_event()
 
 # check dups
 dates_m3 %>%
-  group_by(site_name, sampling_event) %>%
+  group_by(location, sampling_event) %>%
   summarise(n = n()) %>%
   filter(n > 1)
 
@@ -169,14 +267,14 @@ cols_to_keep <- c("survey_id", "location", "mpa", "site_code", "site_name",
                   "latitude", "longitude", "depth", "survey_date", "sampling_event", "program",
                   "period", "start_year_month", "period_split", "sampling_event_start_date")
 
-sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("site_name", "survey_date")) %>%
+sl_m1 <- left_join(sl_m1_raw, dates_m1, by = c("location", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
   tidyr::uncount(weights = 2, .id = "block") %>%
   dplyr::filter(!survey_id %in% c("923406553", "923406567")) %>% # Lost data sheet - have removed
   dplyr::mutate(transect = paste("Transect", survey_id, survey_date, depth, sep = "_"))
 
 ## For ATRC M2, only 1 block before 2016 ----
-sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("site_name", "survey_date")) %>%
+sl_m2 <- left_join(sl_m2_raw, dates_m2, by = c("location", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
   # tidyr::uncount(weights = 2, .id = "block")
   tidyr::uncount(weights = if_else(program == "ATRC" & survey_date < as.Date("2016-01-01"), 1L, 2L), .id = "block") %>%
@@ -188,7 +286,7 @@ sl_m2 %>%
   count(program, survey_date, survey_id, name = "n_blocks") %>%
   count(program, survey_date < as.Date("2016-01-01"), n_blocks) 
 
-sl_m3 <- left_join(sl_m3_raw, dates_m3, by = c("site_name", "survey_date")) %>%
+sl_m3 <- left_join(sl_m3_raw, dates_m3, by = c("location", "survey_date")) %>%
   select(all_of(cols_to_keep)) %>%
   tidyr::uncount(weights = 2, .id = "block") # TODO check habitat method, if it has two blocks
 

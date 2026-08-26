@@ -412,7 +412,7 @@ plot_observed_temporal <- function(data) {
     ) +
     facet_wrap(
       vars(metric),
-      ncol = 3,
+      nrow = 3,
       scales = "free_y",
       drop = FALSE
     ) +
