@@ -199,17 +199,17 @@ metric_sets <- list(
 metric_y_lab <- c(
   "M1 fish total abundance" = "Avg. total abundance",
   "M1 fish species richness" = "Avg. species richness",
-  "M1 fish B20 biomass" = "Avg. biomass of fish > 20 cm (kg)",
-  "M1 fish Shannon diversity" = "Avg. Shannon\ndiversity index",
+  "M1 fish B20 biomass" = "Avg. biomass > 20 cm (kg)",
+  "M1 fish Shannon diversity" = "Avg. shannon\ndiversity index",
   
   "M2 fish total abundance" = "Avg. total abundance",
   "M2 fish species richness" = "Avg. species richness",
-  "M2 fish B20 biomass" = "Avg. biomass of fish > 20 cm (kg)",
-  "M2 fish Shannon diversity" = "Avg. Shannon\ndiversity index",
+  "M2 fish B20 biomass" = "Avg. biomass > 20 cm (kg)",
+  "M2 fish Shannon diversity" = "Avg. shannon\ndiversity index",
   
   "M2 invertebrate total abundance" = "Avg. total abundance",
   "M2 invertebrate species richness" = "Avg. species richness",
-  "M2 invertebrate Shannon diversity" = "Avg. Shannon\ndiversity index",
+  "M2 invertebrate Shannon diversity" = "Avg. shannon\ndiversity index",
   "M2 invertebrate Echinodermata abundance" = "Avg. Echinodermata\nabundance",
   "M2 invertebrate Arthropoda abundance" = "Avg. Arthropoda\nabundance",
   "M2 invertebrate Mollusca abundance" = "Avg. Mollusca\nabundance"
