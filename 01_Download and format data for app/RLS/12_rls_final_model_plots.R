@@ -6,6 +6,13 @@
 #   2. Period x Status
 #   3. Temporal
 #
+# Plot style matches the BRUV figures:
+#   - no overall title or panel subtitles
+#   - no plot box and no grid lines
+#   - metric-specific y-axis labels
+#   - y-axis starts at zero
+#   - one shared legend per concatenated figure
+#
 # For each location, each plot type is saved separately for:
 #   - M1 fish
 #   - M2 fish
@@ -189,23 +196,23 @@ metric_sets <- list(
   )
 )
 
-metric_labels <- c(
-  "M1 fish total abundance" = "Total abundance",
-  "M1 fish species richness" = "Species richness",
-  "M1 fish B20 biomass" = "B20 biomass",
-  "M1 fish Shannon diversity" = "Shannon diversity",
+metric_y_lab <- c(
+  "M1 fish total abundance" = "Avg. total abundance",
+  "M1 fish species richness" = "Avg. species richness",
+  "M1 fish B20 biomass" = "Avg. B20 biomass\n(kg)",
+  "M1 fish Shannon diversity" = "Avg. Shannon\ndiversity index",
   
-  "M2 fish total abundance" = "Total abundance",
-  "M2 fish species richness" = "Species richness",
-  "M2 fish B20 biomass" = "B20 biomass",
-  "M2 fish Shannon diversity" = "Shannon diversity",
+  "M2 fish total abundance" = "Avg. total abundance",
+  "M2 fish species richness" = "Avg. species richness",
+  "M2 fish B20 biomass" = "Avg. B20 biomass\n(kg)",
+  "M2 fish Shannon diversity" = "Avg. Shannon\ndiversity index",
   
-  "M2 invertebrate total abundance" = "Total abundance",
-  "M2 invertebrate species richness" = "Species richness",
-  "M2 invertebrate Shannon diversity" = "Shannon diversity",
-  "M2 invertebrate Echinodermata abundance" = "Echinodermata abundance",
-  "M2 invertebrate Arthropoda abundance" = "Arthropoda abundance",
-  "M2 invertebrate Mollusca abundance" = "Mollusca abundance"
+  "M2 invertebrate total abundance" = "Avg. total abundance",
+  "M2 invertebrate species richness" = "Avg. species richness",
+  "M2 invertebrate Shannon diversity" = "Avg. Shannon\ndiversity index",
+  "M2 invertebrate Echinodermata abundance" = "Avg. Echinodermata\nabundance",
+  "M2 invertebrate Arthropoda abundance" = "Avg. Arthropoda\nabundance",
+  "M2 invertebrate Mollusca abundance" = "Avg. Mollusca\nabundance"
 )
 
 figure_titles <- c(
@@ -231,11 +238,17 @@ make_safe_filename <- function(x) {
     stringr::str_replace_all("^_+|_+$", "")
 }
 
-panel_theme <- theme_bw(base_size = 12) +
+# Match the BRUV plotting style: no panel box, no grid lines,
+# black x/y axes, no plot titles/subtitles, and a clean shared legend.
+panel_theme <- theme_minimal(base_size = 16) +
   theme(
-    panel.grid.minor = element_blank(),
-    plot.title = element_text(face = "bold", size = 12),
+    panel.grid = element_blank(),
+    panel.border = element_blank(),
+    axis.line.x = element_line(colour = "black", linewidth = 0.5),
+    axis.line.y = element_line(colour = "black", linewidth = 0.5),
     axis.title.x = element_blank(),
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
     legend.title = element_blank()
   )
 
@@ -318,27 +331,53 @@ get_missing_message <- function(location_name, metric_name, plot_type) {
 
 make_blank_panel <- function(metric_name, message_text) {
   
+  # Keep a visible frame for a deliberately blank/missing panel so the
+  # A-D / A-F layout is preserved. Valid model panels themselves have no box.
   ggplot() +
     annotate(
       "text",
       x = 0.5,
       y = 0.5,
       label = message_text,
-      size = 4.2,
-      lineheight = 1.15
+      size = 5,
+      fontface = "italic",
+      lineheight = 1.1
     ) +
     xlim(0, 1) +
     ylim(0, 1) +
     labs(
-      title = unname(metric_labels[[metric_name]])
+      x = NULL,
+      y = unname(metric_y_lab[[metric_name]])
     ) +
-    theme_bw(base_size = 12) +
+    theme_minimal(base_size = 16) +
     theme(
       panel.grid = element_blank(),
+      panel.border = element_rect(
+        colour = "black",
+        fill = NA,
+        linewidth = 0.5
+      ),
       axis.text = element_blank(),
       axis.ticks = element_blank(),
-      axis.title = element_blank(),
-      plot.title = element_text(face = "bold", size = 12)
+      axis.line = element_blank(),
+      axis.title.x = element_blank(),
+      plot.title = element_blank(),
+      plot.subtitle = element_blank(),
+      legend.position = "none"
+    )
+}
+
+
+# Truncate confidence intervals at zero for plotting only.
+# This does NOT change the model estimates or saved model results.
+add_plot_confidence_limits <- function(df) {
+  df %>%
+    mutate(
+      plot_LCL = if_else(
+        is.finite(lower.CL),
+        pmax(lower.CL, 0),
+        NA_real_
+      )
     )
 }
 
@@ -349,32 +388,39 @@ make_blank_panel <- function(metric_name, message_text) {
 
 plot_period_panel <- function(df_metric, metric_name) {
   
+  plot_df <- df_metric %>%
+    add_plot_confidence_limits()
+  
   ggplot(
-    df_metric,
+    plot_df,
     aes(x = Period, y = estimate, fill = Period)
   ) +
     geom_col(
-      width = 0.62,
+      width = 0.6,
       colour = "black",
-      alpha = 0.9
+      alpha = 0.85
     ) +
     geom_errorbar(
-      data = df_metric %>%
-        filter(is.finite(lower.CL), is.finite(upper.CL)),
-      aes(ymin = lower.CL, ymax = upper.CL),
-      width = 0.18,
+      data = plot_df %>%
+        filter(is.finite(plot_LCL), is.finite(upper.CL)),
+      aes(ymin = plot_LCL, ymax = upper.CL),
+      width = 0.2,
       linewidth = 0.6
     ) +
     scale_fill_manual(
       values = period_cols,
       drop = FALSE
     ) +
-    labs(
-      title = unname(metric_labels[[metric_name]]),
-      y = "Predicted mean\n(95% CI)"
+    scale_y_continuous(
+      expand = expansion(mult = c(0, 0.05))
     ) +
-    panel_theme +
-    theme(legend.position = "none")
+    coord_cartesian(ylim = c(0, NA)) +
+    labs(
+      x = NULL,
+      y = unname(metric_y_lab[[metric_name]]),
+      fill = NULL
+    ) +
+    panel_theme
 }
 
 
@@ -385,6 +431,7 @@ plot_period_panel <- function(df_metric, metric_name) {
 plot_period_status_panel <- function(df_metric, metric_name) {
   
   plot_df <- df_metric %>%
+    add_plot_confidence_limits() %>%
     mutate(
       flag_label = if_else(low_replication %in% TRUE, "*", ""),
       flag_y = if_else(
@@ -399,17 +446,17 @@ plot_period_status_panel <- function(df_metric, metric_name) {
     aes(x = Period, y = estimate, fill = status)
   ) +
     geom_col(
-      position = position_dodge(width = 0.72),
-      width = 0.62,
+      position = position_dodge(width = 0.7),
+      width = 0.6,
       colour = "black",
-      alpha = 0.9
+      alpha = 0.85
     ) +
     geom_errorbar(
       data = plot_df %>%
-        filter(is.finite(lower.CL), is.finite(upper.CL)),
-      aes(ymin = lower.CL, ymax = upper.CL),
-      position = position_dodge(width = 0.72),
-      width = 0.16,
+        filter(is.finite(plot_LCL), is.finite(upper.CL)),
+      aes(ymin = plot_LCL, ymax = upper.CL),
+      position = position_dodge(width = 0.7),
+      width = 0.18,
       linewidth = 0.6
     ) +
     geom_text(
@@ -418,7 +465,7 @@ plot_period_status_panel <- function(df_metric, metric_name) {
         label = flag_label,
         group = status
       ),
-      position = position_dodge(width = 0.72),
+      position = position_dodge(width = 0.7),
       vjust = -0.5,
       size = 5
     ) +
@@ -426,9 +473,14 @@ plot_period_status_panel <- function(df_metric, metric_name) {
       values = status_cols,
       drop = FALSE
     ) +
+    scale_y_continuous(
+      expand = expansion(mult = c(0, 0.05))
+    ) +
+    coord_cartesian(ylim = c(0, NA)) +
     labs(
-      title = unname(metric_labels[[metric_name]]),
-      y = "Predicted mean\n(95% CI)"
+      x = NULL,
+      y = unname(metric_y_lab[[metric_name]]),
+      fill = NULL
     ) +
     panel_theme
 }
@@ -443,8 +495,12 @@ plot_temporal_panel <- function(
     metric_name,
     temporal_x_limits = NULL) {
   
+  plot_df <- df_metric %>%
+    arrange(sampling_event_start_date) %>%
+    add_plot_confidence_limits()
+  
   p <- ggplot(
-    df_metric %>% arrange(sampling_event_start_date),
+    plot_df,
     aes(
       x = sampling_event_start_date,
       y = estimate,
@@ -452,9 +508,9 @@ plot_temporal_panel <- function(
     )
   ) +
     geom_errorbar(
-      data = df_metric %>%
-        filter(is.finite(lower.CL), is.finite(upper.CL)),
-      aes(ymin = lower.CL, ymax = upper.CL),
+      data = plot_df %>%
+        filter(is.finite(plot_LCL), is.finite(upper.CL)),
+      aes(ymin = plot_LCL, ymax = upper.CL),
       width = 18,
       linewidth = 0.5
     ) +
@@ -463,9 +519,14 @@ plot_temporal_panel <- function(
       values = period_cols,
       drop = FALSE
     ) +
+    scale_y_continuous(
+      expand = expansion(mult = c(0, 0.05))
+    ) +
+    coord_cartesian(ylim = c(0, NA)) +
     labs(
-      title = unname(metric_labels[[metric_name]]),
-      y = "Predicted mean\n(95% CI)"
+      x = NULL,
+      y = unname(metric_y_lab[[metric_name]]),
+      colour = NULL
     ) +
     panel_theme +
     theme(
@@ -612,23 +673,14 @@ make_concatenated_location_plot <- function(
   )
   
   # Two columns gives A-D as a 2 x 2 layout and A-F as a 2 x 3 layout.
+  # The legend is collected once for the whole figure for ALL plot types.
   combined <- patchwork::wrap_plots(
     plotlist = plot_list,
     ncol = 2,
-    guides = if (plot_type %in% c("period_status", "temporal")) {
-      "collect"
-    } else {
-      "keep"
-    }
+    guides = "collect"
   ) +
     patchwork::plot_annotation(
-      title = paste0(
-        location_name,
-        " - ",
-        method_name,
-        " - ",
-        unname(plot_type_titles[[plot_type]])
-      ),
+      # No overall plot title or subtitle: this matches the BRUV figures.
       caption = if (plot_type == "period_status") {
         paste0(
           "* Status or Period x Status cell has <",
@@ -640,37 +692,22 @@ make_concatenated_location_plot <- function(
       },
       tag_levels = "A",
       theme = theme(
-        plot.title = element_text(
-          face = "bold",
-          size = 15,
-          hjust = 0
-        ),
         plot.caption = element_text(
           size = 9,
           hjust = 0
         )
       )
+    ) &
+    theme(
+      legend.position = "bottom",
+      legend.title = element_blank(),
+      plot.title = element_blank(),
+      plot.subtitle = element_blank(),
+      plot.tag = element_text(
+        face = "plain",
+        size = 18
+      )
     )
-  
-  if (plot_type %in% c("period_status", "temporal")) {
-    combined <- combined &
-      theme(
-        legend.position = "bottom",
-        plot.tag = element_text(
-          face = "bold",
-          size = 14
-        )
-      )
-  } else {
-    combined <- combined &
-      theme(
-        plot.tag = element_text(
-          face = "bold",
-          size = 14
-        )
-      )
-  }
-  
   combined
 }
 
