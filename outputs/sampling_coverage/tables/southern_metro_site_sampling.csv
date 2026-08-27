@@ -1,0 +1,15 @@
+site_name,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2008,2011,2012,2015,2016,2017,2018,2019,2020,2021,2022,2023,2025,2026
+Horseshoe inner,9,14,0.6428571428571429,13,38,-,-,-,1 event / 4 transects,2 events / 6 transects,1 event / 4 transects,1 event / 4 transects,2 events / 4 transects,1 event / 4 transects,1 event / 4 transects,2 events / 4 transects,-,2 events / 4 transects,-
+Moana outside,8,14,0.5714285714285714,12,32,-,-,-,-,2 events / 4 transects,1 event / 4 transects,1 event / 4 transects,2 events / 4 transects,1 event / 4 transects,1 event / 4 transects,2 events / 4 transects,-,2 events / 4 transects,-
+Noarlunga North Outside,7,14,0.5,11,28,-,-,-,-,2 events / 4 transects,1 event / 4 transects,1 event / 4 transects,2 events / 4 transects,1 event / 4 transects,-,2 events / 4 transects,-,2 events / 4 transects,-
+Horseshoe outer,6,14,0.42857142857142855,10,26,-,-,-,1 event / 4 transects,2 events / 6 transects,-,-,2 events / 4 transects,-,-,2 events / 4 transects,1 event / 4 transects,2 events / 4 transects,-
+Aldinga Pinacles,5,14,0.35714285714285715,5,20,-,-,-,-,-,1 event / 4 transects,1 event / 4 transects,-,-,1 event / 4 transects,1 event / 4 transects,-,-,1 event / 4 transects
+Southport,5,14,0.35714285714285715,5,20,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,-,-,-,-,-,-,1 event / 4 transects
+Aldinga Reef,5,14,0.35714285714285715,5,14,1 event / 2 transects,1 event / 2 transects,1 event / 2 transects,-,-,-,-,-,-,-,1 event / 4 transects,-,-,1 event / 4 transects
+Moana inside,4,14,0.2857142857142857,8,20,-,-,-,-,2 events / 8 transects,-,-,2 events / 4 transects,-,-,2 events / 4 transects,-,2 events / 4 transects,-
+Noarlunga South Outside,4,14,0.2857142857142857,4,16,-,-,-,-,-,1 event / 4 transects,1 event / 4 transects,-,1 event / 4 transects,-,-,-,-,1 event / 4 transects
+Pt Noarlunga inside,4,14,0.2857142857142857,8,16,-,-,-,-,2 events / 4 transects,-,-,2 events / 4 transects,-,-,2 events / 4 transects,-,2 events / 4 transects,-
+Willunga,3,14,0.21428571428571427,3,12,-,-,-,1 event / 4 transects,1 event / 4 transects,-,-,-,-,-,-,-,-,1 event / 4 transects
+Aldinga SZ1,2,14,0.14285714285714285,2,8,-,-,-,-,1 event / 4 transects,-,-,-,-,-,-,-,-,1 event / 4 transects
+Aldinga SZ3,2,14,0.14285714285714285,2,8,-,-,-,-,1 event / 4 transects,-,-,-,-,-,-,-,-,1 event / 4 transects
+Gull Rock,2,14,0.14285714285714285,2,8,-,-,-,-,1 event / 4 transects,-,-,-,-,-,-,-,-,1 event / 4 transects

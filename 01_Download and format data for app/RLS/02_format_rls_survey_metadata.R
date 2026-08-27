@@ -296,10 +296,16 @@ sl_m1 <- left_join(sl_m1_raw, sa_sites) %>%
   dplyr::mutate(transect = paste("Transect", survey_id, survey_date, depth, sep = "_"))
 
 # Check the maximum time between dates in sampling events ----
-test <- sl_m1 %>%
+test_dates <- sl_m1 %>%
+  distinct(location, site_name, sampling_event, survey_date) %>%
   group_by(location, sampling_event) %>%
-  dplyr::summarise(min = min(survey_date), max = max(survey_date)) %>%
+  dplyr::summarise(min = min(survey_date), max = max(survey_date), n = n()) %>%
   dplyr::mutate(diff = max - min)
+
+test_sites <- sl_m1 %>%
+  distinct(location, site_name, sampling_event_start_date) %>%
+  group_by(location, sampling_event_start_date) %>%
+  dplyr::summarise(t = length(unique(site_name))) 
 
 ## For ATRC M2, only 1 block before 2016 ----
 sl_m2 <- left_join(sl_m2_raw, sa_sites) %>% 
