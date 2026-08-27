@@ -64,7 +64,7 @@ library(purrr)
 analysis_tag <- "rls_glmm_results"
 
 model_output_root <- file.path("model_results", analysis_tag)
-plot_output_root <- file.path("plots", analysis_tag, "concatenated")
+plot_output_root <- file.path("plots", analysis_tag, "concatenated2")
 
 # A missing model with more than this proportion of zero transects
 # will be labelled as a >90% zero response rather than a generic failure.

@@ -6,6 +6,13 @@ library(readr)
 library(purrr)
 library(tibble)
 
+# Make sure destination folder exists (is gitignored so will need to run on each comp once)
+dir.create(
+  "data/raw/RLS",
+  recursive = TRUE,
+  showWarnings = FALSE
+)
+
 # Links for downloading ----
 download_links <- tribble(
   ~filename,                         ~url,
@@ -34,3 +41,62 @@ walk2(
     )
   }
 )
+
+
+# 
+# 
+# 
+# # Download files -----
+# 
+# download_rls_file <- function(url, filename, max_attempts = 5) {
+# 
+#   destination <- file.path("data/raw/RLS", filename)
+# 
+#   # Allow longer for connection + download
+#   h <- curl::new_handle(
+#     connecttimeout = 60,  # allow 60 sec to establish connection
+#     timeout = 300         # allow 5 min for whole download
+#   )
+# 
+#   for (attempt in seq_len(max_attempts)) {
+# 
+#     message(
+#       "Downloading ", filename,
+#       " (attempt ", attempt, "/", max_attempts, ")..."
+#     )
+# 
+#     success <- tryCatch({
+# 
+#       curl::curl_download(
+#         url = url,
+#         destfile = destination,
+#         quiet = FALSE,
+#         handle = h
+#       )
+# 
+#       TRUE
+# 
+#     }, error = function(e) {
+# 
+#       message("Download failed: ", conditionMessage(e))
+#       FALSE
+#     })
+# 
+#     if (success) {
+#       message("Downloaded ", filename)
+#       return(invisible(destination))
+#     }
+# 
+#     # Wait a little before trying again
+#     Sys.sleep(5)
+#   }
+# 
+#   warning("Could not download: ", filename)
+# }
+# 
+# 
+# walk2(
+#   download_links$url,
+#   download_links$filename,
+#   download_rls_file
+# )
