@@ -1,6 +1,6 @@
-site_name,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2006,2015,2016,2017,2018,2020,2021,2025
-Port Parham,7,8,0.875,7,28,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
-Semaphore,7,8,0.875,7,28,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
-Port Gawler,5,8,0.625,5,20,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
-Outer Harbor breakwater south inside,2,8,0.25,2,8,-,1 event / 4 transects,-,-,-,-,-,1 event / 4 transects
-Port Julia,2,8,0.25,2,8,1 event / 4 transects,-,-,-,-,-,-,1 event / 4 transects
+site_name,status,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2006,2015,2016,2017,2018,2020,2021,2025
+Port Parham,Fished,7,8,0.875,7,28,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
+Semaphore,Fished,7,8,0.875,7,28,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
+Port Gawler,Fished,5,8,0.625,5,20,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
+Outer Harbor breakwater south inside,Fished,2,8,0.25,2,8,-,1 event / 4 transects,-,-,-,-,-,1 event / 4 transects
+Port Julia,Fished,2,8,0.25,2,8,1 event / 4 transects,-,-,-,-,-,-,1 event / 4 transects

@@ -1,8 +1,8 @@
-site_name,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2005,2006,2007,2012,2013,2017,2018,2020,2025,2026
-The Bluff,9,10,0.9,11,40,1 event / 4 transects,1 event / 4 transects,2 events / 8 transects,-,2 events / 6 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 2 transects,1 event / 4 transects
-Whalebone Reef,8,10,0.8,9,34,-,-,1 event / 4 transects,1 event / 4 transects,2 events / 8 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 2 transects,1 event / 4 transects
-Outside Granite island,7,10,0.7,8,30,1 event / 4 transects,1 event / 4 transects,2 events / 8 transects,-,-,1 event / 4 transects,1 event / 4 transects,-,1 event / 2 transects,1 event / 4 transects
-Olivers Reef,5,10,0.5,6,23,-,-,-,-,2 events / 9 transects,1 event / 4 transects,1 event / 4 transects,-,1 event / 2 transects,1 event / 4 transects
-Encounter Deep,4,10,0.4,4,16,-,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,-,1 event / 4 transects
-Pullen Island,3,10,0.3,4,14,-,-,-,-,2 events / 6 transects,-,-,1 event / 4 transects,-,1 event / 4 transects
-Port Elliot Deep,2,10,0.2,2,8,-,-,-,-,-,-,1 event / 4 transects,-,-,1 event / 4 transects
+site_name,status,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2005,2006,2007,2012,2013,2017,2018,2020,2025,2026
+The Bluff,Fished,9,10,0.9,11,40,1 event / 4 transects,1 event / 4 transects,2 events / 8 transects,-,2 events / 6 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 2 transects,1 event / 4 transects
+Whalebone Reef,Fished,8,10,0.8,9,34,-,-,1 event / 4 transects,1 event / 4 transects,2 events / 8 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 2 transects,1 event / 4 transects
+Outside Granite island,Fished,7,10,0.7,8,30,1 event / 4 transects,1 event / 4 transects,2 events / 8 transects,-,-,1 event / 4 transects,1 event / 4 transects,-,1 event / 2 transects,1 event / 4 transects
+Olivers Reef,Fished,5,10,0.5,6,23,-,-,-,-,2 events / 9 transects,1 event / 4 transects,1 event / 4 transects,-,1 event / 2 transects,1 event / 4 transects
+Encounter Deep,Fished,4,10,0.4,4,16,-,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,-,1 event / 4 transects
+Pullen Island,No-take,3,10,0.3,4,14,-,-,-,-,2 events / 6 transects,-,-,1 event / 4 transects,-,1 event / 4 transects
+Port Elliot Deep,No-take,2,10,0.2,2,8,-,-,-,-,-,-,1 event / 4 transects,-,-,1 event / 4 transects

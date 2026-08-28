@@ -1,0 +1,71 @@
+location,site_name,status,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects
+Carrickalinga,Carrickalinga (toilet),Fished,14,17,0.8235294117647058,14,57
+Carrickalinga,Carrickalinga Head,No-take,12,17,0.7058823529411765,13,54
+Carrickalinga,Carrickalinga North Site,Fished,8,17,0.47058823529411764,8,32
+Carrickalinga,Carrickalinga North Site 2,Fished,9,17,0.5294117647058824,9,36
+Carrickalinga,Carrickalinga Nth,Fished,8,17,0.47058823529411764,8,32
+Carrickalinga,Dodd's Beach,No-take,11,17,0.6470588235294118,11,44
+Carrickalinga,Haycock Point,Fished,7,17,0.4117647058823529,7,27
+Carrickalinga,Lady Bay,Fished,3,17,0.17647058823529413,3,12
+Carrickalinga,Myponga,Fished,4,17,0.23529411764705882,4,16
+Carrickalinga,Myponga South,No-take,11,17,0.6470588235294118,11,44
+Carrickalinga,Normanville Beach,Fished,5,17,0.29411764705882354,5,20
+Carrickalinga,Ripple Rock,No-take,11,17,0.6470588235294118,11,44
+Carrickalinga,South Shores,Fished,3,17,0.17647058823529413,3,12
+Carrickalinga,Yankalilla Mouth,Fished,3,17,0.17647058823529413,3,12
+Eastern Spencer Gulf,Corny Point Outside,Fished,2,3,0.6666666666666666,2,12
+Eastern Spencer Gulf,Point Souttar,Fished,1,3,0.3333333333333333,1,4
+Eastern Spencer Gulf,Point Turton,Fished,2,3,0.6666666666666666,2,7
+Encounter Bay,Encounter Deep,Fished,4,10,0.4,4,16
+Encounter Bay,Olivers Reef,Fished,5,10,0.5,6,23
+Encounter Bay,Outside Granite island,Fished,7,10,0.7,8,30
+Encounter Bay,Port Elliot Deep,No-take,2,10,0.2,2,8
+Encounter Bay,Pullen Island,No-take,3,10,0.3,4,14
+Encounter Bay,The Bluff,Fished,9,10,0.9,11,40
+Encounter Bay,Whalebone Reef,Fished,8,10,0.8,9,34
+Metro,Broken Bottom,Fished,9,11,0.8181818181818182,9,36
+Metro,Hallett Cove,Fished,4,11,0.36363636363636365,8,16
+Metro,Marino Rocks,Fished,4,11,0.36363636363636365,8,16
+Rapid Head,2nd Valley Boat Shed,Fished,18,18,1,19,79
+Rapid Head,Cape Jervis South,Fished,4,18,0.2222222222222222,4,16
+Rapid Head,Lasseters Reef,Fished,11,18,0.6111111111111112,12,45
+Rapid Head,Morgans,Fished,11,18,0.6111111111111112,12,48
+Rapid Head,Nev's Windmills,Fished,11,18,0.6111111111111112,12,48
+Rapid Head,Rapid Head,No-take,15,18,0.8333333333333334,16,68
+Rapid Head,Rapid Head East,Fished,10,18,0.5555555555555556,11,44
+Rapid Head,Rapid Head SZ,No-take,10,18,0.5555555555555556,11,44
+Rapid Head,Rapid Head SZ Site2,No-take,10,18,0.5555555555555556,10,40
+Rapid Head,Rapid Head South,No-take,9,18,0.5,10,42
+Southern Fleurieu,Backstairs Deep,Fished,4,8,0.5,4,16
+Southern Fleurieu,Deep Creek,Fished,4,8,0.5,4,16
+Southern Fleurieu,Fishery Beach,Fished,4,8,0.5,4,16
+Southern Fleurieu,Flat Irons,Fished,8,8,1,9,34
+Southern Fleurieu,Newland Head,Fished,6,8,0.75,6,19
+Southern Fleurieu,Porpoise Head,Fished,4,8,0.5,4,16
+Southern Metro,Aldinga Pinacles,No-take,5,14,0.35714285714285715,5,20
+Southern Metro,Aldinga Reef,No-take,5,14,0.35714285714285715,5,14
+Southern Metro,Aldinga SZ1,No-take,2,14,0.14285714285714285,2,8
+Southern Metro,Aldinga SZ3,No-take,2,14,0.14285714285714285,2,8
+Southern Metro,Gull Rock,Fished,2,14,0.14285714285714285,2,8
+Southern Metro,Horseshoe inner,Fished,9,14,0.6428571428571429,13,38
+Southern Metro,Horseshoe outer,Fished,6,14,0.42857142857142855,10,26
+Southern Metro,Moana inside,Fished,4,14,0.2857142857142857,8,20
+Southern Metro,Moana outside,Fished,8,14,0.5714285714285714,12,32
+Southern Metro,Noarlunga North Outside,No-take,7,14,0.5,11,28
+Southern Metro,Noarlunga South Outside,No-take,4,14,0.2857142857142857,4,16
+Southern Metro,Pt Noarlunga inside,No-take,4,14,0.2857142857142857,8,16
+Southern Metro,Southport,Fished,5,14,0.35714285714285715,5,20
+Southern Metro,Willunga,Fished,3,14,0.21428571428571427,3,12
+Southern Yorke,Edithburgh,Fished,3,3,1,3,10
+Southern Yorke,Troubridge Lighthouse,Fished,2,3,0.6666666666666666,2,8
+Southern Yorke,Troubridge Point,Fished,2,3,0.6666666666666666,2,8
+Sponge Gardens,Cable Hut,No-take,10,10,1,10,52
+Sponge Gardens,Grassy Knoll,Fished,6,10,0.6,6,24
+Sponge Gardens,Pancake Rock,No-take,6,10,0.6,6,24
+Sponge Gardens,Penneshaw Pub,Fished,6,10,0.6,6,24
+Sponge Gardens,Puzzle Rock,Fished,6,10,0.6,6,24
+Upper GSV,Outer Harbor breakwater south inside,Fished,2,8,0.25,2,8
+Upper GSV,Port Gawler,Fished,5,8,0.625,5,20
+Upper GSV,Port Julia,Fished,2,8,0.25,2,8
+Upper GSV,Port Parham,Fished,7,8,0.875,7,28
+Upper GSV,Semaphore,Fished,7,8,0.875,7,28

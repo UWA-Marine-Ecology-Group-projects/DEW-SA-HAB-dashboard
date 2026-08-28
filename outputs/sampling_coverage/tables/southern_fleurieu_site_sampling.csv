@@ -1,7 +1,7 @@
-site_name,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2005,2007,2012,2017,2018,2020,2025,2026
-Flat Irons,8,8,1,9,34,1 event / 4 transects,2 events / 8 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 2 transects,1 event / 4 transects
-Newland Head,6,8,0.75,6,19,1 event / 4 transects,1 event / 1 transect,-,1 event / 4 transects,1 event / 4 transects,-,1 event / 2 transects,1 event / 4 transects
-Backstairs Deep,4,8,0.5,4,16,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,-,1 event / 4 transects
-Deep Creek,4,8,0.5,4,16,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,-,1 event / 4 transects
-Fishery Beach,4,8,0.5,4,16,-,1 event / 4 transects,-,1 event / 4 transects,1 event / 4 transects,-,-,1 event / 4 transects
-Porpoise Head,4,8,0.5,4,16,-,1 event / 4 transects,-,1 event / 4 transects,1 event / 4 transects,-,-,1 event / 4 transects
+site_name,status,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2005,2007,2012,2017,2018,2020,2025,2026
+Flat Irons,Fished,8,8,1,9,34,1 event / 4 transects,2 events / 8 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 2 transects,1 event / 4 transects
+Newland Head,Fished,6,8,0.75,6,19,1 event / 4 transects,1 event / 1 transect,-,1 event / 4 transects,1 event / 4 transects,-,1 event / 2 transects,1 event / 4 transects
+Backstairs Deep,Fished,4,8,0.5,4,16,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,-,1 event / 4 transects
+Deep Creek,Fished,4,8,0.5,4,16,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,-,1 event / 4 transects
+Fishery Beach,Fished,4,8,0.5,4,16,-,1 event / 4 transects,-,1 event / 4 transects,1 event / 4 transects,-,-,1 event / 4 transects
+Porpoise Head,Fished,4,8,0.5,4,16,-,1 event / 4 transects,-,1 event / 4 transects,1 event / 4 transects,-,-,1 event / 4 transects

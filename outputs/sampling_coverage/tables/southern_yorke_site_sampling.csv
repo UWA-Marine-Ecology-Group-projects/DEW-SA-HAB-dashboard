@@ -1,4 +1,4 @@
-site_name,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2006,2025,2026
-Edithburgh,3,3,1,3,10,1 event / 4 transects,1 event / 2 transects,1 event / 4 transects
-Troubridge Lighthouse,2,3,0.6666666666666666,2,8,1 event / 4 transects,-,1 event / 4 transects
-Troubridge Point,2,3,0.6666666666666666,2,8,1 event / 4 transects,-,1 event / 4 transects
+site_name,status,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2006,2025,2026
+Edithburgh,Fished,3,3,1,3,10,1 event / 4 transects,1 event / 2 transects,1 event / 4 transects
+Troubridge Lighthouse,Fished,2,3,0.6666666666666666,2,8,1 event / 4 transects,-,1 event / 4 transects
+Troubridge Point,Fished,2,3,0.6666666666666666,2,8,1 event / 4 transects,-,1 event / 4 transects

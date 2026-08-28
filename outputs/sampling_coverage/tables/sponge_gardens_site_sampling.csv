@@ -1,6 +1,6 @@
-site_name,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2005,2006,2007,2012,2016,2017,2018,2019,2021,2026
-Cable Hut,10,10,1,10,52,1 event / 8 transects,1 event / 8 transects,1 event / 8 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
-Grassy Knoll,6,10,0.6,6,24,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
-Pancake Rock,6,10,0.6,6,24,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
-Penneshaw Pub,6,10,0.6,6,24,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
-Puzzle Rock,6,10,0.6,6,24,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
+site_name,status,n_years_sampled,n_location_years,proportion_years_sampled,total_events,total_transects,2005,2006,2007,2012,2016,2017,2018,2019,2021,2026
+Grassy Knoll,Fished,6,10,0.6,6,24,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
+Penneshaw Pub,Fished,6,10,0.6,6,24,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
+Puzzle Rock,Fished,6,10,0.6,6,24,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
+Cable Hut,No-take,10,10,1,10,52,1 event / 8 transects,1 event / 8 transects,1 event / 8 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
+Pancake Rock,No-take,6,10,0.6,6,24,-,-,-,-,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects,1 event / 4 transects
