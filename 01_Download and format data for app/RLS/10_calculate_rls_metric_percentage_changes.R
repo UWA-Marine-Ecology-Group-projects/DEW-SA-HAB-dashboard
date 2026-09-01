@@ -34,7 +34,7 @@ library(purrr)
 # -----------------------------------------------------------------
 
 metric_input_dir <- "data/rls_metrics_for_modelling"
-output_dir <- "data/rls_metric_percentage_changes"
+output_dir <- "outputs/rls_metric_percentage_changes"
 
 dir.create(
   output_dir,
