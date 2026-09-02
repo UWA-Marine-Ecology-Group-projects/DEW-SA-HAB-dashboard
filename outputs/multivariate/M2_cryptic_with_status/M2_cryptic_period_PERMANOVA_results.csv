@@ -1,0 +1,6 @@
+"location","term","n","n_sites","R2","F_value","p_value","dispersion_p"
+"Eastern Spencer Gulf","period",6,3,0.109031395671763,1.08800774927894,0.5,0.801388888888889
+"Southern Yorke","period",10,3,0.113308213619916,0.985114521286549,0.44,0.582
+"Sponge Gardens","period",34,5,0.0235553431692333,0.935833332915926,0.518,0.265
+"Sponge Gardens","period:status",34,5,0.0439544323574264,1.74627143548497,0.063,NA
+"Upper GSV","period",23,5,0.160920240005738,5.60037581685681,0.002,0.545
