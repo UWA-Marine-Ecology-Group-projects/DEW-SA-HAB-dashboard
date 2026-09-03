@@ -985,6 +985,17 @@ run_dataset_pipeline <- function(count_rds_path, meta_rds_path, output_dir, data
     )
   }
   
+  # NEW: for the same significant-status locations, also compare
+  # the Period axis against the Status axis. If you'd rather
+  # require Period to ALSO be independently significant, change
+  # this to filter significant_period_locations %in% significant_status_locations
+  for (loc in significant_status_locations) {
+    tryCatch(
+      make_period_status_cap_plot(raw_data, loc, output_dir, dataset_prefix),
+      error = function(e) message("ERROR (period vs status CAP) for ", loc, ": ", conditionMessage(e))
+    )
+  }
+  
   invisible(list(period = period_results, status = status_results))
 }
 
@@ -1013,3 +1024,352 @@ m2_fish_results <- run_dataset_pipeline(
   output_dir     = "outputs/multivariate/M2_cryptic_with_status",
   dataset_prefix = "M2_cryptic"
 )
+
+
+# ============================================================
+# NEW: extract Period-CAP scores (event-level) for one location
+# without building a plot. make_cap_plot() and the new period-
+# vs-status comparison plot both call this, so they're always
+# numerically identical - no risk of the two quietly using
+# different fits if the formula changes later.
+# ============================================================
+
+get_period_cap_scores <- function(raw_data, location_name) {
+  
+  built <- build_assemblage_data(raw_data, location_name)
+  if (is.null(built)) return(NULL)
+  
+  meta <- built$meta
+  assemblage_log2 <- built$assemblage_log2
+  
+  # Not previously checked here, since make_cap_plot() was only
+  # ever called for already-period-significant locations. Now
+  # that this getter can be called more broadly, guard explicitly.
+  if (length(unique(meta$period)) < 2) {
+    message("Skipping Period CAP scores for ", location_name, ": only one Period present.")
+    return(NULL)
+  }
+  
+  if (nrow(meta) <= n_distinct(meta$site_name) + 2) {
+    message("Skipping Period CAP scores for ", location_name, ": not enough residual d.f.")
+    return(NULL)
+  }
+  
+  cap_model <- vegan::capscale(
+    assemblage_log2 ~ period + Condition(site_name),
+    data = meta, distance = "altGower", add = TRUE
+  )
+  
+  set.seed(123)
+  cap_test <- anova(cap_model, permutations = 999, strata = meta$site_name)
+  cap_p <- cap_test$`Pr(>F)`[1]
+  
+  all_scores <- as.data.frame(vegan::scores(cap_model, display = "sites"))
+  
+  if (!all(c("CAP1", "MDS1") %in% names(all_scores))) {
+    message("Skipping Period CAP scores for ", location_name, ": expected CAP1/MDS1 axes not found.")
+    return(NULL)
+  }
+  
+  cap_scores <- all_scores %>%
+    select(CAP1, MDS1) %>%
+    mutate(id = rownames(all_scores)) %>%
+    left_join(meta, by = "id")
+  
+  species_scores <- as.data.frame(vegan::scores(cap_model, display = "species"))
+  species_vec_top <- NULL
+  
+  if (all(c("CAP1", "MDS1") %in% names(species_scores))) {
+    species_vec_top <- species_scores %>%
+      select(CAP1, MDS1) %>%
+      mutate(
+        scientific = rownames(species_scores),
+        vector_length = sqrt(CAP1^2 + MDS1^2)
+      ) %>%
+      arrange(desc(vector_length)) %>%
+      slice_head(n = 10) %>%
+      scale_species_vectors(cap_scores, "CAP1", "MDS1")
+  }
+  
+  cap_percent <- round(100 * cap_model$CCA$eig[1] / cap_model$tot.chi, 1)
+  mds_percent <- round(100 * cap_model$CA$eig[1] / cap_model$tot.chi, 1)
+  
+  list(
+    cap_model = cap_model, cap_scores = cap_scores, species_vec_top = species_vec_top,
+    cap_p = cap_p, cap_percent = cap_percent, mds_percent = mds_percent
+  )
+}
+
+
+# ============================================================
+# NEW: extract Status-CAP scores (site-level) for one location.
+# ============================================================
+
+get_status_cap_scores <- function(raw_data, location_name) {
+  
+  built <- build_site_level_data(raw_data, location_name)
+  if (is.null(built)) return(NULL)
+  
+  meta <- built$meta
+  assemblage_log2 <- built$assemblage_log2
+  
+  if (nrow(meta) <= 3) {
+    message("Skipping Status CAP scores for ", location_name, ": not enough residual d.f.")
+    return(NULL)
+  }
+  
+  cap_model <- vegan::capscale(
+    assemblage_log2 ~ status,
+    data = meta, distance = "altGower", add = TRUE
+  )
+  
+  set.seed(123)
+  cap_test <- anova(cap_model, permutations = 999)
+  cap_p <- cap_test$`Pr(>F)`[1]
+  
+  all_scores <- as.data.frame(vegan::scores(cap_model, display = "sites"))
+  
+  if (!all(c("CAP1", "MDS1") %in% names(all_scores))) {
+    message("Skipping Status CAP scores for ", location_name, ": expected CAP1/MDS1 axes not found.")
+    return(NULL)
+  }
+  
+  cap_scores <- all_scores %>%
+    select(CAP1, MDS1) %>%
+    mutate(site_name = rownames(all_scores)) %>%
+    left_join(meta, by = "site_name")
+  
+  species_scores <- as.data.frame(vegan::scores(cap_model, display = "species"))
+  species_vec_top <- NULL
+  
+  if (all(c("CAP1", "MDS1") %in% names(species_scores))) {
+    species_vec_top <- species_scores %>%
+      select(CAP1, MDS1) %>%
+      mutate(
+        scientific = rownames(species_scores),
+        vector_length = sqrt(CAP1^2 + MDS1^2)
+      ) %>%
+      arrange(desc(vector_length)) %>%
+      slice_head(n = 10) %>%
+      scale_species_vectors(cap_scores, "CAP1", "MDS1")
+  }
+  
+  cap_percent <- round(100 * cap_model$CCA$eig[1] / cap_model$tot.chi, 1)
+  mds_percent <- round(100 * cap_model$CA$eig[1] / cap_model$tot.chi, 1)
+  
+  list(
+    cap_model = cap_model, cap_scores = cap_scores, species_vec_top = species_vec_top,
+    cap_p = cap_p, cap_percent = cap_percent, mds_percent = mds_percent
+  )
+}
+
+make_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
+  
+  message("Running CAP: ", location_name)
+  
+  result <- get_period_cap_scores(raw_data, location_name)
+  if (is.null(result)) return(NULL)
+  
+  cap_scores <- result$cap_scores
+  species_vec_top <- result$species_vec_top
+  cap_p <- result$cap_p
+  cap_percent <- result$cap_percent
+  mds_percent <- result$mds_percent
+  
+  message("  CAP permutation test p = ", cap_p)
+  
+  safe_name <- make_safe_name(location_name)
+  
+  
+  cap1_time_plot <- ggplot(
+    cap_scores,
+    aes(x = survey_date, y = CAP1, group = site_name, colour = site_name)
+  ) +
+    
+    geom_line(linewidth = 0.8, na.rm = TRUE) +
+    
+    geom_point(aes(shape = status, fill = period), size = 3, stroke = 1, na.rm = TRUE) +
+    
+    status_period_layers() +
+    
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.4, colour = "grey60") +
+    
+    scale_x_date(date_breaks = "2 years", date_labels = "%Y", expand = expansion(mult = c(0.02, 0.04))) +
+    
+    labs(
+      title = location_name, x = "Sampling date",
+      y = paste0("CAP1 - Period axis (", cap_percent, "%)"),
+      colour = "Site", shape = "Status", fill = "Period"
+    ) +
+    
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  
+  save_plot(
+    cap1_time_plot,
+    file.path(output_dir, paste0(dataset_prefix, "_CAP1_through_time_", safe_name, ".png")),
+    width = 12, height = 7
+  )
+  
+  
+  cap_plot <- ggplot(cap_scores, aes(x = CAP1, y = MDS1, colour = site_name)) +
+    
+    geom_point(aes(shape = status, fill = period), size = 3, stroke = 1) +
+    
+    status_period_layers() +
+    
+    theme_classic() +
+    
+    labs(
+      title = paste0(location_name, " (CAP, p = ", signif(cap_p, 3), ")"),
+      x = paste0("CAP1 - Period axis (", cap_percent, "%)"),
+      y = paste0("MDS1 - residual axis (", mds_percent, "%)"),
+      colour = "Site", shape = "Status", fill = "Period"
+    ) +
+    
+    species_vector_layers(species_vec_top)
+  
+  
+  save_plot(
+    cap_plot,
+    file.path(output_dir, paste0(dataset_prefix, "_CAP_", safe_name, ".png")),
+    width = 12, height = 9
+  )
+  
+  invisible(cap_plot)
+}
+make_status_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
+  
+  message("Running Status CAP: ", location_name)
+  
+  result <- get_status_cap_scores(raw_data, location_name)
+  if (is.null(result)) return(NULL)
+  
+  cap_scores <- result$cap_scores
+  species_vec_top <- result$species_vec_top
+  cap_p <- result$cap_p
+  cap_percent <- result$cap_percent
+  mds_percent <- result$mds_percent
+  
+  message("  Status CAP permutation test p = ", cap_p)
+  
+  safe_name <- make_safe_name(location_name)
+  
+  
+  status_cap_plot <- ggplot(cap_scores, aes(x = CAP1, y = MDS1, colour = status, shape = status)) +
+    
+    geom_point(size = 3, stroke = 1) +
+    
+    ggrepel::geom_text_repel(
+      aes(label = site_name),
+      size = 3, show.legend = FALSE
+    ) +
+    
+    theme_classic() +
+    
+    labs(
+      title = paste0(location_name, " (Status CAP, p = ", signif(cap_p, 3), ")"),
+      x = paste0("CAP1 - Status axis (", cap_percent, "%)"),
+      y = paste0("MDS1 - residual axis (", mds_percent, "%)"),
+      colour = "Status", shape = "Status"
+    ) +
+    
+    species_vector_layers(species_vec_top)
+  
+  
+  save_plot(
+    status_cap_plot,
+    file.path(output_dir, paste0(dataset_prefix, "_status_CAP_", safe_name, ".png")),
+    width = 12, height = 9
+  )
+  
+  invisible(status_cap_plot)
+}
+
+# ============================================================
+# NEW: Period-CAP axis vs Status-CAP axis for one location.
+#
+# Period axis is event-level; Status axis is site-level (status
+# is constant within a site). Joining broadcasts each site's one
+# Status-CAP1 value across all its events, so every site's line
+# is perfectly HORIZONTAL here - it can only move along the
+# Period axis (x) over time, since its Status-axis height (y) is
+# fixed. That's expected, not a plotting bug.
+#
+# Species vectors are deliberately omitted: the Period model's
+# species scores live on a site-partialled residual space and
+# the Status model's don't, so overlaying either set on these
+# combined axes wouldn't be a valid comparison.
+# ============================================================
+
+make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
+  
+  message("Running Period vs Status CAP comparison: ", location_name)
+  
+  period_result <- get_period_cap_scores(raw_data, location_name)
+  status_result <- get_status_cap_scores(raw_data, location_name)
+  
+  if (is.null(period_result)) {
+    message("Skipping Period vs Status CAP for ", location_name, ": no usable Period CAP axis.")
+    return(NULL)
+  }
+  
+  if (is.null(status_result)) {
+    message("Skipping Period vs Status CAP for ", location_name, ": no usable Status CAP axis.")
+    return(NULL)
+  }
+  
+  period_axis <- period_result$cap_scores %>%
+    select(id, site_name, status, period, survey_date, sampling_event_start_date, period_CAP1 = CAP1)
+  
+  status_axis <- status_result$cap_scores %>%
+    select(site_name, status_CAP1 = CAP1)
+  
+  combined_scores <- period_axis %>%
+    left_join(status_axis, by = "site_name") %>%
+    arrange(site_name, survey_date)
+  
+  if (any(is.na(combined_scores$status_CAP1))) {
+    message(
+      "Note: ", sum(is.na(combined_scores$status_CAP1)), " event(s) in ", location_name,
+      " belong to a site with no Status-CAP score."
+    )
+  }
+  
+  
+  combined_plot <- ggplot(
+    combined_scores,
+    aes(x = period_CAP1, y = status_CAP1, group = site_name, colour = site_name)
+  ) +
+    
+    geom_path(
+      arrow = arrow(length = unit(0.15, "cm"), type = "closed"),
+      linewidth = 0.8,
+      na.rm = TRUE
+    ) +
+    
+    geom_point(aes(shape = status, fill = period), size = 3, stroke = 1, na.rm = TRUE) +
+    
+    status_period_layers() +
+    
+    theme_classic() +
+    
+    labs(
+      title = location_name,
+      x = paste0("Period CAP1 (", period_result$cap_percent, "%)"),
+      y = paste0("Status CAP1 (", status_result$cap_percent, "%)"),
+      colour = "Site", shape = "Status", fill = "Period"
+    )
+  
+  
+  safe_name <- make_safe_name(location_name)
+  
+  save_plot(
+    combined_plot,
+    file.path(output_dir, paste0(dataset_prefix, "_CAP_period_vs_status_", safe_name, ".png")),
+    width = 12, height = 9
+  )
+  
+  invisible(combined_plot)
+}

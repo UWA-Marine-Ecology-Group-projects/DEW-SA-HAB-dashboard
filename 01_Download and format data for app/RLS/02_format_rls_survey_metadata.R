@@ -14,7 +14,6 @@ library(sf)
 library(stringr)
 library(readr)
 library(tidyr)
-library(todor)
 
 # Functions ----
 # Groups sampling dates into the same sampling event if they are within 1 week of eachother
@@ -333,7 +332,7 @@ names(sl_m1)
 # Save tidy dataframes ----
 write_rds(sl_m1, "data/tidy/rls_m1_survey_list.rds")
 write_rds(sl_m2, "data/tidy/rls_m2_survey_list.rds")
-write_rds(sl_m3, "data/tidy/rls_m3_survey_list.rds")
+# write_rds(sl_m3, "data/tidy/rls_m3_survey_list.rds")
 
 # Number of transects in each ----
 m1_transects <- sl_m1 %>%
