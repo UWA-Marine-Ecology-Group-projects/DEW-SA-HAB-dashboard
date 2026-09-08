@@ -299,7 +299,10 @@ combined_metadata <- combined_metadata %>%
   left_join(campaign_lookup)
 
 # Save BRUV data ----
+bruV_meta_to_save <- combined_metadata %>%
+  dplyr::filter(method %in% "BRUVs")
 
+write_csv(bruV_meta_to_save, "sa_bruv_metadata.csv")
 
 # combined length ----
 # bruv_length_regions_post <- bruv_length %>%
