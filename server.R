@@ -5575,6 +5575,29 @@ server <- function(input, output, session) {
       "No-take" = "#4FA08F"
     )
 
+    # Brooke asked (2026-09-09) for the GLMM plots to never show negative
+    # values: none of these metrics (richness, diversity, biomass,
+    # abundance) can be below zero, but a Gaussian/link-scale model's lower
+    # 95% confidence limit can still dip below zero, which drew error bars
+    # (and an axis) into negative space.
+    #
+    # coord_cartesian() is used rather than scale_y_continuous(limits =) or
+    # ylim() on purpose: coord_cartesian only *zooms* the axis, so an error
+    # bar whose lower limit is negative is drawn clipped at zero. Setting
+    # limits on the scale instead would treat those values as out-of-range,
+    # turn them into NA, and silently DROP the whole error bar (and, for the
+    # boxplot toggle, any raw point outside the range) with a "Removed n
+    # rows" warning.
+    #
+    # ylim = c(0, NA) - the NA upper limit means each facet still takes its
+    # own upper limit from its own data, so facet_wrap(scales = "free_y")
+    # keeps working; only the floor is pinned to zero for every panel.
+    #
+    # A single coord object can safely be added to many plots (ggplot2
+    # coords hold no per-plot state), so it's defined once here and reused
+    # by all three plot types below.
+    rls_glmm_zero_floor <- coord_cartesian(ylim = c(0, NA))
+
     # One tab per biological metric (metric_group), not per method x
     # metric combination - each of the three plots below is faceted by
     # facet_label (method, or invertebrate phylum for the M2-invert-only
@@ -5645,7 +5668,8 @@ server <- function(input, output, session) {
                 panel.grid.minor = element_blank(),
                 panel.grid.major = element_blank()
               ) +
-              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+              rls_glmm_zero_floor
 
           } else {
             ggplot(mean_se, aes(x = period, y = mean, fill = period)) +
@@ -5660,7 +5684,8 @@ server <- function(input, output, session) {
                 panel.grid.minor = element_blank(),
                 panel.grid.major = element_blank()
               ) +
-              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+              rls_glmm_zero_floor
           }
         })
 
@@ -5731,7 +5756,8 @@ server <- function(input, output, session) {
                 panel.grid.minor = element_blank(),
                 panel.grid.major = element_blank()
               ) +
-              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.08)))
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+              rls_glmm_zero_floor
 
           } else {
             # Matches script 11's plot_period_status_prediction() exactly:
@@ -5759,7 +5785,8 @@ server <- function(input, output, session) {
                 panel.grid.minor = element_blank(),
                 panel.grid.major = element_blank()
               ) +
-              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.08)))
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+              rls_glmm_zero_floor
           }
         })
 
@@ -5807,7 +5834,8 @@ server <- function(input, output, session) {
                 panel.grid.minor = element_blank(),
                 panel.grid.major = element_blank()
               ) +
-              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+              rls_glmm_zero_floor
 
           } else {
             df <- year_results()
@@ -5825,7 +5853,8 @@ server <- function(input, output, session) {
                 panel.grid.minor = element_blank(),
                 panel.grid.major = element_blank()
               ) +
-              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+              rls_glmm_zero_floor
           }
         })
 
