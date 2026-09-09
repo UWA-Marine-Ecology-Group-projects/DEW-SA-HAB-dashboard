@@ -522,6 +522,12 @@ nav_panel(
         
         div(
           card(
+            # fill = FALSE: see comment on the "Stacked abundance plots"
+            # card below - Dive's gauge grid is much taller than BRUVS'
+            # (14 metrics x up to 3 methods vs. BRUVS' 6), so this card
+            # needs to grow with it rather than being flex-shrunk with a
+            # scrollbar.
+            fill = FALSE,
             card_header(
               div(
                 "Region Impact overview",
@@ -545,6 +551,10 @@ nav_panel(
           ),
           
           card(
+            # fill = FALSE: RLS's % change table has up to 14 rows
+            # (vs. BRUVS' 6), so this card needs to grow with it rather
+            # than being flex-shrunk with a scrollbar.
+            fill = FALSE,
             card_header(
               div(
                 "Percentage change compared to pre-bloom levels",
@@ -570,12 +580,24 @@ nav_panel(
       
       card(
         min_height = 550,
+        # fill = FALSE: without this, the page's own fillable layout can
+        # still flex-shrink this card down to whatever space is left over
+        # (ignoring min_height) and add its own internal scrollbar, even
+        # though layout_sidebar below is already set to size to content.
+        # fill = FALSE takes this card out of that shrink-to-fit system
+        # entirely, so it always renders at its natural content height.
+        fill = FALSE,
         card_header("Stacked abundance plots"),
         full_screen = TRUE,
         
         layout_sidebar(
+          # fillable = FALSE: let the card grow/shrink to match the plot's
+          # actual (reactive) height instead of stretching the plot into a
+          # fixed-height box and scrolling when Dive's stacked panels are
+          # taller than BRUVS's single panel.
+          fillable = FALSE,
           sidebar = div(
-            
+
             downloadButton(
               outputId = "region_stacked_download_results",
               label = "Download assemblage percentages"
@@ -601,19 +623,28 @@ nav_panel(
       ),
       
       card(
-        min_height = 500,
+        min_height = 550,
+        # fill = FALSE: see comment on the "Stacked abundance plots" card
+        # above - keeps this card at its natural content height instead
+        # of being flex-shrunk (with an internal scrollbar) by the page's
+        # own fillable layout.
+        fill = FALSE,
         card_header("Common species"),
         full_screen = TRUE,
-        
+
         layout_sidebar(
+          # fillable = FALSE: see comment on the Stacked abundance card
+          # above - lets the card height follow the reactive plot height
+          # (taller for Dive's 3 stacked methods, shorter for BRUVS).
+          fillable = FALSE,
           sidebar = div(
             h6(strong("Plot inputs:")),
-            numericInput( 
-              "region_number_species", 
-              "Choose number of species to plot", 
-              value = 10, 
-              min   = 1, 
-              max   = 20 
+            numericInput(
+              "region_number_species",
+              "Choose number of species to plot",
+              value = 10,
+              min   = 1,
+              max   = 20
             ),
             checkboxInput(
               "region_species_status",
@@ -625,39 +656,42 @@ nav_panel(
               "Facet by status",
               FALSE
             ),
-            
-            
+
+
             downloadButton(
               outputId = "region_common_download_results",
               label = "Download average abundances"
             ),
-            
+
             br(),
             br(),
-            
+
             downloadButton(
               outputId = "region_common_download_plot",
               label = "Download plots"
             ),
           ),
-          
+
+          # Pre-bloom / post-bloom side by side. For Dive, each of these two
+          # plots stacks its RLS methods (M1 fish / M2 fish / M2
+          # invertebrates) as rows rather than columns, so the rendered
+          # height varies by method - set server-side via renderPlot's
+          # `height` argument, not fixed here.
           layout_columns(
             col_widths = c(6, 6),
-            
+
             div(
               class = "plot-full-wrapper",
-              # style = "height:500px;",
               withSpinner(
-                plotOutput("region_common_pre", height = "100%"),
+                plotOutput("region_common_pre", height = "550px"),
                 color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
             ),
             div(
               class = "plot-full-wrapper",
-              # style = "height:500px;",
               withSpinner(
-                plotOutput("region_common_post", height = "100%"),
+                plotOutput("region_common_post", height = "550px"),
                 color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
@@ -726,6 +760,11 @@ nav_panel(
         
         div(
           card(
+            # fill = FALSE: see comment on the Region Summary "Region
+            # Impact overview" card - Dive's gauge grid is taller than
+            # BRUVS', so this card needs to grow with it rather than
+            # being flex-shrunk with a scrollbar.
+            fill = FALSE,
             card_header(
               div(
                 "Location Impact overview",
@@ -749,9 +788,16 @@ nav_panel(
           
   
           navset_card_tab(
-            
+
+            # NOTE: navset_card_tab() in this bslib version doesn't accept
+            # a fill= argument (passing one crashes buildTabset() - it
+            # gets swept into the tabs list instead). Unlike the card()
+            # calls elsewhere in this file, this one has no fill/fillable
+            # override, so if RLS's longer % change table ever gets
+            # clipped with a scrollbar here, it'll need a different fix
+            # (e.g. wrapping this in a plain card(fill = FALSE, ...)).
             title = "Percentage change compared to pre-bloom levels",
-            
+
             nav_panel(
               "Overall Bloom",
               spinnerUiOutput("location_change_table")
@@ -779,13 +825,24 @@ nav_panel(
       
       card(
         min_height = 550,
+        # fill = FALSE: without this, the page's own fillable layout can
+        # still flex-shrink this card down to whatever space is left over
+        # (ignoring min_height) and add its own internal scrollbar, even
+        # though layout_sidebar below is already set to size to content.
+        # fill = FALSE takes this card out of that shrink-to-fit system
+        # entirely, so it always renders at its natural content height.
+        fill = FALSE,
         card_header("Stacked abundance plots"),
         full_screen = TRUE,
         
         layout_sidebar(
+          # fillable = FALSE: see comment on the Region Summary "Stacked
+          # abundance plots" card - lets the card height follow the
+          # reactive plot height instead of clipping/scrolling it.
+          fillable = FALSE,
           sidebar = div(
             h6(strong("Pre-bloom vs. Bloom:")),
-            
+
             downloadButton(
               outputId = "location_stacked_download_results",
               label = "Download assemblage percentages"
@@ -837,11 +894,20 @@ nav_panel(
       ),
       
       card(
-        min_height = 500,
+        min_height = 550,
+        # fill = FALSE: see comment on the "Stacked abundance plots" card
+        # above - keeps this card at its natural content height instead
+        # of being flex-shrunk (with an internal scrollbar) by the page's
+        # own fillable layout.
+        fill = FALSE,
         card_header("Common species"),
         full_screen = TRUE,
-        
+
         layout_sidebar(
+          # fillable = FALSE: see comment on the Region Summary "Stacked
+          # abundance plots" card - lets the card height follow the
+          # reactive plot height instead of clipping/scrolling it.
+          fillable = FALSE,
           sidebar = div(
             h6(strong("Plot inputs:")),
             numericInput(
@@ -861,51 +927,52 @@ nav_panel(
               "Facet by status",
               FALSE
             ),
-            
-            
+
+
             downloadButton(
               outputId = "location_common_download_results",
               label = "Download average abundances"
             ),
-            
+
             br(),
             br(),
-            
+
             downloadButton(
               outputId = "location_common_download_results_status",
               label = "Download average abundances with status"
             ),
-            
+
             br(),
             br(),
-            
+
             downloadButton(
               outputId = "location_common_download_plot",
               label = "Download plots"
             ),
-            
-            
-            
+
+
+
           ),
-          
+
+          # Pre-bloom / post-bloom side by side - see the matching comment
+          # on the Region Summary "Common species" card above for why plot
+          # height is set server-side instead of here.
           layout_columns(
             col_widths = c(6, 6),
-            
+
             div(
               class = "plot-full-wrapper",
               withSpinner(
-                plotOutput("location_common_pre", height = "100%"),
+                plotOutput("location_common_pre", height = "550px"),
                 color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )
-              
-              
             ),
-            
+
             div(
               class = "plot-full-wrapper",
               withSpinner(
-                plotOutput("location_common_post", height = "100%"),
+                plotOutput("location_common_post", height = "550px"),
                 color = getOption("spinner.color", default = "#0D576E"),
                 type = 6
               )

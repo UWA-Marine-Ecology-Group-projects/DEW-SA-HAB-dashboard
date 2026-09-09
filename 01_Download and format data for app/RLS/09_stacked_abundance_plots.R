@@ -39,7 +39,7 @@ output_root <- file.path(
 top_n <- 5
 
 # Site plots deliberately excluded.
-spatial_levels_to_plot <- c("location"#, "region"
+spatial_levels_to_plot <- c("location", "region"
                             )
 
 method_levels <- c(

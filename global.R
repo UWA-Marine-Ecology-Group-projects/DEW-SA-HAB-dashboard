@@ -38,6 +38,21 @@ load("app_data/plots.Rdata")
 load("app_data/hab_data.Rdata")
 # load("app_data/downloads.Rdata")
 
+# RLS (Dive) data, built by
+# "01_Download and format data for app/RLS/15_combine_rls_data_for_app.R".
+# Wrapped in file.exists() so the app doesn't break before that script has
+# been run for the first time.
+if (file.exists("app_data/rls_data.Rdata")) {
+  load("app_data/rls_data.Rdata")
+} else {
+  warning(
+    "app_data/rls_data.Rdata not found - run ",
+    "'01_Download and format data for app/RLS/15_combine_rls_data_for_app.R' ",
+    "to generate it. The Dive side of the dashboard will not have data until then."
+  )
+  rls_data <- NULL
+}
+
 species_colours <- c(
   "#4F7CC9", # 1 Blue
   "#D98C3F", # 2 Orange

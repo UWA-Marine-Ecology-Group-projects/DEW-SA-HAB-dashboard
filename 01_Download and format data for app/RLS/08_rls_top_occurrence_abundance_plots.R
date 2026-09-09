@@ -65,8 +65,8 @@ output_root <- file.path(
 # Create plots for any combination of these three levels.
 spatial_levels_to_plot <- c(
   # "site",
-  "location"#,
-  # "region"
+  "location",
+  "region"
 )
 
 # Selection thresholds.

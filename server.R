@@ -147,6 +147,114 @@ no_data_plot <- function(title = NULL) {
     )
 }
 
+# ---- RLS (Dive) % change table + impact gauge helpers ----------------------
+# Mirrors BRUV's fmt_change()/get_metric_plot()/make_impact_gauges() (defined
+# inline in the BRUV output$*_change_table renderers, and above/below for the
+# gauges) but reused across all of RLS's region/location tables and gauges
+# instead of being copied per-output. Colour thresholds match BRUV's exactly
+# (<=-50% red, <=-20% amber, else blue) - no RLS-specific recalibration asked
+# for.
+rls_fmt_pct_change_html <- function(vals) {
+  vals_chr <- as.character(vals)
+
+  # "Undefined - pre-bloom zero" (RLS-only case, see script 10) is treated
+  # the same as "Surveys incomplete" - a percentage change isn't meaningful
+  # off a zero baseline.
+  is_incomplete <- grepl("Surveys incomplete", vals_chr, ignore.case = TRUE) |
+    grepl("Undefined", vals_chr, ignore.case = TRUE) |
+    is.na(vals_chr)
+
+  num <- suppressWarnings(as.numeric(vals_chr))
+  has_num <- !is.na(num) & !is_incomplete
+
+  arrows  <- ifelse(num < 0, "&#8595;", "&#8593;")
+  colours <- ifelse(num <= -50, "#EB5757",
+                    ifelse(num <= -20, "#D4A017", "#3B7EA1"))
+
+  out <- rep("", length(vals_chr))
+  out[has_num] <- sprintf(
+    "<span style='color:%s; font-weight:700;'>%s %s%%</span>",
+    colours[has_num],
+    arrows[has_num],
+    scales::number(abs(num[has_num]), accuracy = 1)
+  )
+  out[is_incomplete] <- "<em>Surveys incomplete</em>"
+  out
+}
+
+# Looks up one metric's `impact` category (Low/Medium/High/Surveys
+# incomplete/Undefined - pre-bloom zero) from one of rls_data's "long"
+# pct-change tables, for the overall (not by-status) Pre-bloom -> Bloom
+# comparison - the same comparison BRUV's own impact gauges use.
+get_rls_metric_impact <- function(pct_change_long_tbl, spatial_col, spatial_value, this_metric_id) {
+  # Guard against a missing/empty CSV (e.g. script 10 hasn't been run, or
+  # rls_data predates this feature) - an empty tibble from read_pct_change()
+  # has none of these columns, so filtering on them would error rather than
+  # just showing "no data" gauges.
+  required_cols <- c(spatial_col, "metric_id", "comparison_type", "status", "impact")
+  if (nrow(pct_change_long_tbl) == 0 || !all(required_cols %in% names(pct_change_long_tbl))) {
+    return(character(0))
+  }
+
+  pct_change_long_tbl %>%
+    dplyr::filter(
+      .data[[spatial_col]] == spatial_value,
+      metric_id == this_metric_id,
+      comparison_type == "period",
+      status == "Overall"
+    ) %>%
+    dplyr::pull(impact)
+}
+
+# One gauge (half-donut-with-dial) for one RLS metric, or a "no data"
+# placeholder - mirrors get_metric_plot()/get_metric_plot_location() below,
+# reusing the same half_donut_with_dial() helper BRUV's gauges use (it only
+# needs a Low/Medium/High status, which script 10 already computes for RLS
+# with the same thresholds BRUV uses).
+get_metric_plot_rls <- function(pct_change_long_tbl, spatial_col, spatial_value,
+                                this_metric_id, title_lab, wrap_width = 16) {
+  txt <- get_rls_metric_impact(pct_change_long_tbl, spatial_col, spatial_value, this_metric_id)
+
+  if (length(txt) == 0 || is.na(txt) || txt %in% c("Surveys incomplete", "Undefined - pre-bloom zero")) {
+    return(no_data_plot(stringr::str_wrap(title_lab, wrap_width)))
+  }
+
+  half_donut_with_dial(values = c(1, 1, 1), mode = "absolute", status = txt) +
+    labs(title = stringr::str_wrap(title_lab, width = wrap_width)) +
+    theme(
+      plot.title  = element_text(hjust = 0.5, face = "bold", size = 11),
+      plot.margin = margin(2, 2, 2, 2)
+    )
+}
+
+# Full gauge grid for Dive: one row per biological metric (metric_group,
+# same 5 groups/order as the "Explore indicators" tabset), one gauge per
+# method/phylum (facet_label) within that row - up to 3 columns. Each gauge
+# is titled "<metric_group_label>: <facet_label>" so it's unambiguous
+# regardless of position, since (unlike the GLMM plots) patchwork gauges
+# can't share one facet strip label per row.
+make_impact_gauges_rls <- function(pct_change_long_tbl, spatial_col, spatial_value) {
+  rows <- lapply(seq_len(nrow(rls_data$metric_groups)), function(i) {
+    this_group       <- rls_data$metric_groups$metric_group[i]
+    this_group_label <- rls_data$metric_groups$metric_group_label[i]
+
+    group_rows <- rls_data$metric_lookup %>%
+      dplyr::filter(metric_group == this_group)
+
+    gauges <- lapply(seq_len(nrow(group_rows)), function(j) {
+      get_metric_plot_rls(
+        pct_change_long_tbl, spatial_col, spatial_value,
+        this_metric_id = group_rows$metric_id[j],
+        title_lab = paste0(this_group_label, ": ", group_rows$facet_label[j])
+      )
+    })
+
+    Reduce(`|`, gauges)
+  })
+
+  Reduce(`/`, rows)
+}
+
 get_metric_plot <- function(metric_id, title_lab, wrap_width = 22, chosen_region) {
   
   txt <- hab_data$impact_data |>
@@ -408,8 +516,42 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
 }
 
 
+# RLS-specific tab body for the Dive "Explore indicators" tabset. Unlike
+# metric_tab_body_ui() (whose switch() dispatches on BRUV's own metric
+# ids), every RLS tab now shows the same three plots - period, period x
+# status, temporal - stacked full width, one tab per biological metric
+# (metric_group), each plot internally faceted by method/phylum
+# (facet_label) - see rls_metric_lookup / rls_metric_groups in script 15.
+# Full width (not the side-by-side main+status BRUV uses) because each
+# plot can now have up to 3 facet panels and would be cramped at half
+# width.
+rls_metric_group_tab_body_ui <- function(metric_group, prefix = "rls_loc") {
+  tagList(
+    bslib::layout_columns(
+      col_widths = c(12),
+      bslib::input_switch(
+        id = metric_plot_type_input_id(prefix, metric_group),
+        label = "Show boxplots (instead of bars)",
+        value = FALSE  # FALSE = default bars
+      )
+    ),
+    layout_columns(
+      col_widths = c(12),
+      metric_plot_with_downloads(prefix, metric_group, "main")
+    ),
+    layout_columns(
+      col_widths = c(12),
+      metric_plot_with_downloads(prefix, metric_group, "status")
+    ),
+    layout_columns(
+      col_widths = c(12),
+      metric_plot_with_downloads(prefix, metric_group, "year")
+    )
+  )
+}
+
 metric_plot_with_downloads <- function(prefix, data_id, plot_id) {
-  
+
   tagList(
     metric_plotOutput(prefix, data_id, plot_id),
     
@@ -681,6 +823,210 @@ plot_stacked_species <- function(
     ) +
     plot_theme
 }
+
+# ---------------------------------------------------------------------------
+# RLS (Dive) equivalents of the species-plot helpers above.
+#
+# RLS stacked/top-abundance data covers THREE separate RLS "methods" (M1
+# fish, M2 fish, M2 invertebrates) for every region/location, whereas each
+# BRUV plot only ever covers one set of species. Rather than cram all three
+# into a single ggplot (which would need up to 3x14 fill colours for the
+# stacked plot, and mismatched top-N species per method for the
+# common-species plot), each RLS plot below builds one panel per method and
+# combines them:
+#   - plot_stacked_taxa_rls() calls the EXISTING plot_stacked_species() once
+#     per method and combines the panels with patchwork::wrap_plots() - each
+#     panel keeps its own independent colour legend, since the top species
+#     are picked separately per method.
+#   - plot_top_taxa_rls() uses facet_wrap(scales = "free") instead, since
+#     species there are only used for the y-axis (not for colour) - one plot
+#     with free x AND y scales works and needs no extra package. Free x is
+#     important here: M2 invertebrate abundances are much smaller than fish
+#     abundances, so without it their bars are invisible next to the fish
+#     panels on a shared 0-100 scale.
+#
+# Both stack their method-panels one above the other (M1 fish / M2 fish /
+# M2 invertebrates, top to bottom) rather than side by side, per Brooke's
+# request - pre-bloom and bloom stay as two side-by-side plots (as BRUVS
+# already shows them), each of which stacks its own methods vertically.
+# BRUVS only ever has one method, so its plots are unaffected (one row).
+#
+# Both take a `spatial_level_value` of "region" or "location" so the SAME
+# code drives the Region Summary and Location Summary tabs - once region-
+# level rows exist in rls_data$stacked_period / stacked_period_split /
+# top_occurrence_abundance_selection (scripts 08 & 09 re-run with region
+# enabled), these will start finding and plotting them automatically.
+# ---------------------------------------------------------------------------
+
+plot_stacked_taxa_rls <- function(
+    stacked_df,
+    spatial_level_value,
+    group_value,
+    colour_pool = species_colours
+) {
+
+  df <- stacked_df %>%
+    dplyr::filter(
+      spatial_level == spatial_level_value,
+      group_name == group_value
+    ) %>%
+    dplyr::rename(species_plot = taxon_plot)
+
+  methods_present <- df %>%
+    dplyr::distinct(method) %>%
+    dplyr::arrange(method) %>%
+    dplyr::pull(method)
+
+  # plot_stacked_species() computes (but never draws - the geom_text call
+  # inside it is commented out) a data frame of "Other" labels; an empty
+  # one with the right columns is all it needs. IMPORTANT: don't include a
+  # "percent" column here - plot_stacked_species() left_joins this onto a
+  # table that also has "percent", and if both sides already have that
+  # column dplyr suffixes them (percent.x/percent.y) instead of leaving a
+  # plain "percent" column, which then makes its own `percent / 2`
+  # calculation silently resolve to scales::percent (a function) instead
+  # of data and error with "non-numeric argument to binary operator".
+  empty_labels <- tibble::tibble(
+    group_name  = character(),
+    period_name = character(),
+    label       = character()
+  )
+
+  if (length(methods_present) == 0) {
+    return(
+      ggplot2::ggplot() +
+        ggplot2::annotate("text", x = 0, y = 0, label = "No stacked abundance data available") +
+        ggplot2::theme_void()
+    )
+  }
+
+  panels <- lapply(methods_present, function(m) {
+    plot_stacked_species(
+      plot_df       = df %>% dplyr::filter(method == m),
+      other_labels  = empty_labels,
+      selected_name = group_value,
+      colour_pool   = colour_pool
+    ) +
+      ggplot2::labs(title = m) +
+      ggplot2::theme(
+        plot.title = ggplot2::element_text(face = "bold", size = 13)
+      )
+  })
+
+  # Stacked one above the other (M1 fish / M2 fish / M2 invertebrates), not
+  # side by side - see server.R's comment above plot_top_taxa_rls() for why.
+  patchwork::wrap_plots(panels, ncol = 1)
+}
+
+plot_top_taxa_rls <- function(
+    selection_df,
+    spatial_level_value,
+    group_value,
+    focal_period,
+    title_lab,
+    number_species
+) {
+
+  period_cols <- c(
+    "Pre-bloom"  = "#193b73",
+    "Bloom"      = "#92bd83",
+    "Post-bloom" = "#92bd83"
+  )
+
+  df_raw <- selection_df %>%
+    dplyr::filter(
+      spatial_level == spatial_level_value,
+      group_name == group_value
+    )
+
+  # Top N species PER RLS method (dataset_label), within the focal period -
+  # keeps M1 fish / M2 fish / M2 invertebrates picks independent of each
+  # other, rather than one shared top-N across all of them.
+  top_by_dataset <- df_raw %>%
+    dplyr::filter(focus_group == focal_period) %>%
+    dplyr::group_by(dataset_label) %>%
+    dplyr::slice_max(
+      order_by  = average_abundance,
+      n         = number_species,
+      with_ties = FALSE
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::distinct(dataset_label, display_name)
+
+  plot_df <- df_raw %>%
+    dplyr::inner_join(top_by_dataset, by = c("dataset_label", "display_name"))
+
+  # Defensive: with no rows there's no dataset_label to facet on at all,
+  # which makes facet_wrap() error out ("Faceting variables must have at
+  # least one value") rather than just drawing an empty panel. This can
+  # happen genuinely (no data for this group) or transiently (the method
+  # switch fired before the location dropdown updated to match it) - show
+  # a message instead of crashing either way.
+  if (nrow(plot_df) == 0) {
+    return(
+      ggplot2::ggplot() +
+        ggplot2::annotate("text", x = 0, y = 0, label = paste("No data available for:", group_value)) +
+        ggplot2::theme_void() +
+        ggplot2::labs(title = title_lab)
+    )
+  }
+
+  period_levels <- c("Pre-bloom", setdiff(unique(plot_df$focus_group), "Pre-bloom"))
+  plot_df$focus_group <- factor(plot_df$focus_group, levels = period_levels)
+
+  # A facet-unique key so free_y scales can order species independently
+  # within each method's panel (base ggplot2 has no built-in "reorder
+  # within facet" - the trick is to make the factor levels unique per facet,
+  # then strip the method prefix back off again for the axis labels).
+  plot_df <- plot_df %>%
+    dplyr::mutate(label_key = paste(dataset_label, display_name, sep = "___"))
+
+  order_levels <- plot_df %>%
+    dplyr::filter(focus_group == focal_period) %>%
+    dplyr::arrange(dataset_label, average_abundance) %>%
+    dplyr::pull(label_key) %>%
+    unique()
+
+  # Belt-and-braces: any label_key not covered above (shouldn't happen -
+  # top_by_dataset is derived from the focal period already).
+  order_levels <- c(order_levels, setdiff(unique(plot_df$label_key), order_levels))
+
+  plot_df$label_key <- factor(plot_df$label_key, levels = order_levels)
+
+  dodge <- ggplot2::position_dodge(width = 0.8)
+
+  ggplot2::ggplot(
+    plot_df,
+    ggplot2::aes(x = average_abundance, y = label_key, fill = focus_group)
+  ) +
+    ggplot2::geom_col(position = dodge) +
+    ggplot2::geom_errorbarh(
+      ggplot2::aes(
+        xmin = average_abundance - abundance_se,
+        xmax = average_abundance + abundance_se
+      ),
+      position = dodge,
+      height   = 0.3
+    ) +
+    ggplot2::facet_wrap(~ dataset_label, scales = "free", ncol = 1) +
+    ggplot2::scale_y_discrete(labels = function(x) sub("^.*___", "", x)) +
+    ggplot2::scale_fill_manual(values = period_cols) +
+    ggplot2::labs(
+      x     = "Average abundance per transect",
+      y     = NULL,
+      title = title_lab,
+      fill  = NULL
+    ) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, 0.05))) +
+    ggplot2::theme_classic() +
+    ggplot2::theme(
+      legend.position = "bottom",
+      axis.text.y     = ggtext::element_markdown(size = 11),
+      strip.text      = ggplot2::element_text(face = "bold")
+    ) +
+    plot_theme
+}
+
 # plot_stacked_species <- function(
 #     plot_df,
 #     other_labels,
@@ -765,11 +1111,42 @@ plot_stacked_species <- function(
 # ------------------------------ server ---------------------------------------
 
 server <- function(input, output, session) {
-  
+
   regions_joined <- hab_data$regions_shp |>
-    left_join(hab_data$regions_summaries, by = "region") %>% 
+    left_join(hab_data$regions_summaries, by = "region") %>%
     left_join(hab_data$overall_impact)
-  
+
+  # ---- RLS (Dive) narrative summary text: live-read from csv ---------------
+  # These two lookup csvs are created/updated by
+  # "01_Download and format data for app/RLS/15_combine_rls_data_for_app.R"
+  # and are meant to be hand-edited by collaborators afterwards. Reading
+  # them with reactiveFileReader (rather than baking them into
+  # rls_data.Rdata) means a saved edit shows up in the running app within
+  # a few seconds, with no restart needed.
+  rls_region_summary_text <- if (!is.null(rls_data) && file.exists(rls_data$region_summary_lookup_path)) {
+    reactiveFileReader(
+      intervalMillis = 5000,
+      session        = session,
+      filePath       = rls_data$region_summary_lookup_path,
+      readFunc       = readr::read_csv,
+      show_col_types = FALSE
+    )
+  } else {
+    function() tibble::tibble(region = character(), summary = character())
+  }
+
+  rls_location_summary_text <- if (!is.null(rls_data) && file.exists(rls_data$location_summary_lookup_path)) {
+    reactiveFileReader(
+      intervalMillis = 5000,
+      session        = session,
+      filePath       = rls_data$location_summary_lookup_path,
+      readFunc       = readr::read_csv,
+      show_col_types = FALSE
+    )
+  } else {
+    function() tibble::tibble(reporting_location = character(), summary = character())
+  }
+
   # Default selected region (first available)
   # selected_region <- reactiveVal({
   #   (regions_joined$region[!is.na(regions_joined$region)])[8]
@@ -1198,14 +1575,21 @@ server <- function(input, output, session) {
   # ---- Summary text ----
   output$region_summary_text <- renderUI({
     req(input$region)
-    
+
     reg <- input$region
-    
-    txt <- hab_data$regions_summaries |>
-      dplyr::filter(region == reg) |>
-      dplyr::pull(summary) %>%
-      dplyr::glimpse()
-    
+
+    txt <- if (identical(input$method, "Dive")) {
+      rls_region_summary_text() |>
+        dplyr::filter(region == reg) |>
+        dplyr::pull(summary)
+    } else {
+      hab_data$regions_summaries |>
+        dplyr::filter(region == reg) |>
+        dplyr::pull(summary)
+    }
+
+    if (length(txt) == 0) txt <- "Add summary text for this region."
+
     HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
   })
   
@@ -1369,29 +1753,69 @@ server <- function(input, output, session) {
   
   output$overall_impact_gauge <- renderPlot({
     req(input$region)
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+      # Mirrors BRUV's own convention (make_overall_impact_gauge() above)
+      # of using the Shannon diversity index as the single "overall
+      # impact" headline gauge. RLS has 3 Shannon diversity metrics (one
+      # per method) rather than BRUV's one - M1 fish is shown here as the
+      # representative one. Let us know if a different metric, or a
+      # combination of the three, would be more meaningful.
+      return(
+        get_metric_plot_rls(
+          rls_data$pct_change_region, "spatial_group", input$region,
+          this_metric_id = "m1_fish_shannon",
+          title_lab = "M1 fish Shannon diversity index"
+        )
+      )
+    }
+
     make_overall_impact_gauge(input$region)
   })
-  
+
   output$region_impact_gauges <- renderPlot({
     req(input$region)
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+      return(make_impact_gauges_rls(rls_data$pct_change_region, "spatial_group", input$region))
+    }
+
     make_impact_gauges(input$region)
+  }, height = function() {
+    # Dive's gauge grid has 5 rows (one per biological metric) vs BRUV's
+    # 2 rows (6 metrics in a 3x2 grid) - see "Region Impact overview"
+    # card's fill = FALSE in ui.R for why the card can grow to match.
+    if (identical(input$method, "Dive")) 780 else 300
   })
   
+  # Filters to whichever method is selected in this tab's BRUVS / Dive
+  # switch (input$method). RLS uses rls_data$sites (its own location/region
+  # vocabulary, already carrying plain lat/lon columns).
   deployments <- reactive({
-    deployments <- hab_data$hab_combined_metadata %>%
-      dplyr::filter(region %in% input$region) 
-    
-    # Extract coordinates
-    coords <- st_coordinates(deployments)
-    
-    # Convert coordinates to a data frame or tibble
-    coords_df <- as.data.frame(coords)
-    
-    # Rename columns for clarity (optional)
-    colnames(coords_df) <- c("longitude_dd", "latitude_dd")
-    
-    # Bind the new coordinate columns to the original sf object
-    deployments <- bind_cols(deployments, coords_df)
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+
+      rls_data$sites %>%
+        dplyr::filter(region %in% input$region) %>%
+        dplyr::rename(longitude_dd = longitude, latitude_dd = latitude)
+    } else {
+      deployments <- hab_data$hab_combined_metadata %>%
+        dplyr::filter(region %in% input$region, method %in% "BRUVs")
+
+      # Extract coordinates
+      coords <- st_coordinates(deployments)
+
+      # Convert coordinates to a data frame or tibble
+      coords_df <- as.data.frame(coords)
+
+      # Rename columns for clarity (optional)
+      colnames(coords_df) <- c("longitude_dd", "latitude_dd")
+
+      # Bind the new coordinate columns to the original sf object
+      bind_cols(deployments, coords_df)
+    }
   })
   
   min_lat <- reactive({min(deployments()$latitude_dd, na.rm = TRUE)})
@@ -1400,59 +1824,58 @@ server <- function(input, output, session) {
   max_lon <- reactive({max(deployments()$longitude_dd, na.rm = TRUE)})
   
   output$region_survey_effort <- renderLeaflet({
-    method_cols <- c("BRUVs" = "#004DA7"
-                     # , "UVC" = "#C600FF"
-    )
-    
-    pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
-      dplyr::filter(region %in% input$region)
-    
+    req(input$region)
+
+    is_dive <- identical(input$method, "Dive")
+
+    method_cols <- if (is_dive) c("Dive" = "#C600FF") else c("BRUVs" = "#004DA7")
+
+    pts <- if (is_dive) {
+      req(rls_data)
+      ensure_sf_ll(rls_data$sites, lon = "longitude", lat = "latitude") %>%
+        dplyr::filter(region %in% input$region)
+    } else {
+      ensure_sf_ll(hab_data$hab_combined_metadata) %>%
+        dplyr::filter(region %in% input$region, method %in% "BRUVs")
+    }
+
     shp <- regions_joined %>%
       dplyr::filter(region %in% input$region)
-    
+
     m <- base_map(current_zoom = 7) %>%
-      fitBounds(min_lon(), min_lat(), max_lon(), max_lat()) %>%
-      
       # polygons for reporting region
       addPolygons(
         data = shp,
         layerId = ~region,
         label   = ~region,
-        # color = ~hab_data$pal_factor(regions_joined$overall_impact),#"#444444",
         weight = 5,
         opacity = 1,
-        fillOpacity = 0#, #0.7
-        # fillColor = ~hab_data$pal_factor(regions_joined$overall_impact),
-        # group = "Impact regions",
-        # options = pathOptions(pane = "highlight"),
-        # highlightOptions = highlightOptions(
-        #   color = "white",
-        #   weight = 6,
-        #   bringToFront = TRUE
-        # )
+        fillOpacity = 0
       )
-    
-    # add points (no curly block after a pipe)
-    # if (has_leafgl()) {
-    # m <- leafgl::addGlPoints(
-    #   m, 
-    #   data = pts, 
-    #   fillColor = method_cols[pts$method], 
-    #   weight = 1, 
-    #   popup = pts$popup, 
-    #   group = "Sampling locations", pane = "points"
-    # )
-    # } else {
-    m <- addCircleMarkers(
-      m, data = pts, radius = 6, fillColor = "#004DA7", fillOpacity = 1,
-      weight = 1, color = "black", popup = pts$popup,
-      group = "Sampling locations", options = pathOptions(pane = "points")
-    )
-    # }
-    
-    
-    
-    
+
+    # Guard against a region with no geocoded points (Inf/-Inf bounds
+    # would otherwise crash fitBounds).
+    if (nrow(pts) > 0 &&
+        is.finite(min_lon()) && is.finite(min_lat()) &&
+        is.finite(max_lon()) && is.finite(max_lat())) {
+      m <- m %>% fitBounds(min_lon(), min_lat(), max_lon(), max_lat())
+    }
+
+    point_fill <- if (is_dive) "#C600FF" else "#004DA7"
+
+    if (nrow(pts) > 0) {
+      m <- addCircleMarkers(
+        m, data = pts, radius = 6, fillColor = point_fill, fillOpacity = 1,
+        weight = 1, color = "black", popup = pts$popup,
+        group = "Sampling locations", options = pathOptions(pane = "points")
+      )
+    } else {
+      warning(
+        "No geocoded ", if (is_dive) "Dive" else "BRUVS",
+        " points found for region '", input$region, "'."
+      )
+    }
+
     addLegend(m,
               "topright",
               colors = unname(method_cols),
@@ -1463,7 +1886,7 @@ server <- function(input, output, session) {
               layerId = "methodLegend"
     ) %>%
       hideGroup("Australian Marine Parks")
-    
+
     return(m)
   })
   
@@ -1483,7 +1906,26 @@ server <- function(input, output, session) {
   # Build a tabbed card with one tab per metric
   output$region_tabset <- renderUI({
     req(input$region)
-    
+
+    if (identical(input$method, "Dive")) {
+      # RLS's GLMMs are fitted per LOCATION only (see script 11 / the
+      # diagnostics in script 15) - there is no region-level modelled-means
+      # data to show here. Point people at the Location Summary tab instead
+      # of rendering an empty/broken tabset.
+      return(
+        card(
+          card_header("Explore indicators"),
+          p(
+            "Modelled means (from the RLS GLMMs) are only available at the ",
+            strong("location"), " level, since each model is fitted per ",
+            "location rather than per region. Switch to the ",
+            strong("Location Summary"), " tab to explore Dive indicators, ",
+            "or choose BRUVS here to see region-level indicators."
+          )
+        )
+      )
+    }
+
     bslib::navset_card_tab(
       !!!lapply(names(metric_defs), function(id) {
         bslib::nav(
@@ -3296,7 +3738,52 @@ server <- function(input, output, session) {
   # ---- HAB % change summary table (per region) ------------------------------
   output$region_change_table <- renderUI({
     req(input$region)
-    
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+
+      # Guard against a missing/empty CSV (script 10 not yet run for this
+      # rls_data build) - an empty tibble has none of these columns.
+      required_cols <- c("spatial_group", "comparison_type", "metric", "change_overall")
+      if (nrow(rls_data$pct_change_region_wide) == 0 ||
+          !all(required_cols %in% names(rls_data$pct_change_region_wide))) {
+        return(tags$em("No percentage-change data available for this region."))
+      }
+
+      df <- rls_data$pct_change_region_wide %>%
+        dplyr::filter(spatial_group == input$region, comparison_type == "period") %>%
+        dplyr::select(
+          Metric = metric,
+          Change = change_overall
+        )
+
+      if (nrow(df) == 0) {
+        return(tags$em("No percentage-change data available for this region."))
+      }
+
+      out <- rls_fmt_pct_change_html(df$Change)
+
+      return(
+        tags$table(
+          class = "table table-sm hab-table",
+          tags$thead(
+            tags$tr(
+              tags$th("Metric"),
+              tags$th("Change")
+            )
+          ),
+          tags$tbody(
+            lapply(seq_len(nrow(df)), function(i) {
+              tags$tr(
+                tags$td(df$Metric[i]),
+                tags$td(HTML(out[i]))
+              )
+            })
+          )
+        )
+      )
+    }
+
     df <- hab_metric_change |>
       dplyr::filter(region == input$region) |>
       dplyr::select(
@@ -3595,6 +4082,21 @@ server <- function(input, output, session) {
   
   output$region_common_pre <- renderPlot({
     req(input$region)
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+      return(
+        plot_top_taxa_rls(
+          selection_df         = rls_data$top_occurrence_abundance_selection,
+          spatial_level_value  = "region",
+          group_value          = input$region,
+          focal_period         = "Pre-bloom",
+          title_lab            = "Most common species pre-bloom",
+          number_species       = input$region_number_species
+        )
+      )
+    }
+
     make_top10_plot(
       region_name    = input$region,
       focal_period   = "Pre-bloom",
@@ -3603,10 +4105,25 @@ server <- function(input, output, session) {
       split_status   = input$region_species_status,
       facet_status   = input$region_species_facet
     )
-  })
-  
+  }, height = function() if (identical(input$method, "Dive")) 950 else 550)
+
   output$region_common_post <- renderPlot({
     req(input$region)
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+      return(
+        plot_top_taxa_rls(
+          selection_df         = rls_data$top_occurrence_abundance_selection,
+          spatial_level_value  = "region",
+          group_value          = input$region,
+          focal_period         = "Post-bloom",
+          title_lab            = "Most common species post-bloom",
+          number_species       = input$region_number_species
+        )
+      )
+    }
+
     make_top10_plot(
       region_name    = input$region,
       focal_period   = "Bloom",
@@ -3615,23 +4132,35 @@ server <- function(input, output, session) {
       split_status   = input$region_species_status,
       facet_status   = input$region_species_facet
     )
-  })
-  
+  }, height = function() if (identical(input$method, "Dive")) 950 else 550)
+
   # Downloads -----
-  
+
   region_common_results <- reactive({
-    
+
     req(input$region)
-    
-    hab_data$region_top_species_average |> 
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+      return(
+        rls_data$top_occurrence_abundance_selection %>%
+          dplyr::filter(spatial_level == "region", group_name == input$region) %>%
+          dplyr::mutate(
+            average_abundance = round(average_abundance, digits = 3),
+            abundance_se       = round(abundance_se, digits = 3)
+          )
+      )
+    }
+
+    hab_data$region_top_species_average |>
       dplyr::filter(region == input$region) %>%
       dplyr::mutate(
         average = clean_number(average),
         se = clean_number(se)
       ) %>%
       dplyr::mutate(average = round(average, digits = 3)) %>%
-      dplyr::mutate(se = round(se, digits = 3)) 
-    
+      dplyr::mutate(se = round(se, digits = 3))
+
   })
   
   region_common_results_name <- reactive({
@@ -3654,6 +4183,32 @@ server <- function(input, output, session) {
   
   region_common_plots <- reactive({
     req(input$region)
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+      p1 <- plot_top_taxa_rls(
+        selection_df        = rls_data$top_occurrence_abundance_selection,
+        spatial_level_value = "region",
+        group_value         = input$region,
+        focal_period        = "Pre-bloom",
+        title_lab           = "Most common species pre-bloom",
+        number_species      = input$region_number_species
+      )
+
+      p2 <- plot_top_taxa_rls(
+        selection_df        = rls_data$top_occurrence_abundance_selection,
+        spatial_level_value = "region",
+        group_value         = input$region,
+        focal_period        = "Post-bloom",
+        title_lab           = "Most common species post-bloom",
+        number_species      = input$region_number_species
+      )
+
+      # Pre/post side by side, each already stacking its own RLS methods
+      # top to bottom - matches the on-screen layout.
+      return(p1 | p2)
+    }
+
     p1 <- make_top10_plot(
       region_name  = input$region,
       focal_period   = "Pre-bloom",
@@ -3662,7 +4217,7 @@ server <- function(input, output, session) {
       split_status   = input$region_species_status,
       facet_status   = input$region_species_facet
     )
-    
+
     p2 <- make_top10_plot(
       region_name  = input$region,
       focal_period   = "Bloom",
@@ -3671,22 +4226,23 @@ server <- function(input, output, session) {
       split_status   = input$region_species_status,
       facet_status   = input$region_species_facet
     )
-    
+
     p1 + p2
-    
+
   })
-  
+
   output$region_common_download_plot <- downloadHandler(
     filename = function() {
       paste0(region_common_results_name(), "_most_common_species_plots", "_", Sys.Date(), ".png"
       )
     },
     content = function(file) {
+      is_dive <- identical(input$method, "Dive")
       ggplot2::ggsave(
         filename = file,
         plot = region_common_plots(),
-        width = 16,
-        height = 5,
+        width  = if (is_dive) 14 else 16,
+        height = if (is_dive) 12 else 5,
         dpi = 300
       )
     }
@@ -3991,18 +4547,35 @@ server <- function(input, output, session) {
   
   # 1. Summarise years by region ----
   years_by_region <- reactive({
-    hab_data$year_dat |>
-      dplyr::filter(method %in% "BRUVs") %>%
-      dplyr::distinct(region, year) |>
-      dplyr::group_by(region) |>
-      dplyr::summarise(
-        n_years       = dplyr::n(),
-        years_sampled = paste(sort(unique(year)), collapse = ", "),
-        .groups       = "drop"
-      ) |>
-      dplyr::ungroup() %>%
-      dplyr::filter(region %in% input$region) #%>%
-    #glimpse()
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+
+      rls_data$samples |>
+        dplyr::mutate(year = lubridate::year(sampling_event_start_date)) |>
+        dplyr::filter(!is.na(year)) |>
+        dplyr::distinct(region, year) |>
+        dplyr::group_by(region) |>
+        dplyr::summarise(
+          n_years       = dplyr::n(),
+          years_sampled = paste(sort(unique(year)), collapse = ", "),
+          .groups       = "drop"
+        ) |>
+        dplyr::ungroup() %>%
+        dplyr::filter(region %in% input$region)
+    } else {
+      hab_data$year_dat |>
+        dplyr::filter(method %in% "BRUVs") %>%
+        dplyr::distinct(region, year) |>
+        dplyr::group_by(region) |>
+        dplyr::summarise(
+          n_years       = dplyr::n(),
+          years_sampled = paste(sort(unique(year)), collapse = ", "),
+          .groups       = "drop"
+        ) |>
+        dplyr::ungroup() %>%
+        dplyr::filter(region %in% input$region) #%>%
+      #glimpse()
+    }
   })
   
   # 2. Nicely formatted text for the selected region ----
@@ -4021,20 +4594,40 @@ server <- function(input, output, session) {
   # ===== LOCATION SUMMARY (mirrors Region Summary) =============================
   
   # (A) Build a location list (optionally filtered by region)
+  # BRUVS and Dive use different location vocabularies (RLS locations are
+  # not the same set of names as the BRUV "reporting_name" locations, even
+  # though their regions match), so the choices offered here depend on
+  # which method is currently selected in this tab.
   locations_all <- reactive({
-    
+
     hab_data$hab_combined_metadata |>
       dplyr::filter(!reporting_name %in% "NA") %>%
       dplyr::pull(reporting_name) |>
       unique() |>
       sort()
   })
-  
-  # (B) Populate location choices
+
+  rls_locations_all <- reactive({
+    req(rls_data)
+
+    rls_data$samples |>
+      dplyr::filter(!is.na(location), location != "") |>
+      dplyr::pull(location) |>
+      unique() |>
+      sort()
+  })
+
+  # (B) Populate location choices - swap vocabulary when the BRUVS / Dive
+  # switch for this tab changes.
   observe({
-    # If you want location list *dependent* on selected region:
-    req(input$region)
-    locs <- locations_all()
+    req(input$methodlocation)
+
+    locs <- if (identical(input$methodlocation, "Dive")) {
+      rls_locations_all()
+    } else {
+      locations_all()
+    }
+
     updateSelectizeInput(
       session, "location",
       choices  = locs,
@@ -4044,89 +4637,146 @@ server <- function(input, output, session) {
   })
   
   # (C) Summary text for location (needs a location summaries table)
-  # If you don't have hab_data$locations_summaries yet, see note below.
   output$location_summary_text <- renderUI({
     req(input$location)
-    
-    txt <- hab_data$locations_summaries |>
-      dplyr::filter(reporting_name == input$location) |>
-      dplyr::pull(summary)
-    
+
+    txt <- if (identical(input$methodlocation, "Dive")) {
+      rls_location_summary_text() |>
+        dplyr::filter(reporting_location == input$location) |>
+        dplyr::pull(summary)
+    } else {
+      hab_data$locations_summaries |>
+        dplyr::filter(reporting_name == input$location) |>
+        dplyr::pull(summary)
+    }
+
+    if (length(txt) == 0) txt <- "Add summary text for this location."
+
     HTML(markdown::markdownToHTML(text = txt, fragment.only = TRUE))
   })
-  
-  # (D) Years sampled for location (BRUVs only, same as your region pattern)
+
+  # (D) Years sampled for location - branches on the Location Summary tab's
+  # BRUVS / Dive switch, same pattern as years_by_region above.
   years_by_location <- reactive({
-    hab_data$year_dat |>
-      dplyr::filter(method %in% "BRUVs") |>
-      dplyr::distinct(reporting_name, year) |>
-      dplyr::group_by(reporting_name) |>
-      dplyr::summarise(
-        n_years       = dplyr::n(),
-        years_sampled = paste(sort(unique(year)), collapse = ", "),
-        .groups       = "drop"
-      )
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+
+      rls_data$samples |>
+        dplyr::mutate(
+          year            = lubridate::year(sampling_event_start_date),
+          reporting_name  = location
+        ) |>
+        dplyr::filter(!is.na(year)) |>
+        dplyr::distinct(reporting_name, year) |>
+        dplyr::group_by(reporting_name) |>
+        dplyr::summarise(
+          n_years       = dplyr::n(),
+          years_sampled = paste(sort(unique(year)), collapse = ", "),
+          .groups       = "drop"
+        )
+    } else {
+      hab_data$year_dat |>
+        dplyr::filter(method %in% "BRUVs") |>
+        dplyr::distinct(reporting_name, year) |>
+        dplyr::group_by(reporting_name) |>
+        dplyr::summarise(
+          n_years       = dplyr::n(),
+          years_sampled = paste(sort(unique(year)), collapse = ", "),
+          .groups       = "drop"
+        )
+    }
   })
-  
+
   output$years_for_location <- renderText({
     req(input$location)
-    
+
     years_by_location() |>
       dplyr::filter(reporting_name == input$location) |>
       dplyr::pull(years_sampled)
   })
   
   # Map of deployments
+  # Location-level survey effort map - filters to whichever method is
+  # selected in this tab's BRUVS / Dive switch (input$methodlocation).
+  # RLS locations use rls_data$sites (its own location vocabulary, with
+  # lat/lon columns), while BRUVS keeps using hab_combined_metadata.
   location_deployments <- reactive({
     req(input$location)
-    
-    deployments <- hab_data$hab_combined_metadata %>%
-      dplyr::filter(reporting_name %in% input$location)
-    
-    coords <- sf::st_coordinates(deployments)
-    coords_df <- as.data.frame(coords)
-    colnames(coords_df) <- c("longitude_dd", "latitude_dd")
-    
-    dplyr::bind_cols(deployments, coords_df)
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+
+      rls_data$sites %>%
+        dplyr::filter(location %in% input$location) %>%
+        dplyr::rename(longitude_dd = longitude, latitude_dd = latitude)
+    } else {
+      deployments <- hab_data$hab_combined_metadata %>%
+        dplyr::filter(reporting_name %in% input$location, method %in% "BRUVs")
+
+      coords <- sf::st_coordinates(deployments)
+      coords_df <- as.data.frame(coords)
+      colnames(coords_df) <- c("longitude_dd", "latitude_dd")
+
+      dplyr::bind_cols(deployments, coords_df)
+    }
   })
-  
+
   loc_min_lat <- reactive({ min(location_deployments()$latitude_dd,  na.rm = TRUE) })
   loc_min_lon <- reactive({ min(location_deployments()$longitude_dd, na.rm = TRUE) })
   loc_max_lat <- reactive({ max(location_deployments()$latitude_dd,  na.rm = TRUE) })
   loc_max_lon <- reactive({ max(location_deployments()$longitude_dd, na.rm = TRUE) })
-  
+
   # Add location survey map
   output$location_survey_effort <- renderLeaflet({
     req(input$location)
-    
-    method_cols <- c("BRUVs" = "#004DA7", "UVC" = "#C600FF")
-    
-    pts <- ensure_sf_ll(hab_data$hab_combined_metadata) %>%
-      dplyr::filter(reporting_name %in% input$location)
-    
-    m <- base_map(current_zoom = 7) %>%
-      fitBounds(loc_min_lon(), loc_min_lat(), loc_max_lon(), loc_max_lat())
-    
-    if (has_leafgl()) {
-      m <- leafgl::addGlPoints(
-        m,
-        data      = pts,
-        fillColor = method_cols[pts$method],
-        weight    = 1,
-        popup     = pts$popup,
-        group     = "Sampling locations",
-        pane      = "points"
+
+    is_dive <- identical(input$methodlocation, "Dive")
+
+    method_cols <- if (is_dive) c("Dive" = "#C600FF") else c("BRUVs" = "#004DA7")
+
+    pts <- if (is_dive) {
+      req(rls_data)
+      ensure_sf_ll(rls_data$sites, lon = "longitude", lat = "latitude") %>%
+        dplyr::filter(location %in% input$location)
+    } else {
+      ensure_sf_ll(hab_data$hab_combined_metadata) %>%
+        dplyr::filter(reporting_name %in% input$location, method %in% "BRUVs")
+    }
+
+    m <- base_map(current_zoom = 7)
+
+    # Guard against a location with no geocoded points (would otherwise
+    # crash fitBounds with Inf/-Inf, and leafgl::addGlPoints on an empty
+    # geometry column).
+    if (nrow(pts) > 0 &&
+        is.finite(loc_min_lon()) && is.finite(loc_min_lat()) &&
+        is.finite(loc_max_lon()) && is.finite(loc_max_lat())) {
+      m <- m %>% fitBounds(loc_min_lon(), loc_min_lat(), loc_max_lon(), loc_max_lat())
+    }
+
+    point_fill <- if (is_dive) "#C600FF" else "#004DA7"
+
+    if (nrow(pts) == 0) {
+      warning(
+        "No geocoded ", if (is_dive) "Dive" else "BRUVS",
+        " points found for location '", input$location, "'."
       )
     } else {
+      # Plain circle markers rather than leafgl (WebGL) points: leafgl is
+      # meant for plotting thousands of points at once and has a known
+      # quirk where points don't paint until the map is interacted with
+      # (e.g. zoomed) right after fitBounds(). A single location's site
+      # count is small enough that regular markers are both simpler and
+      # more reliable here.
       m <- leaflet::addCircleMarkers(
         m, data = pts,
-        radius = 6, fillColor = "#f89f00", fillOpacity = 1,
+        radius = 6, fillColor = point_fill, fillOpacity = 1,
         weight = 1, color = "black", popup = pts$popup,
         group = "Sampling locations",
         options = leaflet::pathOptions(pane = "points")
       )
     }
-    
+
     leaflet::addLegend(
       m,
       "topright",
@@ -4187,17 +4837,90 @@ server <- function(input, output, session) {
   
   output$location_overall_impact_gauge <- renderPlot({
     req(input$location)
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+      # See the matching comment on output$overall_impact_gauge (Region
+      # Summary) - same M1 fish Shannon diversity convention.
+      return(
+        get_metric_plot_rls(
+          rls_data$pct_change_location, "spatial_group", input$location,
+          this_metric_id = "m1_fish_shannon",
+          title_lab = "M1 fish Shannon diversity index"
+        )
+      )
+    }
+
     make_overall_impact_gauge_location(input$location)
   })
-  
+
   output$location_impact_gauges <- renderPlot({
     req(input$location)
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+      return(make_impact_gauges_rls(rls_data$pct_change_location, "spatial_group", input$location))
+    }
+
     make_impact_gauges_location(input$location)
+  }, height = function() {
+    if (identical(input$methodlocation, "Dive")) 780 else 350
   })
   
   output$location_change_table <- renderUI({
     req(input$location)
-    
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+
+      required_cols <- c("spatial_group", "comparison_type", "metric", "change_overall", "change_fished", "change_no_take")
+      if (nrow(rls_data$pct_change_location_wide) == 0 ||
+          !all(required_cols %in% names(rls_data$pct_change_location_wide))) {
+        return(tags$em("No percentage-change data available for this location."))
+      }
+
+      df <- rls_data$pct_change_location_wide %>%
+        dplyr::filter(spatial_group == input$location, comparison_type == "period") %>%
+        dplyr::select(
+          Metric = metric,
+          'Change Overall' = change_overall,
+          'Change Fished'  = change_fished,
+          'Change No-take' = change_no_take
+        )
+
+      if (nrow(df) == 0) {
+        return(tags$em("No percentage-change data available for this location."))
+      }
+
+      out_overall <- rls_fmt_pct_change_html(df$`Change Overall`)
+      out_fished  <- rls_fmt_pct_change_html(df$`Change Fished`)
+      out_notake  <- rls_fmt_pct_change_html(df$`Change No-take`)
+
+      return(
+        tags$table(
+          class = "table table-sm hab-table",
+          tags$thead(
+            tags$tr(
+              tags$th("Metric"),
+              tags$th("Change Overall"),
+              tags$th("Change Fished"),
+              tags$th("Change No-take")
+            )
+          ),
+          tags$tbody(
+            lapply(seq_len(nrow(df)), function(i) {
+              tags$tr(
+                tags$td(df$Metric[i]),
+                tags$td(HTML(out_overall[i])),
+                tags$td(HTML(out_fished[i])),
+                tags$td(HTML(out_notake[i]))
+              )
+            })
+          )
+        )
+      )
+    }
+
     df <- hab_metric_change_location |>
       dplyr::filter(reporting_name == input$location) |>
       dplyr::select(
@@ -4206,7 +4929,7 @@ server <- function(input, output, session) {
         'Change Fished' = change_fished,
         'Change No-take' = change_no_take
       )
-    
+
     no_status_locations <- c("Boston Bay", "Glenelg")
     show_status <- !input$location %in% no_status_locations
     
@@ -4265,7 +4988,60 @@ server <- function(input, output, session) {
   
   output$location_change_table_split <- renderUI({
     req(input$location)
-    
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+
+      required_cols <- c("spatial_group", "comparison_type", "metric", "comparison_period", "change_overall")
+      if (nrow(rls_data$pct_change_location_wide) == 0 ||
+          !all(required_cols %in% names(rls_data$pct_change_location_wide))) {
+        return(tags$em("No split-bloom-period percentage-change data available for this location."))
+      }
+
+      df <- rls_data$pct_change_location_wide %>%
+        dplyr::filter(spatial_group == input$location, comparison_type == "period_split") %>%
+        dplyr::select(
+          Metric = metric,
+          Period = comparison_period,
+          change_overall
+        )
+
+      if (nrow(df) == 0) {
+        return(tags$em("No split-bloom-period percentage-change data available for this location."))
+      }
+
+      df <- df %>%
+        tidyr::pivot_wider(names_from = Period, values_from = change_overall)
+
+      period_cols <- setdiff(names(df), "Metric")
+      out_by_col  <- stats::setNames(
+        lapply(period_cols, function(col) rls_fmt_pct_change_html(df[[col]])),
+        period_cols
+      )
+
+      return(
+        tags$table(
+          class = "table table-sm hab-table",
+          tags$thead(
+            tags$tr(
+              tags$th("Metric"),
+              lapply(period_cols, tags$th)
+            )
+          ),
+          tags$tbody(
+            lapply(seq_len(nrow(df)), function(i) {
+              tags$tr(
+                tags$td(df$Metric[i]),
+                lapply(period_cols, function(col) {
+                  tags$td(HTML(out_by_col[[col]][i]))
+                })
+              )
+            })
+          )
+        )
+      )
+    }
+
     df <- hab_metric_change_location_split |>
       dplyr::filter(reporting_name == input$location) |>
       dplyr::select(
@@ -4277,7 +5053,7 @@ server <- function(input, output, session) {
         names_from = Period,
         values_from = percentage_change
       )
-    
+
     fmt_change <- function(vals) {
       vals_chr <- as.character(vals)
       
@@ -4563,6 +5339,21 @@ server <- function(input, output, session) {
   
   output$location_common_pre <- renderPlot({
     req(input$location)
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+      return(
+        plot_top_taxa_rls(
+          selection_df         = rls_data$top_occurrence_abundance_selection,
+          spatial_level_value  = "location",
+          group_value          = input$location,
+          focal_period         = "Pre-bloom",
+          title_lab            = "Most common species pre-bloom",
+          number_species       = input$location_number_species
+        )
+      )
+    }
+
     make_top10_plot_location(
       location_name  = input$location,
       focal_period   = "Pre-bloom",
@@ -4571,10 +5362,25 @@ server <- function(input, output, session) {
       split_status   = input$location_species_status,
       facet_status   = input$location_species_facet
     )
-  })
-  
+  }, height = function() if (identical(input$methodlocation, "Dive")) 950 else 550)
+
   output$location_common_post <- renderPlot({
     req(input$location)
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+      return(
+        plot_top_taxa_rls(
+          selection_df         = rls_data$top_occurrence_abundance_selection,
+          spatial_level_value  = "location",
+          group_value          = input$location,
+          focal_period         = "Post-bloom",
+          title_lab            = "Most common species post-bloom",
+          number_species       = input$location_number_species
+        )
+      )
+    }
+
     make_top10_plot_location(
       location_name  = input$location,
       focal_period   = "Bloom",
@@ -4583,38 +5389,56 @@ server <- function(input, output, session) {
       split_status   = input$location_species_status,
       facet_status   = input$location_species_facet
     )
-  })
-  
+  }, height = function() if (identical(input$methodlocation, "Dive")) 950 else 550)
+
   # Downloads -----
   
   location_common_results <- reactive({
-    
+
     req(input$location)
-    
-    hab_data$location_top_species_average |> 
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+      return(
+        rls_data$top_occurrence_abundance_selection %>%
+          dplyr::filter(spatial_level == "location", group_name == input$location) %>%
+          dplyr::mutate(
+            average_abundance = round(average_abundance, digits = 3),
+            abundance_se       = round(abundance_se, digits = 3)
+          )
+      )
+    }
+
+    hab_data$location_top_species_average |>
       dplyr::filter(reporting_name == input$location)  %>%
       dplyr::mutate(
         average = clean_number(average),
         se = clean_number(se)
       )  %>%
       dplyr::mutate(average = round(average, digits = 3)) %>%
-      dplyr::mutate(se = round(se, digits = 3)) 
-    
+      dplyr::mutate(se = round(se, digits = 3))
+
   })
-  
+
   location_common_results_status <- reactive({
-    
+
     req(input$location)
-    
-    hab_data$location_top_species_average_status |> 
+
+    if (identical(input$methodlocation, "Dive")) {
+      # RLS's top-abundance data has no "status" (Fished / No-take) split -
+      # nothing to return for this download while Dive is selected.
+      validate(need(FALSE, "Not available for Dive data."))
+    }
+
+    hab_data$location_top_species_average_status |>
       dplyr::filter(reporting_name == input$location) %>%
       dplyr::mutate(
         average = clean_number(average),
         se = clean_number(se)
       )  %>%
       dplyr::mutate(average = round(average, digits = 3)) %>%
-      dplyr::mutate(se = round(se, digits = 3)) 
-    
+      dplyr::mutate(se = round(se, digits = 3))
+
   })
   
   location_common_results_name <- reactive({
@@ -4646,6 +5470,32 @@ server <- function(input, output, session) {
   
   location_common_plots <- reactive({
     req(input$location)
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+      p1 <- plot_top_taxa_rls(
+        selection_df        = rls_data$top_occurrence_abundance_selection,
+        spatial_level_value = "location",
+        group_value         = input$location,
+        focal_period        = "Pre-bloom",
+        title_lab           = "Most common species pre-bloom",
+        number_species      = input$location_number_species
+      )
+
+      p2 <- plot_top_taxa_rls(
+        selection_df        = rls_data$top_occurrence_abundance_selection,
+        spatial_level_value = "location",
+        group_value         = input$location,
+        focal_period        = "Post-bloom",
+        title_lab           = "Most common species post-bloom",
+        number_species      = input$location_number_species
+      )
+
+      # Pre/post side by side, each already stacking its own RLS methods
+      # top to bottom - matches the on-screen layout.
+      return(p1 | p2)
+    }
+
     p1 <- make_top10_plot_location(
       location_name  = input$location,
       focal_period   = "Pre-bloom",
@@ -4654,7 +5504,7 @@ server <- function(input, output, session) {
       split_status   = input$location_species_status,
       facet_status   = input$location_species_facet
     )
-    
+
     p2 <- make_top10_plot_location(
       location_name  = input$location,
       focal_period   = "Bloom",
@@ -4663,30 +5513,383 @@ server <- function(input, output, session) {
       split_status   = input$location_species_status,
       facet_status   = input$location_species_facet
     )
-    
+
     p1 + p2
-    
+
   })
-  
+
   output$location_common_download_plot <- downloadHandler(
     filename = function() {
       paste0(location_common_results_name(), "_most_common_species_plots", "_", Sys.Date(), ".png"
       )
     },
     content = function(file) {
+      is_dive <- identical(input$methodlocation, "Dive")
       ggplot2::ggsave(
         filename = file,
         plot = location_common_plots(),
-        width = 12,
-        height = 6,
+        width  = if (is_dive) 14 else 12,
+        height = if (is_dive) 12 else 6,
         dpi = 300
       )
     }
   )
   
+  # ===== RLS (Dive) modelled-means ("Explore indicators") =================
+  #
+  # GLMMs are fitted per LOCATION only (script 11 / script 15's diagnostics
+  # confirm there's no region-level modelled-means row), so this only ever
+  # shows up on the Location Summary tab - see location_tabset below and
+  # the Dive branch added to region_tabset above.
+  #
+  # This reuses the SAME generic UI helpers BRUV's own tabset uses
+  # (metric_tab_body_ui() / metric_plot_with_downloads() /
+  # add_metric_downloads() / metric_plot_id() / metric_plot_type_input_id())
+  # with prefix "rls_loc". None of the 14 RLS metric ids match a named
+  # case inside metric_tab_body_ui()'s switch(), so every one of them
+  # falls into its default layout: a period plot + a period-by-status plot
+  # side by side, plus a temporal trend plot underneath - exactly the
+  # "main" / "status" / "year" shape this loop builds.
+  #
+  # Unlike BRUV (whose *_summary tables are plain observed means - see
+  # richness_status_results() above), RLS already has real GLMM
+  # predictions (script 11) with mean/se/lower/upper columns. So here the
+  # "bars" mode plots the GLMM's modelled mean +/- 95% CI directly, and the
+  # "boxplot" toggle overlays that same modelled mean on top of the raw
+  # per-transect values (rls_data$samples) - mirroring BRUV's own
+  # boxplot-overlays-a-mean pattern, just with a modelled mean instead of a
+  # naive one.
+  if (!is.null(rls_data)) {
+
+    # Colours copied verbatim from script 11 (rls_glmm_models.R)'s own
+    # `period_cols` / `status_cols` - the same script that fits the GLMMs
+    # and made its own diagnostic plots of them - so the app matches "the
+    # code" rather than inventing its own palette.
+    rls_glmm_period_cols <- c(
+      "Pre-bloom" = "#193b73",
+      "Bloom"     = "#92bd83"
+    )
+
+    rls_glmm_status_cols <- c(
+      "Fished"  = "#D98C3F",
+      "No-take" = "#4FA08F"
+    )
+
+    # One tab per biological metric (metric_group), not per method x
+    # metric combination - each of the three plots below is faceted by
+    # facet_label (method, or invertebrate phylum for the M2-invert-only
+    # abundance tab) so all methods show side by side within the tab.
+    lapply(seq_len(nrow(rls_data$metric_groups)), function(i) {
+      local({
+
+        this_metric_group <- rls_data$metric_groups$metric_group[i]
+        this_y_lab         <- rls_data$metric_groups$y_lab[i]
+        prefix             <- "rls_loc"
+
+        # Facet order within this tab. unique() preserves the row order
+        # Brooke wrote in rls_metric_lookup (script 15) rather than
+        # sorting alphabetically, so e.g. M1 fish / M2 fish / M2
+        # invertebrates keeps that order even though it happens to also
+        # be alphabetical.
+        this_facet_levels <- unique(
+          rls_data$metric_lookup$facet_label[rls_data$metric_lookup$metric_group == this_metric_group]
+        )
+
+        # ---- Raw per-transect values (for the boxplot toggle) ----
+        raw_data <- reactive({
+          req(input$location)
+          rls_data$samples %>%
+            dplyr::filter(metric_group == this_metric_group, location == input$location) %>%
+            dplyr::mutate(
+              period      = factor(period, levels = c("Pre-bloom", "Bloom")),
+              facet_label = factor(facet_label, levels = this_facet_levels)
+            )
+        })
+
+        # ---- Period (main) ----
+        main_results <- reactive({
+          req(input$location)
+          rls_data$period_predictions %>%
+            dplyr::filter(metric_group == this_metric_group, location == input$location) %>%
+            dplyr::mutate(
+              period      = factor(period, levels = c("Pre-bloom", "Bloom")),
+              facet_label = factor(facet_label, levels = this_facet_levels)
+            )
+        })
+
+        main_plot <- reactive({
+          req(input$location)
+          show_box <- metric_plot_type(input, prefix, this_metric_group)
+          mean_se  <- main_results()
+
+          if (show_box) {
+            df <- raw_data()
+
+            ggplot(df, aes(x = period, y = value, fill = period)) +
+              geom_boxplot(width = 0.6, outlier.shape = NA, alpha = 0.85, colour = "black") +
+              geom_jitter(aes(colour = period), width = 0.15, height = 0, alpha = 0.35, size = 1.2) +
+              geom_pointrange(
+                data = mean_se,
+                aes(x = period, y = mean, ymin = lower, ymax = upper),
+                inherit.aes = FALSE,
+                colour = "black",
+                linewidth = 0.6
+              ) +
+              facet_wrap(~facet_label, nrow = 1, scales = "free_y") +
+              scale_fill_manual(values = rls_glmm_period_cols, drop = FALSE) +
+              scale_color_manual(values = rls_glmm_period_cols, drop = FALSE) +
+              labs(x = NULL, y = this_y_lab) +
+              theme_minimal(base_size = 16) +
+              theme(
+                legend.position  = "none",
+                panel.grid.minor = element_blank(),
+                panel.grid.major = element_blank()
+              ) +
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+
+          } else {
+            ggplot(mean_se, aes(x = period, y = mean, fill = period)) +
+              geom_col(width = 0.6, colour = "black", alpha = 0.85) +
+              geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.2, linewidth = 0.6) +
+              facet_wrap(~facet_label, nrow = 1, scales = "free_y") +
+              scale_fill_manual(values = rls_glmm_period_cols, drop = FALSE) +
+              labs(x = NULL, y = this_y_lab) +
+              theme_minimal(base_size = 16) +
+              theme(
+                legend.position  = "none",
+                panel.grid.minor = element_blank(),
+                panel.grid.major = element_blank()
+              ) +
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+          }
+        })
+
+        output[[metric_plot_id(prefix, this_metric_group, "main")]] <- renderPlot({
+          main_plot()
+        }) |>
+          bindCache(input$location, input[[metric_plot_type_input_id(prefix, this_metric_group)]]) |>
+          bindEvent(input$location, input[[metric_plot_type_input_id(prefix, this_metric_group)]])
+
+        # ---- Period x status ----
+        status_results <- reactive({
+          req(input$location)
+          rls_data$period_status_predictions %>%
+            dplyr::filter(metric_group == this_metric_group, location == input$location) %>%
+            dplyr::mutate(
+              period      = factor(period, levels = c("Pre-bloom", "Bloom")),
+              status      = factor(status, levels = c("Fished", "No-take")),
+              facet_label = factor(facet_label, levels = this_facet_levels)
+            )
+        })
+
+        status_plot <- reactive({
+          req(input$location)
+          show_box <- metric_plot_type(input, prefix, this_metric_group)
+          mean_se  <- status_results() %>%
+            dplyr::mutate(
+              # %in% (not isTRUE()) because this needs to be vectorised
+              # across all rows, matching script 11's own flagging logic.
+              flag_label = dplyr::if_else(low_replication %in% TRUE, "*", ""),
+              flag_y     = dplyr::if_else(is.finite(upper), upper, mean)
+            )
+
+          dodge <- position_dodge(width = 0.72)
+
+          if (show_box) {
+            # Coloured by status (not period) and dodged at each period, to
+            # match plot_period_status_prediction() in script 11 - the same
+            # function that made the GLMM's own diagnostic plots.
+            df <- raw_data() %>%
+              dplyr::filter(status %in% c("Fished", "No-take")) %>%
+              dplyr::mutate(status = factor(status, levels = c("Fished", "No-take")))
+
+            ggplot(df, aes(x = period, y = value, fill = status)) +
+              geom_boxplot(
+                position = position_dodge(width = 0.8),
+                width = 0.6, outlier.shape = NA, alpha = 0.85, colour = "black"
+              ) +
+              geom_jitter(
+                aes(colour = status),
+                position = position_jitterdodge(jitter.width = 0.15, dodge.width = 0.8),
+                alpha = 0.35, size = 1.2
+              ) +
+              geom_pointrange(
+                data = mean_se,
+                aes(x = period, y = mean, ymin = lower, ymax = upper, group = status),
+                position = position_dodge(width = 0.8),
+                inherit.aes = FALSE,
+                colour = "black",
+                linewidth = 0.6
+              ) +
+              facet_wrap(~facet_label, nrow = 1, scales = "free_y") +
+              scale_fill_manual(values = rls_glmm_status_cols, drop = FALSE) +
+              scale_color_manual(values = rls_glmm_status_cols, drop = FALSE) +
+              labs(x = NULL, y = this_y_lab, fill = NULL) +
+              theme_minimal(base_size = 16) +
+              theme(
+                legend.position  = "bottom",
+                panel.grid.minor = element_blank(),
+                panel.grid.major = element_blank()
+              ) +
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.08)))
+
+          } else {
+            # Matches script 11's plot_period_status_prediction() exactly:
+            # x = period, fill = status, status_cols, with an asterisk
+            # flagging any Period x Status cell with too few sites.
+            ggplot(mean_se, aes(x = period, y = mean, fill = status)) +
+              geom_col(
+                position = dodge, width = 0.62, colour = "black", alpha = 0.9
+              ) +
+              geom_errorbar(
+                data = mean_se %>% dplyr::filter(is.finite(lower), is.finite(upper)),
+                aes(ymin = lower, ymax = upper),
+                position = dodge, width = 0.16, linewidth = 0.6
+              ) +
+              geom_text(
+                aes(y = flag_y, label = flag_label, group = status),
+                position = dodge, vjust = -0.5, size = 5
+              ) +
+              facet_wrap(~facet_label, nrow = 1, scales = "free_y") +
+              scale_fill_manual(values = rls_glmm_status_cols, drop = FALSE) +
+              labs(x = NULL, y = this_y_lab, fill = NULL) +
+              theme_minimal(base_size = 16) +
+              theme(
+                legend.position  = "bottom",
+                panel.grid.minor = element_blank(),
+                panel.grid.major = element_blank()
+              ) +
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.08)))
+          }
+        })
+
+        output[[metric_plot_id(prefix, this_metric_group, "status")]] <- renderPlot({
+          status_plot()
+        }) |>
+          bindCache(input$location, input[[metric_plot_type_input_id(prefix, this_metric_group)]]) |>
+          bindEvent(input$location, input[[metric_plot_type_input_id(prefix, this_metric_group)]])
+
+        # ---- Temporal trend ("year") ----
+        year_results <- reactive({
+          req(input$location)
+          rls_data$temporal_predictions %>%
+            dplyr::filter(metric_group == this_metric_group, location == input$location) %>%
+            dplyr::mutate(
+              sampling_event_start_date = as.Date(sampling_event_start_date),
+              period      = factor(period, levels = c("Pre-bloom", "Bloom")),
+              facet_label = factor(facet_label, levels = this_facet_levels)
+            ) %>%
+            dplyr::arrange(sampling_event_start_date)
+        })
+
+        year_plot <- reactive({
+          req(input$location)
+          show_box <- metric_plot_type(input, prefix, this_metric_group)
+
+          if (show_box) {
+            df <- raw_data() %>%
+              dplyr::mutate(sampling_event_start_date = as.Date(sampling_event_start_date))
+
+            ggplot(
+              df,
+              aes(x = sampling_event_start_date, y = value, group = sampling_event_start_date, fill = period)
+            ) +
+              geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
+              geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 1.2) +
+              facet_wrap(~facet_label, nrow = 1, scales = "free_y") +
+              scale_fill_manual(values = rls_glmm_period_cols, drop = FALSE) +
+              scale_color_manual(values = rls_glmm_period_cols, drop = FALSE) +
+              scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+              labs(x = NULL, y = this_y_lab) +
+              theme_minimal(base_size = 16) +
+              theme(
+                legend.position  = "none",
+                panel.grid.minor = element_blank(),
+                panel.grid.major = element_blank()
+              ) +
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+
+          } else {
+            df <- year_results()
+
+            ggplot(df, aes(x = sampling_event_start_date, y = mean, fill = period)) +
+              geom_col(width = 100, colour = "black", alpha = 0.85) +
+              geom_errorbar(aes(ymin = lower, ymax = upper), width = 30, linewidth = 0.6) +
+              facet_wrap(~facet_label, nrow = 1, scales = "free_y") +
+              scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+              scale_fill_manual(values = rls_glmm_period_cols, drop = FALSE) +
+              labs(x = NULL, y = this_y_lab) +
+              theme_minimal(base_size = 16) +
+              theme(
+                legend.position  = "none",
+                panel.grid.minor = element_blank(),
+                panel.grid.major = element_blank()
+              ) +
+              plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+          }
+        })
+
+        output[[metric_plot_id(prefix, this_metric_group, "year")]] <- renderPlot({
+          year_plot()
+        }) |>
+          bindCache(input$location, input[[metric_plot_type_input_id(prefix, this_metric_group)]]) |>
+          bindEvent(input$location, input[[metric_plot_type_input_id(prefix, this_metric_group)]])
+
+        # ---- Downloads ----
+        # width = 12 (vs. the usual 8) since these plots now have up to 3
+        # facet panels side by side.
+        add_metric_downloads(
+          output, prefix = prefix, data_id = this_metric_group, plot_id = "main",
+          results_reactive = main_results, raw_reactive = raw_data,
+          plot_reactive = main_plot, download_label_reactive = reactive(input$location),
+          width = 12, height = 5
+        )
+
+        add_metric_downloads(
+          output, prefix = prefix, data_id = this_metric_group, plot_id = "status",
+          results_reactive = status_results, raw_reactive = raw_data,
+          plot_reactive = status_plot, download_label_reactive = reactive(input$location),
+          width = 12, height = 5
+        )
+
+        add_metric_downloads(
+          output, prefix = prefix, data_id = this_metric_group, plot_id = "year",
+          results_reactive = year_results, raw_reactive = raw_data,
+          plot_reactive = year_plot, download_label_reactive = reactive(input$location),
+          width = 12, height = 6
+        )
+
+      })
+    })
+  }
+
   output$location_tabset <- renderUI({
     req(input$location)
-    
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+
+      # One tab per biological metric (metric_group) rather than per
+      # method x metric combination - see rls_metric_group_tab_body_ui()
+      # and the GLMM reactive loop above for how the 3 methods (or 3
+      # invertebrate phyla) get faceted together within each tab.
+      rls_metric_group_defs <- setNames(
+        rls_data$metric_groups$metric_group_label,
+        rls_data$metric_groups$metric_group
+      )
+
+      return(
+        bslib::navset_card_tab(
+          !!!lapply(names(rls_metric_group_defs), function(id) {
+            bslib::nav(
+              title = rls_metric_group_defs[[id]],
+              rls_metric_group_tab_body_ui(id, prefix = "rls_loc")
+            )
+          })
+        )
+      )
+    }
+
     bslib::navset_card_tab(
       !!!lapply(names(metric_defs), function(id) {
         bslib::nav(
@@ -7134,28 +8337,47 @@ server <- function(input, output, session) {
   
   
   region_stacked <- reactive({
-    
+
     req(input$region)
-    
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+
+      df_check <- rls_data$stacked_period %>%
+        dplyr::filter(spatial_level == "region", group_name == input$region)
+
+      validate(
+        need(nrow(df_check) > 0, paste("No stacked plot data for:", input$region))
+      )
+
+      return(
+        plot_stacked_taxa_rls(
+          stacked_df           = rls_data$stacked_period,
+          spatial_level_value  = "region",
+          group_value          = input$region
+        )
+      )
+    }
+
     df_check <- hab_data$species_stacked$plot_df %>%
       dplyr::filter(group_name == input$region)
-    
+
     validate(
       need(nrow(df_check) > 0, paste("No stacked plot data for:", input$region))
     )
-    
+
     plot_stacked_species(
       plot_df = hab_data$species_stacked$plot_df,
       other_labels = hab_data$species_stacked$other_labels,
       selected_name = input$region#,
       # palette = hab_data$species_palette
     )
-    
+
   })
   
   output$region_stacked_plot <- renderPlot({
     region_stacked()
-  })
+  }, height = function() if (identical(input$method, "Dive")) 1100 else 550)
   
   region_stacked_name <- reactive({
     
@@ -7167,7 +8389,16 @@ server <- function(input, output, session) {
   
   region_stacked_results <- reactive({
     req(input$region)
-    
+
+    if (identical(input$method, "Dive")) {
+      req(rls_data)
+      return(
+        rls_data$stacked_period %>%
+          dplyr::filter(spatial_level == "region", group_name == input$region) %>%
+          dplyr::mutate(percent = round(percent, digits = 3))
+      )
+    }
+
     df_check <- hab_data$species_stacked$plot_df %>%
       dplyr::filter(group_name == input$region) %>%
       dplyr::mutate(
@@ -7175,7 +8406,7 @@ server <- function(input, output, session) {
         percent = clean_number(percent)
       ) %>%
       dplyr::mutate(percent = round(percent, digits = 3))
-    
+
   })
   
   output$region_stacked_download_results <- downloadHandler(
@@ -7193,17 +8424,18 @@ server <- function(input, output, session) {
       )
     },
     content = function(file) {
+      is_dive <- identical(input$method, "Dive")
       ggplot2::ggsave(
         filename = file,
         plot = region_stacked(),
-        width = 8,
-        height = 5,
+        width  = 8,
+        height = if (is_dive) 13 else 5,
         dpi = 300
       )
     }
   )
-  
-  
+
+
   # Download location stacked plots and data -----
   location_stacked_name <- reactive({
     
@@ -7215,7 +8447,16 @@ server <- function(input, output, session) {
   
   location_stacked_results <- reactive({
     req(input$location)
-    
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+      return(
+        rls_data$stacked_period %>%
+          dplyr::filter(spatial_level == "location", group_name == input$location) %>%
+          dplyr::mutate(percent = round(percent, digits = 3))
+      )
+    }
+
     df_check <- hab_data$location_species_stacked$plot_df %>%
       dplyr::filter(group_name == input$location)  %>%
       dplyr::mutate(
@@ -7223,9 +8464,9 @@ server <- function(input, output, session) {
         percent = clean_number(percent)
       ) %>%
       dplyr::mutate(percent = round(percent, digits = 3))
-    
+
   })
-  
+
   output$location_stacked_download_results <- downloadHandler(
     filename = function() {
       paste0(location_stacked_name(), "_percentage_of_observations", "_", Sys.Date(), ".csv")
@@ -7234,54 +8475,82 @@ server <- function(input, output, session) {
       readr::write_excel_csv(location_stacked_results(), file)
     }
   )
-  
+
   output$location_stacked_download_plot <- downloadHandler(
     filename = function() {
       paste0(location_stacked_name(), "_stacked_assemblage_plots", "_", Sys.Date(), ".png"
       )
     },
     content = function(file) {
+      is_dive <- identical(input$methodlocation, "Dive")
       ggplot2::ggsave(
         filename = file,
         plot = location_stacked(),
-        width = 8,
-        height = 5,
+        width  = 8,
+        height = if (is_dive) 13 else 5,
         dpi = 300
       )
     }
   )
-  
+
   # Location stacked plot ----
-  
+
   location_stacked <- reactive({
-    
+
     req(input$location)
-    
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+
+      df_check <- location_stacked_results()
+
+      validate(
+        need(nrow(df_check) > 0, paste("No stacked plot data for:", input$location))
+      )
+
+      return(
+        plot_stacked_taxa_rls(
+          stacked_df           = rls_data$stacked_period,
+          spatial_level_value  = "location",
+          group_value          = input$location
+        )
+      )
+    }
+
     df_check <- location_stacked_results()
-    
+
     validate(
       need(nrow(df_check) > 0, paste("No stacked plot data for:", input$location))
     )
-    
+
     plot_stacked_species(
       plot_df = hab_data$location_species_stacked$plot_df,
       other_labels = hab_data$location_species_stacked$other_labels,
       selected_name = input$location#,
       #palette = hab_data$species_palette
     )
-    
+
   })
-  
+
   output$location_stacked_plot <- renderPlot({
     location_stacked()
-  })
-  
-  
+  }, height = function() if (identical(input$methodlocation, "Dive")) 1100 else 550)
+
+
   # Location stacked plot split by bloom----
-  
+
   location_stacked_results_split <- reactive({
     req(input$location)
-    
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+      return(
+        rls_data$stacked_period_split %>%
+          dplyr::filter(spatial_level == "location", group_name == input$location) %>%
+          dplyr::mutate(percent = round(percent, digits = 3))
+      )
+    }
+
     df_check <- hab_data$location_species_stacked_split$plot_df %>%
       dplyr::filter(group_name == input$location)  %>%
       dplyr::mutate(
@@ -7289,32 +8558,50 @@ server <- function(input, output, session) {
         percent = clean_number(percent)
       ) %>%
       dplyr::mutate(percent = round(percent, digits = 3))
-    
+
   })
-  
+
   location_stacked_split <- reactive({
-    
+
     req(input$location)
-    
+
+    if (identical(input$methodlocation, "Dive")) {
+      req(rls_data)
+
+      df_check <- location_stacked_results_split()
+
+      validate(
+        need(nrow(df_check) > 0, paste("No stacked plot data for:", input$location))
+      )
+
+      return(
+        plot_stacked_taxa_rls(
+          stacked_df           = rls_data$stacked_period_split,
+          spatial_level_value  = "location",
+          group_value          = input$location
+        )
+      )
+    }
+
     df_check <- location_stacked_results_split()
-    
+
     validate(
       need(nrow(df_check) > 0, paste("No stacked plot data for:", input$location))
     )
-    
+
     plot_stacked_species(
       plot_df = hab_data$location_species_stacked_split$plot_df,
       other_labels = hab_data$location_species_stacked_split$other_labels,
       selected_name = input$location#,
       #palette = hab_data$species_palette
     )
-    
+
   })
-  
+
   output$location_stacked_plot_split <- renderPlot({
     location_stacked_split()
-  })
-  
+  }, height = function() if (identical(input$methodlocation, "Dive")) 1100 else 550)
+
   output$location_stacked_download_results_split <- downloadHandler(
     filename = function() {
       paste0(location_stacked_name(), "_percentage_of_observations_split", "_", Sys.Date(), ".csv")
@@ -7323,18 +8610,19 @@ server <- function(input, output, session) {
       readr::write_excel_csv(location_stacked_results_split(), file)
     }
   )
-  
+
   output$location_stacked_download_plot_split <- downloadHandler(
     filename = function() {
       paste0(location_stacked_name(), "_stacked_assemblage_plots_split", "_", Sys.Date(), ".png"
       )
     },
     content = function(file) {
+      is_dive <- identical(input$methodlocation, "Dive")
       ggplot2::ggsave(
         filename = file,
         plot = location_stacked_split(),
-        width = 8,
-        height = 6,
+        width  = 8,
+        height = if (is_dive) 13 else 6,
         dpi = 300
       )
     }

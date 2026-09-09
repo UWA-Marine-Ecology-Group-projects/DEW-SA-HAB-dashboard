@@ -167,6 +167,11 @@ bruv_metadata <- readRDS("data/raw/sa_metadata_bruv.RDS") %>%
 
 summary(bruv_metadata)
 
+missing <- read_csv("sa_bruvs_missing.csv") %>%
+  dplyr::select(project, campaignid, sample)
+
+test <- left_join(missing, bruv_metadata)
+
 # unique(bruv_metadata$year) %>% sort()
 
 unique(bruv_metadata$location) %>% sort()
@@ -214,6 +219,7 @@ bruv_metadata_locs <- st_join(bruv_metadata_sf, state_mp %>% st_cast("POLYGON"))
 
 unique(bruv_metadata_locs$location)
 
+
 # Fix sanctuary locations in the BRUV metadata ----
 rls_metadata_sf <- rls_metadata %>%
   st_as_sf(coords = c("longitude_dd", "latitude_dd"), crs = 4326)
@@ -239,6 +245,15 @@ bruv_metadata_with_regions <- st_join(bruv_metadata_locs, reporting_regions) %>%
   st_join(reporting_locations) %>%
   st_join(reporting_sites) %>%
   glimpse()
+
+
+missing <- read_csv("sa_bruvs_missing.csv") %>%
+  dplyr::select(project, campaignid, sample)
+
+test <- left_join(missing, bruv_metadata_with_regions) %>%
+  left_join(bruv_metadata %>% select(campaignid, sample, latitude_dd, longitude_dd))
+
+write_csv(test, "missing_with_lat_lon1.csv")
 
 combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
