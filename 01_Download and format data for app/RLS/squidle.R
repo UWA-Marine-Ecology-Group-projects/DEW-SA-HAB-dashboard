@@ -17,7 +17,7 @@ Sys.setenv(CURL_SSL_BACKEND = 'openssl')
 library('remotes')
 options(timeout=9999999)
 
-remotes::install_github("GlobalArchiveManual/CheckEM")
+# remotes::install_github("GlobalArchiveManual/CheckEM")
 ##Loading libraries
 library(tidyverse)
 library(httr)
@@ -37,7 +37,9 @@ library(SQAPI)
 api <- SQAPI$new()
 
 # Get SA annotation sets ----
-ids <- c(19311, 19340, 19341, 19342, 19529, 19605, 19606, 19607, 19608, 19609, 19685, 19678, 19731, 19732, 19736) # 15 datasets
+ids <- c(19311, 19340, 19341, 19342, 19529, 19605, 
+         19606, 19607, 19608, 19609, 19685, 19678, 
+         19731, 19732, 19736) # 15 datasets
 
 # ================================================================
 # Step 2: Fetch + tidy each dataset, caching each one to disk as it finishes
@@ -164,6 +166,7 @@ benthos_final <- benthos_split %>%
   dplyr::select(campaignid, annotation_set_id, point_media_deployment_name,
                 point_id, point_pose_lon, point_pose_lat,
                 point_pose_timestamp, starts_with("level"), species) %>%
+  ungroup() %>%
   glimpse()
 
 names(benthos_final)
@@ -176,7 +179,17 @@ unique(benthos_final$level_5)
 unique(benthos_final$level_6)
 unique(benthos_final$species) %>% sort() # check that this looks ok
 
-#bellidilia undecimspinosa
+unique_morphospecies <- benthos_final %>%
+  mutate(n = 1) %>%
+  group_by(level_1, level_2, level_3, level_4, level_5, level_6, species) %>%
+  dplyr::summarise(number = sum(n))
+
+write_csv(unique_morphospecies, "unique_morphospecies.csv")
+
+# Questions
+# bellidilia undecimspinosa - need to fix
+# why so many blank cells
+# how to group annotations
 
 # --- Check for anything that didn't match ----
 # Should ideally all be "open water"/unscorable-type labels - if not, chase down the mapping

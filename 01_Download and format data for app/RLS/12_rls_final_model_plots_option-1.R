@@ -12,6 +12,8 @@
 #   - metric-specific y-axis labels
 #   - y-axis starts at zero
 #   - one shared legend per concatenated figure
+#   - each panel is titled with its survey method (Fish / Cryptic fish /
+#     Invertebrates) so the three methods are clearly identified
 #
 # For each location, each plot type is saved separately for:
 #   - M1 fish
@@ -217,6 +219,20 @@ panel_labels <- c(
 )
 
 
+# Plain-language titles for each survey method, shown above the relevant
+# panel(s) in the final combined figure. Echinodermata / Arthropoda /
+# Mollusca are all sub-components of the M2 invertebrate survey, so they
+# share the "Invertebrates" title.
+method_titles <- c(
+  M1 = "Fish",
+  M2_fish = "Cryptic fish",
+  M2_inverts = "Invertebrates",
+  Echinodermata = "Invertebrates",
+  Arthropoda = "Invertebrates",
+  Mollusca = "Invertebrates"
+)
+
+
 # Names used for saved files.
 metric_group_labels <- c(
   total_abundance = "Total abundance",
@@ -258,6 +274,8 @@ make_safe_filename <- function(x) {
 
 # Match the BRUV plotting style: no panel box, no grid lines,
 # black x/y axes, no plot titles/subtitles, and a clean shared legend.
+# (Individual panels re-enable a title via add_panel_title() below, when
+# one is supplied, to identify the survey method.)
 panel_theme <- theme_minimal(base_size = 16) +
   theme(
     panel.grid = element_blank(),
@@ -269,6 +287,28 @@ panel_theme <- theme_minimal(base_size = 16) +
     plot.subtitle = element_blank(),
     legend.title = element_blank()
   )
+
+
+# Add a bold, centred title to a panel identifying the survey method it
+# belongs to (e.g. "Fish", "Cryptic fish", "Invertebrates"). If panel_title
+# is NULL/NA the panel is left exactly as-is (no title drawn), matching the
+# previous behaviour.
+add_panel_title <- function(p, panel_title = NULL) {
+  
+  if (is.null(panel_title) || is.na(panel_title)) {
+    return(p)
+  }
+  
+  p +
+    ggtitle(panel_title) +
+    theme(
+      plot.title = element_text(
+        hjust = 0.5,
+        face = "bold",
+        size = 15
+      )
+    )
+}
 
 
 # Return the diagnostic row corresponding to the model that generated a plot.
@@ -347,11 +387,11 @@ get_missing_message <- function(location_name, metric_name, plot_type) {
 }
 
 
-make_blank_panel <- function(metric_name, message_text) {
+make_blank_panel <- function(metric_name, message_text, panel_title = NULL) {
   
   # Keep a visible frame for a deliberately blank/missing panel so the
   # A-D / A-F layout is preserved. Valid model panels themselves have no box.
-  ggplot() +
+  p <- ggplot() +
     annotate(
       "text",
       x = 0.5,
@@ -379,10 +419,11 @@ make_blank_panel <- function(metric_name, message_text) {
       axis.ticks = element_blank(),
       axis.line = element_blank(),
       axis.title.x = element_blank(),
-      plot.title = element_blank(),
       plot.subtitle = element_blank(),
       legend.position = "none"
     )
+  
+  add_panel_title(p, panel_title)
 }
 
 
@@ -404,12 +445,12 @@ add_plot_confidence_limits <- function(df) {
 # 6. PERIOD panels
 # ============================================================
 
-plot_period_panel <- function(df_metric, metric_name) {
+plot_period_panel <- function(df_metric, metric_name, panel_title = NULL) {
   
   plot_df <- df_metric %>%
     add_plot_confidence_limits()
   
-  ggplot(
+  p <- ggplot(
     plot_df,
     aes(x = Period, y = estimate, fill = Period)
   ) +
@@ -439,6 +480,8 @@ plot_period_panel <- function(df_metric, metric_name) {
       fill = NULL
     ) +
     panel_theme
+  
+  add_panel_title(p, panel_title)
 }
 
 
@@ -446,7 +489,7 @@ plot_period_panel <- function(df_metric, metric_name) {
 # 7. PERIOD x STATUS panels
 # ============================================================
 
-plot_period_status_panel <- function(df_metric, metric_name) {
+plot_period_status_panel <- function(df_metric, metric_name, panel_title = NULL) {
   
   plot_df <- df_metric %>%
     add_plot_confidence_limits() %>%
@@ -459,7 +502,7 @@ plot_period_status_panel <- function(df_metric, metric_name) {
       )
     )
   
-  ggplot(
+  p <- ggplot(
     plot_df,
     aes(x = Period, y = estimate, fill = status)
   ) +
@@ -501,6 +544,8 @@ plot_period_status_panel <- function(df_metric, metric_name) {
       fill = NULL
     ) +
     panel_theme
+  
+  add_panel_title(p, panel_title)
 }
 
 
@@ -511,7 +556,8 @@ plot_period_status_panel <- function(df_metric, metric_name) {
 plot_temporal_panel <- function(
     df_metric,
     metric_name,
-    temporal_x_limits = NULL) {
+    temporal_x_limits = NULL,
+    panel_title = NULL) {
   
   plot_df <- df_metric %>%
     arrange(sampling_event_start_date) %>%
@@ -578,7 +624,7 @@ plot_temporal_panel <- function(
       )
   }
   
-  p
+  add_panel_title(p, panel_title)
 }
 
 
@@ -590,7 +636,8 @@ make_location_metric_panel <- function(
     location_name,
     metric_name,
     plot_type,
-    temporal_x_limits = NULL) {
+    temporal_x_limits = NULL,
+    panel_title = NULL) {
   
   results_object <- switch(
     plot_type,
@@ -625,16 +672,19 @@ make_location_metric_panel <- function(
         plot_type,
         period = plot_period_panel(
           df_metric = df_metric,
-          metric_name = metric_name
+          metric_name = metric_name,
+          panel_title = panel_title
         ),
         period_status = plot_period_status_panel(
           df_metric = df_metric,
-          metric_name = metric_name
+          metric_name = metric_name,
+          panel_title = panel_title
         ),
         temporal = plot_temporal_panel(
           df_metric = df_metric,
           metric_name = metric_name,
-          temporal_x_limits = temporal_x_limits
+          temporal_x_limits = temporal_x_limits,
+          panel_title = panel_title
         )
       )
     )
@@ -646,7 +696,8 @@ make_location_metric_panel <- function(
       location_name = location_name,
       metric_name = metric_name,
       plot_type = plot_type
-    )
+    ),
+    panel_title = panel_title
   )
 }
 
@@ -692,13 +743,19 @@ make_metric_location_plot <- function(
   # Create individual panels
   # ----------------------------------------------------------
   
-  plot_list <- purrr::map(
+  # Each panel is titled with its survey method (Fish / Cryptic fish /
+  # Invertebrates), looked up from the panel's name in metric_vector
+  # (e.g. "M1", "M2_fish", "M2_inverts", ...) via method_titles.
+  
+  plot_list <- purrr::map2(
+    names(metric_vector),
     unname(metric_vector),
     ~ make_location_metric_panel(
       location_name = location_name,
-      metric_name = .x,
+      metric_name = .y,
       plot_type = plot_type,
-      temporal_x_limits = temporal_x_limits
+      temporal_x_limits = temporal_x_limits,
+      panel_title = unname(method_titles[.x])
     )
   )
   
@@ -706,18 +763,18 @@ make_metric_location_plot <- function(
   # # ----------------------------------------------------------
   # # Panel labels
   # # ----------------------------------------------------------
-  # 
+  #
   # labels_this_figure <- unname(
   #   panel_labels[names(metric_vector)]
   # )
-  # 
+  #
   # custom_tags <- paste0(
   #   LETTERS[seq_along(labels_this_figure)],
   #   ". ",
   #   labels_this_figure
   # )
-  # 
-  # 
+  #
+  #
   # ----------------------------------------------------------
   # Layout
   # ----------------------------------------------------------
@@ -781,7 +838,6 @@ make_metric_location_plot <- function(
     theme(
       legend.position = "bottom",
       legend.title = element_blank(),
-      plot.title = element_blank(),
       plot.subtitle = element_blank(),
       plot.tag = element_text(
         face = "plain",
@@ -973,11 +1029,6 @@ for (plot_type in plot_types_to_save) {
     }
   }
 }
-
-
-#################################################################
-# END
-#################################################################
 
 
 #################################################################
