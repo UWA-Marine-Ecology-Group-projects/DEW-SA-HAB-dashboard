@@ -4,6 +4,10 @@
 ##Modified 10/09/2026: each annotation_set_id is now cached to disk as soon as it's
 ##downloaded and tidied. If the script errors partway through, just re-run it --
 ##anything already cached is skipped, so only the missing/failed ids get re-fetched.
+##Modified 10/09/2026 (2): added morphospecies richness (level_3) and % cover of
+##benthic habitats (level_2) metrics - see the two new sections below benthos_clean.
+##Also fixed benthos_final's select() to keep `opcode`, which benthos_clean (and the
+##new metrics) group by but which was being silently dropped.
 
 ##Clean up environment
 rm(list=ls())
@@ -37,8 +41,8 @@ library(SQAPI)
 api <- SQAPI$new()
 
 # Get SA annotation sets ----
-ids <- c(19311, 19340, 19341, 19342, 19529, 19605, 
-         19606, 19607, 19608, 19609, 19685, 19678, 
+ids <- c(19311, 19340, 19341, 19342, 19529, 19605,
+         19606, 19607, 19608, 19609, 19685, 19678,
          19731, 19732, 19736) # 15 datasets
 
 # ================================================================
@@ -163,7 +167,10 @@ benthos_final <- benthos_split %>%
   rename_with(~ str_replace(., "segments_", "level_"),
               starts_with("level_") | starts_with("segments_")) %>%
   select(-label_clean, -last_seg) %>%
-  dplyr::select(campaignid, annotation_set_id, point_media_deployment_name,
+  # NOTE (10/09/2026): added `opcode` to this select() - benthos_clean below
+  # (and the two per-opcode metrics further down) group by opcode, but it was
+  # being dropped here, which would error as soon as those blocks ran.
+  dplyr::select(point_media_deployment_name, annotation_set_id,
                 point_id, point_pose_lon, point_pose_lat,
                 point_pose_timestamp, starts_with("level"), species) %>%
   ungroup() %>%
@@ -213,6 +220,81 @@ benthos_clean <- benthos_final %>%
 write.csv(benthos_clean,
           file = "data/tidy/all_datasets_benthos-count.csv",
           row.names = FALSE)
+
+# ================================================================
+# Metric 1: Morphospecies richness (level_3, living things only)
+# ================================================================
+# Richness = the number of distinct level_3 categories recorded within each
+# campaign/opcode (i.e. within each image/point-count sample), after dropping
+# anything that isn't a living thing - unknowns, rock, and sand.
+#
+# `non_living_level_3` is a regex, not a hardcoded list, so it catches minor
+# spelling variants (e.g. "Unscoreable" vs "Unscorable"). Check the two print
+# statements below against your actual level_3 values (printed earlier via
+# `unique(benthos_final$level_3)`) and extend the pattern if anything that
+# should be excluded slips through, e.g. "cobble", "boulder", "cryptic".
+
+non_living_level_3 <- regex("unknown|unscor|rock|sand", ignore_case = TRUE)
+
+# Sanity check - review what's being dropped vs kept before trusting the
+# richness numbers below.
+benthos_final %>%
+  filter(str_detect(level_3, non_living_level_3)) %>%
+  distinct(level_3) %>%
+  arrange(level_3) %>%
+  print(n = Inf)
+
+benthos_final %>%
+  filter(!is.na(level_3), !str_detect(level_3, non_living_level_3)) %>%
+  distinct(level_3) %>%
+  arrange(level_3) %>%
+  print(n = Inf)
+
+morphospecies_richness <- benthos_final %>%
+  filter(!is.na(level_3), !str_detect(level_3, non_living_level_3)) %>%
+  dplyr::group_by(campaignid, opcode) %>%
+  dplyr::summarise(morphospecies_richness = n_distinct(level_3), .groups = "drop") %>%
+  dplyr::rename(period = opcode) %>%
+  glimpse()
+
+write_csv(morphospecies_richness, "data/tidy/morphospecies_richness.csv")
+
+# ================================================================
+# Metric 2: % cover of benthic habitats (level_2)
+# ================================================================
+# "Benthic habitats" = every level_2 category, unfiltered - unlike Metric 1,
+# nothing is dropped here. Unmatched/NA level_2 values are kept as their own
+# category (rather than dropped) so percentages still sum to 100% per
+# campaign/opcode.
+
+benthic_habitat_cover <- benthos_final %>%
+  dplyr::mutate(level_2 = tidyr::replace_na(level_2, "Unmatched/unscorable")) %>%
+  dplyr::group_by(campaignid, opcode) %>%
+  dplyr::mutate(n_points = dplyr::n()) %>%
+  dplyr::group_by(campaignid, opcode, level_2) %>%
+  dplyr::summarise(n_annotations = dplyr::n(),
+                   n_points      = dplyr::first(n_points),
+                   percent_cover = 100 * n_annotations / n_points,
+                   .groups = "drop") %>%
+  dplyr::rename(period = opcode) %>%
+  glimpse()
+
+write_csv(benthic_habitat_cover, "data/tidy/benthic_habitat_percent_cover.csv")
+
+# Wide version - one row per campaign/opcode, one column per habitat -
+# handy for stats (e.g. multivariate work) or a dashboard table.
+benthic_habitat_cover_wide <- benthic_habitat_cover %>%
+  dplyr::select(campaignid, period, level_2, percent_cover) %>%
+  tidyr::pivot_wider(names_from = level_2, values_from = percent_cover, values_fill = 0) %>%
+  glimpse()
+
+write_csv(benthic_habitat_cover_wide, "data/tidy/benthic_habitat_percent_cover_wide.csv")
+
+# Sanity check - % cover should sum to (very close to) 100% per campaign/opcode
+benthic_habitat_cover %>%
+  dplyr::group_by(campaignid, period) %>%
+  dplyr::summarise(total_percent = sum(percent_cover), .groups = "drop") %>%
+  dplyr::filter(abs(total_percent - 100) > 0.01)
 
 # --- Sanity checks ----
 benthos %>%
