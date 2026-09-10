@@ -600,61 +600,61 @@ make_trajectory_plot <- function(raw_data, location_name, output_dir, dataset_pr
     pcoa_scores,
     aes(x = PCoA1, y = PCoA2, group = site_name, colour = site_name)
   ) +
-
+    
     geom_path(
       aes(linetype = status),
       arrow = arrow(length = unit(0.15, "cm"), type = "closed"),
       linewidth = 0.8
     ) +
-
+    
     geom_point(aes(shape = status, fill = period), size = 3, stroke = 1) +
-
+    
     status_period_layers() +
-
+    
     site_colour_layer(pcoa_scores$site_name) +
-
+    
     geom_text(
       aes(label = str_sub(sampling_event_start_date, 1, 7)),
       vjust = -1, size = 3, show.legend = FALSE
     ) +
-
+    
     theme_classic() +
-
+    
     labs(
       x = paste0("PCoA1 (", PCoA1_percent, "%)"),
       y = paste0("PCoA2 (", PCoA2_percent, "%)"),
       colour = "Site", shape = "Status", fill = "Period", linetype = "Status"
     )
-
-
+  
+  
   trajectory_species_arrows <- trajectory_plot + species_vector_layers(species_vec_top)
-
-
+  
+  
   pcoa2_time_plot <- ggplot(
     pcoa_scores,
     aes(x = survey_date, y = PCoA2, group = site_name, colour = site_name)
   ) +
-
+    
     geom_line(aes(linetype = status), linewidth = 0.8, na.rm = TRUE) +
-
+    
     geom_point(aes(shape = status, fill = period), size = 3, stroke = 1, na.rm = TRUE) +
-
+    
     status_period_layers() +
-
+    
     site_colour_layer(pcoa_scores$site_name) +
-
+    
     geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.4, colour = "grey60") +
-
+    
     scale_y_reverse() +
-
+    
     scale_x_date(date_breaks = "2 years", date_labels = "%Y", expand = expansion(mult = c(0.02, 0.04))) +
-
+    
     labs(
       x = "Sampling date",
       y = paste0("PCoA2 (", PCoA2_percent, "%; reversed)"),
       colour = "Site", shape = "Status", fill = "Period", linetype = "Status"
     ) +
-
+    
     theme_classic() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
@@ -722,7 +722,7 @@ make_status_pco_plot <- function(raw_data, location_name, output_dir, dataset_pr
   
   
   status_pco_plot <- ggplot(pcoa_scores, aes(x = PCoA1, y = PCoA2, colour = site_name)) +
-
+    
     geom_segment(
       data = trajectory_segments,
       aes(x = PCoA1, y = PCoA2, xend = PCoA1_end, yend = PCoA2_end, colour = site_name, linetype = status),
@@ -730,20 +730,20 @@ make_status_pco_plot <- function(raw_data, location_name, output_dir, dataset_pr
       arrow = arrow(length = unit(0.15, "cm"), type = "closed"),
       linewidth = 0.8
     ) +
-
+    
     geom_point(aes(shape = status, fill = period), size = 3, stroke = 1) +
-
+    
     status_period_layers() +
-
+    
     site_colour_layer(pcoa_scores$site_name) +
-
+    
     geom_text(
       aes(label = str_sub(sampling_event_start_date, 1, 7)),
       vjust = -1, size = 3, show.legend = FALSE
     ) +
-
+    
     theme_classic() +
-
+    
     labs(
       x = paste0("PCoA1 (", PCoA1_percent, "%)"),
       y = paste0("PCoA2 (", PCoA2_percent, "%)"),
@@ -1387,12 +1387,12 @@ run_dataset_pipeline <- function(count_rds_path, meta_rds_path, output_dir, data
   }
   
   message("=== ", dataset_prefix, ": ", length(locations), " location(s) found ===")
-
-
+  
+  
   # NOTE: unlike the original script, this event-level script deliberately
   # does NOT call make_trajectory_plot() here, so it never saves the
   # "_trajectory_" or "_PCoA2_through_time_" plots.
-
+  
   for (loc in locations) {
     tryCatch(
       make_status_pco_plot(raw_data, loc, output_dir, dataset_prefix),
@@ -1803,40 +1803,40 @@ make_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
   mds_percent <- result$mds_percent
   
   message("  Period CAP restricted permutation test p = ", cap_p)
-
+  
   safe_name <- make_safe_name_hyphen(location_name)
   
   cap1_time_plot <- ggplot(
     cap_scores,
     aes(x = survey_date, y = CAP1, group = site_name, colour = site_name)
   ) +
-
+    
     geom_line(aes(linetype = status), linewidth = 0.8, na.rm = TRUE) +
-
+    
     geom_point(
       aes(shape = status, fill = period),
       size = 3,
       stroke = 1,
       na.rm = TRUE
     ) +
-
+    
     status_period_layers() +
-
+    
     site_colour_layer(cap_scores$site_name) +
-
+    
     geom_hline(
       yintercept = 0,
       linetype = "dashed",
       linewidth = 0.4,
       colour = "grey60"
     ) +
-
+    
     scale_x_date(
       date_breaks = "2 years",
       date_labels = "%Y",
       expand = expansion(mult = c(0.02, 0.04))
     ) +
-
+    
     labs(
       x = "Sampling date",
       y = paste0("CAP1 - Bloom axis (", cap_percent, "%)"),
@@ -1845,10 +1845,10 @@ make_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
       fill = "Period",
       linetype = "Status"
     ) +
-
+    
     theme_classic() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
+  
   save_plot(
     cap1_time_plot,
     file.path(
@@ -1858,13 +1858,13 @@ make_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
     width = 12,
     height = 7
   )
-
+  
   # Event-level CAP trajectory plus post-CAP site centroids.
   cap_plot <- ggplot(
     cap_scores,
     aes(x = CAP1, y = MDS1, group = site_name, colour = site_name)
   ) +
-
+    
     geom_path(
       aes(linetype = status),
       arrow = arrow(length = unit(0.12, "cm"), type = "closed"),
@@ -1872,24 +1872,19 @@ make_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
       alpha = 0.65,
       na.rm = TRUE
     ) +
-
+    
     geom_point(
       aes(shape = status, fill = period),
       size = 3,
       stroke = 1
     ) +
-
+    
     status_period_layers() +
-
+    
     site_colour_layer(cap_scores$site_name) +
-
-    geom_text(
-      aes(label = str_sub(sampling_event_start_date, 1, 7)),
-      vjust = -1, size = 3, show.legend = FALSE
-    ) +
-
+    
     theme_classic() +
-
+    
     labs(
       x = paste0("CAP1 - Bloom axis (", cap_percent, "%)"),
       y = paste0("MDS1 - residual axis (", mds_percent, "%)"),
@@ -1898,7 +1893,7 @@ make_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
       fill = "Period",
       linetype = "Status"
     ) +
-
+    
     species_vector_layers(species_vec_top)
   
   save_plot(
@@ -1954,14 +1949,13 @@ make_status_cap_plot <- function(
   }
   
   safe_name <- make_safe_name_hyphen(location_name)
-
-  # Event-level trajectories are shown as the fitted CAP scores,
-  # labelled with each sampling event's year-month.
+  
+  # Event-level trajectories are shown as the fitted CAP scores.
   status_cap_plot <- ggplot(
     cap_scores,
     aes(x = CAP1, y = MDS1, group = site_name, colour = site_name)
   ) +
-
+    
     geom_path(
       aes(linetype = status),
       arrow = arrow(length = unit(0.12, "cm"), type = "closed"),
@@ -1969,25 +1963,20 @@ make_status_cap_plot <- function(
       alpha = 0.65,
       na.rm = TRUE
     ) +
-
+    
     geom_point(
       aes(shape = status, fill = period),
       size = 2.8,
       stroke = 0.9,
       na.rm = TRUE
     ) +
-
+    
     status_period_layers() +
-
+    
     site_colour_layer(cap_scores$site_name) +
-
-    geom_text(
-      aes(label = str_sub(sampling_event_start_date, 1, 7)),
-      vjust = -1, size = 3, show.legend = FALSE
-    ) +
-
+    
     theme_classic() +
-
+    
     labs(
       x = paste0("CAP1 - Status axis (", cap_percent, "%)"),
       y = paste0("MDS1 - residual axis (", mds_percent, "%)"),
@@ -1996,7 +1985,7 @@ make_status_cap_plot <- function(
       fill = "Period",
       linetype = "Status"
     ) +
-
+    
     species_vector_layers(species_vec_top)
   
   save_plot(
@@ -2057,12 +2046,12 @@ make_status_cap_plot <- function(
 # ============================================================
 
 make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
-
+  
   message("Running Period vs Status CAP event-level comparison: ", location_name)
-
+  
   period_result <- get_period_cap_scores(raw_data, location_name)
   status_result <- get_status_cap_scores(raw_data, location_name)
-
+  
   if (is.null(period_result)) {
     message(
       "Skipping Period vs Status CAP for ", location_name,
@@ -2070,7 +2059,7 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
     )
     return(NULL)
   }
-
+  
   if (is.null(status_result)) {
     message(
       "Skipping Period vs Status CAP for ", location_name,
@@ -2078,7 +2067,7 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
     )
     return(NULL)
   }
-
+  
   # One row per site x sampling event on the Period CAP fit.
   period_event_scores <- period_result$cap_scores %>%
     select(
@@ -2090,7 +2079,7 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
       survey_date,
       period_CAP1 = CAP1
     )
-
+  
   # One row per site x sampling event on the Status CAP fit
   # (sites with missing Status are already excluded here).
   status_event_scores <- status_result$cap_scores %>%
@@ -2098,14 +2087,14 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
       id,
       status_CAP1 = CAP1
     )
-
+  
   # Matching by `id` pairs each event's Period CAP1 score with that
   # SAME event's Status CAP1 score - this is what makes each point
   # a site x sampling-event observation rather than a site average.
   combined_scores <- period_event_scores %>%
     inner_join(status_event_scores, by = "id") %>%
     arrange(site_name, survey_date)
-
+  
   if (nrow(combined_scores) == 0) {
     message(
       "Skipping Period vs Status CAP for ", location_name,
@@ -2113,7 +2102,7 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
     )
     return(NULL)
   }
-
+  
   n_dropped <- nrow(period_event_scores) - nrow(combined_scores)
   if (n_dropped > 0) {
     message(
@@ -2123,26 +2112,26 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
       "with missing Status) and are excluded from this comparison."
     )
   }
-
+  
   combined_plot <- ggplot(
     combined_scores,
     aes(x = period_CAP1, y = status_CAP1, group = site_name, colour = site_name)
   ) +
-
+    
     geom_hline(
       yintercept = 0,
       linetype = "dashed",
       linewidth = 0.4,
       colour = "grey70"
     ) +
-
+    
     geom_vline(
       xintercept = 0,
       linetype = "dashed",
       linewidth = 0.4,
       colour = "grey70"
     ) +
-
+    
     geom_path(
       aes(linetype = status),
       arrow = arrow(length = unit(0.12, "cm"), type = "closed"),
@@ -2150,25 +2139,20 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
       alpha = 0.65,
       na.rm = TRUE
     ) +
-
+    
     geom_point(
       aes(shape = status, fill = period),
       size = 3,
       stroke = 1,
       na.rm = TRUE
     ) +
-
+    
     status_period_layers() +
-
+    
     site_colour_layer(combined_scores$site_name) +
-
-    geom_text(
-      aes(label = format(survey_date, "%Y-%m")),
-      vjust = -1, size = 3, show.legend = FALSE
-    ) +
-
+    
     theme_classic() +
-
+    
     labs(
       x = paste0("Bloom CAP1 (", period_result$cap_percent, "%)"),
       y = paste0("Status CAP1 (", status_result$cap_percent, "%)"),
@@ -2177,9 +2161,9 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
       fill = "Period",
       linetype = "Status"
     )
-
+  
   safe_name <- make_safe_name_hyphen(location_name)
-
+  
   save_plot(
     combined_plot,
     file.path(
@@ -2189,7 +2173,7 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
     width = 12,
     height = 9
   )
-
+  
   safe_write_csv(
     combined_scores,
     file.path(
@@ -2197,7 +2181,7 @@ make_period_status_cap_plot <- function(raw_data, location_name, output_dir, dat
       paste0(dataset_prefix, "_", safe_name, "_CAP_Period-Status.csv")
     )
   )
-
+  
   invisible(combined_plot)
 }
 
