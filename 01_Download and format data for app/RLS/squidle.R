@@ -1,6 +1,9 @@
 ###Example for extracting data from individual datasets in SQ+ including segments from SAMBot
 ##Written by jacquomo.monk@utas.edu.au
 ##Date 15/07/2024
+##Modified 10/09/2026: each annotation_set_id is now cached to disk as soon as it's
+##downloaded and tidied. If the script errors partway through, just re-run it --
+##anything already cached is skipped, so only the missing/failed ids get re-fetched.
 
 ##Clean up environment
 rm(list=ls())
@@ -24,7 +27,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(purrr)
-# 
+#
 #install.packages("devtools")
 # devtools::install_github("sajessop/SQAPI")
 library(SQAPI)
@@ -36,34 +39,54 @@ api <- SQAPI$new()
 # Get SA annotation sets ----
 ids <- c(19311, 19340, 19341, 19342, 19529, 19605, 19606, 19607, 19608, 19609, 19685, 19678, 19731, 19732, 19736) # 15 datasets
 
-# --- Loop purely to fetch + tidy each dataset ----
-# WARNING - this takes a while to run
-all_benthos_raw <- list()
+# ================================================================
+# Step 2: Fetch + tidy each dataset, caching each one to disk as it finishes
+# ================================================================
+# WARNING - this takes a while to run the FIRST time. On any re-run, ids that
+# already have a cached .rds file below are skipped entirely -- only ids that
+# are missing (never fetched, or failed last time) get downloaded again.
+
+cache_dir <- "data/raw/benthos_annotation_sets"
+dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
+
+cache_path <- function(annotation_set_id) {
+  file.path(cache_dir, paste0("annotation_set_", annotation_set_id, ".rds"))
+}
+
+fetch_annotation_set <- function(annotation_set_id) {
+  req <- export(
+    api = api,
+    endpoint = paste0("api/annotation_set/", annotation_set_id, "/export"),
+    template = "dataframe.csv"
+  )
+  
+  pars_export <- parse_api(req)
+  df <- pars_export$objects
+  
+  df %>%
+    jsonlite::flatten(recursive = TRUE) %>%
+    clean_names() %>%
+    dplyr::rename(campaignid = point_media_deployment_campaign_key,
+                  uuid = label_uuid) %>%
+    dplyr::mutate(annotation_set_id = annotation_set_id) %>%
+    identity()
+}
+
 failed_ids <- c()
 
 for (annotation_set_id in ids) {
   
+  out_file <- cache_path(annotation_set_id)
+  
+  if (file.exists(out_file)) {
+    message("Skipping annotation_set_id ", annotation_set_id, " - already cached at ", out_file)
+    next
+  }
+  
   message("Fetching annotation_set_id: ", annotation_set_id)
   
   result <- tryCatch({
-    
-    req <- export(
-      api = api,
-      endpoint = paste0("api/annotation_set/", annotation_set_id, "/export"),
-      template = "dataframe.csv"
-    )
-    
-    pars_export <- parse_api(req)
-    df <- pars_export$objects
-    
-    df %>%
-      jsonlite::flatten(recursive = TRUE) %>%
-      clean_names() %>%
-      dplyr::rename(campaignid = point_media_deployment_campaign_key,
-                    uuid = label_uuid) %>%
-      dplyr::mutate(annotation_set_id = annotation_set_id) %>%
-      identity()
-    
+    fetch_annotation_set(annotation_set_id)
   }, error = function(e) {
     message("  FAILED for id ", annotation_set_id, ": ", conditionMessage(e))
     failed_ids <<- c(failed_ids, annotation_set_id)
@@ -71,13 +94,29 @@ for (annotation_set_id in ids) {
   })
   
   if (!is.null(result)) {
-    all_benthos_raw[[as.character(annotation_set_id)]] <- result
+    saveRDS(result, out_file)  # <-- saved immediately, so a later crash doesn't lose this dataset
+    message("  Saved: ", out_file)
   }
 }
 
 if (length(failed_ids) > 0) {
-  message("The following annotation_set_ids failed: ", paste(failed_ids, collapse = ", "))
+  message("The following annotation_set_ids failed this run: ", paste(failed_ids, collapse = ", "))
+  message("Re-run this script to retry them - datasets already cached will be skipped.")
 }
+
+# --- Load every cached dataset (this run's + any from earlier runs) and merge ----
+cached_files <- cache_path(ids)
+have_cache <- file.exists(cached_files)
+
+if (!all(have_cache)) {
+  warning("No cached data yet for annotation_set_id(s): ",
+          paste(ids[!have_cache], collapse = ", "),
+          ". Re-run the script to fetch them before continuing (rest of script will proceed with what's available).")
+}
+
+all_benthos_raw <- cached_files[have_cache] %>%
+  purrr::set_names(ids[have_cache]) %>%
+  purrr::map(readRDS)
 
 # --- Merge everything together ----
 benthos <- dplyr::bind_rows(all_benthos_raw) %>%
