@@ -130,7 +130,7 @@ benthos <- dplyr::bind_rows(all_benthos_raw) %>%
 # but are actually just CATAMI descriptor terms, not real taxa.
 # Extend this list as new data reveals more false positives.
 non_species_words <- c("algae", "turf", "matrix", "understory",
-                       "gravel", "mud", "sand", "silt")
+                       "gravel", "mud", "sand", "silt", "fragile", "forms", "stars", "calcareous", "urchins", "origin", "fishes", "anemones", "worms", "point")
 
 is_species_name <- function(x) {
   words <- str_split(str_trim(x), "\\s+")[[1]]
@@ -174,7 +174,9 @@ unique(benthos_final$level_3)
 unique(benthos_final$level_4)
 unique(benthos_final$level_5)
 unique(benthos_final$level_6)
-unique(benthos_final$species) # check that this looks ok
+unique(benthos_final$species) %>% sort() # check that this looks ok
+
+#bellidilia undecimspinosa
 
 # --- Check for anything that didn't match ----
 # Should ideally all be "open water"/unscorable-type labels - if not, chase down the mapping
