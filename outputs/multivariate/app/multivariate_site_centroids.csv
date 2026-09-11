@@ -1,0 +1,361 @@
+dataset,dataset_label,location,ordination,site_name,status,axis1,axis2,n_events
+M1,M1 fish,Carrickalinga,cap_period,Carrickalinga (toilet),Fished,-0.5214179620016386,-0.2939603098932764,14
+M1,M1 fish,Carrickalinga,cap_period,Carrickalinga Head,No-take,-0.1325009106859289,-0.2662658097718164,13
+M1,M1 fish,Carrickalinga,cap_period,Carrickalinga North Site,Fished,0.17099157565739936,-0.013241927958506854,8
+M1,M1 fish,Carrickalinga,cap_period,Carrickalinga North Site 2,Fished,0.4041349323902059,0.13452387170555127,9
+M1,M1 fish,Carrickalinga,cap_period,Carrickalinga Nth,Fished,0.015670499368534888,0.020868782027569047,8
+M1,M1 fish,Carrickalinga,cap_period,Dodd's Beach,No-take,-0.05876546313539652,-0.14604386334091532,11
+M1,M1 fish,Carrickalinga,cap_period,Haycock Point,Fished,-0.13938960817003132,-0.19816021488205776,7
+M1,M1 fish,Carrickalinga,cap_period,Lady Bay,Fished,0.7455498635599997,0.4309168653793548,3
+M1,M1 fish,Carrickalinga,cap_period,Myponga,Fished,0.23753669231593577,0.10289792345430775,4
+M1,M1 fish,Carrickalinga,cap_period,Myponga South,No-take,-0.1492910642764973,-0.3486332884711725,11
+M1,M1 fish,Carrickalinga,cap_period,Normanville Beach,Fished,0.8249055835076006,1.643038194770555,5
+M1,M1 fish,Carrickalinga,cap_period,Ripple Rock,No-take,-0.4058792401344167,-0.4333012031385534,11
+M1,M1 fish,Carrickalinga,cap_period,South Shores,Fished,0.7648026296021765,1.0319566114368361,3
+M1,M1 fish,Carrickalinga,cap_period,Yankalilla Mouth,Fished,0.6717136163773495,1.6282168327166344,3
+M1,M1 fish,Carrickalinga,cap_status,Carrickalinga (toilet),Fished,-0.01967663829343921,0.6890371227093148,14
+M1,M1 fish,Carrickalinga,cap_status,Carrickalinga Head,No-take,0.7578804415965047,-0.058318795680321396,13
+M1,M1 fish,Carrickalinga,cap_status,Carrickalinga North Site,Fished,0.00695950102858561,0.019094979588457215,8
+M1,M1 fish,Carrickalinga,cap_status,Carrickalinga North Site 2,Fished,-0.18620935770894137,-0.12521816352122056,9
+M1,M1 fish,Carrickalinga,cap_status,Carrickalinga Nth,Fished,-0.45267228684997685,0.20017243424389447,8
+M1,M1 fish,Carrickalinga,cap_status,Dodd's Beach,No-take,0.392491056006631,-0.09561111663450188,11
+M1,M1 fish,Carrickalinga,cap_status,Haycock Point,Fished,-0.2854090176837863,0.45020469212487285,7
+M1,M1 fish,Carrickalinga,cap_status,Lady Bay,Fished,-0.6957397966290547,-0.4706270426822425,3
+M1,M1 fish,Carrickalinga,cap_status,Myponga,Fished,-0.49908871609209154,-0.019559236378278073,4
+M1,M1 fish,Carrickalinga,cap_status,Myponga South,No-take,0.8053763647188475,-0.0074242449751458625,11
+M1,M1 fish,Carrickalinga,cap_status,Normanville Beach,Fished,-2.2091464968326937,-1.200021930495344,5
+M1,M1 fish,Carrickalinga,cap_status,Ripple Rock,No-take,0.9696057937712663,0.17195757468639092,11
+M1,M1 fish,Carrickalinga,cap_status,South Shores,Fished,-1.4769212305438082,-0.8445320127527892,3
+M1,M1 fish,Carrickalinga,cap_status,Yankalilla Mouth,Fished,-2.206552701440693,-1.1337682124924717,3
+M1,M1 fish,Eastern Spencer Gulf,cap_period,Corny Point Outside,Fished,-0.08172294365741506,-1.2431729802929334,2
+M1,M1 fish,Eastern Spencer Gulf,cap_period,Point Souttar,Fished,0.5002201811053018,1.718391182592374,1
+M1,M1 fish,Eastern Spencer Gulf,cap_period,Point Turton,Fished,-0.16838714689523548,0.3839773889967469,2
+M1,M1 fish,Encounter Bay,cap_period,Encounter Deep,Fished,0.7234018836735697,-0.6498018715781093,4
+M1,M1 fish,Encounter Bay,cap_period,Olivers Reef,Fished,0.4113342478876631,-0.4139076910378696,6
+M1,M1 fish,Encounter Bay,cap_period,Outside Granite island,Fished,-0.05043911690540624,0.03413112854031589,8
+M1,M1 fish,Encounter Bay,cap_period,Port Elliot Deep,No-take,0.5469250694397806,-0.21737204119654957,2
+M1,M1 fish,Encounter Bay,cap_period,Pullen Island,No-take,0.5673737873701864,-0.7519164039958606,4
+M1,M1 fish,Encounter Bay,cap_period,The Bluff,Fished,-0.24126095221156607,0.0054659039636559825,11
+M1,M1 fish,Encounter Bay,cap_period,Whalebone Reef,Fished,-0.6297305445344538,0.9102099287770502,9
+M1,M1 fish,Encounter Bay,cap_status,Encounter Deep,Fished,0.6442848334194151,-0.7353193320725029,4
+M1,M1 fish,Encounter Bay,cap_status,Olivers Reef,Fished,0.33384181044295874,-0.5250525459497121,6
+M1,M1 fish,Encounter Bay,cap_status,Outside Granite island,Fished,-0.3980855724826171,-0.10000794571544522,8
+M1,M1 fish,Encounter Bay,cap_status,Port Elliot Deep,No-take,1.764077579595904,0.26519592302446,2
+M1,M1 fish,Encounter Bay,cap_status,Pullen Island,No-take,1.8185503566171577,-0.13259796151223008,4
+M1,M1 fish,Encounter Bay,cap_status,The Bluff,Fished,-0.3483406553877288,-0.0258277462773895,11
+M1,M1 fish,Encounter Bay,cap_status,Whalebone Reef,Fished,-0.9295683325410999,0.7973068198625697,9
+M1,M1 fish,Metro,cap_period,Broken Bottom,Fished,-0.5024480955769626,0.4042948035445646,9
+M1,M1 fish,Metro,cap_period,Hallett Cove,Fished,-0.17109331318085894,0.19499331161442124,8
+M1,M1 fish,Metro,cap_period,Marino Rocks,Fished,0.736347420704942,-0.6498249656020564,8
+M1,M1 fish,Rapid Head,cap_period,2nd Valley Boat Shed,Fished,-0.7507047891851398,-0.6547611123459197,19
+M1,M1 fish,Rapid Head,cap_period,Cape Jervis South,Fished,0.8984636784516928,0.6117435555249994,4
+M1,M1 fish,Rapid Head,cap_period,Lasseters Reef,Fished,-0.8216152434245867,-0.8893409677185855,12
+M1,M1 fish,Rapid Head,cap_period,Morgans,Fished,0.43777458036438993,0.4692592661992869,12
+M1,M1 fish,Rapid Head,cap_period,Nev's Windmills,Fished,0.533896695982872,0.6018850809435935,12
+M1,M1 fish,Rapid Head,cap_period,Rapid Head,No-take,-0.31997525664570037,-0.08058985750910405,16
+M1,M1 fish,Rapid Head,cap_period,Rapid Head East,Fished,0.28704180506496835,0.14271845846311473,11
+M1,M1 fish,Rapid Head,cap_period,Rapid Head SZ,No-take,0.14170579927307617,0.06628083149316807,11
+M1,M1 fish,Rapid Head,cap_period,Rapid Head SZ Site2,No-take,0.4065849638119282,0.3859552261815177,10
+M1,M1 fish,Rapid Head,cap_period,Rapid Head South,No-take,0.520639470613221,0.29427396281923174,10
+M1,M1 fish,Rapid Head,cap_status,2nd Valley Boat Shed,Fished,-1.0790350114208564,-0.5616342838420579,19
+M1,M1 fish,Rapid Head,cap_status,Cape Jervis South,Fished,0.022281553673993922,0.7854009891689587,4
+M1,M1 fish,Rapid Head,cap_status,Lasseters Reef,Fished,-1.5722731520959519,-0.7389443343788685,12
+M1,M1 fish,Rapid Head,cap_status,Morgans,Fished,-0.010318820131797565,0.5251781161344379,12
+M1,M1 fish,Rapid Head,cap_status,Nev's Windmills,Fished,0.4780228930540387,0.6354398444317502,12
+M1,M1 fish,Rapid Head,cap_status,Rapid Head,No-take,0.48586406784713265,-0.23943169494186148,16
+M1,M1 fish,Rapid Head,cap_status,Rapid Head East,Fished,0.15988213107768623,0.22448762927958527,11
+M1,M1 fish,Rapid Head,cap_status,Rapid Head SZ,No-take,0.7059715264357673,-0.05353871753550601,11
+M1,M1 fish,Rapid Head,cap_status,Rapid Head SZ Site2,No-take,0.7970843272386707,0.2540884640867984,10
+M1,M1 fish,Rapid Head,cap_status,Rapid Head South,No-take,0.8398309361796001,0.18789483710923616,10
+M1,M1 fish,Southern Fleurieu,cap_period,Backstairs Deep,Fished,-0.28037147858866107,-0.9071012298881709,4
+M1,M1 fish,Southern Fleurieu,cap_period,Deep Creek,Fished,0.05424894930775573,0.7773801030555164,4
+M1,M1 fish,Southern Fleurieu,cap_period,Fishery Beach,Fished,-1.1974399833220009,-2.5799528204043085,4
+M1,M1 fish,Southern Fleurieu,cap_period,Flat Irons,Fished,0.2480820799019822,0.09828740411844102,9
+M1,M1 fish,Southern Fleurieu,cap_period,Newland Head,Fished,0.5858332148713211,0.644408386673668,6
+M1,M1 fish,Southern Fleurieu,cap_period,Porpoise Head,Fished,-0.013371989483536684,1.5219147079599677,4
+M1,M1 fish,Southern Metro,cap_period,Aldinga Pinacles,No-take,-0.41385285739837885,-0.7247225208076248,5
+M1,M1 fish,Southern Metro,cap_period,Aldinga Reef,No-take,-0.43125939223422843,-0.6393058813612347,5
+M1,M1 fish,Southern Metro,cap_period,Aldinga SZ1,No-take,0.31994736213550046,-0.6711092695619072,2
+M1,M1 fish,Southern Metro,cap_period,Aldinga SZ3,No-take,0.5119389497253342,0.17535219648189465,2
+M1,M1 fish,Southern Metro,cap_period,Gull Rock,Fished,0.9126513607579633,0.30811579511384707,2
+M1,M1 fish,Southern Metro,cap_period,Horseshoe inner,Fished,0.3371370347800277,0.17894163340147573,13
+M1,M1 fish,Southern Metro,cap_period,Horseshoe outer,Fished,-0.06354363049405144,0.6125015768670139,10
+M1,M1 fish,Southern Metro,cap_period,Moana inside,Fished,0.37227027761824066,0.7934408399061469,8
+M1,M1 fish,Southern Metro,cap_period,Moana outside,Fished,-0.2829524393269234,-0.01215950074445577,12
+M1,M1 fish,Southern Metro,cap_period,Noarlunga North Outside,No-take,-0.6100892991374016,-0.7744453252079079,11
+M1,M1 fish,Southern Metro,cap_period,Noarlunga South Outside,No-take,0.24440047171808646,-0.5854743022002284,4
+M1,M1 fish,Southern Metro,cap_period,Pt Noarlunga inside,No-take,-0.3253196818287474,-0.4348422633604751,8
+M1,M1 fish,Southern Metro,cap_period,Southport,Fished,0.7267372605058043,0.9219262083059239,5
+M1,M1 fish,Southern Metro,cap_period,Willunga,Fished,0.7028864541475912,0.7574859016712284,3
+M1,M1 fish,Southern Metro,cap_status,Aldinga Pinacles,No-take,-0.9776213741802569,-0.18751664807115748,5
+M1,M1 fish,Southern Metro,cap_status,Aldinga Reef,No-take,-0.8800273837977857,-0.13284031821043182,5
+M1,M1 fish,Southern Metro,cap_status,Aldinga SZ1,No-take,-0.779899242747414,0.2694755869415377,2
+M1,M1 fish,Southern Metro,cap_status,Aldinga SZ3,No-take,0.23431787822826927,0.7679805540475231,2
+M1,M1 fish,Southern Metro,cap_status,Gull Rock,Fished,0.6831337044496621,0.2666250747238736,2
+M1,M1 fish,Southern Metro,cap_status,Horseshoe inner,Fished,0.3017309484581722,-0.0476742585315976,13
+M1,M1 fish,Southern Metro,cap_status,Horseshoe outer,Fished,0.8167192807158618,-0.06643177914005606,10
+M1,M1 fish,Southern Metro,cap_status,Moana inside,Fished,0.9739654165914923,0.3221913248579428,8
+M1,M1 fish,Southern Metro,cap_status,Moana outside,Fished,0.1257050209786817,-0.551997278720406,12
+M1,M1 fish,Southern Metro,cap_status,Noarlunga North Outside,No-take,-1.062572540748934,-0.25793875337284683,11
+M1,M1 fish,Southern Metro,cap_status,Noarlunga South Outside,No-take,-0.866870963886545,0.38045014415613115,4
+M1,M1 fish,Southern Metro,cap_status,Pt Noarlunga inside,No-take,-0.7087607764861295,0.10529978248832753,8
+M1,M1 fish,Southern Metro,cap_status,Southport,Fished,1.0902887479705476,0.6295238482571888,5
+M1,M1 fish,Southern Metro,cap_status,Willunga,Fished,0.9992282214196503,0.5498835024529901,3
+M1,M1 fish,Southern Yorke,cap_period,Edithburgh,Fished,0.6765643705755224,-1.2977344738959364,3
+M1,M1 fish,Southern Yorke,cap_period,Troubridge Lighthouse,Fished,-0.7515939621036272,1.3004687501785306,2
+M1,M1 fish,Southern Yorke,cap_period,Troubridge Point,Fished,-0.26325259375965643,0.646132960665373,2
+M1,M1 fish,Sponge Gardens,cap_period,Cable Hut,No-take,-0.31894756364614973,-0.3791084605602749,10
+M1,M1 fish,Sponge Gardens,cap_period,Grassy Knoll,Fished,0.20201033678809074,-0.41329711775130484,6
+M1,M1 fish,Sponge Gardens,cap_period,Pancake Rock,No-take,0.11831066475741617,-1.2105842645710239,6
+M1,M1 fish,Sponge Gardens,cap_period,Penneshaw Pub,Fished,0.3838641835426373,1.6954499536206025,6
+M1,M1 fish,Sponge Gardens,cap_period,Puzzle Rock,Fished,-0.17260591234456132,0.560278862968851,6
+M1,M1 fish,Sponge Gardens,cap_status,Cable Hut,No-take,-1.237848428434634,-0.31451050296062955,10
+M1,M1 fish,Sponge Gardens,cap_status,Grassy Knoll,Fished,0.26590233950979164,0.44898310315336565,6
+M1,M1 fish,Sponge Gardens,cap_status,Pancake Rock,No-take,-1.8236495934752266,0.5241841716010495,6
+M1,M1 fish,Sponge Gardens,cap_status,Penneshaw Pub,Fished,2.6147142736009723,-0.09211491185977883,6
+M1,M1 fish,Sponge Gardens,cap_status,Puzzle Rock,Fished,1.0061136944221856,-0.35686819129358666,6
+M1,M1 fish,Upper GSV,cap_period,Outer Harbor breakwater south inside,Fished,0.29827376330472527,-0.35345982686681376,2
+M1,M1 fish,Upper GSV,cap_period,Port Gawler,Fished,-0.0032998852962572377,-0.314617385847002,5
+M1,M1 fish,Upper GSV,cap_period,Port Julia,Fished,-0.3427142334963428,0.4338107291723243,2
+M1,M1 fish,Upper GSV,cap_period,Port Parham,Fished,0.19741669466047984,0.7865033032668183,7
+M1,M1 fish,Upper GSV,cap_period,Semaphore,Fished,-0.18236235653697686,-0.5847339997491058,7
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Carrickalinga (toilet),Fished,-0.19209072632631055,0.0772966462066901,14
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Carrickalinga Head,No-take,0.0341863219839865,0.13782038786979114,13
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Carrickalinga North Site,Fished,-0.3096531822312579,0.05687353037975595,8
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Carrickalinga North Site 2,Fished,0.10592501994381653,0.3432364303865265,9
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Carrickalinga Nth,Fished,-0.24786791295449262,0.05274116836025663,8
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Dodd's Beach,No-take,0.12239435100498694,0.05952960305648294,11
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Haycock Point,Fished,0.25074476773383997,-0.3892207304357665,7
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Lady Bay,Fished,0.04555327433169528,0.07924332833086688,3
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Myponga,Fished,0.11246824938290513,0.1019862683880606,4
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Myponga South,No-take,-0.2724886066508644,-0.4801967469236391,11
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Normanville Beach,Fished,0.6715284563040376,0.1118923833856672,5
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Ripple Rock,No-take,-0.3754383115757388,-0.5107793863495963,11
+M2_cryptic,M2 fish,Carrickalinga,cap_period,South Shores,Fished,0.5435447761021586,0.7282956100526985,3
+M2_cryptic,M2 fish,Carrickalinga,cap_period,Yankalilla Mouth,Fished,1.400842333238567,0.9135231957345237,3
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Carrickalinga (toilet),Fished,-0.8156640646004417,0.15913123529164394,14
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Carrickalinga Head,No-take,1.0512547868983735,-0.3389017288292054,13
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Carrickalinga North Site,Fished,-0.7591067540218628,0.4780258590373136,8
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Carrickalinga North Site 2,Fished,-0.8231283965234949,-0.22573845486436134,9
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Carrickalinga Nth,Fished,-0.6903180738482015,0.34217943369761433,8
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Dodd's Beach,No-take,1.0552594916788887,-0.37570109104094784,11
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Haycock Point,Fished,-0.551404819998323,-0.026282520087673445,7
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Lady Bay,Fished,-0.8430134153082464,0.4364766152055536,3
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Myponga,Fished,-0.7931016569949407,0.145045688083951,4
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Myponga South,No-take,1.1501360506331046,0.3435014592796151,11
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Normanville Beach,Fished,-0.7147489784282959,-0.5664042352523461,5
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Ripple Rock,No-take,1.1585150357407725,0.43271985674130353,11
+M2_cryptic,M2 fish,Carrickalinga,cap_status,South Shores,Fished,-1.2712631132963876,-0.38431714011540735,3
+M2_cryptic,M2 fish,Carrickalinga,cap_status,Yankalilla Mouth,Fished,-1.099220882085907,-1.492831967637998,3
+M2_cryptic,M2 fish,Eastern Spencer Gulf,cap_period,Corny Point Outside,Fished,-0.924602185010932,-1.2453214554203473,2
+M2_cryptic,M2 fish,Eastern Spencer Gulf,cap_period,Point Souttar,Fished,0.3952754173217625,1.611873363560096,2
+M2_cryptic,M2 fish,Eastern Spencer Gulf,cap_period,Point Turton,Fished,0.5293267676891695,-0.3665519081397488,2
+M2_cryptic,M2 fish,Encounter Bay,cap_period,Encounter Deep,Fished,0.4825462251411469,-0.6939522658111876,4
+M2_cryptic,M2 fish,Encounter Bay,cap_period,Olivers Reef,Fished,0.42343548573660617,-0.542696546978709,6
+M2_cryptic,M2 fish,Encounter Bay,cap_period,Outside Granite island,Fished,0.35289841819223855,-0.45433856205246836,8
+M2_cryptic,M2 fish,Encounter Bay,cap_period,Port Elliot Deep,No-take,0.31286656470299784,-0.3694405547086976,3
+M2_cryptic,M2 fish,Encounter Bay,cap_period,Pullen Island,No-take,-0.022856729566566668,-0.03987079313405227,5
+M2_cryptic,M2 fish,Encounter Bay,cap_period,The Bluff,Fished,-0.6862686775181162,0.9731444276681668,11
+M2_cryptic,M2 fish,Encounter Bay,cap_period,Whalebone Reef,Fished,-0.06326063934433485,0.029975974109252162,9
+M2_cryptic,M2 fish,Encounter Bay,cap_status,Encounter Deep,Fished,-0.05179043747543397,-0.7305332450147668,4
+M2_cryptic,M2 fish,Encounter Bay,cap_status,Olivers Reef,Fished,-0.06584558554346175,-0.5966981893276759,6
+M2_cryptic,M2 fish,Encounter Bay,cap_status,Outside Granite island,Fished,-0.08551765126764338,-0.4912104455368489,8
+M2_cryptic,M2 fish,Encounter Bay,cap_status,Port Elliot Deep,No-take,1.8419729206548088,-0.22548964123500218,3
+M2_cryptic,M2 fish,Encounter Bay,cap_status,Pullen Island,No-take,1.6553135581210956,0.13529378474100087,5
+M2_cryptic,M2 fish,Encounter Bay,cap_status,The Bluff,Fished,-0.7688753220237309,0.9491804640598543,11
+M2_cryptic,M2 fish,Encounter Bay,cap_status,Whalebone Reef,Fished,-0.4509423930005789,-9.97713815386809e-4,9
+M2_cryptic,M2 fish,Metro,cap_period,Broken Bottom,Fished,0.2978101811475911,-0.8205948869790912,9
+M2_cryptic,M2 fish,Metro,cap_period,Hallett Cove,Fished,-0.45975039401482165,0.5894670085079249,8
+M2_cryptic,M2 fish,Metro,cap_period,Marino Rocks,Fished,0.12471394022378175,0.3337022393435528,8
+M2_cryptic,M2 fish,Rapid Head,cap_period,2nd Valley Boat Shed,Fished,-0.15793590795438645,0.005229467660893951,19
+M2_cryptic,M2 fish,Rapid Head,cap_period,Cape Jervis South,Fished,0.08124366017957496,-1.9768544131528616,4
+M2_cryptic,M2 fish,Rapid Head,cap_period,Lasseters Reef,Fished,-0.018576145633645354,0.218295506760222,12
+M2_cryptic,M2 fish,Rapid Head,cap_period,Morgans,Fished,0.1640902473377105,0.7665449602507068,12
+M2_cryptic,M2 fish,Rapid Head,cap_period,Nev's Windmills,Fished,0.10308995472225492,0.20667556323752545,12
+M2_cryptic,M2 fish,Rapid Head,cap_period,Rapid Head,No-take,-0.08753776897050215,-0.030970393430815764,16
+M2_cryptic,M2 fish,Rapid Head,cap_period,Rapid Head East,Fished,-0.03943947496694648,-0.29429693857470157,11
+M2_cryptic,M2 fish,Rapid Head,cap_period,Rapid Head SZ,No-take,0.04610006920199712,-0.20440417747473041,11
+M2_cryptic,M2 fish,Rapid Head,cap_period,Rapid Head SZ Site2,No-take,0.0800172280721164,0.14554363821770613,10
+M2_cryptic,M2 fish,Rapid Head,cap_period,Rapid Head South,No-take,0.02197244195205156,-0.1964332406667243,10
+M2_cryptic,M2 fish,Rapid Head,cap_status,2nd Valley Boat Shed,Fished,-0.6327967281936409,-0.07678393541268755,19
+M2_cryptic,M2 fish,Rapid Head,cap_status,Cape Jervis South,Fished,-0.7672375938969508,-1.8947046889624635,4
+M2_cryptic,M2 fish,Rapid Head,cap_status,Lasseters Reef,Fished,-0.7579972092041826,0.14691968579553846,12
+M2_cryptic,M2 fish,Rapid Head,cap_status,Morgans,Fished,-0.8169304578095749,0.7169248482395454,12
+M2_cryptic,M2 fish,Rapid Head,cap_status,Nev's Windmills,Fished,-0.6187060217394152,0.18601191082591925,12
+M2_cryptic,M2 fish,Rapid Head,cap_status,Rapid Head,No-take,0.9931693950210242,0.016442882284839606,16
+M2_cryptic,M2 fish,Rapid Head,cap_status,Rapid Head East,Fished,-0.6466331515947669,-0.3236876190582841,11
+M2_cryptic,M2 fish,Rapid Head,cap_status,Rapid Head SZ,No-take,1.1078303739984077,-0.12162462904909078,11
+M2_cryptic,M2 fish,Rapid Head,cap_status,Rapid Head SZ Site2,No-take,0.952324941581962,0.21803162225332656,10
+M2_cryptic,M2 fish,Rapid Head,cap_status,Rapid Head South,No-take,1.0928563293709,-0.1105531419550698,10
+M2_cryptic,M2 fish,Southern Fleurieu,cap_period,Backstairs Deep,Fished,-0.24769230346483972,-0.49110799927901466,4
+M2_cryptic,M2 fish,Southern Fleurieu,cap_period,Deep Creek,Fished,-0.2013366670739823,-0.12102056989876118,4
+M2_cryptic,M2 fish,Southern Fleurieu,cap_period,Fishery Beach,Fished,0.07866365437285577,-0.024439963330431552,4
+M2_cryptic,M2 fish,Southern Fleurieu,cap_period,Flat Irons,Fished,0.0041937916527538255,0.0850825922864443,9
+M2_cryptic,M2 fish,Southern Fleurieu,cap_period,Newland Head,Fished,0.2196220017046933,0.16254793827047473,6
+M2_cryptic,M2 fish,Southern Fleurieu,cap_period,Porpoise Head,Fished,0.031496282390230196,0.20131079245799638,4
+M2_cryptic,M2 fish,Southern Metro,cap_period,Aldinga Pinacles,No-take,0.27315112185538165,-0.1628597756771924,5
+M2_cryptic,M2 fish,Southern Metro,cap_period,Aldinga Reef,No-take,0.13032288280694712,0.24114064954380882,5
+M2_cryptic,M2 fish,Southern Metro,cap_period,Aldinga SZ1,No-take,0.874896201669236,0.1995520074149667,2
+M2_cryptic,M2 fish,Southern Metro,cap_period,Aldinga SZ3,No-take,1.182251047007646,-0.16232868034985348,2
+M2_cryptic,M2 fish,Southern Metro,cap_period,Gull Rock,Fished,0.4457501703471424,1.011579197490212,2
+M2_cryptic,M2 fish,Southern Metro,cap_period,Horseshoe inner,Fished,-0.6112116346844316,0.9054818026019447,13
+M2_cryptic,M2 fish,Southern Metro,cap_period,Horseshoe outer,Fished,0.1286396082846946,-0.5250295721364159,10
+M2_cryptic,M2 fish,Southern Metro,cap_period,Moana inside,Fished,0.33221204419168376,-0.7727176349594521,8
+M2_cryptic,M2 fish,Southern Metro,cap_period,Moana outside,Fished,0.17555778381270198,-0.7752508344033717,12
+M2_cryptic,M2 fish,Southern Metro,cap_period,Noarlunga North Outside,No-take,-0.33415507872589567,0.14671343700973527,11
+M2_cryptic,M2 fish,Southern Metro,cap_period,Noarlunga South Outside,No-take,-0.008724506225693929,0.48316167326673515,4
+M2_cryptic,M2 fish,Southern Metro,cap_period,Pt Noarlunga inside,No-take,-0.5073444114393596,0.3571953759764383,8
+M2_cryptic,M2 fish,Southern Metro,cap_period,Southport,Fished,0.05569398984518466,0.3164988750270784,5
+M2_cryptic,M2 fish,Southern Metro,cap_period,Willunga,Fished,0.787563260193888,-0.5039259738365691,3
+M2_cryptic,M2 fish,Southern Metro,cap_status,Aldinga Pinacles,No-take,-0.9080649797418565,0.3471855402377281,5
+M2_cryptic,M2 fish,Southern Metro,cap_status,Aldinga Reef,No-take,-0.9068753662597167,0.04590110851033206,5
+M2_cryptic,M2 fish,Southern Metro,cap_status,Aldinga SZ1,No-take,-0.729939098419341,0.44160732385707985,2
+M2_cryptic,M2 fish,Southern Metro,cap_status,Aldinga SZ3,No-take,-0.7539967188032495,0.8139341996579138,2
+M2_cryptic,M2 fish,Southern Metro,cap_status,Gull Rock,Fished,0.822854473353502,-0.482927422672083,2
+M2_cryptic,M2 fish,Southern Metro,cap_status,Horseshoe inner,Fished,0.5104882948565085,-0.9257474586029513,13
+M2_cryptic,M2 fish,Southern Metro,cap_status,Horseshoe outer,Fished,0.9985386887679889,0.27270459721841944,10
+M2_cryptic,M2 fish,Southern Metro,cap_status,Moana inside,Fished,0.890741843189987,0.550878448802629,8
+M2_cryptic,M2 fish,Southern Metro,cap_status,Moana outside,Fished,0.8782684945364287,0.4512059218183025,12
+M2_cryptic,M2 fish,Southern Metro,cap_status,Noarlunga North Outside,No-take,-1.3782666868056952,-0.11204124528592015,11
+M2_cryptic,M2 fish,Southern Metro,cap_status,Noarlunga South Outside,No-take,-1.1677855818395662,-0.17657114536974272,4
+M2_cryptic,M2 fish,Southern Metro,cap_status,Pt Noarlunga inside,No-take,-1.5098239860522107,-0.3172222513932737,8
+M2_cryptic,M2 fish,Southern Metro,cap_status,Southport,Fished,0.9071942636900033,-0.267972379370573,5
+M2_cryptic,M2 fish,Southern Metro,cap_status,Willunga,Fished,1.1615564897210298,0.5972963598701806,3
+M2_cryptic,M2 fish,Southern Yorke,cap_period,Edithburgh,Fished,0.42736659865401794,-0.7557172456217571,4
+M2_cryptic,M2 fish,Southern Yorke,cap_period,Troubridge Lighthouse,Fished,-0.2063951118421976,0.7753396010637148,2
+M2_cryptic,M2 fish,Southern Yorke,cap_period,Troubridge Point,Fished,-0.3241690427329189,0.3680474450898995,4
+M2_cryptic,M2 fish,Sponge Gardens,cap_period,Cable Hut,No-take,-0.43476481304741577,-0.6871589263311635,10
+M2_cryptic,M2 fish,Sponge Gardens,cap_period,Grassy Knoll,Fished,0.42390025664371955,-0.029067700956786867,6
+M2_cryptic,M2 fish,Sponge Gardens,cap_period,Pancake Rock,No-take,0.268088109701291,-1.0462419382453032,6
+M2_cryptic,M2 fish,Sponge Gardens,cap_period,Penneshaw Pub,Fished,0.3121022584231636,1.9691362206609084,6
+M2_cryptic,M2 fish,Sponge Gardens,cap_period,Puzzle Rock,Fished,-0.2794826030224807,0.25143829575978704,6
+M2_cryptic,M2 fish,Sponge Gardens,cap_status,Cable Hut,No-take,-1.41822409919431,0.13634593241212845,10
+M2_cryptic,M2 fish,Sponge Gardens,cap_status,Grassy Knoll,Fished,0.9008726624447042,-1.0250079590314192,6
+M2_cryptic,M2 fish,Sponge Gardens,cap_status,Pancake Rock,No-take,-1.7811679356167163,-0.2272432206868819,6
+M2_cryptic,M2 fish,Sponge Gardens,cap_status,Penneshaw Pub,Fished,2.7266773209264974,1.2121479053853965,6
+M2_cryptic,M2 fish,Sponge Gardens,cap_status,Puzzle Rock,Fished,0.5173247842360311,-0.18713994635397765,6
+M2_cryptic,M2 fish,Upper GSV,cap_period,Outer Harbor breakwater south inside,Fished,0.5699265592908358,-0.9416473591097978,2
+M2_cryptic,M2 fish,Upper GSV,cap_period,Port Gawler,Fished,-0.3177042799051598,0.4161333202551042,5
+M2_cryptic,M2 fish,Upper GSV,cap_period,Port Julia,Fished,0.37186566854010805,0.2855431304789618,2
+M2_cryptic,M2 fish,Upper GSV,cap_period,Port Parham,Fished,-0.2573928439902022,0.4464175508184037,7
+M2_cryptic,M2 fish,Upper GSV,cap_period,Semaphore,Fished,0.2152409788279038,-0.5561972856775249,7
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Carrickalinga (toilet),Fished,-0.2156370370034251,0.30625659698550045,14
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Carrickalinga Head,No-take,-0.22601220315488577,-0.756841711278791,13
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Carrickalinga North Site,Fished,0.13683757848214534,0.05458226036532248,8
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Carrickalinga North Site 2,Fished,-0.020616488034716895,-0.07978497251440161,9
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Carrickalinga Nth,Fished,0.19704781943334895,0.1992521466371304,8
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Dodd's Beach,No-take,-0.22221416394526727,-0.29279811787870175,11
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Haycock Point,Fished,-0.23578076595577255,0.12128639332652512,7
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Lady Bay,Fished,0.5071588267861183,0.5651150340375771,3
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Myponga,Fished,0.4012954330924201,0.06934281674793602,4
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Myponga South,No-take,-0.07399961123561016,-0.2516392358745473,11
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Normanville Beach,Fished,0.41056251489524126,0.8588583360620368,5
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Ripple Rock,No-take,-0.1300059369065684,-0.3696264060417273,11
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,South Shores,Fished,0.7061556096632382,0.66707079294756,3
+M2_inverts,M2 invertebrates,Carrickalinga,cap_period,Yankalilla Mouth,Fished,0.8374956488361067,1.7254051872129983,3
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Carrickalinga (toilet),Fished,-0.48183127692789957,-0.3760343138515642,14
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Carrickalinga Head,No-take,1.0523014213507986,-0.09575025443830827,13
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Carrickalinga North Site,Fished,-0.22778015026581674,0.15519895886918653,8
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Carrickalinga North Site 2,Fished,-0.14891192602221767,-0.07300456255477536,9
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Carrickalinga Nth,Fished,-0.4771600813414606,0.10479436348883697,8
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Dodd's Beach,No-take,0.5916540728698766,-0.10004100388105934,11
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Haycock Point,Fished,-0.7802595746447503,-0.9345391310344987,7
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Lady Bay,Fished,-0.8690606594786893,0.2069702720733459,3
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Myponga,Fished,-0.3501810653630278,0.3698738810999753,4
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Myponga South,No-take,0.6494928604216349,0.1245701774463394,11
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Normanville Beach,Fished,-0.9920855089225116,0.5704965616821455,5
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Ripple Rock,No-take,0.7408631526069156,0.08863021804363007,11
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,South Shores,Fished,-0.978570270743887,0.48663777793982116,3
+M2_inverts,M2 invertebrates,Carrickalinga,cap_status,Yankalilla Mouth,Fished,-1.4636002463828848,1.3235154374806806,3
+M2_inverts,M2 invertebrates,Eastern Spencer Gulf,cap_period,Corny Point Outside,Fished,-0.08365816770702761,-1.0731088709871348,2
+M2_inverts,M2 invertebrates,Eastern Spencer Gulf,cap_period,Point Souttar,Fished,-0.27270289778919066,1.6044899527673742,2
+M2_inverts,M2 invertebrates,Eastern Spencer Gulf,cap_period,Point Turton,Fished,0.3563610654962181,-0.5313810817802396,2
+M2_inverts,M2 invertebrates,Encounter Bay,cap_period,Encounter Deep,Fished,0.32436520942094593,0.6066851656483057,4
+M2_inverts,M2 invertebrates,Encounter Bay,cap_period,Olivers Reef,Fished,0.1739231577607869,0.28325808114526435,6
+M2_inverts,M2 invertebrates,Encounter Bay,cap_period,Outside Granite island,Fished,-0.15513242109797493,-0.05637673539310424,8
+M2_inverts,M2 invertebrates,Encounter Bay,cap_period,Port Elliot Deep,No-take,0.3467039963170675,0.03474999241557811,3
+M2_inverts,M2 invertebrates,Encounter Bay,cap_period,Pullen Island,No-take,0.1251158386965947,-0.3860527958813546,5
+M2_inverts,M2 invertebrates,Encounter Bay,cap_period,The Bluff,Fished,-0.04296280138391497,-0.78923224316674645,11
+M2_inverts,M2 invertebrates,Encounter Bay,cap_period,Whalebone Reef,Fished,-0.2547823091862018,0.7591437122971412,9
+M2_inverts,M2 invertebrates,Encounter Bay,cap_status,Encounter Deep,Fished,-0.6078619975865915,0.29357098329221776,4
+M2_inverts,M2 invertebrates,Encounter Bay,cap_status,Olivers Reef,Fished,0.24641789728071145,0.16446758115932059,6
+M2_inverts,M2 invertebrates,Encounter Bay,cap_status,Outside Granite island,Fished,-0.27016024223987467,-0.08942063752408747,8
+M2_inverts,M2 invertebrates,Encounter Bay,cap_status,Port Elliot Deep,No-take,1.273130701184277,0.11381910273260794,3
+M2_inverts,M2 invertebrates,Encounter Bay,cap_status,Pullen Island,No-take,1.3170046594306977,-0.06829146163956472,5
+M2_inverts,M2 invertebrates,Encounter Bay,cap_status,The Bluff,Fished,-0.025464830849439367,0.12796092953619648,11
+M2_inverts,M2 invertebrates,Encounter Bay,cap_status,Whalebone Reef,Fished,-0.7788977463090433,-0.3170327272033614,9
+M2_inverts,M2 invertebrates,Metro,cap_period,Broken Bottom,Fished,0.15596635376727785,-1.5087351107868894,9
+M2_inverts,M2 invertebrates,Metro,cap_period,Hallett Cove,Fished,0.20425344003531268,0.2758774340317962,8
+M2_inverts,M2 invertebrates,Metro,cap_period,Marino Rocks,Fished,-0.3797155880235004,1.4214495656034554,8
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,2nd Valley Boat Shed,Fished,-0.0432619407472842,-0.7737031764020074,19
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Cape Jervis South,Fished,0.5279787452587362,0.24929011086297276,4
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Lasseters Reef,Fished,-0.19661586898579386,-0.7600946701252224,12
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Morgans,Fished,0.018069157380176077,0.34010892690102895,12
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Nev's Windmills,Fished,2.2134546720894294e-5,0.49472062986887044,12
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Rapid Head,No-take,-0.0381824714805522,0.09066510234126664,16
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Rapid Head East,Fished,-0.05918158189058021,0.01590902808439593,11
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Rapid Head SZ,No-take,0.06203984499879498,0.39847067329779007,11
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Rapid Head SZ Site2,No-take,0.06918553626916005,0.1267990240685628,10
+M2_inverts,M2 invertebrates,Rapid Head,cap_period,Rapid Head South,No-take,0.07399801046770904,0.5529572675100187,10
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,2nd Valley Boat Shed,Fished,-1.0622820679466254,-0.50959539196038794,19
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Cape Jervis South,Fished,-0.2913469980107424,0.7035108700111447,4
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Lasseters Reef,Fished,-0.9682190376493286,-0.6229731827583108,12
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Morgans,Fished,0.07872207109723425,0.46181893867066776,12
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Nev's Windmills,Fished,0.06799184034498901,0.6105118107210755,12
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Rapid Head,No-take,0.6269466591321634,-0.20187325950011734,16
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Rapid Head East,Fished,-0.31272588209902896,0.1341798334183282,11
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Rapid Head SZ,No-take,0.8145838381384402,0.1381935754144692,11
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Rapid Head SZ Site2,No-take,0.6156087951237653,-0.11306281053163654,10
+M2_inverts,M2 invertebrates,Rapid Head,cap_status,Rapid Head South,No-take,0.9499136783728319,0.2840470927759077,10
+M2_inverts,M2 invertebrates,Southern Fleurieu,cap_period,Backstairs Deep,Fished,0.6722407690330701,2.0260778390795884,4
+M2_inverts,M2 invertebrates,Southern Fleurieu,cap_period,Deep Creek,Fished,0.17895787820901518,0.5901940136438791,4
+M2_inverts,M2 invertebrates,Southern Fleurieu,cap_period,Fishery Beach,Fished,0.5338593994784907,1.4140742093629077,4
+M2_inverts,M2 invertebrates,Southern Fleurieu,cap_period,Flat Irons,Fished,-0.7017204877710836,-1.1249943402920897,9
+M2_inverts,M2 invertebrates,Southern Fleurieu,cap_period,Newland Head,Fished,0.04059416744412,-1.021965472973044,6
+M2_inverts,M2 invertebrates,Southern Fleurieu,cap_period,Porpoise Head,Fished,0.1329217995981824,0.033839413030391736,4
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Aldinga Pinacles,No-take,0.4915023064279437,-0.38542418818270757,5
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Aldinga Reef,No-take,0.5765647521736734,-0.40545555537579936,5
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Aldinga SZ1,No-take,1.1339051120685033,-0.49101508768077895,2
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Aldinga SZ3,No-take,0.7150697817723398,-0.024273927282280977,2
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Gull Rock,Fished,0.859987580630013,-0.14719576851950972,2
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Horseshoe inner,Fished,-0.6258522329308985,0.7691243502217816,13
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Horseshoe outer,Fished,0.13517847790256807,-0.7950095344740313,10
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Moana inside,Fished,0.3020021426700875,-0.7560312327700728,8
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Moana outside,Fished,-0.10619939089048652,-0.34147309849472346,12
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Noarlunga North Outside,No-take,-0.4641001942299397,0.7147085865690641,11
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Noarlunga South Outside,No-take,-0.02064887948113806,0.7933166330660075,4
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Pt Noarlunga inside,No-take,-0.45225677377471607,0.6559166210026262,8
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Southport,Fished,0.3456975640185746,-0.37421425515119766,5
+M2_inverts,M2 invertebrates,Southern Metro,cap_period,Willunga,Fished,0.653891193670029,-0.3448495186922223,3
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Aldinga Pinacles,No-take,-0.36178144318863614,-0.608490765825668,5
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Aldinga Reef,No-take,-0.38699921116370634,-0.6599292272961048,5
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Aldinga SZ1,No-take,-0.09251594012964524,-1.0034475196252646,2
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Aldinga SZ3,No-take,-0.17653396469033336,-0.5312327250928972,2
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Gull Rock,Fished,0.24656927389371447,-0.44363303134587917,2
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Horseshoe inner,Fished,-0.013675274778774787,0.8626146395277113,13
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Horseshoe outer,Fished,1.0379904922565637,-0.38604508173416596,10
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Moana inside,Fished,0.8306791799050179,-0.464076817085396,8
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Moana outside,Fished,0.7371449589334046,-0.013501179963313481,12
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Noarlunga North Outside,No-take,-1.1060255680229618,0.46454725745730413,11
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Noarlunga South Outside,No-take,-1.1737027929888868,0.2752034999119954,4
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Pt Noarlunga inside,No-take,-1.1098143591978449,0.4000783279208569,8
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Southport,Fished,0.5223567376901377,-0.2646621727980916,5
+M2_inverts,M2 invertebrates,Southern Metro,cap_status,Willunga,Fished,0.40779628069062734,-0.4227779578644804,3
+M2_inverts,M2 invertebrates,Southern Yorke,cap_period,Edithburgh,Fished,0.10063382001999327,-1.5526158024324777,4
+M2_inverts,M2 invertebrates,Southern Yorke,cap_period,Troubridge Lighthouse,Fished,-0.27244033144131663,1.583863275944609,2
+M2_inverts,M2 invertebrates,Southern Yorke,cap_period,Troubridge Point,Fished,0.03558634570066499,0.7606841644601732,4
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_period,Cable Hut,No-take,-0.33230188604895655,0.7175169095922858,10
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_period,Grassy Knoll,Fished,-0.043384430797367604,-0.5906419656818029,6
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_period,Pancake Rock,No-take,-0.22646562347149157,1.2980466766899035,6
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_period,Penneshaw Pub,Fished,0.7256589007637282,-1.542585869923863,6
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_period,Puzzle Rock,Fished,0.09802763025339165,-0.3606803570713816,6
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_status,Cable Hut,No-take,-1.1666942424257243,-0.023721237902168645,10
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_status,Grassy Knoll,Fished,0.7934187054107569,-0.35709949659417206,6
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_status,Pancake Rock,No-take,-1.3594494294188653,0.039535396503613936,6
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_status,Penneshaw Pub,Fished,1.5511744810574266,0.5994039462866303,6
+M2_inverts,M2 invertebrates,Sponge Gardens,cap_status,Puzzle Rock,Fished,0.9593466469935559,-0.2423044496924581,6
+M2_inverts,M2 invertebrates,Upper GSV,cap_period,Outer Harbor breakwater south inside,Fished,1.1104251417519464,-0.7111204877332966,2
+M2_inverts,M2 invertebrates,Upper GSV,cap_period,Port Gawler,Fished,0.39783709605907724,1.8903500684573151,5
+M2_inverts,M2 invertebrates,Upper GSV,cap_period,Port Julia,Fished,-0.1894050902079628,-1.7778211454471649,2
+M2_inverts,M2 invertebrates,Upper GSV,cap_period,Port Parham,Fished,-0.5751328298569284,-0.8410438205832153,7
+M2_inverts,M2 invertebrates,Upper GSV,cap_period,Semaphore,Fished,0.027814889373591646,0.20191995259383574,7

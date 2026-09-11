@@ -535,3 +535,31 @@ metric_data_key <- function(metric_id) {
          metric_id
   )
 }
+
+# ---------------------------------------------------------------------------
+# RLS survey-method button group.
+#
+# The same M1 fish / M2 fish / M2 invertebrates choice appears on several
+# cards (common species, stacked abundance, the percentage-change table, the
+# impact gauges, and the multivariate card). They are separate Shiny inputs -
+# one id can only exist once in a page - but server.R keeps them in sync, so
+# whichever one the user touches, they all move together.
+#
+# Wrapped in a conditionalPanel because BRUVS has no equivalent of these
+# methods; the buttons only appear when the navbar Method is set to Dive.
+# ---------------------------------------------------------------------------
+
+rls_method_choices <- c("M1 fish", "M2 fish", "M2 invertebrates")
+
+rls_method_buttons <- function(id, label = "Survey method:") {
+  conditionalPanel(
+    condition = "input.app_method == 'Dive'",
+    shinyWidgets::radioGroupButtons(
+      inputId  = id,
+      label    = label,
+      choices  = rls_method_choices,
+      selected = rls_method_choices[1],
+      size     = "sm"
+    )
+  )
+}

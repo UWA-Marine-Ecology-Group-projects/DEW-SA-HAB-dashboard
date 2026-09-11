@@ -543,6 +543,93 @@ if (!file.exists(sa_sites_path)) {
 }
 
 # ============================================================
+# 7b. Multivariate community composition (script 13's dashboard export)
+#
+# 13_rls_multivariate_pco_and)_caps.R writes its PCoA/CAP scores,
+# species vectors, site centroids and PERMANOVA results as tidy CSVs
+# into outputs/multivariate/app/, already combined across all three
+# datasets (M1 fish / M2 fish / M2 invertebrates). The app rebuilds
+# the ordinations natively from these rather than displaying script
+# 13's PNGs, so it can theme them like the rest of the dashboard and
+# offer CSV downloads of the underlying scores.
+#
+# All of this is optional: if script 13 hasn't been run (or has been
+# run without the export layer), these come back as empty tibbles and
+# the app simply doesn't show the "Community composition" section.
+# That is why each read is guarded rather than a stopifnot() - an
+# out-of-date multivariate export should never stop the rest of the
+# dashboard from building.
+#
+# Every location x method x ordination has a row in
+# `multivariate_meta`, INCLUDING ones that could not be produced
+# (available = FALSE, with a `reason`), so the app can explain an
+# empty panel rather than silently showing nothing. As at the first
+# export: all 30 PCoA and all 30 Period CAPs are available, and 15 of
+# 30 Status CAPs - the five locations with only one management status
+# present (Eastern Spencer Gulf, Metro, Southern Fleurieu, Southern
+# Yorke, Upper GSV) have no Status CAP for any method.
+# ============================================================
+
+multivariate_dir <- "outputs/multivariate/app"   # script 13's export layer
+
+read_multivariate_csv <- function(file_name) {
+
+  path <- file.path(multivariate_dir, file_name)
+
+  if (!file.exists(path)) {
+    warning(
+      "Missing ", path,
+      " - the app's 'Community composition' section will be empty. ",
+      "Re-run 13_rls_multivariate_pco_and)_caps.R to create it."
+    )
+    return(tibble::tibble())
+  }
+
+  readr::read_csv(path, show_col_types = FALSE)
+}
+
+rls_multivariate_scores        <- read_multivariate_csv("multivariate_ordination_scores.csv")
+rls_multivariate_vectors       <- read_multivariate_csv("multivariate_species_vectors.csv")
+rls_multivariate_centroids     <- read_multivariate_csv("multivariate_site_centroids.csv")
+rls_multivariate_meta          <- read_multivariate_csv("multivariate_ordination_meta.csv")
+rls_multivariate_period_status <- read_multivariate_csv("multivariate_period_status_scores.csv")
+rls_multivariate_permanova_period <- read_multivariate_csv("multivariate_permanova_period.csv")
+rls_multivariate_permanova_status <- read_multivariate_csv("multivariate_permanova_status.csv")
+
+# scale_species_vectors() in script 13 builds its short italic arrow
+# label with the regex "[A-Z][a-z]+\\s+[a-z]+$", which only matches a
+# clean "Genus species" ending. Taxa like "Haliotidae Haliotis rubra
+# complex" or "Temnopleuridae Holopneustes sp (red)" don't match and
+# come through with an empty label (they are blank on script 13's own
+# PNGs too - this is not introduced here). Fall back to the full
+# scientific name so the app never draws an unlabelled arrow.
+if (nrow(rls_multivariate_vectors) > 0 &&
+    all(c("label", "scientific") %in% names(rls_multivariate_vectors))) {
+
+  n_missing_label <- sum(
+    is.na(rls_multivariate_vectors$label) | rls_multivariate_vectors$label == ""
+  )
+
+  if (n_missing_label > 0) {
+    message(
+      n_missing_label,
+      " species vector(s) had no short label (taxon name isn't a plain ",
+      "'Genus species') - using the full scientific name instead."
+    )
+  }
+
+  rls_multivariate_vectors <- rls_multivariate_vectors %>%
+    dplyr::mutate(
+      label = dplyr::if_else(
+        is.na(label) | label == "",
+        scientific,
+        label
+      )
+    )
+}
+
+
+# ============================================================
 # 8. Diagnostics - internal RLS consistency checks (region/location
 #    names used in the GLMM output vs. the RLS pipeline's own raw sample
 #    data and site table). This script is self-contained within the RLS
@@ -584,6 +671,45 @@ print(setdiff(glmm_locations, rls_native_locations))
 cat("Locations in GLMM output but not in rls_sites (the map site table - should be empty):\n")
 print(setdiff(glmm_locations, sort(unique(rls_sites$location))))
 cat("---------------------------------------\n\n")
+
+# Script 13 takes `location` from sa_sites.rds, while everything else in
+# this script takes it from data/rls_metrics_for_modelling/. Those two
+# agreed exactly at the time of writing (10 locations, no differences
+# either way), but if they ever drift the multivariate section would
+# silently show nothing for the affected locations - the app looks its
+# ordinations up by location name. So check it explicitly rather than
+# trusting it to stay true.
+if (nrow(rls_multivariate_meta) > 0 && "location" %in% names(rls_multivariate_meta)) {
+
+  multivariate_locations <- sort(unique(rls_multivariate_meta$location))
+
+  cat("--- Multivariate (script 13) location name check ---\n")
+  cat("Locations in the multivariate export but not in rls_samples (should be empty):\n")
+  print(setdiff(multivariate_locations, rls_native_locations))
+  cat("Locations in rls_samples but with no multivariate export (empty = every location has one):\n")
+  print(setdiff(rls_native_locations, multivariate_locations))
+  cat("---------------------------------------\n\n")
+
+  cat("--- Multivariate ordinations available ---\n")
+  print(
+    rls_multivariate_meta %>%
+      dplyr::count(ordination, available, name = "n")
+  )
+
+  unavailable_multivariate <- rls_multivariate_meta %>%
+    dplyr::filter(!available)
+
+  if (nrow(unavailable_multivariate) > 0) {
+    cat(
+      "\n", nrow(unavailable_multivariate),
+      " ordination(s) unavailable - the app will show the recorded reason ",
+      "instead of an empty panel. Locations affected:\n",
+      sep = ""
+    )
+    print(sort(unique(unavailable_multivariate$location)))
+  }
+  cat("---------------------------------------\n\n")
+}
 
 # ============================================================
 # 9. Region & location narrative summary text - dummy/template lookups
@@ -671,6 +797,20 @@ rls_data <- list(
   top_occurrence_abundance_selection     = rls_top_occurrence_abundance_selection,
 
   sites                                  = rls_sites,
+
+  # Multivariate community composition (script 13's export layer).
+  # `multivariate_meta` is the one to consult first in the app: it has a
+  # row for every location x method x ordination, including the ones that
+  # couldn't be produced (available = FALSE plus a `reason`), and carries
+  # the pre-formatted axis labels so the app's axes match script 13's own
+  # figures exactly.
+  multivariate_scores                    = rls_multivariate_scores,
+  multivariate_vectors                   = rls_multivariate_vectors,
+  multivariate_centroids                 = rls_multivariate_centroids,
+  multivariate_meta                      = rls_multivariate_meta,
+  multivariate_period_status             = rls_multivariate_period_status,
+  multivariate_permanova_period          = rls_multivariate_permanova_period,
+  multivariate_permanova_status          = rls_multivariate_permanova_status,
 
   region_summary_lookup_path             = file.path(lookup_dir, "SA-HAB-Summary Text - rls_region_summary_text.csv"),
   location_summary_lookup_path           = file.path(lookup_dir, "SA-HAB-Summary Text - rls_location_summary_text.csv")

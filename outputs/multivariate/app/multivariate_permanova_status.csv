@@ -1,0 +1,16 @@
+dataset,dataset_label,location,n,n_sites,R2,F_value,p_value,dispersion_p,permutations_used,permutation_type
+M1,M1 fish,Carrickalinga,110,14,0.05359513593465403,6.116066073539301,0.058,0.054,999,Monte Carlo whole-site
+M1,M1 fish,Encounter Bay,44,7,0.0522479453527947,2.3153879688862653,0.6666666666666666,0.67,20,exact whole-site
+M1,M1 fish,Rapid Head,117,10,0.03231839672804554,3.840742255674287,0.4714285714285714,0.047,209,exact whole-site
+M1,M1 fish,Southern Metro,90,14,0.12397955294179136,12.454276262061601,0.002,0.773,999,Monte Carlo whole-site
+M1,M1 fish,Sponge Gardens,34,5,0.07774834139474375,2.697687666286644,0.2,0.6083333333333333,9,exact whole-site
+M2_cryptic,M2 fish,Carrickalinga,110,14,0.010902183557345874,1.1904139354265975,0.602,0.01,999,Monte Carlo whole-site
+M2_cryptic,M2 fish,Encounter Bay,46,7,0.012014245795440128,0.535055098466445,1,0.341,20,exact whole-site
+M2_cryptic,M2 fish,Rapid Head,117,10,0.016279556286425183,1.903131102848159,0.34285714285714286,0.191,209,exact whole-site
+M2_cryptic,M2 fish,Southern Metro,90,14,0.02536764661894258,2.2904563907844655,0.5,0.903,999,Monte Carlo whole-site
+M2_cryptic,M2 fish,Sponge Gardens,34,5,0.11856023872280778,4.304239275106569,0.2,0.008333333333333333,9,exact whole-site
+M2_inverts,M2 invertebrates,Carrickalinga,110,14,0.06308058327650096,7.2713862817432124,0.001,0.022,999,Monte Carlo whole-site
+M2_inverts,M2 invertebrates,Encounter Bay,46,7,0.0471277326810087,2.1761786013551814,0.8095238095238095,0.381,20,exact whole-site
+M2_inverts,M2 invertebrates,Rapid Head,117,10,0.030313665887994036,3.5950507442302957,0.3523809523809524,0.366,209,exact whole-site
+M2_inverts,M2 invertebrates,Southern Metro,90,14,0.06423164588176518,6.040367589606641,0.179,0.379,999,Monte Carlo whole-site
+M2_inverts,M2 invertebrates,Sponge Gardens,34,5,0.10037675324309914,3.570445867599,0.1,0.008333333333333333,9,exact whole-site

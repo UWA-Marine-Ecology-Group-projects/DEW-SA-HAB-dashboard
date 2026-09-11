@@ -9,7 +9,15 @@ ui <- page_navbar(
     tags$link(
       rel = "stylesheet",
       href = "https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap"
-    )
+    ),
+
+    # Shiny inputs carry a form-group bottom margin that leaves a dropdown
+    # sitting in the navbar visually low. Only affects inputs inside the
+    # navbar itself.
+    tags$style(HTML("
+      .navbar .shiny-input-container { margin-bottom: 0; }
+      .navbar .form-group { margin-bottom: 0; }
+    "))
   ),
   
   theme = bs_theme(
@@ -472,13 +480,6 @@ nav_panel(
       
       h5("Select data:"),
       
-      radioButtons(
-        inputId  = "method",
-        label    = "Choose a method to display:",
-        choices  = c("BRUVS", "Dive"),
-        inline   = TRUE
-      ),
-      
       selectizeInput(
         "region",
         "Choose a region:",
@@ -543,6 +544,7 @@ nav_panel(
               )
             ),
             
+            rls_method_buttons("rls_method_gauges_reg"),
             spinnerPlotOutput("overall_impact_gauge", height = 180),  # was: plotOutput(...)
             h6("Algal bloom impact on:"),
             spinnerPlotOutput("region_impact_gauges", height = 300),
@@ -570,6 +572,7 @@ nav_panel(
               )
             ),
             card_body(
+              rls_method_buttons("rls_method_change_reg"),
               spinnerUiOutput("region_change_table"#, height = 200
               )  # was: uiOutput("region_change_table")
             )
@@ -597,6 +600,7 @@ nav_panel(
           # taller than BRUVS's single panel.
           fillable = FALSE,
           sidebar = div(
+            rls_method_buttons("rls_method_stacked_reg"),
 
             downloadButton(
               outputId = "region_stacked_download_results",
@@ -638,6 +642,8 @@ nav_panel(
           # (taller for Dive's 3 stacked methods, shorter for BRUVS).
           fillable = FALSE,
           sidebar = div(
+            rls_method_buttons("rls_method_common_reg"),
+
             h6(strong("Plot inputs:")),
             numericInput(
               "region_number_species",
@@ -713,20 +719,13 @@ nav_panel(
       
       h5("Select data:"),
       
-      radioButtons(
-        inputId  = "methodlocation",
-        label    = "Choose a method to display:",
-        choices  = c("BRUVS", "Dive"),
-        inline   = TRUE
-      ),
-      
       selectizeInput(
         "location",
         "Choose a location:",
         choices = NULL, multiple = FALSE,
         options = list(placeholder = "Choose a location...")
       ),
-      
+
       h6("Years sampled:"),
       textOutput("years_for_location"),
       br(),
@@ -781,12 +780,18 @@ nav_panel(
             ),
             
             
+            rls_method_buttons("rls_method_gauges_loc"),
             spinnerPlotOutput("location_overall_impact_gauge", height = 180),  # was: plotOutput(...)
             h6("Algal bloom impact on:"),
             spinnerPlotOutput("location_impact_gauges", height = 350)
           ),
           
   
+          div(
+            style = "margin-bottom: 0.5rem;",
+            rls_method_buttons("rls_method_change_loc")
+          ),
+
           navset_card_tab(
 
             # NOTE: navset_card_tab() in this bslib version doesn't accept
@@ -841,6 +846,8 @@ nav_panel(
           # reactive plot height instead of clipping/scrolling it.
           fillable = FALSE,
           sidebar = div(
+            rls_method_buttons("rls_method_stacked_loc"),
+
             h6(strong("Pre-bloom vs. Bloom:")),
 
             downloadButton(
@@ -909,6 +916,8 @@ nav_panel(
           # reactive plot height instead of clipping/scrolling it.
           fillable = FALSE,
           sidebar = div(
+            rls_method_buttons("rls_method_common_loc"),
+
             h6(strong("Plot inputs:")),
             numericInput(
               "location_number_species",
@@ -981,7 +990,68 @@ nav_panel(
         )
       ),
       
-      uiOutput("location_tabset")
+      # Which of the three "Explore indicators" GLMM plots to show. One
+      # shared control for all five metric tabs, so the choice persists as
+      # you move between them. Lives here, with the GLMM card, rather than
+      # in the page sidebar.
+      #
+      # Defined statically here rather than inside output$location_tabset's
+      # renderUI so the input always exists - the conditionalPanels in
+      # rls_metric_group_tab_body_ui() test its value, and a control that is
+      # created and destroyed alongside the panels that read it is a
+      # lifecycle problem waiting to happen.
+      #
+      # This is a real speed-up as well as less scrolling: each metric tab
+      # used to stack all three plots. The two that aren't selected now sit
+      # in a conditionalPanel, and Shiny suspends hidden outputs, so they are
+      # never computed until they're chosen.
+      #
+      # Dive only for now - the BRUVS tabs have the same three plots but are
+      # laid out by a hand-written switch() with a different arrangement per
+      # metric, so wiring this in there is a separate job.
+      conditionalPanel(
+        condition = "input.app_method == 'Dive'",
+        div(
+          style = "margin-bottom: 0.5rem;",
+          shinyWidgets::radioGroupButtons(
+            inputId  = "rls_glmm_plot_type",
+            label    = "Explore indicators - choose type:",
+            choices  = c("Bloom", "Status and Bloom", "Temporal"),
+            selected = "Bloom",
+            size     = "sm"
+          )
+        )
+      ),
+
+      uiOutput("location_tabset"),
+
+      # Multivariate community composition (PCO / CAP ordinations and the
+      # PERMANOVA results). Rendered entirely server-side and returns NULL
+      # unless the method switch is on Dive, so BRUVS is unaffected - see
+      # output$location_multivariate in server.R.
+      uiOutput("location_multivariate")
+    )
+  )
+),
+
+# One method choice for the whole app, in the navbar rather than repeated as
+# a radio button in each tab's sidebar. `input$app_method` replaces the two
+# old inputs (`input$method` on Region Summary and `input$methodlocation` on
+# Location Summary), so the choice now carries across tabs instead of being
+# made twice.
+nav_item(
+  tags$div(
+    style = "display:flex; gap:8px; align-items:center; padding-left:15px; padding-right:15px;",
+    tags$span(
+      "Method:",
+      style = "font-weight:600; color:#0D576E; white-space:nowrap;"
+    ),
+    shinyWidgets::radioGroupButtons(
+      inputId  = "app_method",
+      label    = NULL,
+      choices  = c("BRUVS", "Dive"),
+      selected = "BRUVS",
+      size     = "sm"
     )
   )
 ),

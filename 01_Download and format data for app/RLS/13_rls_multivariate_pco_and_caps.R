@@ -341,6 +341,56 @@ safe_altgower <- function(x, context = "") {
 
 
 # ============================================================
+# DASHBOARD EXPORT SETTINGS
+#
+# The SA HAB dashboard rebuilds these ordinations natively (ggplot
+# in server.R) rather than displaying the PNGs this script saves,
+# so that it can theme them like the rest of the app and offer CSV
+# downloads of the underlying scores. Everything the app needs is
+# therefore also written out as tidy CSVs, combined across all
+# three datasets, by write_app_multivariate_exports() at the very
+# bottom of this script.
+#
+# IMPORTANT: this export layer changes NO analysis. The PERMANOVAs,
+# PCoAs and CAPs below are exactly as they were, and the PNG/CSV
+# outputs each dataset already wrote are untouched. The export
+# functions only re-package results that are already being
+# calculated.
+#
+# One deliberate difference from the PNG outputs: the PNGs are only
+# saved where the relevant PERMANOVA was significant, whereas the
+# export runs for EVERY location. Brooke asked for the dashboard to
+# always show the ordination with its p-value displayed alongside,
+# rather than hiding non-significant locations.
+# ============================================================
+
+APP_EXPORT_DIR <- file.path("outputs", "multivariate", "app")
+
+# Maps this script's dataset_prefix onto the method names the rest
+# of the dashboard already uses (the `dataset` column of
+# rls_metric_lookup in 15_combine_rls_data_for_app.R), so the app
+# never has to translate between the two vocabularies.
+DATASET_LABELS <- c(
+  "M1"         = "M1 fish",
+  "M2_cryptic" = "M2 fish",
+  "M2_inverts" = "M2 invertebrates"
+)
+
+dataset_label_for <- function(dataset_prefix) {
+
+  if (!dataset_prefix %in% names(DATASET_LABELS)) {
+    stop(
+      "No dashboard method label is defined for dataset_prefix '",
+      dataset_prefix,
+      "'. Add it to DATASET_LABELS near the top of this script."
+    )
+  }
+
+  unname(DATASET_LABELS[[dataset_prefix]])
+}
+
+
+# ============================================================
 # CORE DATA PREP: site x sampling-event level
 # ============================================================
 
@@ -678,49 +728,99 @@ make_trajectory_plot <- function(raw_data, location_name, output_dir, dataset_pr
 
 
 # ============================================================
-# STATUS PCO PLOT (unchanged)
+# PCO SCORES
+#
+# Extracted from the top of make_status_pco_plot() so that the
+# dashboard export and the PNG come from exactly the same PCoA,
+# envfit and arrow-scaling calculation. If these were computed in
+# two places they would eventually drift, and the figure in the app
+# would quietly stop matching the figure in the report.
+#
+# The ONE behavioural difference: where there are no usable species
+# vectors this returns the sample scores with species_vec_top =
+# NULL, instead of discarding everything. The dashboard can still
+# draw a perfectly good ordination without species arrows, so there
+# is no reason to throw the points away. make_status_pco_plot()
+# below keeps its original early return in that case, so the PNG
+# outputs are completely unchanged.
 # ============================================================
 
-make_status_pco_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
-  
-  message("Running status PCO: ", location_name)
-  
+get_pco_scores <- function(raw_data, location_name) {
+
   built <- build_assemblage_data(raw_data, location_name)
   if (is.null(built)) return(NULL)
-  
+
   meta <- built$meta
   assemblage_log2 <- built$assemblage_log2
-  
-  
+
+
   pcoa <- cmdscale(built$dist, k = 2, eig = TRUE, add = TRUE)
-  
+
   pcoa_scores <- as.data.frame(pcoa$points)
   names(pcoa_scores) <- c("PCoA1", "PCoA2")
   pcoa_scores$id <- rownames(pcoa_scores)
   pcoa_scores <- pcoa_scores %>% left_join(meta, by = "id")
-  
+
   pv <- pcoa_percent_variance(pcoa)
-  PCoA1_percent <- pv[1]; PCoA2_percent <- pv[2]
-  
-  
+
+
   trajectory_segments <- pcoa_scores %>%
     arrange(site_name, survey_date) %>%
     group_by(site_name) %>%
     mutate(PCoA1_end = lead(PCoA1), PCoA2_end = lead(PCoA2)) %>%
     ungroup() %>%
     filter(!is.na(PCoA1_end))
-  
-  
+
+
   species_vec_top <- fit_species_envfit(pcoa$points, assemblage_log2, "PCoA1", "PCoA2")
-  
+
+  if (is.null(species_vec_top) || nrow(species_vec_top) == 0) {
+    species_vec_top <- NULL
+  } else {
+    species_vec_top <- scale_species_vectors(
+      species_vec_top,
+      pcoa_scores,
+      "PCoA1",
+      "PCoA2"
+    )
+  }
+
+  list(
+    pcoa_scores         = pcoa_scores,
+    trajectory_segments = trajectory_segments,
+    species_vec_top     = species_vec_top,
+    pcoa1_percent       = pv[1],
+    pcoa2_percent       = pv[2]
+  )
+}
+
+
+# ============================================================
+# STATUS PCO PLOT
+#
+# Unchanged, except that it now takes its scores from
+# get_pco_scores() rather than calculating them inline.
+# ============================================================
+
+make_status_pco_plot <- function(raw_data, location_name, output_dir, dataset_prefix) {
+
+  message("Running status PCO: ", location_name)
+
+  scores <- get_pco_scores(raw_data, location_name)
+  if (is.null(scores)) return(NULL)
+
+  pcoa_scores         <- scores$pcoa_scores
+  trajectory_segments <- scores$trajectory_segments
+  species_vec_top     <- scores$species_vec_top
+  PCoA1_percent       <- scores$pcoa1_percent
+  PCoA2_percent       <- scores$pcoa2_percent
+
   if (is.null(species_vec_top) || nrow(species_vec_top) == 0) {
     message("Skipping ", location_name, ": no usable species vectors.")
     return(NULL)
   }
-  
-  species_vec_top <- scale_species_vectors(species_vec_top, pcoa_scores, "PCoA1", "PCoA2")
-  
-  
+
+
   status_pco_plot <- ggplot(pcoa_scores, aes(x = PCoA1, y = PCoA2, colour = site_name)) +
 
     geom_segment(
@@ -1322,6 +1422,476 @@ test_status_effect <- function(
 
 
 # ============================================================
+# DASHBOARD EXPORT: tidy tables for the Shiny app
+#
+# These functions do no analysis of their own. They take the score
+# objects that get_pco_scores() / get_period_cap_scores() /
+# get_status_cap_scores() already return and reshape them into a
+# handful of long, tidy CSVs keyed by
+# dataset_label x location x ordination, which is what
+# 15_combine_rls_data_for_app.R reads and the dashboard plots.
+#
+# `ordination` takes one of three values throughout:
+#   "pco"        - unconstrained PCoA
+#   "cap_period" - CAP constrained by Period
+#   "cap_status" - CAP constrained by Status
+#
+# Axis columns are deliberately called axis1/axis2 rather than
+# PCoA1/CAP1/MDS1, so all three ordinations stack into one table.
+# The real axis names and their percentages live in the
+# ordination_meta table as axis1_label/axis2_label, pre-formatted
+# exactly as the PNG versions label them - so the app never rebuilds
+# those strings and cannot disagree with the figures saved here.
+#
+# Every location gets an ordination_meta row even when the
+# ordination could not be produced, with `available = FALSE` and a
+# `reason`, so the app can explain an empty panel instead of just
+# showing nothing.
+# ============================================================
+
+empty_ordination_scores <- function() {
+  tibble(
+    dataset = character(), dataset_label = character(), location = character(),
+    ordination = character(), id = character(), site_name = character(),
+    status = character(), period = character(), sampling_event = character(),
+    sampling_event_start_date = character(), survey_date = as.Date(character()),
+    axis1 = double(), axis2 = double()
+  )
+}
+
+empty_species_vectors <- function() {
+  tibble(
+    dataset = character(), dataset_label = character(), location = character(),
+    ordination = character(), scientific = character(), label = character(),
+    axis1 = double(), axis2 = double(), xend = double(), yend = double(),
+    r2 = double(), pval = double(), vector_length = double()
+  )
+}
+
+empty_site_centroids <- function() {
+  tibble(
+    dataset = character(), dataset_label = character(), location = character(),
+    ordination = character(), site_name = character(), status = character(),
+    axis1 = double(), axis2 = double(), n_events = integer()
+  )
+}
+
+empty_ordination_meta <- function() {
+  tibble(
+    dataset = character(), dataset_label = character(), location = character(),
+    ordination = character(), available = logical(), reason = character(),
+    axis1_label = character(), axis2_label = character(),
+    axis1_percent = double(), axis2_percent = double(),
+    n_events = integer(), n_sites = integer(), cap_constraint_p = double()
+  )
+}
+
+empty_period_status_scores <- function() {
+  tibble(
+    dataset = character(), dataset_label = character(), location = character(),
+    id = character(), site_name = character(), status = character(),
+    period = character(), sampling_event = character(),
+    survey_date = as.Date(character()),
+    period_CAP1 = double(), status_CAP1 = double(),
+    period_cap_percent = double(), status_cap_percent = double()
+  )
+}
+
+
+collect_ordination_scores <- function(scores, dataset_prefix, location_name,
+                                      ordination, x_col, y_col) {
+
+  if (is.null(scores) || nrow(scores) == 0) return(NULL)
+
+  scores %>%
+    transmute(
+      dataset       = dataset_prefix,
+      dataset_label = dataset_label_for(dataset_prefix),
+      location      = location_name,
+      ordination    = ordination,
+      id            = as.character(.data$id),
+      site_name     = as.character(.data$site_name),
+      status        = as.character(.data$status),
+      period        = as.character(.data$period),
+      sampling_event = as.character(.data$sampling_event),
+      sampling_event_start_date = as.character(.data$sampling_event_start_date),
+      survey_date   = as.Date(.data$survey_date),
+      axis1         = .data[[x_col]],
+      axis2         = .data[[y_col]]
+    )
+}
+
+
+collect_species_vectors <- function(vec_top, dataset_prefix, location_name,
+                                    ordination, x_col, y_col) {
+
+  if (is.null(vec_top) || nrow(vec_top) == 0) return(NULL)
+
+  # envfit vectors (PCO) carry r2/pval; CAP species scores carry
+  # vector_length instead. Fill whichever is absent so the three
+  # ordinations stack into one table.
+  if (!"r2" %in% names(vec_top))            vec_top$r2 <- NA_real_
+  if (!"pval" %in% names(vec_top))          vec_top$pval <- NA_real_
+  if (!"vector_length" %in% names(vec_top)) vec_top$vector_length <- NA_real_
+  if (!"label" %in% names(vec_top))         vec_top$label <- NA_character_
+
+  vec_top %>%
+    transmute(
+      dataset       = dataset_prefix,
+      dataset_label = dataset_label_for(dataset_prefix),
+      location      = location_name,
+      ordination    = ordination,
+      scientific    = as.character(.data$scientific),
+      label         = as.character(.data$label),
+      axis1         = .data[[x_col]],
+      axis2         = .data[[y_col]],
+      xend          = .data$xend,
+      yend          = .data$yend,
+      r2            = as.numeric(.data$r2),
+      pval          = as.numeric(.data$pval),
+      vector_length = as.numeric(.data$vector_length)
+    )
+}
+
+
+collect_site_centroids <- function(centroids, dataset_prefix, location_name,
+                                   ordination, x_col, y_col) {
+
+  if (is.null(centroids) || nrow(centroids) == 0) return(NULL)
+
+  centroids %>%
+    transmute(
+      dataset       = dataset_prefix,
+      dataset_label = dataset_label_for(dataset_prefix),
+      location      = location_name,
+      ordination    = ordination,
+      site_name     = as.character(.data$site_name),
+      status        = as.character(.data$status),
+      axis1         = .data[[x_col]],
+      axis2         = .data[[y_col]],
+      n_events      = as.integer(.data$n_events)
+    )
+}
+
+
+make_ordination_meta_row <- function(dataset_prefix, location_name, ordination,
+                                     available, reason = NA_character_,
+                                     axis1_label = NA_character_,
+                                     axis2_label = NA_character_,
+                                     axis1_percent = NA_real_,
+                                     axis2_percent = NA_real_,
+                                     n_events = NA_integer_,
+                                     n_sites = NA_integer_,
+                                     cap_constraint_p = NA_real_) {
+  tibble(
+    dataset          = dataset_prefix,
+    dataset_label    = dataset_label_for(dataset_prefix),
+    location         = location_name,
+    ordination       = ordination,
+    available        = available,
+    reason           = reason,
+    axis1_label      = axis1_label,
+    axis2_label      = axis2_label,
+    axis1_percent    = as.numeric(axis1_percent),
+    axis2_percent    = as.numeric(axis2_percent),
+    n_events         = as.integer(n_events),
+    n_sites          = as.integer(n_sites),
+    cap_constraint_p = as.numeric(cap_constraint_p)
+  )
+}
+
+
+# Why a CAP or PCO can be missing. get_*_cap_scores() message the
+# specific reason to the console and return NULL, so this is a
+# summary rather than the exact cause - the console output from the
+# run is the place to look when a location is unexpectedly absent.
+UNAVAILABLE_PCO <- paste(
+  "Could not build an assemblage for this location -",
+  "fewer than 3 sampling events, or fewer than 2 non-zero taxa."
+)
+
+UNAVAILABLE_CAP <- paste(
+  "CAP could not be fitted - only one Period/Status present,",
+  "too few sampling events, or not enough residual degrees of freedom.",
+  "See the console messages from script 13 for the specific reason."
+)
+
+
+# ------------------------------------------------------------
+# All export tables for ONE location within ONE dataset.
+#
+# Note this runs for every location, regardless of whether the
+# PERMANOVA was significant: Brooke asked for the dashboard to
+# always show the ordination and display the p-value alongside it,
+# rather than hiding locations where the effect was not significant.
+# The PNG outputs above keep their original p <= 0.05 gating.
+# ------------------------------------------------------------
+
+export_location_multivariate <- function(raw_data, location_name, dataset_prefix) {
+
+  scores_list        <- list()
+  vectors_list       <- list()
+  centroids_list     <- list()
+  meta_list          <- list()
+  period_status_list <- list()
+
+  # Appends to the whole list rather than assigning into an index,
+  # because `x[[i]] <<- value` is a subtle construct and this script
+  # has to be right first time.
+  add_meta <- function(...) {
+    meta_list <<- c(meta_list, list(make_ordination_meta_row(...)))
+  }
+
+  # ---------------- Unconstrained PCoA ----------------
+  pco <- get_pco_scores(raw_data, location_name)
+
+  if (is.null(pco)) {
+    add_meta(dataset_prefix, location_name, "pco", FALSE, UNAVAILABLE_PCO)
+  } else {
+    scores_list[[length(scores_list) + 1]] <- collect_ordination_scores(
+      pco$pcoa_scores, dataset_prefix, location_name, "pco", "PCoA1", "PCoA2"
+    )
+    vectors_list[[length(vectors_list) + 1]] <- collect_species_vectors(
+      pco$species_vec_top, dataset_prefix, location_name, "pco", "PCoA1", "PCoA2"
+    )
+    add_meta(
+      dataset_prefix, location_name, "pco", TRUE, NA_character_,
+      axis1_label   = paste0("PCoA1 (", pco$pcoa1_percent, "%)"),
+      axis2_label   = paste0("PCoA2 (", pco$pcoa2_percent, "%)"),
+      axis1_percent = pco$pcoa1_percent,
+      axis2_percent = pco$pcoa2_percent,
+      n_events      = nrow(pco$pcoa_scores),
+      n_sites       = n_distinct(pco$pcoa_scores$site_name)
+    )
+  }
+
+  # ---------------- CAP constrained by Period ----------------
+  cap_period <- get_period_cap_scores(raw_data, location_name)
+
+  if (is.null(cap_period)) {
+    add_meta(dataset_prefix, location_name, "cap_period", FALSE, UNAVAILABLE_CAP)
+  } else {
+    scores_list[[length(scores_list) + 1]] <- collect_ordination_scores(
+      cap_period$cap_scores, dataset_prefix, location_name, "cap_period", "CAP1", "MDS1"
+    )
+    vectors_list[[length(vectors_list) + 1]] <- collect_species_vectors(
+      cap_period$species_vec_top, dataset_prefix, location_name, "cap_period", "CAP1", "MDS1"
+    )
+    centroids_list[[length(centroids_list) + 1]] <- collect_site_centroids(
+      cap_period$site_centroids, dataset_prefix, location_name, "cap_period", "CAP1", "MDS1"
+    )
+    add_meta(
+      dataset_prefix, location_name, "cap_period", TRUE, NA_character_,
+      axis1_label      = paste0("CAP1 - Bloom axis (", cap_period$cap_percent, "%)"),
+      axis2_label      = paste0("MDS1 - residual axis (", cap_period$mds_percent, "%)"),
+      axis1_percent    = cap_period$cap_percent,
+      axis2_percent    = cap_period$mds_percent,
+      n_events         = nrow(cap_period$cap_scores),
+      n_sites          = n_distinct(cap_period$cap_scores$site_name),
+      # NOTE: this is anova(capscale) with permutations restricted
+      # within site - a test of the CAP constraint itself. It is NOT
+      # the same number as the Period row of
+      # <prefix>_period_PERMANOVA_results.csv, which is the adonis2
+      # test and is the one to headline in the app.
+      cap_constraint_p = cap_period$cap_p
+    )
+  }
+
+  # ---------------- CAP constrained by Status ----------------
+  cap_status <- get_status_cap_scores(raw_data, location_name)
+
+  if (is.null(cap_status)) {
+    add_meta(dataset_prefix, location_name, "cap_status", FALSE, UNAVAILABLE_CAP)
+  } else {
+    scores_list[[length(scores_list) + 1]] <- collect_ordination_scores(
+      cap_status$cap_scores, dataset_prefix, location_name, "cap_status", "CAP1", "MDS1"
+    )
+    vectors_list[[length(vectors_list) + 1]] <- collect_species_vectors(
+      cap_status$species_vec_top, dataset_prefix, location_name, "cap_status", "CAP1", "MDS1"
+    )
+    centroids_list[[length(centroids_list) + 1]] <- collect_site_centroids(
+      cap_status$site_centroids, dataset_prefix, location_name, "cap_status", "CAP1", "MDS1"
+    )
+    add_meta(
+      dataset_prefix, location_name, "cap_status", TRUE, NA_character_,
+      axis1_label   = paste0("CAP1 - Status axis (", cap_status$cap_percent, "%)"),
+      axis2_label   = paste0("MDS1 - residual axis (", cap_status$mds_percent, "%)"),
+      axis1_percent = cap_status$cap_percent,
+      axis2_percent = cap_status$mds_percent,
+      n_events      = nrow(cap_status$cap_scores),
+      n_sites       = n_distinct(cap_status$cap_scores$site_name)
+      # cap_constraint_p deliberately left NA. get_status_cap_scores()
+      # does not test the Status CAP by permuting event rows, because
+      # Status is fixed at the site level and repeat visits to a site
+      # are not independent replicates of it. The valid Status p-value
+      # is the whole-site permutation test in
+      # <prefix>_status_PERMANOVA_results.csv - that is the one the
+      # app must display on a Status plot.
+    )
+  }
+
+  # ---------------- Period CAP1 vs Status CAP1 ----------------
+  # Matched by `id` (site_name + sampling_event), exactly as
+  # make_period_status_cap_plot() does, so each row is one site x
+  # sampling event rather than a site average.
+  if (!is.null(cap_period) && !is.null(cap_status)) {
+
+    combined <- cap_period$cap_scores %>%
+      select(
+        id, site_name, status, period, sampling_event, survey_date,
+        period_CAP1 = CAP1
+      ) %>%
+      inner_join(
+        cap_status$cap_scores %>% select(id, status_CAP1 = CAP1),
+        by = "id"
+      ) %>%
+      arrange(site_name, survey_date)
+
+    if (nrow(combined) > 0) {
+      period_status_list[[1]] <- combined %>%
+        transmute(
+          dataset        = dataset_prefix,
+          dataset_label  = dataset_label_for(dataset_prefix),
+          location       = location_name,
+          id             = as.character(.data$id),
+          site_name      = as.character(.data$site_name),
+          status         = as.character(.data$status),
+          period         = as.character(.data$period),
+          sampling_event = as.character(.data$sampling_event),
+          survey_date    = as.Date(.data$survey_date),
+          period_CAP1    = .data$period_CAP1,
+          status_CAP1    = .data$status_CAP1,
+          period_cap_percent = cap_period$cap_percent,
+          status_cap_percent = cap_status$cap_percent
+        )
+    }
+  }
+
+  list(
+    scores        = bind_rows(scores_list),
+    vectors       = bind_rows(vectors_list),
+    centroids     = bind_rows(centroids_list),
+    meta          = bind_rows(meta_list),
+    period_status = bind_rows(period_status_list)
+  )
+}
+
+
+combine_location_exports <- function(export_list) {
+
+  export_list <- export_list[!vapply(export_list, is.null, logical(1))]
+
+  pull_part <- function(part, empty_fn) {
+    parts <- lapply(export_list, function(x) x[[part]])
+    parts <- parts[!vapply(parts, is.null, logical(1))]
+    parts <- parts[vapply(parts, nrow, integer(1)) > 0]
+    if (length(parts) == 0) return(empty_fn())
+    bind_rows(parts)
+  }
+
+  list(
+    scores        = pull_part("scores",        empty_ordination_scores),
+    vectors       = pull_part("vectors",       empty_species_vectors),
+    centroids     = pull_part("centroids",     empty_site_centroids),
+    meta          = pull_part("meta",          empty_ordination_meta),
+    period_status = pull_part("period_status", empty_period_status_scores)
+  )
+}
+
+
+# ------------------------------------------------------------
+# Bind the three datasets together and write the app's CSVs.
+#
+# Called once at the very bottom of this script, after all three
+# pipelines have run, so the dashboard reads one set of files
+# covering M1 fish, M2 fish and M2 invertebrates rather than having
+# to stitch three folders together itself.
+# ------------------------------------------------------------
+
+write_app_multivariate_exports <- function(dataset_results, output_dir = APP_EXPORT_DIR) {
+
+  dataset_results <- dataset_results[!vapply(dataset_results, is.null, logical(1))]
+
+  if (length(dataset_results) == 0) {
+    message("No dataset results to export for the app - nothing written.")
+    return(invisible(NULL))
+  }
+
+  dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+
+  gather_part <- function(part, empty_fn) {
+    parts <- lapply(dataset_results, function(x) x$app_export[[part]])
+    parts <- parts[!vapply(parts, is.null, logical(1))]
+    parts <- parts[vapply(parts, nrow, integer(1)) > 0]
+    if (length(parts) == 0) return(empty_fn())
+    bind_rows(parts)
+  }
+
+  # The per-dataset PERMANOVA tables don't carry a dataset column of
+  # their own, so tag them here from the prefix each pipeline was
+  # run under.
+  gather_permanova <- function(part, empty_fn) {
+    parts <- lapply(dataset_results, function(x) {
+      tbl <- x[[part]]
+      if (is.null(tbl) || nrow(tbl) == 0) return(NULL)
+      tbl %>%
+        mutate(
+          dataset       = x$dataset,
+          dataset_label = dataset_label_for(x$dataset)
+        ) %>%
+        relocate(dataset, dataset_label)
+    })
+    parts <- parts[!vapply(parts, is.null, logical(1))]
+    if (length(parts) == 0) {
+      return(
+        empty_fn() %>%
+          mutate(dataset = character(), dataset_label = character()) %>%
+          relocate(dataset, dataset_label)
+      )
+    }
+    bind_rows(parts)
+  }
+
+  outputs <- list(
+    multivariate_ordination_scores    = gather_part("scores",        empty_ordination_scores),
+    multivariate_species_vectors      = gather_part("vectors",       empty_species_vectors),
+    multivariate_site_centroids       = gather_part("centroids",     empty_site_centroids),
+    multivariate_ordination_meta      = gather_part("meta",          empty_ordination_meta),
+    multivariate_period_status_scores = gather_part("period_status", empty_period_status_scores),
+    multivariate_permanova_period     = gather_permanova("period",   empty_period_results),
+    multivariate_permanova_status     = gather_permanova("status",   empty_status_results)
+  )
+
+  for (nm in names(outputs)) {
+    safe_write_csv(
+      outputs[[nm]],
+      file.path(output_dir, paste0(nm, ".csv"))
+    )
+  }
+
+  message(
+    "App multivariate export: ",
+    nrow(outputs$multivariate_ordination_scores), " ordination score row(s) across ",
+    n_distinct(outputs$multivariate_ordination_meta$location), " location(s) and ",
+    n_distinct(outputs$multivariate_ordination_meta$dataset_label), " dataset(s)."
+  )
+
+  unavailable <- outputs$multivariate_ordination_meta %>%
+    filter(!available)
+
+  if (nrow(unavailable) > 0) {
+    message(
+      "  ", nrow(unavailable),
+      " ordination(s) unavailable and recorded with a reason - the app will ",
+      "show that reason instead of an empty panel."
+    )
+  }
+
+  invisible(outputs)
+}
+
+
+# ============================================================
 # CHANGED: FULL PIPELINE - now runs both PERMANOVAs and gates
 # each CAP type on its own test
 # ============================================================
@@ -1493,8 +2063,47 @@ run_dataset_pipeline <- function(count_rds_path, meta_rds_path, output_dir, data
       error = function(e) message("ERROR (period vs status CAP) for ", loc, ": ", conditionMessage(e))
     )
   }
-  
-  invisible(list(period = period_results, status = status_results))
+
+
+  # ----------------------------------------------------------
+  # Tidy exports for the dashboard.
+  #
+  # Runs for EVERY location, not just the significant ones, because
+  # the app shows the ordination regardless and displays the
+  # p-value next to it. Nothing above this point is affected - the
+  # PNGs and per-dataset CSVs are already written by now.
+  #
+  # This does re-fit the PCoA/CAPs that the plotting functions above
+  # already fitted. That is deliberate: keeping the export additive
+  # means none of the existing, working plotting code had to be
+  # restructured. The cost is small next to reading the count file,
+  # which is where this script actually spends its time.
+  # ----------------------------------------------------------
+  message("--- ", dataset_prefix, ": building dashboard export tables ---")
+
+  export_list <- list()
+
+  for (loc in locations) {
+    export_list[[loc]] <- tryCatch(
+      export_location_multivariate(raw_data, loc, dataset_prefix),
+      error = function(e) {
+        message("ERROR (dashboard export) for ", loc, ": ", conditionMessage(e))
+        NULL
+      }
+    )
+  }
+
+  app_export <- combine_location_exports(export_list)
+
+
+  invisible(
+    list(
+      dataset    = dataset_prefix,
+      period     = period_results,
+      status     = status_results,
+      app_export = app_export
+    )
+  )
 }
 
 
@@ -2236,4 +2845,28 @@ m2_fish_results <- run_dataset_safely(
   meta_rds_path  = "data/tidy/sa_sites.rds",
   output_dir     = "outputs/multivariate/M2_cryptic_with_status",
   dataset_prefix = "M2_cryptic"
+)
+
+
+# ============================================================
+# WRITE THE DASHBOARD EXPORT
+#
+# Binds all three datasets into one set of tidy CSVs in
+# outputs/multivariate/app/, which 15_combine_rls_data_for_app.R
+# reads into `rls_data` for the Shiny app. The per-dataset PNGs and
+# CSVs written above are untouched and remain the versions to use
+# for reports.
+#
+# The datasets are passed in the dashboard's own method order (M1
+# fish, M2 fish, M2 invertebrates) rather than the order they were
+# run in, so the exported tables come out sorted the way the app
+# lists them.
+# ============================================================
+
+app_multivariate_export <- write_app_multivariate_exports(
+  list(
+    m1_results,
+    m2_fish_results,
+    m2_inverts_results
+  )
 )
