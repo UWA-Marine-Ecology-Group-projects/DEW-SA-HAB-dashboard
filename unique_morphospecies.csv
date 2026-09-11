@@ -1,0 +1,272 @@
+level_1,level_2,level_3,level_4,level_5,level_6,species,number
+Anthropogenic Debris,NA,NA,NA,NA,NA,NA,2
+Biota,Ascidians,Stalked,Solitary,NA,NA,NA,4
+Biota,Ascidians,Stalked,NA,NA,NA,NA,1
+Biota,Ascidians,Unstalked,Colonial,Ascidian Colonial Encrusting White,NA,NA,2
+Biota,Ascidians,Unstalked,Colonial,NA,NA,NA,100
+Biota,Ascidians,Unstalked,Solitary,NA,NA,NA,121
+Biota,Ascidians,Unstalked,NA,NA,NA,NA,3
+Biota,Ascidians,NA,NA,NA,NA,NA,2
+Biota,Bioturbation,Unknown origin,NA,NA,NA,NA,1
+Biota,Bryozoa,Hard,Branching,NA,NA,NA,212
+Biota,Bryozoa,Hard,Encrusting,NA,NA,NA,326
+Biota,Bryozoa,Hard,Fenestrate,Bryozoa Thick Orange Frilly,NA,NA,1
+Biota,Bryozoa,Hard,NA,NA,NA,NA,16
+Biota,Bryozoa,Soft,Dendroid,NA,NA,NA,4
+Biota,Bryozoa,Soft,Foliaceous,Bryozoa Soft Pinky White,NA,NA,7
+Biota,Bryozoa,NA,NA,NA,NA,NA,1
+Biota,Cnidaria,Colonial anemones,Zoanthids,NA,NA,NA,31
+Biota,Cnidaria,Corals,Black & Octocorals,Branching (3D),NA,NA,1
+Biota,Cnidaria,Corals,Stony corals,Encrusting,NA,NA,2
+Biota,Cnidaria,Corals,Stony corals,Sub-massive,NA,Pavona varians,3
+Biota,Cnidaria,Corals,Stony corals,Tabulate,NA,Acropora paniculata,6
+Biota,Cnidaria,Corals,NA,NA,NA,NA,1
+Biota,Cnidaria,True anemones,Other anemones,Colonial,NA,NA,4
+Biota,Cnidaria,True anemones,Other anemones,NA,NA,NA,6
+Biota,Cnidaria,True anemones,NA,NA,NA,NA,2
+Biota,Crustacea,Crabs,True crabs,bellidilia undecimspinosa,NA,NA,2
+Biota,Echinoderms,Sea stars,NA,NA,NA,NA,6
+Biota,Echinoderms,Sea urchins,Regular urchins,NA,NA,NA,2
+Biota,Echinoderms,Sea urchins,NA,NA,NA,NA,28
+Biota,Echinoderms,NA,NA,NA,NA,NA,1
+Biota,Fishes,Bony fishes,NA,NA,NA,NA,6
+Biota,Fishes,NA,NA,NA,NA,NA,2
+Biota,General Unknown Biology,NA,NA,NA,NA,NA,1
+Biota,Macroalgae,Articulated calcareous,Red,Amphiroa spp.,NA,NA,3
+Biota,Macroalgae,Articulated calcareous,Red,Articulated Calcareous Red,NA,NA,331
+Biota,Macroalgae,Articulated calcareous,Red,Corallina (Erect),NA,NA,10
+Biota,Macroalgae,Articulated calcareous,Red,NA,NA,Amphiroa anceps,1
+Biota,Macroalgae,Articulated calcareous,Red,NA,NA,Corallina officinalis,17
+Biota,Macroalgae,Articulated calcareous,Red,NA,NA,Haliptilon roseum,1
+Biota,Macroalgae,Articulated calcareous,Red,NA,NA,Jania verrucosa,3
+Biota,Macroalgae,Articulated calcareous,Red,NA,NA,Metagoniolithon stelliferum,1
+Biota,Macroalgae,Articulated calcareous,Red,NA,NA,NA,748
+Biota,Macroalgae,Articulated calcareous,NA,NA,NA,NA,11
+Biota,Macroalgae,Encrusting,Brown,NA,NA,NA,300
+Biota,Macroalgae,Encrusting,Green,NA,NA,Codium spp,358
+Biota,Macroalgae,Encrusting,Green,NA,NA,NA,251
+Biota,Macroalgae,Encrusting,Red,Calcareous,NA,NA,3062
+Biota,Macroalgae,Encrusting,Red,Non-calcareous,NA,NA,496
+Biota,Macroalgae,Encrusting,Red,NA,NA,NA,344
+Biota,Macroalgae,Encrusting,NA,NA,NA,NA,62
+Biota,Macroalgae,Erect coarse branching,Brown,Brown Understory Algae,NA,Dictyopteris australis,399
+Biota,Macroalgae,Erect coarse branching,Brown,Brown Understory Algae,NA,Dictyota naevosa,8
+Biota,Macroalgae,Erect coarse branching,Brown,Brown Understory Algae,NA,NA,224
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Arthrophycus),NA,Sargassum fallax,439
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Arthrophycus),NA,Sargassum lacerifolium,714
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Arthrophycus),NA,Sargassum paradoxum,452
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Arthrophycus),NA,Sargassum tristichum,35
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Arthrophycus),NA,Sargassum vestitum,35
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Arthrophycus),NA,NA,22
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Sargassum),NA,Sargassum distichum,195
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Sargassum),NA,Sargassum linearifolium,353
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Sargassum),NA,Sargassum podacanthum,19
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Sargassum),NA,Sargassum spinuligerum,1127
+Biota,Macroalgae,Erect coarse branching,Brown,Sargassum (subgenus Sargassum),NA,NA,32
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Acrocarpia paniculata,2480
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Caulocystis cephalornithos,1091
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Caulocystis spp,110
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Caulocystis uvifera,137
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora brownii,486
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora expansa,8505
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora grevillei,26
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora monilifera,5792
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora moniliformis,2470
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora racemosa,1442
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora retorta,126
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora siliquosa,76
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora spp,6329
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora subfarcinata,3177
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Cystophora torulosa,8
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Dictyopteris muelleri,29
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Perithalia caudata,25
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Phyllotica verruculosa,134
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Phyllotricha decipens,1912
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Phyllotricha spp,2
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Phyllotricha varians,1361
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Phyllotricha verruculosum,482
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Phyllotricha sonderi,50
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Sargassopsis heteromorphum,135
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Sargassopsis spp,3
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Sargassum spp,5416
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Scaberia agardhii,600
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Seirococcus axillaris,379
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,Xiphophora gladiata,19
+Biota,Macroalgae,Erect coarse branching,Brown,NA,NA,NA,1072
+Biota,Macroalgae,Erect coarse branching,Green,Codium fragile,NA,NA,1
+Biota,Macroalgae,Erect coarse branching,Green,NA,NA,Caulerpa spp,6
+Biota,Macroalgae,Erect coarse branching,Green,NA,NA,Codium spp,12
+Biota,Macroalgae,Erect coarse branching,Green,NA,NA,NA,22
+Biota,Macroalgae,Erect coarse branching,Red,Foliose,NA,Pterocladia spp,4
+Biota,Macroalgae,Erect coarse branching,Red,Foliose,NA,NA,5
+Biota,Macroalgae,Erect coarse branching,Red,Red Understory Algae,NA,NA,1
+Biota,Macroalgae,Erect coarse branching,Red,Spongites spp.,NA,NA,3
+Biota,Macroalgae,Erect coarse branching,Red,NA,NA,Liagora spp,5
+Biota,Macroalgae,Erect coarse branching,Red,NA,NA,Osmundaria prolifera,524
+Biota,Macroalgae,Erect coarse branching,Red,NA,NA,Plocamium mertensii,14
+Biota,Macroalgae,Erect coarse branching,Red,NA,NA,NA,370
+Biota,Macroalgae,Erect coarse branching,NA,NA,NA,NA,42
+Biota,Macroalgae,Erect fine branching,Brown,Brown Understory Algae,NA,Dictyota dichotoma,13
+Biota,Macroalgae,Erect fine branching,Brown,Brown Understory Algae,NA,Dictyotaceae spp,1083
+Biota,Macroalgae,Erect fine branching,Brown,Brown Understory Algae,NA,Zonaria spp,999
+Biota,Macroalgae,Erect fine branching,Brown,Brown Understory Algae,NA,NA,69
+Biota,Macroalgae,Erect fine branching,Brown,NA,NA,Lobospira bicuspidata,748
+Biota,Macroalgae,Erect fine branching,Brown,NA,NA,NA,449
+Biota,Macroalgae,Erect fine branching,Green,NA,NA,Caulerpa brownii,4
+Biota,Macroalgae,Erect fine branching,Green,NA,NA,Caulerpa flexilis,6
+Biota,Macroalgae,Erect fine branching,Green,NA,NA,Caulerpa racemosa,14
+Biota,Macroalgae,Erect fine branching,Green,NA,NA,Caulerpa spp,50
+Biota,Macroalgae,Erect fine branching,Green,NA,NA,Caulerpa taxifolia,1
+Biota,Macroalgae,Erect fine branching,Green,NA,NA,NA,14
+Biota,Macroalgae,Erect fine branching,Red,Ceramium spp.,NA,NA,4
+Biota,Macroalgae,Erect fine branching,Red,Foliose,NA,Callophycus spp,3
+Biota,Macroalgae,Erect fine branching,Red,Foliose,NA,Phacelocarpus peperocarpos,4
+Biota,Macroalgae,Erect fine branching,Red,Foliose,NA,Plocamium spp,128
+Biota,Macroalgae,Erect fine branching,Red,Foliose,NA,NA,47
+Biota,Macroalgae,Erect fine branching,Red,NA,NA,Asparagopsis spp,128
+Biota,Macroalgae,Erect fine branching,Red,NA,NA,Gelidium australe,21
+Biota,Macroalgae,Erect fine branching,Red,NA,NA,Plocamium preissianum,25
+Biota,Macroalgae,Erect fine branching,Red,NA,NA,NA,2061
+Biota,Macroalgae,Erect fine branching,NA,NA,NA,NA,74
+Biota,Macroalgae,Filamentous / filiform,Brown,NA,NA,Hincksia spp,3
+Biota,Macroalgae,Filamentous / filiform,Brown,NA,NA,NA,5138
+Biota,Macroalgae,Filamentous / filiform,Green,NA,NA,NA,545
+Biota,Macroalgae,Filamentous / filiform,Mat algae,NA,NA,NA,7
+Biota,Macroalgae,Filamentous / filiform,Red,NA,NA,NA,5071
+Biota,Macroalgae,Filamentous / filiform,Turfing Algae,Green turf,NA,NA,1618
+Biota,Macroalgae,Filamentous / filiform,Turfing Algae,Red turf,NA,NA,2176
+Biota,Macroalgae,Filamentous / filiform,Turfing Algae,NA,NA,NA,2007
+Biota,Macroalgae,Filamentous / filiform,NA,NA,NA,NA,334
+Biota,Macroalgae,Globose / saccate,Brown,NA,NA,NA,104
+Biota,Macroalgae,Globose / saccate,Green,NA,NA,Codium spp,11
+Biota,Macroalgae,Globose / saccate,Green,NA,NA,NA,5
+Biota,Macroalgae,Globose / saccate,Red,NA,NA,Botryocladia sonderi,108
+Biota,Macroalgae,Globose / saccate,Red,NA,NA,Chrysymenia brownii,2
+Biota,Macroalgae,Globose / saccate,Red,NA,NA,NA,56
+Biota,Macroalgae,Globose / saccate,NA,NA,NA,NA,9
+Biota,Macroalgae,Laminate,Brown,NA,NA,Lobophora spp,148
+Biota,Macroalgae,Laminate,Brown,NA,NA,Lobophora variegata,201
+Biota,Macroalgae,Laminate,Brown,NA,NA,Padina spp,67
+Biota,Macroalgae,Laminate,Brown,NA,NA,Zonaria diesingiana,5
+Biota,Macroalgae,Laminate,Brown,NA,NA,Zonaria turneriana,24
+Biota,Macroalgae,Laminate,Brown,NA,NA,NA,2026
+Biota,Macroalgae,Laminate,Green,NA,NA,Dictyosphaeria sericea,9
+Biota,Macroalgae,Laminate,Green,NA,NA,NA,21
+Biota,Macroalgae,Laminate,Red,Peyssonneliaceae,NA,NA,16
+Biota,Macroalgae,Laminate,Red,NA,NA,NA,34
+Biota,Macroalgae,Laminate,NA,NA,NA,NA,46
+Biota,Macroalgae,Large canopy-forming,Brown,NA,NA,Carpoglossum confluens,6
+Biota,Macroalgae,Large canopy-forming,Brown,NA,NA,Ecklonia radiata,19700
+Biota,Macroalgae,Large canopy-forming,Brown,NA,NA,Macrocystis pyrifera,1
+Biota,Macroalgae,Large canopy-forming,Brown,NA,NA,Phyllospora comosa,18
+Biota,Macroalgae,Large canopy-forming,Brown,NA,NA,Platythalia quercifolia,1
+Biota,Macroalgae,Large canopy-forming,Brown,NA,NA,Scytothalia dorycarpa,3763
+Biota,Macroalgae,Large canopy-forming,Brown,NA,NA,NA,18
+Biota,Macroalgae,Large canopy-forming,NA,NA,NA,NA,1
+Biota,Macroalgae,Plate calcareous,Red fan coraline,NA,NA,NA,10
+Biota,Macroalgae,Plate calcareous,NA,NA,NA,NA,80
+Biota,Macroalgae,Sheet-like / membraneous,Brown,NA,NA,NA,122
+Biota,Macroalgae,Sheet-like / membraneous,Green,NA,NA,Ulvaceae spp,1
+Biota,Macroalgae,Sheet-like / membraneous,Green,NA,NA,NA,2
+Biota,Macroalgae,Sheet-like / membraneous,Red,NA,NA,NA,8
+Biota,Macroalgae,Sheet-like / membraneous,NA,NA,NA,NA,14
+Biota,Macroalgae,NA,NA,NA,NA,NA,17
+Biota,Matrix,Bryozoa / Cnidaria / Creeping Sponge Matrix,NA,NA,NA,NA,2
+Biota,Matrix,Encrusting/Turfing Algal Matrix,NA,NA,NA,NA,326
+Biota,Matrix,Turf/Sediment/Silt matrix,NA,NA,NA,NA,2612
+Biota,Matrix,NA,NA,NA,NA,NA,11
+Biota,Molluscs,Bivalves,NA,NA,NA,Pinna spp,1
+Biota,Molluscs,Bivalves,NA,NA,NA,NA,200
+Biota,Molluscs,Gastropods,NA,NA,NA,NA,5
+Biota,Molluscs,NA,NA,NA,NA,NA,1
+Biota,Seagrasses,Elliptical leaves,NA,NA,NA,Halophila spp,1
+Biota,Seagrasses,Strap-like leaves,NA,NA,NA,Amphibolis antarctica,745
+Biota,Seagrasses,Strap-like leaves,NA,NA,NA,Posidonia australis,1961
+Biota,Seagrasses,Strap-like leaves,NA,NA,NA,Zosteraceae spp,6
+Biota,Seagrasses,Strap-like leaves,NA,NA,NA,NA,1188
+Biota,Seagrasses,NA,NA,NA,NA,NA,3
+Biota,Sponges,Crusts,Creeping / ramose,Repent Lumpy Shapeless Grey,NA,NA,1
+Biota,Sponges,Crusts,Creeping / ramose,Repent Orange Thin,NA,NA,1
+Biota,Sponges,Crusts,Creeping / ramose,NA,NA,NA,77
+Biota,Sponges,Crusts,Encrusting,Encrusting Black,NA,NA,1
+Biota,Sponges,Crusts,Encrusting,Encrusting Black Lumpy,NA,NA,1
+Biota,Sponges,Crusts,Encrusting,Encrusting Brown,NA,NA,4
+Biota,Sponges,Crusts,Encrusting,Encrusting Grey Bubbles,NA,NA,2
+Biota,Sponges,Crusts,Encrusting,Encrusting Grey Rugose,NA,NA,1
+Biota,Sponges,Crusts,Encrusting,Encrusting Orange,NA,NA,3
+Biota,Sponges,Crusts,Encrusting,Encrusting Orange White Speckles,NA,NA,2
+Biota,Sponges,Crusts,Encrusting,Encrusting Pink Lumpy,NA,NA,1
+Biota,Sponges,Crusts,Encrusting,Encrusting White,NA,NA,9
+Biota,Sponges,Crusts,Encrusting,Encrusting Yellow Orange Thick,NA,NA,1
+Biota,Sponges,Crusts,Encrusting,Encrusting Yellow Rough,NA,NA,3
+Biota,Sponges,Crusts,Encrusting,Encrusting Yellow Thick,NA,NA,2
+Biota,Sponges,Crusts,Encrusting,Encrusting dark red,NA,NA,3
+Biota,Sponges,Crusts,Encrusting,NA,NA,NA,411
+Biota,Sponges,Crusts,NA,NA,NA,NA,280
+Biota,Sponges,Cup-likes,Barrels,Barrel Black,NA,NA,3
+Biota,Sponges,Cup-likes,Barrels,Barrel Massive Donut,NA,NA,1
+Biota,Sponges,Cup-likes,Barrels,NA,NA,NA,1
+Biota,Sponges,Cup-likes,Cups,Cup / goblet,NA,NA,13
+Biota,Sponges,Cup-likes,Cups,Incomplete cup / curled fan,NA,NA,6
+Biota,Sponges,Cup-likes,Cups,Plate Sponge (Strepsichordaia caliciformis),NA,NA,1
+Biota,Sponges,Cup-likes,Cups,NA,NA,NA,17
+Biota,Sponges,Cup-likes,Tubes and chimneys,Chimney White Round,NA,NA,1
+Biota,Sponges,Cup-likes,Tubes and chimneys,Tubes White Large Oscula,NA,NA,1
+Biota,Sponges,Cup-likes,Tubes and chimneys,Tubular Apricot,NA,NA,1
+Biota,Sponges,Cup-likes,Tubes and chimneys,NA,NA,NA,1
+Biota,Sponges,Cup-likes,NA,NA,NA,NA,2
+Biota,Sponges,Erect forms,Branching,NA,NA,NA,1
+Biota,Sponges,Erect forms,Laminar,Laminar Brown Thick,NA,NA,1
+Biota,Sponges,Erect forms,Laminar,Laminar Grey Fungi,NA,NA,2
+Biota,Sponges,Erect forms,Laminar,Laminar Grey Round Stalk,NA,NA,1
+Biota,Sponges,Erect forms,Laminar,NA,NA,NA,12
+Biota,Sponges,Erect forms,Simple,Simple Erect Red,NA,NA,1
+Biota,Sponges,Erect forms,Stalked,NA,NA,NA,3
+Biota,Sponges,Erect forms,NA,NA,NA,NA,9
+Biota,Sponges,Massive forms,Balls,Ball Cream Oscula,NA,NA,1
+Biota,Sponges,Massive forms,Balls,Ball Grey,NA,NA,2
+Biota,Sponges,Massive forms,Balls,Ball Pink Oscula,NA,NA,1
+Biota,Sponges,Massive forms,Balls,Ball Yellow golfball,NA,NA,1
+Biota,Sponges,Massive forms,Balls,Yellow Smooth Ball,NA,NA,1
+Biota,Sponges,Massive forms,Balls,NA,NA,NA,66
+Biota,Sponges,Massive forms,Simple,Bramble Sponge Yellow,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Irregular Sand Sponge Yellow,NA,NA,2
+Biota,Sponges,Massive forms,Simple,Lumpy Orange,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Lumpy cream massive,NA,NA,2
+Biota,Sponges,Massive forms,Simple,Massive Brown,NA,NA,3
+Biota,Sponges,Massive forms,Simple,Massive Dark Grey,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Massive Orange Ball,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Massive Orange Ribbon,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Massive Red,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Massive White,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Massive Yellow Ball-like,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Massive Yellow Lumpy Wave,NA,NA,3
+Biota,Sponges,Massive forms,Simple,Simple Beige Irregular Oscula,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Simple Grey Doughnut,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Simple Yellow Honeycomb,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Simple Yellow Lumpy,NA,NA,1
+Biota,Sponges,Massive forms,Simple,Spikey orange massive,NA,NA,1
+Biota,Sponges,Massive forms,Simple,NA,NA,NA,211
+Biota,Sponges,Massive forms,NA,NA,NA,NA,44
+Biota,Sponges,NA,NA,NA,NA,NA,364
+Biota,Worms,Polychaetes,Tube worms,Tubes Empty,NA,NA,1
+Biota,Worms,Polychaetes,Tube worms,NA,NA,NA,19
+Biota,NA,NA,NA,NA,NA,NA,32
+Laser point,NA,NA,NA,NA,NA,NA,1
+Physical,Substrate,Consolidated (hard),Boulders,NA,NA,NA,10
+Physical,Substrate,Consolidated (hard),Cobbles,NA,NA,NA,340
+Physical,Substrate,Consolidated (hard),Rock,NA,NA,NA,1512
+Physical,Substrate,Consolidated (hard),NA,NA,NA,NA,7
+Physical,Substrate,Unconsolidated (soft),Pebble / gravel,Biologenic,Coquina / shellhash,NA,245
+Physical,Substrate,Unconsolidated (soft),Pebble / gravel,Biologenic,Rhodoliths,NA,13
+Physical,Substrate,Unconsolidated (soft),Pebble / gravel,Biologenic,NA,NA,1
+Physical,Substrate,Unconsolidated (soft),Pebble / gravel,Gravel (2-10mm),NA,NA,23
+Physical,Substrate,Unconsolidated (soft),Pebble / gravel,Pebble (10-64mm),NA,NA,815
+Physical,Substrate,Unconsolidated (soft),Pebble / gravel,NA,NA,NA,44
+Physical,Substrate,Unconsolidated (soft),Sand / mud (<2mm),Coarse sand (with shell fragments),NA,NA,3237
+Physical,Substrate,Unconsolidated (soft),Sand / mud (<2mm),Fine sand (no shell fragments),NA,NA,108
+Physical,Substrate,Unconsolidated (soft),Sand / mud (<2mm),Mud / silt (<64um),NA,NA,6
+Physical,Substrate,Unconsolidated (soft),Sand / mud (<2mm),NA,NA,NA,170
+Physical,Substrate,NA,NA,NA,NA,NA,3
+Unscorable,NA,NA,NA,NA,NA,NA,9230
+NA,NA,NA,NA,NA,NA,NA,15801
