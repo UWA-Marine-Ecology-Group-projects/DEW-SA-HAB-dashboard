@@ -1,11 +1,11 @@
 spatial_level,group_id,group_name,status,plots_saved,error
-location,Carrickalinga,Carrickalinga,Saved,"period, period_status, period_split, temporal",NA
-location,Eastern Spencer Gulf,Eastern Spencer Gulf,Saved,"period, period_status, period_split, temporal",NA
-location,Encounter Bay,Encounter Bay,Saved,"period, period_status, period_split, temporal",NA
-location,Metro,Metro,Saved,"period, period_status, period_split, temporal",NA
-location,Rapid Head,Rapid Head,Saved,"period, period_status, period_split, temporal",NA
-location,Southern Fleurieu,Southern Fleurieu,Saved,"period, period_status, period_split, temporal",NA
-location,Southern Metro,Southern Metro,Saved,"period, period_status, period_split, temporal",NA
-location,Southern Yorke,Southern Yorke,Saved,"period, period_status, period_split, temporal",NA
-location,Sponge Gardens,Sponge Gardens,Saved,"period, period_status, period_split, temporal",NA
-location,Upper GSV,Upper GSV,Saved,"period, period_status, period_split, temporal",NA
+location,Carrickalinga,Carrickalinga,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Eastern Spencer Gulf,Eastern Spencer Gulf,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Encounter Bay,Encounter Bay,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Metro,Metro,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Rapid Head,Rapid Head,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Southern Fleurieu,Southern Fleurieu,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Southern Metro,Southern Metro,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Southern Yorke,Southern Yorke,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Sponge Gardens,Sponge Gardens,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+location,Upper GSV,Upper GSV,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA

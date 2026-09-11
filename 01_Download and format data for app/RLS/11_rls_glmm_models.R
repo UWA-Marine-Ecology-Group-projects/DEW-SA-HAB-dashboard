@@ -16,8 +16,16 @@
 #   - No region-level predictions are calculated in this version.
 #
 # Distribution choices:
-#   - Species richness: Gaussian with identity link.
-#   - Shannon diversity: Gaussian with identity link.
+#   - Species richness: Gaussian with identity link. This covers both the
+#     whole-dataset richness metrics and the M2 invertebrate phylum-specific
+#     ones added in script 04. The response is a mean across blocks rather
+#     than an integer count, which is why a count family is not used.
+#   - Shannon diversity: Gaussian with identity link, likewise for both the
+#     whole-dataset and the phylum-specific metrics added in script 05.
+#     Note that a phylum with few recorded species sits close to zero by
+#     construction, so its Gaussian lower confidence limit can fall below
+#     zero; the plots in script 12 truncate the interval at zero for
+#     display only and do not change the saved estimates.
 #   - Abundance: Tweedie with log link, with ONE pooled Tweedie power
 #     estimated for each abundance metric and then fixed in all location models.
 #     Arthropoda is fixed at p = 1.001 because its pooled AIC profile ran
@@ -105,22 +113,35 @@ abundance_metrics_to_model <- c(
   "M2 invertebrate Mollusca abundance"
 )
 
+# The three M2 invertebrate phyla that scripts 04, 05 and 07 produce
+# per-phylum metrics for. Used below only to build the metric names.
+target_invert_phyla <- c(
+  "Echinodermata",
+  "Arthropoda",
+  "Mollusca"
+)
+
 # Plot order only. This does not change what is modelled.
+#
+# The species richness and Shannon diversity metrics for the three phyla
+# are read automatically out of species_richness.rds / shannon_diversity.rds
+# (load_metric_table() below keeps every metric in those files), so they
+# only need to be named here to give them a position in the plot order.
 plot_metric_order <- c(
   "M1 fish species richness",
   "M2 fish species richness",
   "M2 invertebrate species richness",
+  paste0("M2 invertebrate ", target_invert_phyla, " species richness"),
   "M1 fish Shannon diversity",
   "M2 fish Shannon diversity",
   "M2 invertebrate Shannon diversity",
+  paste0("M2 invertebrate ", target_invert_phyla, " Shannon diversity"),
   "M1 fish B20 biomass",
   "M2 fish B20 biomass",
   "M1 fish total abundance",
   "M2 fish total abundance",
   "M2 invertebrate total abundance",
-  "M2 invertebrate Echinodermata abundance",
-  "M2 invertebrate Arthropoda abundance",
-  "M2 invertebrate Mollusca abundance"
+  paste0("M2 invertebrate ", target_invert_phyla, " abundance")
 )
 
 if (!plot_m2_b20) {
@@ -539,6 +560,39 @@ if (length(missing_abundance_metrics) > 0) {
   warning(
     "The following requested abundance metrics were not found and will not be modelled: ",
     paste(missing_abundance_metrics, collapse = ", ")
+  )
+}
+
+
+# 4f. Confirm the M2 invertebrate phylum species richness and Shannon
+#     diversity metrics created by scripts 04 and 05 were found. Unlike the
+#     abundance metrics these are not filtered on read, so a missing one
+#     means the metric-creation script has not been re-run.
+expected_phylum_diversity_metrics <- c(
+  paste0("M2 invertebrate ", target_invert_phyla, " species richness"),
+  paste0("M2 invertebrate ", target_invert_phyla, " Shannon diversity")
+)
+
+missing_phylum_diversity_metrics <- setdiff(
+  expected_phylum_diversity_metrics,
+  unique(c(
+    as.character(richness_dat$metric),
+    as.character(shannon_dat$metric)
+  ))
+)
+
+if (length(missing_phylum_diversity_metrics) > 0) {
+  warning(
+    "The following M2 invertebrate phylum richness/diversity metrics were not ",
+    "found and will not be modelled: ",
+    paste(missing_phylum_diversity_metrics, collapse = ", "),
+    ". Re-run scripts 04 and 05 first."
+  )
+} else {
+  message(
+    "All ",
+    length(expected_phylum_diversity_metrics),
+    " M2 invertebrate phylum richness/diversity metrics were found."
   )
 }
 

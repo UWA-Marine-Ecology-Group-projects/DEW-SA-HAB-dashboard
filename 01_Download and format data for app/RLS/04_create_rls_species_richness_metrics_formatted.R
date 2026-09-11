@@ -1,18 +1,59 @@
 #################################################################
 # Create and plot observed species richness from RLS M1 and M2 data
+#
+# Metrics:
+#   - M1 fish species richness
+#   - M2 fish species richness
+#   - M2 invertebrate species richness
+#   - M2 invertebrate species richness for each phylum in
+#     `target_invert_phyla` (Echinodermata, Arthropoda, Mollusca)
+#
+# The phylum-specific metrics use exactly the same block -> transect
+# averaging as the whole-dataset metrics; the only difference is that the
+# count data are subset to one phylum first, and blocks in which that
+# phylum was not recorded are explicitly retained as richness = 0 (the
+# same zero-filling script 07 does for phylum-specific abundance).
 #################################################################
 
 library(dplyr)
 library(ggplot2)
+library(readr)
 
 # -----------------------------------------------------------------
 # 1. Settings
 # -----------------------------------------------------------------
 
-metric_levels <- c(
+# The three M2 invertebrate phyla of interest. These are the same three
+# phyla script 11 models for abundance, so the richness / Shannon /
+# abundance metrics line up one-to-one. "Arthropoda" is the crustaceans in
+# the RLS M2 invertebrate data. Values must match the `phylum` column in
+# data/tidy/rls_m2_inverts_complete_count.rds exactly.
+target_invert_phyla <- c(
+  "Echinodermata",
+  "Arthropoda",
+  "Mollusca"
+)
+
+# One place that defines how a phylum metric is named, so scripts 10, 11,
+# 12 and 15 can rely on a single, predictable naming convention:
+#   "M2 invertebrate <phylum> species richness"
+invert_phylum_richness_metric_name <- function(phylum) {
+  paste0("M2 invertebrate ", phylum, " species richness")
+}
+
+whole_metric_levels <- c(
   "M1 fish species richness",
   "M2 fish species richness",
   "M2 invertebrate species richness"
+)
+
+invert_phylum_metric_levels <- invert_phylum_richness_metric_name(
+  target_invert_phyla
+)
+
+metric_levels <- c(
+  whole_metric_levels,
+  invert_phylum_metric_levels
 )
 
 period_levels <- c("Pre-bloom", "Bloom")
@@ -36,6 +77,17 @@ plot_output_roots <- c(
   region = file.path("plots", "rls_species_richness_region")
 )
 
+# The three phylum metrics are saved as their own set of figures rather
+# than being added to the existing three-panel ones, so every figure that
+# already existed keeps its current layout and file path.
+phylum_plot_output_roots <- c(
+  location = file.path("plots", "rls_species_richness_phyla_location"),
+  region = file.path("plots", "rls_species_richness_phyla_region")
+)
+
+# Which metrics belong in which family of figures.
+plot_families <- c("whole", "invert_phyla")
+
 plot_types <- c("period", "period_status", "period_split", "temporal")
 
 observed_plot_theme <- theme(
@@ -58,9 +110,12 @@ observed_plot_theme <- theme(
 # 2. Helper functions
 # -----------------------------------------------------------------
 
-# Calculates richness of individual blocks before blocks are averaged.
-calculate_block_species_richness <- function(data, dataset_name = "dataset") {
-  
+# Removes "spp" records from a block when an identified species from the
+# same genus was also recorded in that block, and reports how often that
+# happened. Split out of calculate_block_species_richness() so the whole
+# dataset and each phylum subset are cleaned identically, exactly once.
+drop_redundant_spp_records <- function(data, dataset_name = "dataset") {
+
   # Find spp and identified-species conflicts within the same block.
   samples_with_both <- data %>%
     dplyr::group_by(
@@ -105,29 +160,133 @@ calculate_block_species_richness <- function(data, dataset_name = "dataset") {
     )
   }
   
-  richness <- data %>%
+  cleaned <- data %>%
     dplyr::group_by(transect, block, family, genus) %>%
     dplyr::mutate(identified_species_present = any(species != "spp" & total > 0)) %>%
     dplyr::filter(!(species == "spp" & total > 0 & identified_species_present)) %>%
     dplyr::ungroup() %>%
+    dplyr::select(-identified_species_present)
+
+  attr(cleaned, "samples_with_both") <- samples_with_both
+
+  cleaned
+}
+
+# Calculates richness of individual blocks before blocks are averaged.
+# `data` must already have been through drop_redundant_spp_records().
+calculate_block_species_richness <- function(data, metric_name) {
+
+  data %>%
     dplyr::group_by(transect, block) %>%
-    dplyr::summarise(species_richness = dplyr::n_distinct(scientific[total > 0], na.rm = TRUE), .groups = "drop")
-  
-  attr(richness, "samples_with_both") <- samples_with_both
-  
-  richness
+    dplyr::summarise(species_richness = dplyr::n_distinct(scientific[total > 0], na.rm = TRUE), .groups = "drop") %>%
+    dplyr::mutate(metric = metric_name)
+}
+
+# Calculates block-level richness separately for each requested phylum.
+#
+# Every surveyed block gets a row for every requested phylum, so a block in
+# which a phylum was not recorded is retained as a genuine zero rather than
+# silently dropped. This mirrors calculate_block_invert_abundance() in
+# script 07.
+calculate_block_species_richness_by_phylum <- function(
+    data,
+    phyla,
+    dataset_name = "dataset") {
+
+  if (!"phylum" %in% names(data)) {
+    stop(
+      dataset_name,
+      " does not contain a `phylum` column, so phylum-specific species ",
+      "richness cannot be calculated."
+    )
+  }
+
+  data <- data %>%
+    dplyr::mutate(phylum = as.character(phylum))
+
+  missing_phyla <- setdiff(phyla, unique(data$phylum))
+
+  if (length(missing_phyla) > 0) {
+    warning(
+      dataset_name,
+      ": the following requested phyla were not found in the count data ",
+      "and will be returned as zero for every block: ",
+      paste(missing_phyla, collapse = ", ")
+    )
+  }
+
+  # Every surveyed block, whether or not it contains the phylum.
+  block_keys <- data %>%
+    dplyr::distinct(transect, block)
+
+  observed <- data %>%
+    dplyr::filter(phylum %in% phyla) %>%
+    dplyr::group_by(transect, block, phylum) %>%
+    dplyr::summarise(
+      species_richness = dplyr::n_distinct(scientific[total > 0], na.rm = TRUE),
+      .groups = "drop"
+    )
+
+  phylum_lookup <- tibble::tibble(
+    phylum = phyla,
+    .join_key = 1L
+  )
+
+  block_keys %>%
+    dplyr::mutate(.join_key = 1L) %>%
+    dplyr::left_join(
+      phylum_lookup,
+      by = ".join_key",
+      relationship = "many-to-many"
+    ) %>%
+    dplyr::select(-.join_key) %>%
+    dplyr::left_join(
+      observed,
+      by = c("transect", "block", "phylum")
+    ) %>%
+    dplyr::mutate(
+      species_richness = tidyr::replace_na(species_richness, 0),
+      metric = invert_phylum_richness_metric_name(phylum)
+    ) %>%
+    dplyr::select(transect, block, metric, species_richness)
 }
 
 # Performs the repeated count-file -> block richness -> sample richness steps.
-prepare_richness_dataset <- function(count_path, survey_list, dataset_name, metric_name) {
-  
-  block_richness <- readr::read_rds(count_path) %>%
-    calculate_block_species_richness(dataset_name = dataset_name)
-  
-  conflicts <- attr(block_richness, "samples_with_both")
-  
+#
+# `phyla` is optional. When supplied, phylum-specific richness metrics are
+# calculated from the same (already cleaned) count data and returned in the
+# same long table, one row per transect x metric.
+prepare_richness_dataset <- function(
+    count_path,
+    survey_list,
+    dataset_name,
+    metric_name,
+    phyla = NULL) {
+
+  cleaned_counts <- readr::read_rds(count_path) %>%
+    drop_redundant_spp_records(dataset_name = dataset_name)
+
+  conflicts <- attr(cleaned_counts, "samples_with_both")
+
+  block_richness <- calculate_block_species_richness(
+    data = cleaned_counts,
+    metric_name = metric_name
+  )
+
+  if (!is.null(phyla) && length(phyla) > 0) {
+
+    block_richness <- dplyr::bind_rows(
+      block_richness,
+      calculate_block_species_richness_by_phylum(
+        data = cleaned_counts,
+        phyla = phyla,
+        dataset_name = dataset_name
+      )
+    )
+  }
+
   sample_richness <- block_richness %>%
-    dplyr::group_by(transect) %>%
+    dplyr::group_by(transect, metric) %>%
     dplyr::summarise(
       # Use a temporary name so block_sd is calculated from block values,
       # rather than from the newly summarised mean.
@@ -137,9 +296,8 @@ prepare_richness_dataset <- function(count_path, survey_list, dataset_name, metr
       .groups = "drop"
     ) %>%
     dplyr::rename(species_richness = mean_species_richness) %>%
-    dplyr::left_join(survey_list) %>%
-    dplyr::mutate(metric = metric_name)
-  
+    dplyr::left_join(survey_list, by = "transect")
+
   list(
     samples = sample_richness,
     conflicts = conflicts
@@ -544,27 +702,34 @@ m1_fish <- prepare_richness_dataset(
   count_path = "data/tidy/rls_m1_complete_count.rds",
   survey_list = sl_m1,
   dataset_name = "M1 fish",
-  metric_name = metric_levels[[1]]
+  metric_name = whole_metric_levels[[1]]
 )
 
 m2_fish <- prepare_richness_dataset(
   count_path = "data/tidy/rls_m2_fish_complete_count.rds",
   survey_list = sl_m2_fish,
   dataset_name = "M2 fish",
-  metric_name = metric_levels[[2]]
+  metric_name = whole_metric_levels[[2]]
 )
 
+# Only the M2 invertebrate dataset carries a `phylum` column, so it is the
+# only one asked for phylum-specific richness.
 m2_inverts <- prepare_richness_dataset(
   count_path = "data/tidy/rls_m2_inverts_complete_count.rds",
   survey_list = sl_m2_inverts,
   dataset_name = "M2 invertebrates",
-  metric_name = metric_levels[[3]]
+  metric_name = whole_metric_levels[[3]],
+  phyla = target_invert_phyla
 )
 
-# Check that number of transects are correct
+# Check that number of transects are correct. Each dataset now holds one
+# row per transect PER METRIC, so the M2 invertebrate table is
+# (1 + number of phyla) times longer than the number of transects.
 nrow(m1_fish$samples)
 nrow(m2_fish$samples)
-nrow(m2_inverts$samples)
+
+m2_inverts$samples %>%
+  dplyr::count(metric)
 
 # Retain the conflict tables for inspection.
 spp_conflicts <- list(
@@ -757,9 +922,9 @@ purrr::iwalk(
 # -----------------------------------------------------------------
 
 purrr::walk(
-  unname(plot_output_roots),
+  c(unname(plot_output_roots), unname(phylum_plot_output_roots)),
   function(root) {
-    
+
     purrr::walk(
       file.path(root, plot_types),
       function(path) {
@@ -830,38 +995,77 @@ group_lookup <- dplyr::bind_rows(
 # 9. Save period, split-period and temporal plots for one group
 # -----------------------------------------------------------------
 
-save_species_richness_plots <- function(
+# Restrict a summary table to one family of metrics and re-level `metric`
+# so that facet_wrap(drop = FALSE) does not draw empty panels for the
+# metrics belonging to the other family.
+filter_plot_family <- function(data, plot_family) {
+
+  family_levels <- switch(
+    plot_family,
+    whole = whole_metric_levels,
+    invert_phyla = invert_phylum_metric_levels,
+    stop("Unknown plot family: ", plot_family)
+  )
+
+  data %>%
+    dplyr::filter(
+      as.character(metric) %in% family_levels
+    ) %>%
+    dplyr::mutate(
+      metric = factor(
+        as.character(metric),
+        levels = family_levels
+      )
+    )
+}
+
+save_species_richness_plot_family <- function(
     spatial_level_value,
     group_id_value,
-    safe_id_value) {
-  
-  output_root <- unname(plot_output_roots[[spatial_level_value]])
-  
+    safe_id_value,
+    plot_family) {
+
+  output_root <- if (plot_family == "whole") {
+    unname(plot_output_roots[[spatial_level_value]])
+  } else {
+    unname(phylum_plot_output_roots[[spatial_level_value]])
+  }
+
+  filename_stub <- if (plot_family == "whole") {
+    "sr"
+  } else {
+    "phyla_sr"
+  }
+
   group_period_data <- period_summary %>%
     dplyr::filter(
       spatial_level == spatial_level_value,
       group_id == group_id_value
-    )
-  
+    ) %>%
+    filter_plot_family(plot_family)
+
   group_period_status_data <- period_status_summary %>%
     dplyr::filter(
       spatial_level == spatial_level_value,
       group_id == group_id_value
-    )
-  
+    ) %>%
+    filter_plot_family(plot_family)
+
   group_period_split_data <- period_split_summary %>%
     dplyr::filter(
       spatial_level == spatial_level_value,
       group_id == group_id_value
-    )
-  
+    ) %>%
+    filter_plot_family(plot_family)
+
   group_temporal_data <- temporal_summary %>%
     dplyr::filter(
       spatial_level == spatial_level_value,
       group_id == group_id_value
     ) %>%
+    filter_plot_family(plot_family) %>%
     dplyr::arrange(metric, time_date)
-  
+
   saved <- c(
     period = save_plot_if_present(
       data = group_period_data,
@@ -869,7 +1073,7 @@ save_species_richness_plots <- function(
       filename = file.path(
         output_root,
         "period",
-        paste0(safe_id_value, "_sr_period.png")
+        paste0(safe_id_value, "_", filename_stub, "_period.png")
       ),
       width = 15,
       height = 5.5
@@ -880,7 +1084,7 @@ save_species_richness_plots <- function(
       filename = file.path(
         output_root,
         "period_status",
-        paste0(safe_id_value, "_sr_period_status.png")
+        paste0(safe_id_value, "_", filename_stub, "_period_status.png")
       ),
       width = 15,
       height = 5.5
@@ -891,7 +1095,7 @@ save_species_richness_plots <- function(
       filename = file.path(
         output_root,
         "period_split",
-        paste0(safe_id_value, "_sr_period_split.png")
+        paste0(safe_id_value, "_", filename_stub, "_period_split.png")
       ),
       width = 17,
       height = 6
@@ -902,18 +1106,48 @@ save_species_richness_plots <- function(
       filename = file.path(
         output_root,
         "temporal",
-        paste0(safe_id_value, "_sr_temporal.png")
+        paste0(safe_id_value, "_", filename_stub, "_temporal.png")
       ),
       width = 9,
       height = 14
     )
   )
-  
-  if (!any(saved)) {
+
+  names(saved)[saved]
+}
+
+save_species_richness_plots <- function(
+    spatial_level_value,
+    group_id_value,
+    safe_id_value) {
+
+  saved <- purrr::map(
+    plot_families,
+    function(plot_family) {
+
+      family_saved <- save_species_richness_plot_family(
+        spatial_level_value = spatial_level_value,
+        group_id_value = group_id_value,
+        safe_id_value = safe_id_value,
+        plot_family = plot_family
+      )
+
+      if (length(family_saved) == 0) {
+        character()
+      } else {
+        paste0(plot_family, "/", family_saved)
+      }
+    }
+  ) %>%
+    unlist(use.names = FALSE)
+
+  # A group can legitimately have no M2 invertebrate data, but every group
+  # reaching this loop should have at least one species richness metric.
+  if (length(saved) == 0) {
     stop("No plot data were available for this group.")
   }
-  
-  names(saved)[saved]
+
+  saved
 }
 
 # -----------------------------------------------------------------

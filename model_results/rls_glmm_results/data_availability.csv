@@ -89,6 +89,96 @@
 "M2 invertebrate species richness","Sponge Gardens","Kangaroo Island","Bloom","No-take",8,2,1,8,0
 "M2 invertebrate species richness","Upper GSV","Upper Gulf St Vincent","Pre-bloom","Fished",72,5,8,72,0
 "M2 invertebrate species richness","Upper GSV","Upper Gulf St Vincent","Bloom","Fished",20,5,1,17,0.15
+"M2 invertebrate Echinodermata species richness","Carrickalinga","Fleurieu","Pre-bloom","Fished",212,10,16,202,0.04716981132075472
+"M2 invertebrate Echinodermata species richness","Carrickalinga","Fleurieu","Pre-bloom","No-take",166,4,13,158,0.04819277108433735
+"M2 invertebrate Echinodermata species richness","Carrickalinga","Fleurieu","Bloom","Fished",44,10,1,40,0.09090909090909091
+"M2 invertebrate Echinodermata species richness","Carrickalinga","Fleurieu","Bloom","No-take",20,4,1,12,0.4
+"M2 invertebrate Echinodermata species richness","Eastern Spencer Gulf","Eastern Spencer Gulf","Pre-bloom","Fished",15,3,3,15,0
+"M2 invertebrate Echinodermata species richness","Eastern Spencer Gulf","Eastern Spencer Gulf","Bloom","Fished",12,3,1,3,0.75
+"M2 invertebrate Echinodermata species richness","Encounter Bay","South Coast","Pre-bloom","Fished",117,5,10,117,0
+"M2 invertebrate Echinodermata species richness","Encounter Bay","South Coast","Pre-bloom","No-take",24,2,6,24,0
+"M2 invertebrate Echinodermata species richness","Encounter Bay","South Coast","Bloom","Fished",28,5,3,25,0.10714285714285714
+"M2 invertebrate Echinodermata species richness","Encounter Bay","South Coast","Bloom","No-take",8,2,2,8,0
+"M2 invertebrate Echinodermata species richness","Metro","Adelaide Metro","Pre-bloom","Fished",60,3,13,60,0
+"M2 invertebrate Echinodermata species richness","Metro","Adelaide Metro","Bloom","Fished",8,3,2,2,0.75
+"M2 invertebrate Echinodermata species richness","Rapid Head","Fleurieu","Pre-bloom","Fished",248,6,20,247,0.004032258064516129
+"M2 invertebrate Echinodermata species richness","Rapid Head","Fleurieu","Pre-bloom","No-take",177,4,18,175,0.011299435028248588
+"M2 invertebrate Echinodermata species richness","Rapid Head","Fleurieu","Bloom","Fished",30,6,2,28,0.06666666666666667
+"M2 invertebrate Echinodermata species richness","Rapid Head","Fleurieu","Bloom","No-take",14,4,1,10,0.2857142857142857
+"M2 invertebrate Echinodermata species richness","Southern Fleurieu","South Coast","Pre-bloom","Fished",91,6,7,91,0
+"M2 invertebrate Echinodermata species richness","Southern Fleurieu","South Coast","Bloom","Fished",28,6,2,18,0.35714285714285715
+"M2 invertebrate Echinodermata species richness","Southern Metro","Adelaide Metro","Pre-bloom","Fished",136,7,13,136,0
+"M2 invertebrate Echinodermata species richness","Southern Metro","Adelaide Metro","Pre-bloom","No-take",86,7,14,86,0
+"M2 invertebrate Echinodermata species richness","Southern Metro","Adelaide Metro","Bloom","Fished",20,7,2,9,0.55
+"M2 invertebrate Echinodermata species richness","Southern Metro","Adelaide Metro","Bloom","No-take",24,7,2,10,0.5833333333333334
+"M2 invertebrate Echinodermata species richness","Southern Yorke","Southern Yorke","Pre-bloom","Fished",20,3,2,20,0
+"M2 invertebrate Echinodermata species richness","Southern Yorke","Southern Yorke","Bloom","Fished",15,3,2,15,0
+"M2 invertebrate Echinodermata species richness","Sponge Gardens","Kangaroo Island","Pre-bloom","Fished",60,3,5,56,0.06666666666666667
+"M2 invertebrate Echinodermata species richness","Sponge Gardens","Kangaroo Island","Pre-bloom","No-take",68,2,9,67,0.014705882352941176
+"M2 invertebrate Echinodermata species richness","Sponge Gardens","Kangaroo Island","Bloom","Fished",12,3,1,10,0.16666666666666666
+"M2 invertebrate Echinodermata species richness","Sponge Gardens","Kangaroo Island","Bloom","No-take",8,2,1,8,0
+"M2 invertebrate Echinodermata species richness","Upper GSV","Upper Gulf St Vincent","Pre-bloom","Fished",72,5,8,72,0
+"M2 invertebrate Echinodermata species richness","Upper GSV","Upper Gulf St Vincent","Bloom","Fished",20,5,1,1,0.95
+"M2 invertebrate Arthropoda species richness","Carrickalinga","Fleurieu","Pre-bloom","Fished",212,10,16,140,0.33962264150943394
+"M2 invertebrate Arthropoda species richness","Carrickalinga","Fleurieu","Pre-bloom","No-take",166,4,13,129,0.22289156626506024
+"M2 invertebrate Arthropoda species richness","Carrickalinga","Fleurieu","Bloom","Fished",44,10,1,42,0.045454545454545456
+"M2 invertebrate Arthropoda species richness","Carrickalinga","Fleurieu","Bloom","No-take",20,4,1,20,0
+"M2 invertebrate Arthropoda species richness","Eastern Spencer Gulf","Eastern Spencer Gulf","Pre-bloom","Fished",15,3,3,8,0.4666666666666667
+"M2 invertebrate Arthropoda species richness","Eastern Spencer Gulf","Eastern Spencer Gulf","Bloom","Fished",12,3,1,12,0
+"M2 invertebrate Arthropoda species richness","Encounter Bay","South Coast","Pre-bloom","Fished",117,5,10,100,0.1452991452991453
+"M2 invertebrate Arthropoda species richness","Encounter Bay","South Coast","Pre-bloom","No-take",24,2,6,24,0
+"M2 invertebrate Arthropoda species richness","Encounter Bay","South Coast","Bloom","Fished",28,5,3,27,0.03571428571428571
+"M2 invertebrate Arthropoda species richness","Encounter Bay","South Coast","Bloom","No-take",8,2,2,8,0
+"M2 invertebrate Arthropoda species richness","Metro","Adelaide Metro","Pre-bloom","Fished",60,3,13,59,0.016666666666666666
+"M2 invertebrate Arthropoda species richness","Metro","Adelaide Metro","Bloom","Fished",8,3,2,8,0
+"M2 invertebrate Arthropoda species richness","Rapid Head","Fleurieu","Pre-bloom","Fished",248,6,20,176,0.2903225806451613
+"M2 invertebrate Arthropoda species richness","Rapid Head","Fleurieu","Pre-bloom","No-take",177,4,18,95,0.4632768361581921
+"M2 invertebrate Arthropoda species richness","Rapid Head","Fleurieu","Bloom","Fished",30,6,2,29,0.03333333333333333
+"M2 invertebrate Arthropoda species richness","Rapid Head","Fleurieu","Bloom","No-take",14,4,1,13,0.07142857142857142
+"M2 invertebrate Arthropoda species richness","Southern Fleurieu","South Coast","Pre-bloom","Fished",91,6,7,72,0.2087912087912088
+"M2 invertebrate Arthropoda species richness","Southern Fleurieu","South Coast","Bloom","Fished",28,6,2,28,0
+"M2 invertebrate Arthropoda species richness","Southern Metro","Adelaide Metro","Pre-bloom","Fished",136,7,13,117,0.13970588235294118
+"M2 invertebrate Arthropoda species richness","Southern Metro","Adelaide Metro","Pre-bloom","No-take",86,7,14,73,0.1511627906976744
+"M2 invertebrate Arthropoda species richness","Southern Metro","Adelaide Metro","Bloom","Fished",20,7,2,18,0.1
+"M2 invertebrate Arthropoda species richness","Southern Metro","Adelaide Metro","Bloom","No-take",24,7,2,21,0.125
+"M2 invertebrate Arthropoda species richness","Southern Yorke","Southern Yorke","Pre-bloom","Fished",20,3,2,16,0.2
+"M2 invertebrate Arthropoda species richness","Southern Yorke","Southern Yorke","Bloom","Fished",15,3,2,14,0.06666666666666667
+"M2 invertebrate Arthropoda species richness","Sponge Gardens","Kangaroo Island","Pre-bloom","Fished",60,3,5,50,0.16666666666666666
+"M2 invertebrate Arthropoda species richness","Sponge Gardens","Kangaroo Island","Pre-bloom","No-take",68,2,9,44,0.35294117647058826
+"M2 invertebrate Arthropoda species richness","Sponge Gardens","Kangaroo Island","Bloom","Fished",12,3,1,12,0
+"M2 invertebrate Arthropoda species richness","Sponge Gardens","Kangaroo Island","Bloom","No-take",8,2,1,8,0
+"M2 invertebrate Arthropoda species richness","Upper GSV","Upper Gulf St Vincent","Pre-bloom","Fished",72,5,8,70,0.027777777777777776
+"M2 invertebrate Arthropoda species richness","Upper GSV","Upper Gulf St Vincent","Bloom","Fished",20,5,1,17,0.15
+"M2 invertebrate Mollusca species richness","Carrickalinga","Fleurieu","Pre-bloom","Fished",212,10,16,196,0.07547169811320754
+"M2 invertebrate Mollusca species richness","Carrickalinga","Fleurieu","Pre-bloom","No-take",166,4,13,165,0.006024096385542169
+"M2 invertebrate Mollusca species richness","Carrickalinga","Fleurieu","Bloom","Fished",44,10,1,41,0.06818181818181818
+"M2 invertebrate Mollusca species richness","Carrickalinga","Fleurieu","Bloom","No-take",20,4,1,20,0
+"M2 invertebrate Mollusca species richness","Eastern Spencer Gulf","Eastern Spencer Gulf","Pre-bloom","Fished",15,3,3,14,0.06666666666666667
+"M2 invertebrate Mollusca species richness","Eastern Spencer Gulf","Eastern Spencer Gulf","Bloom","Fished",12,3,1,8,0.3333333333333333
+"M2 invertebrate Mollusca species richness","Encounter Bay","South Coast","Pre-bloom","Fished",117,5,10,117,0
+"M2 invertebrate Mollusca species richness","Encounter Bay","South Coast","Pre-bloom","No-take",24,2,6,24,0
+"M2 invertebrate Mollusca species richness","Encounter Bay","South Coast","Bloom","Fished",28,5,3,27,0.03571428571428571
+"M2 invertebrate Mollusca species richness","Encounter Bay","South Coast","Bloom","No-take",8,2,2,8,0
+"M2 invertebrate Mollusca species richness","Metro","Adelaide Metro","Pre-bloom","Fished",60,3,13,60,0
+"M2 invertebrate Mollusca species richness","Metro","Adelaide Metro","Bloom","Fished",8,3,2,7,0.125
+"M2 invertebrate Mollusca species richness","Rapid Head","Fleurieu","Pre-bloom","Fished",248,6,20,231,0.06854838709677419
+"M2 invertebrate Mollusca species richness","Rapid Head","Fleurieu","Pre-bloom","No-take",177,4,18,156,0.11864406779661017
+"M2 invertebrate Mollusca species richness","Rapid Head","Fleurieu","Bloom","Fished",30,6,2,30,0
+"M2 invertebrate Mollusca species richness","Rapid Head","Fleurieu","Bloom","No-take",14,4,1,14,0
+"M2 invertebrate Mollusca species richness","Southern Fleurieu","South Coast","Pre-bloom","Fished",91,6,7,91,0
+"M2 invertebrate Mollusca species richness","Southern Fleurieu","South Coast","Bloom","Fished",28,6,2,28,0
+"M2 invertebrate Mollusca species richness","Southern Metro","Adelaide Metro","Pre-bloom","Fished",136,7,13,134,0.014705882352941176
+"M2 invertebrate Mollusca species richness","Southern Metro","Adelaide Metro","Pre-bloom","No-take",86,7,14,81,0.05813953488372093
+"M2 invertebrate Mollusca species richness","Southern Metro","Adelaide Metro","Bloom","Fished",20,7,2,18,0.1
+"M2 invertebrate Mollusca species richness","Southern Metro","Adelaide Metro","Bloom","No-take",24,7,2,23,0.041666666666666664
+"M2 invertebrate Mollusca species richness","Southern Yorke","Southern Yorke","Pre-bloom","Fished",20,3,2,20,0
+"M2 invertebrate Mollusca species richness","Southern Yorke","Southern Yorke","Bloom","Fished",15,3,2,15,0
+"M2 invertebrate Mollusca species richness","Sponge Gardens","Kangaroo Island","Pre-bloom","Fished",60,3,5,59,0.016666666666666666
+"M2 invertebrate Mollusca species richness","Sponge Gardens","Kangaroo Island","Pre-bloom","No-take",68,2,9,52,0.23529411764705882
+"M2 invertebrate Mollusca species richness","Sponge Gardens","Kangaroo Island","Bloom","Fished",12,3,1,12,0
+"M2 invertebrate Mollusca species richness","Sponge Gardens","Kangaroo Island","Bloom","No-take",8,2,1,8,0
+"M2 invertebrate Mollusca species richness","Upper GSV","Upper Gulf St Vincent","Pre-bloom","Fished",72,5,8,69,0.041666666666666664
+"M2 invertebrate Mollusca species richness","Upper GSV","Upper Gulf St Vincent","Bloom","Fished",20,5,1,9,0.55
 "M1 fish Shannon diversity","Carrickalinga","Fleurieu","Pre-bloom","Fished",212,10,16,202,0.04716981132075472
 "M1 fish Shannon diversity","Carrickalinga","Fleurieu","Pre-bloom","No-take",166,4,13,166,0
 "M1 fish Shannon diversity","Carrickalinga","Fleurieu","Bloom","Fished",44,10,1,41,0.06818181818181818
@@ -179,6 +269,96 @@
 "M2 invertebrate Shannon diversity","Sponge Gardens","Kangaroo Island","Bloom","No-take",8,2,1,8,0
 "M2 invertebrate Shannon diversity","Upper GSV","Upper Gulf St Vincent","Pre-bloom","Fished",72,5,8,71,0.013888888888888888
 "M2 invertebrate Shannon diversity","Upper GSV","Upper Gulf St Vincent","Bloom","Fished",20,5,1,9,0.55
+"M2 invertebrate Echinodermata Shannon diversity","Carrickalinga","Fleurieu","Pre-bloom","Fished",212,10,16,163,0.23113207547169812
+"M2 invertebrate Echinodermata Shannon diversity","Carrickalinga","Fleurieu","Pre-bloom","No-take",166,4,13,124,0.25301204819277107
+"M2 invertebrate Echinodermata Shannon diversity","Carrickalinga","Fleurieu","Bloom","Fished",44,10,1,19,0.5681818181818182
+"M2 invertebrate Echinodermata Shannon diversity","Carrickalinga","Fleurieu","Bloom","No-take",20,4,1,3,0.85
+"M2 invertebrate Echinodermata Shannon diversity","Eastern Spencer Gulf","Eastern Spencer Gulf","Pre-bloom","Fished",15,3,3,15,0
+"M2 invertebrate Echinodermata Shannon diversity","Eastern Spencer Gulf","Eastern Spencer Gulf","Bloom","Fished",12,3,1,0,1
+"M2 invertebrate Echinodermata Shannon diversity","Encounter Bay","South Coast","Pre-bloom","Fished",117,5,10,116,0.008547008547008548
+"M2 invertebrate Echinodermata Shannon diversity","Encounter Bay","South Coast","Pre-bloom","No-take",24,2,6,24,0
+"M2 invertebrate Echinodermata Shannon diversity","Encounter Bay","South Coast","Bloom","Fished",28,5,3,11,0.6071428571428571
+"M2 invertebrate Echinodermata Shannon diversity","Encounter Bay","South Coast","Bloom","No-take",8,2,2,4,0.5
+"M2 invertebrate Echinodermata Shannon diversity","Metro","Adelaide Metro","Pre-bloom","Fished",60,3,13,59,0.016666666666666666
+"M2 invertebrate Echinodermata Shannon diversity","Metro","Adelaide Metro","Bloom","Fished",8,3,2,0,1
+"M2 invertebrate Echinodermata Shannon diversity","Rapid Head","Fleurieu","Pre-bloom","Fished",248,6,20,231,0.06854838709677419
+"M2 invertebrate Echinodermata Shannon diversity","Rapid Head","Fleurieu","Pre-bloom","No-take",177,4,18,152,0.14124293785310735
+"M2 invertebrate Echinodermata Shannon diversity","Rapid Head","Fleurieu","Bloom","Fished",30,6,2,14,0.5333333333333333
+"M2 invertebrate Echinodermata Shannon diversity","Rapid Head","Fleurieu","Bloom","No-take",14,4,1,6,0.5714285714285714
+"M2 invertebrate Echinodermata Shannon diversity","Southern Fleurieu","South Coast","Pre-bloom","Fished",91,6,7,91,0
+"M2 invertebrate Echinodermata Shannon diversity","Southern Fleurieu","South Coast","Bloom","Fished",28,6,2,14,0.5
+"M2 invertebrate Echinodermata Shannon diversity","Southern Metro","Adelaide Metro","Pre-bloom","Fished",136,7,13,129,0.051470588235294115
+"M2 invertebrate Echinodermata Shannon diversity","Southern Metro","Adelaide Metro","Pre-bloom","No-take",86,7,14,79,0.08139534883720931
+"M2 invertebrate Echinodermata Shannon diversity","Southern Metro","Adelaide Metro","Bloom","Fished",20,7,2,4,0.8
+"M2 invertebrate Echinodermata Shannon diversity","Southern Metro","Adelaide Metro","Bloom","No-take",24,7,2,5,0.7916666666666666
+"M2 invertebrate Echinodermata Shannon diversity","Southern Yorke","Southern Yorke","Pre-bloom","Fished",20,3,2,20,0
+"M2 invertebrate Echinodermata Shannon diversity","Southern Yorke","Southern Yorke","Bloom","Fished",15,3,2,15,0
+"M2 invertebrate Echinodermata Shannon diversity","Sponge Gardens","Kangaroo Island","Pre-bloom","Fished",60,3,5,46,0.23333333333333334
+"M2 invertebrate Echinodermata Shannon diversity","Sponge Gardens","Kangaroo Island","Pre-bloom","No-take",68,2,9,66,0.029411764705882353
+"M2 invertebrate Echinodermata Shannon diversity","Sponge Gardens","Kangaroo Island","Bloom","Fished",12,3,1,10,0.16666666666666666
+"M2 invertebrate Echinodermata Shannon diversity","Sponge Gardens","Kangaroo Island","Bloom","No-take",8,2,1,8,0
+"M2 invertebrate Echinodermata Shannon diversity","Upper GSV","Upper Gulf St Vincent","Pre-bloom","Fished",72,5,8,51,0.2916666666666667
+"M2 invertebrate Echinodermata Shannon diversity","Upper GSV","Upper Gulf St Vincent","Bloom","Fished",20,5,1,0,1
+"M2 invertebrate Arthropoda Shannon diversity","Carrickalinga","Fleurieu","Pre-bloom","Fished",212,10,16,32,0.8490566037735849
+"M2 invertebrate Arthropoda Shannon diversity","Carrickalinga","Fleurieu","Pre-bloom","No-take",166,4,13,33,0.8012048192771084
+"M2 invertebrate Arthropoda Shannon diversity","Carrickalinga","Fleurieu","Bloom","Fished",44,10,1,29,0.3409090909090909
+"M2 invertebrate Arthropoda Shannon diversity","Carrickalinga","Fleurieu","Bloom","No-take",20,4,1,18,0.1
+"M2 invertebrate Arthropoda Shannon diversity","Eastern Spencer Gulf","Eastern Spencer Gulf","Pre-bloom","Fished",15,3,3,4,0.7333333333333333
+"M2 invertebrate Arthropoda Shannon diversity","Eastern Spencer Gulf","Eastern Spencer Gulf","Bloom","Fished",12,3,1,10,0.16666666666666666
+"M2 invertebrate Arthropoda Shannon diversity","Encounter Bay","South Coast","Pre-bloom","Fished",117,5,10,67,0.42735042735042733
+"M2 invertebrate Arthropoda Shannon diversity","Encounter Bay","South Coast","Pre-bloom","No-take",24,2,6,14,0.4166666666666667
+"M2 invertebrate Arthropoda Shannon diversity","Encounter Bay","South Coast","Bloom","Fished",28,5,3,15,0.4642857142857143
+"M2 invertebrate Arthropoda Shannon diversity","Encounter Bay","South Coast","Bloom","No-take",8,2,2,6,0.25
+"M2 invertebrate Arthropoda Shannon diversity","Metro","Adelaide Metro","Pre-bloom","Fished",60,3,13,42,0.3
+"M2 invertebrate Arthropoda Shannon diversity","Metro","Adelaide Metro","Bloom","Fished",8,3,2,7,0.125
+"M2 invertebrate Arthropoda Shannon diversity","Rapid Head","Fleurieu","Pre-bloom","Fished",248,6,20,58,0.7661290322580645
+"M2 invertebrate Arthropoda Shannon diversity","Rapid Head","Fleurieu","Pre-bloom","No-take",177,4,18,27,0.847457627118644
+"M2 invertebrate Arthropoda Shannon diversity","Rapid Head","Fleurieu","Bloom","Fished",30,6,2,27,0.1
+"M2 invertebrate Arthropoda Shannon diversity","Rapid Head","Fleurieu","Bloom","No-take",14,4,1,10,0.2857142857142857
+"M2 invertebrate Arthropoda Shannon diversity","Southern Fleurieu","South Coast","Pre-bloom","Fished",91,6,7,35,0.6153846153846154
+"M2 invertebrate Arthropoda Shannon diversity","Southern Fleurieu","South Coast","Bloom","Fished",28,6,2,27,0.03571428571428571
+"M2 invertebrate Arthropoda Shannon diversity","Southern Metro","Adelaide Metro","Pre-bloom","Fished",136,7,13,51,0.625
+"M2 invertebrate Arthropoda Shannon diversity","Southern Metro","Adelaide Metro","Pre-bloom","No-take",86,7,14,30,0.6511627906976745
+"M2 invertebrate Arthropoda Shannon diversity","Southern Metro","Adelaide Metro","Bloom","Fished",20,7,2,12,0.4
+"M2 invertebrate Arthropoda Shannon diversity","Southern Metro","Adelaide Metro","Bloom","No-take",24,7,2,12,0.5
+"M2 invertebrate Arthropoda Shannon diversity","Southern Yorke","Southern Yorke","Pre-bloom","Fished",20,3,2,5,0.75
+"M2 invertebrate Arthropoda Shannon diversity","Southern Yorke","Southern Yorke","Bloom","Fished",15,3,2,9,0.4
+"M2 invertebrate Arthropoda Shannon diversity","Sponge Gardens","Kangaroo Island","Pre-bloom","Fished",60,3,5,28,0.5333333333333333
+"M2 invertebrate Arthropoda Shannon diversity","Sponge Gardens","Kangaroo Island","Pre-bloom","No-take",68,2,9,22,0.6764705882352942
+"M2 invertebrate Arthropoda Shannon diversity","Sponge Gardens","Kangaroo Island","Bloom","Fished",12,3,1,12,0
+"M2 invertebrate Arthropoda Shannon diversity","Sponge Gardens","Kangaroo Island","Bloom","No-take",8,2,1,8,0
+"M2 invertebrate Arthropoda Shannon diversity","Upper GSV","Upper Gulf St Vincent","Pre-bloom","Fished",72,5,8,39,0.4583333333333333
+"M2 invertebrate Arthropoda Shannon diversity","Upper GSV","Upper Gulf St Vincent","Bloom","Fished",20,5,1,8,0.6
+"M2 invertebrate Mollusca Shannon diversity","Carrickalinga","Fleurieu","Pre-bloom","Fished",212,10,16,143,0.32547169811320753
+"M2 invertebrate Mollusca Shannon diversity","Carrickalinga","Fleurieu","Pre-bloom","No-take",166,4,13,145,0.12650602409638553
+"M2 invertebrate Mollusca Shannon diversity","Carrickalinga","Fleurieu","Bloom","Fished",44,10,1,24,0.45454545454545453
+"M2 invertebrate Mollusca Shannon diversity","Carrickalinga","Fleurieu","Bloom","No-take",20,4,1,15,0.25
+"M2 invertebrate Mollusca Shannon diversity","Eastern Spencer Gulf","Eastern Spencer Gulf","Pre-bloom","Fished",15,3,3,10,0.3333333333333333
+"M2 invertebrate Mollusca Shannon diversity","Eastern Spencer Gulf","Eastern Spencer Gulf","Bloom","Fished",12,3,1,7,0.4166666666666667
+"M2 invertebrate Mollusca Shannon diversity","Encounter Bay","South Coast","Pre-bloom","Fished",117,5,10,106,0.09401709401709402
+"M2 invertebrate Mollusca Shannon diversity","Encounter Bay","South Coast","Pre-bloom","No-take",24,2,6,24,0
+"M2 invertebrate Mollusca Shannon diversity","Encounter Bay","South Coast","Bloom","Fished",28,5,3,17,0.39285714285714285
+"M2 invertebrate Mollusca Shannon diversity","Encounter Bay","South Coast","Bloom","No-take",8,2,2,8,0
+"M2 invertebrate Mollusca Shannon diversity","Metro","Adelaide Metro","Pre-bloom","Fished",60,3,13,54,0.1
+"M2 invertebrate Mollusca Shannon diversity","Metro","Adelaide Metro","Bloom","Fished",8,3,2,3,0.625
+"M2 invertebrate Mollusca Shannon diversity","Rapid Head","Fleurieu","Pre-bloom","Fished",248,6,20,167,0.32661290322580644
+"M2 invertebrate Mollusca Shannon diversity","Rapid Head","Fleurieu","Pre-bloom","No-take",177,4,18,97,0.4519774011299435
+"M2 invertebrate Mollusca Shannon diversity","Rapid Head","Fleurieu","Bloom","Fished",30,6,2,29,0.03333333333333333
+"M2 invertebrate Mollusca Shannon diversity","Rapid Head","Fleurieu","Bloom","No-take",14,4,1,11,0.21428571428571427
+"M2 invertebrate Mollusca Shannon diversity","Southern Fleurieu","South Coast","Pre-bloom","Fished",91,6,7,90,0.01098901098901099
+"M2 invertebrate Mollusca Shannon diversity","Southern Fleurieu","South Coast","Bloom","Fished",28,6,2,26,0.07142857142857142
+"M2 invertebrate Mollusca Shannon diversity","Southern Metro","Adelaide Metro","Pre-bloom","Fished",136,7,13,121,0.11029411764705882
+"M2 invertebrate Mollusca Shannon diversity","Southern Metro","Adelaide Metro","Pre-bloom","No-take",86,7,14,77,0.10465116279069768
+"M2 invertebrate Mollusca Shannon diversity","Southern Metro","Adelaide Metro","Bloom","Fished",20,7,2,11,0.45
+"M2 invertebrate Mollusca Shannon diversity","Southern Metro","Adelaide Metro","Bloom","No-take",24,7,2,16,0.3333333333333333
+"M2 invertebrate Mollusca Shannon diversity","Southern Yorke","Southern Yorke","Pre-bloom","Fished",20,3,2,17,0.15
+"M2 invertebrate Mollusca Shannon diversity","Southern Yorke","Southern Yorke","Bloom","Fished",15,3,2,12,0.2
+"M2 invertebrate Mollusca Shannon diversity","Sponge Gardens","Kangaroo Island","Pre-bloom","Fished",60,3,5,43,0.2833333333333333
+"M2 invertebrate Mollusca Shannon diversity","Sponge Gardens","Kangaroo Island","Pre-bloom","No-take",68,2,9,28,0.5882352941176471
+"M2 invertebrate Mollusca Shannon diversity","Sponge Gardens","Kangaroo Island","Bloom","Fished",12,3,1,12,0
+"M2 invertebrate Mollusca Shannon diversity","Sponge Gardens","Kangaroo Island","Bloom","No-take",8,2,1,6,0.25
+"M2 invertebrate Mollusca Shannon diversity","Upper GSV","Upper Gulf St Vincent","Pre-bloom","Fished",72,5,8,53,0.2638888888888889
+"M2 invertebrate Mollusca Shannon diversity","Upper GSV","Upper Gulf St Vincent","Bloom","Fished",20,5,1,5,0.75
 "M1 fish B20 biomass","Carrickalinga","Fleurieu","Pre-bloom","Fished",212,10,16,201,0.05188679245283019
 "M1 fish B20 biomass","Carrickalinga","Fleurieu","Pre-bloom","No-take",166,4,13,166,0
 "M1 fish B20 biomass","Carrickalinga","Fleurieu","Bloom","Fished",44,10,1,36,0.18181818181818182

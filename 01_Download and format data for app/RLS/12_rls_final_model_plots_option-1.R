@@ -39,6 +39,12 @@
 #     E. Arthropoda abundance
 #     F. Mollusca abundance
 #
+# The Species richness and Shannon diversity figures now follow the same
+# six-panel shape as Total abundance:
+#
+#     M1 fish | M2 fish | M2 invertebrates
+#     Echinodermata | Arthropoda | Mollusca
+#
 # If a model/prediction is missing, a blank framed panel is retained.
 # If the complete location x metric dataset contains >90% zero transects,
 # the blank panel explicitly says this.
@@ -190,13 +196,19 @@ metric_groups <- list(
   species_richness = c(
     M1 = "M1 fish species richness",
     M2_fish = "M2 fish species richness",
-    M2_inverts = "M2 invertebrate species richness"
+    M2_inverts = "M2 invertebrate species richness",
+    Echinodermata = "M2 invertebrate Echinodermata species richness",
+    Arthropoda = "M2 invertebrate Arthropoda species richness",
+    Mollusca = "M2 invertebrate Mollusca species richness"
   ),
-  
+
   shannon_diversity = c(
     M1 = "M1 fish Shannon diversity",
     M2_fish = "M2 fish Shannon diversity",
-    M2_inverts = "M2 invertebrate Shannon diversity"
+    M2_inverts = "M2 invertebrate Shannon diversity",
+    Echinodermata = "M2 invertebrate Echinodermata Shannon diversity",
+    Arthropoda = "M2 invertebrate Arthropoda Shannon diversity",
+    Mollusca = "M2 invertebrate Mollusca Shannon diversity"
   ),
   
   b20_biomass = c(
@@ -242,8 +254,31 @@ metric_y_lab <- c(
   "M2 invertebrate Shannon diversity" = "Avg. shannon diversity index\nof  invertebrates",
   "M2 invertebrate Echinodermata abundance" = "Avg. Echinodermata\nabundance",
   "M2 invertebrate Arthropoda abundance" = "Avg. Arthropoda\nabundance",
-  "M2 invertebrate Mollusca abundance" = "Avg. Mollusca\nabundance"
+  "M2 invertebrate Mollusca abundance" = "Avg. Mollusca\nabundance",
+
+  "M2 invertebrate Echinodermata species richness" = "Avg. Echinodermata\nspecies richness",
+  "M2 invertebrate Arthropoda species richness" = "Avg. Arthropoda\nspecies richness",
+  "M2 invertebrate Mollusca species richness" = "Avg. Mollusca\nspecies richness",
+
+  "M2 invertebrate Echinodermata Shannon diversity" = "Avg. Echinodermata\nshannon diversity index",
+  "M2 invertebrate Arthropoda Shannon diversity" = "Avg. Arthropoda\nshannon diversity index",
+  "M2 invertebrate Mollusca Shannon diversity" = "Avg. Mollusca\nshannon diversity index"
 )
+
+
+# Every metric named in metric_groups must have a y-axis label, otherwise
+# metric_y_lab[[metric_name]] errors out mid-figure. Check once, up front.
+missing_y_labs <- setdiff(
+  unname(unlist(metric_groups)),
+  names(metric_y_lab)
+)
+
+if (length(missing_y_labs) > 0) {
+  stop(
+    "No entry in metric_y_lab for: ",
+    paste(missing_y_labs, collapse = ", ")
+  )
+}
 
 
 # ============================================================

@@ -131,68 +131,152 @@ rls_metric_lookup_fixed <- tibble::tribble(
 #   01_Download and format data for app/RLS/10_calculate_rls_metric_percentage_changes.R,
 #   ~line 130-142): metric matches "M2 invertebrate <phylum> abundance"
 #   but is NOT "M2 invertebrate total abundance".
+#   Brooke asked again (2026-09-11) for species richness and Shannon
+#   diversity of the same three phyla, so scripts 04 and 05 now produce
+#     "M2 invertebrate <phylum> species richness"
+#     "M2 invertebrate <phylum> Shannon diversity"
+#   using exactly the same naming convention as the abundance metrics.
+#   All three families are therefore derived by one helper below, and each
+#   becomes its own tab in "Explore indicators", faceted by phylum.
 period_predictions_path <- file.path(glmm_dir, "period_predictions.csv")
 
-if (file.exists(period_predictions_path)) {
-  glmm_metrics <- unique(readr::read_csv(period_predictions_path, show_col_types = FALSE)$metric)
+# Used only when period_predictions.csv is missing or has no phylum metrics.
+default_invert_phyla <- c("Echinodermata", "Arthropoda", "Mollusca")
 
-  invert_phylum_labels <- glmm_metrics[
-    stringr::str_detect(glmm_metrics, "^M2 invertebrate .+ abundance$") &
-      glmm_metrics != "M2 invertebrate total abundance"
+# Build the rls_metric_lookup rows for ONE family of per-phylum metrics.
+#
+# `metric_suffix` is the text a metric name ends with, e.g. "abundance" for
+# "M2 invertebrate Mollusca abundance". `whole_dataset_labels` are the
+# whole-dataset metrics that share that suffix and must NOT be mistaken for
+# a phylum (e.g. "M2 invertebrate total abundance").
+#
+# `metric_id_suffix` is appended to the Shiny-safe id. The abundance rows
+# deliberately pass "" so their ids stay exactly as they were
+# ("m2_invert_mollusca"), since those ids are already in use.
+make_phylum_lookup_rows <- function(
+    glmm_metrics,
+    metric_suffix,
+    whole_dataset_labels,
+    metric_id_suffix,
+    metric_group,
+    metric_group_label,
+    y_lab,
+    fallback_phyla = default_invert_phyla) {
+
+  # metric_suffix is plain text with no regular-expression metacharacters.
+  pattern <- paste0("^M2 invertebrate (.+) ", metric_suffix, "$")
+
+  metric_labels <- glmm_metrics[
+    stringr::str_detect(glmm_metrics, pattern) &
+      !(glmm_metrics %in% whole_dataset_labels)
   ]
 
-  if (length(invert_phylum_labels) == 0) {
+  if (length(metric_labels) == 0) {
     warning(
-      "No 'M2 invertebrate <phylum> abundance' metrics found in ", period_predictions_path,
-      " - falling back to the old hardcoded Echinodermata/Arthropoda/Mollusca rows. ",
-      "Check that script 11 has been re-run and that its metric-naming convention hasn't changed."
+      "No 'M2 invertebrate <phylum> ", metric_suffix, "' metrics found in ",
+      period_predictions_path,
+      " - falling back to hardcoded ",
+      paste(fallback_phyla, collapse = "/"),
+      " rows. Check that scripts 04, 05, 07 and 11 have all been re-run and ",
+      "that the metric-naming convention hasn't changed."
     )
-    rls_metric_lookup_phyla <- tibble::tribble(
-      ~metric_id,                    ~metric_label,                                ~metric_group,             ~metric_group_label,                 ~dataset,             ~facet_label,    ~y_lab,
-      "m2_invert_echinodermata",     "M2 invertebrate Echinodermata abundance",   "invert_phylum_abundance", "Invertebrate abundance by phylum",  "M2 invertebrates",   "Echinodermata", "Avg. abundance",
-      "m2_invert_arthropoda",        "M2 invertebrate Arthropoda abundance",      "invert_phylum_abundance", "Invertebrate abundance by phylum",  "M2 invertebrates",   "Arthropoda",    "Avg. abundance",
-      "m2_invert_mollusca",          "M2 invertebrate Mollusca abundance",        "invert_phylum_abundance", "Invertebrate abundance by phylum",  "M2 invertebrates",   "Mollusca",      "Avg. abundance"
+    phylum_names <- fallback_phyla
+    metric_labels <- paste0(
+      "M2 invertebrate ", phylum_names, " ", metric_suffix
     )
   } else {
-    # Pull the phylum name out of "M2 invertebrate <phylum> abundance"
-    phylum_names <- stringr::str_match(
-      invert_phylum_labels, "^M2 invertebrate (.+) abundance$"
-    )[, 2]
-
-    rls_metric_lookup_phyla <- tibble::tibble(
-      metric_id          = paste0("m2_invert_", tolower(phylum_names)),
-      metric_label       = invert_phylum_labels,
-      metric_group       = "invert_phylum_abundance",
-      metric_group_label = "Invertebrate abundance by phylum",
-      dataset            = "M2 invertebrates",
-      facet_label        = phylum_names,
-      y_lab              = "Avg. abundance"
-    )
+    # Pull the phylum name out of "M2 invertebrate <phylum> <suffix>"
+    phylum_names <- stringr::str_match(metric_labels, pattern)[, 2]
   }
-} else {
-  warning(
-    "Can't find ", period_predictions_path, " - falling back to the old hardcoded ",
-    "Echinodermata/Arthropoda/Mollusca invert-phylum rows. Run script 11 first, then ",
-    "re-run this script, to pick up the phyla the GLMMs actually report."
-  )
-  rls_metric_lookup_phyla <- tibble::tribble(
-    ~metric_id,                    ~metric_label,                                ~metric_group,             ~metric_group_label,                 ~dataset,             ~facet_label,    ~y_lab,
-    "m2_invert_echinodermata",     "M2 invertebrate Echinodermata abundance",   "invert_phylum_abundance", "Invertebrate abundance by phylum",  "M2 invertebrates",   "Echinodermata", "Avg. abundance",
-    "m2_invert_arthropoda",        "M2 invertebrate Arthropoda abundance",      "invert_phylum_abundance", "Invertebrate abundance by phylum",  "M2 invertebrates",   "Arthropoda",    "Avg. abundance",
-    "m2_invert_mollusca",          "M2 invertebrate Mollusca abundance",        "invert_phylum_abundance", "Invertebrate abundance by phylum",  "M2 invertebrates",   "Mollusca",      "Avg. abundance"
+
+  tibble::tibble(
+    metric_id          = paste0(
+      "m2_invert_", tolower(phylum_names), metric_id_suffix
+    ),
+    metric_label       = metric_labels,
+    metric_group       = metric_group,
+    metric_group_label = metric_group_label,
+    dataset            = "M2 invertebrates",
+    facet_label        = phylum_names,
+    y_lab              = y_lab
   )
 }
 
+if (file.exists(period_predictions_path)) {
+  glmm_metrics <- unique(readr::read_csv(period_predictions_path, show_col_types = FALSE)$metric)
+} else {
+  warning(
+    "Can't find ", period_predictions_path, " - falling back to hardcoded ",
+    "Echinodermata/Arthropoda/Mollusca invert-phylum rows. Run script 11 first, then ",
+    "re-run this script, to pick up the phyla the GLMMs actually report."
+  )
+  glmm_metrics <- character()
+}
+
+rls_metric_lookup_phyla <- dplyr::bind_rows(
+
+  make_phylum_lookup_rows(
+    glmm_metrics         = glmm_metrics,
+    metric_suffix        = "abundance",
+    whole_dataset_labels = "M2 invertebrate total abundance",
+    metric_id_suffix     = "",
+    metric_group         = "invert_phylum_abundance",
+    metric_group_label   = "Invertebrate abundance by phylum",
+    y_lab                = "Avg. abundance"
+  ),
+
+  make_phylum_lookup_rows(
+    glmm_metrics         = glmm_metrics,
+    metric_suffix        = "species richness",
+    whole_dataset_labels = "M2 invertebrate species richness",
+    metric_id_suffix     = "_richness",
+    metric_group         = "invert_phylum_richness",
+    metric_group_label   = "Invertebrate species richness by phylum",
+    y_lab                = "Avg. species richness"
+  ),
+
+  make_phylum_lookup_rows(
+    glmm_metrics         = glmm_metrics,
+    metric_suffix        = "Shannon diversity",
+    whole_dataset_labels = "M2 invertebrate Shannon diversity",
+    metric_id_suffix     = "_shannon",
+    metric_group         = "invert_phylum_shannon",
+    metric_group_label   = "Invertebrate Shannon diversity by phylum",
+    y_lab                = "Avg. Shannon diversity index"
+  )
+)
+
 rls_metric_lookup <- dplyr::bind_rows(rls_metric_lookup_fixed, rls_metric_lookup_phyla)
 
-# One row per tab (5 biological metrics), in the order the tabs should
+# One row per tab (7 biological metrics), in the order the tabs should
 # appear - used to build the "Explore indicators" tabset for Dive.
 # metric_group is kept as a plain character column (not a factor) so it
 # can be used directly as a Shiny input/output id downstream.
+#
+# The two "by phylum" richness/diversity groups sit immediately after their
+# whole-dataset equivalents so the tabs read
+# richness -> richness by phylum -> Shannon -> Shannon by phylum.
 rls_metric_group_order <- c(
-  "species_richness", "shannon_diversity", "b20",
+  "species_richness", "invert_phylum_richness",
+  "shannon_diversity", "invert_phylum_shannon",
+  "b20",
   "total_abundance", "invert_phylum_abundance"
 )
+
+# Guard against a metric_group appearing in the lookup but not in the order
+# above - match() would return NA, the tab would sort last, and the gauge
+# grid's .group_order would silently break.
+unordered_metric_groups <- setdiff(
+  unique(rls_metric_lookup$metric_group),
+  rls_metric_group_order
+)
+
+if (length(unordered_metric_groups) > 0) {
+  stop(
+    "These metric_group values are missing from rls_metric_group_order: ",
+    paste(unordered_metric_groups, collapse = ", ")
+  )
+}
 
 rls_metric_groups <- rls_metric_lookup %>%
   dplyr::distinct(metric_group, metric_group_label, y_lab) %>%
@@ -361,9 +445,10 @@ rls_pct_change_location_wide <- read_pct_change("rls_metric_percentage_changes_l
 # "Explore indicators" GLMM tabset (metric_group_label as the row/section
 # label, facet_label - method or invert phylum - as the sub-label), and so
 # the gauges can look up a metric's `impact` category by metric_id.
-# Also orders rows by metric_group (species_richness, shannon_diversity,
-# b20, total_abundance, invert_phylum_abundance) then facet_label, matching
-# rls_metric_groups' tab order.
+# Also orders rows by metric_group (in rls_metric_group_order: richness,
+# richness by phylum, Shannon, Shannon by phylum, b20, total abundance,
+# abundance by phylum) then facet_label, matching rls_metric_groups' tab
+# order.
 #
 # Brooke asked (2026-09-09): "Can we remove the extra phyla's from the
 # percent change table" - script 10 computes a percentage change for every
@@ -380,8 +465,9 @@ attach_metric_lookup <- function(df) {
   if (nrow(df) == 0) return(df)
 
   # NOTE: script 10's own output already has its own `metric_group` column
-  # (same vocabulary: species_richness/shannon_diversity/b20/
-  # total_abundance/invert_phylum_abundance), so it's deliberately left out
+  # (same vocabulary: species_richness/invert_phylum_richness/
+  # shannon_diversity/invert_phylum_shannon/b20/total_abundance/
+  # invert_phylum_abundance), so it's deliberately left out
   # of the join below - joining it again would collide with the existing
   # column and dplyr would silently rename both to metric_group.x/
   # metric_group.y instead of erroring, leaving no plain `metric_group`

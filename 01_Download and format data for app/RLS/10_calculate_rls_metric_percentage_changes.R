@@ -9,10 +9,12 @@
 #
 # Metrics:
 #   - Species richness: M1 fish, M2 fish, M2 invertebrates
+#   - M2 invertebrate species richness by phylum
 #   - Total abundance: M1 fish, M2 fish, M2 invertebrates
 #   - M2 invertebrate abundance by phylum
 #   - B20 biomass: M1 fish, M2 fish
 #   - Shannon diversity: M1 fish, M2 fish, M2 invertebrates
+#   - M2 invertebrate Shannon diversity by phylum
 #
 # Percentage change is:
 #   ((comparison mean / pre-bloom mean) * 100) - 100
@@ -45,13 +47,28 @@ dir.create(
 status_levels <- c("No-take", "Fished")
 
 
+# Scripts 04, 05 and 07 each write ONE file that holds both the
+# whole-dataset metrics and the M2 invertebrate phylum-specific ones. The
+# phylum metrics are split into their own metric_group here so they are not
+# averaged in with, or displayed alongside, the whole-dataset metrics.
+#
+# filter_type:
+#   "all"           - keep every metric in the file
+#   "whole_dataset" - drop the M2 invertebrate phylum-specific metrics
+#   "invert_phylum" - keep ONLY the M2 invertebrate phylum-specific metrics
+#
+# `metric_suffix` is the text a metric name ends with, which is what tells
+# a phylum metric ("M2 invertebrate Mollusca species richness") apart from
+# the whole-dataset one ("M2 invertebrate species richness").
 metric_sources <- tibble::tribble(
-  ~metric_group,               ~path,                                                   ~value_col,          ~filter_type,
-  "species_richness",         file.path(metric_input_dir, "species_richness.rds"),    "species_richness", "all",
-  "total_abundance",          file.path(metric_input_dir, "total_abundance.rds"),     "abundance",        "all",
-  "invert_phylum_abundance",  file.path(metric_input_dir, "abundance.rds"),           "abundance",        "invert_phylum",
-  "b20",                      file.path(metric_input_dir, "b20.rds"),                 "b20_kg",           "all",
-  "shannon_diversity",        file.path(metric_input_dir, "shannon_diversity.rds"),   "shannon",          "all"
+  ~metric_group,               ~path,                                                   ~value_col,          ~filter_type,     ~metric_suffix,
+  "species_richness",         file.path(metric_input_dir, "species_richness.rds"),    "species_richness", "whole_dataset",  "species richness",
+  "invert_phylum_richness",   file.path(metric_input_dir, "species_richness.rds"),    "species_richness", "invert_phylum",  "species richness",
+  "total_abundance",          file.path(metric_input_dir, "total_abundance.rds"),     "abundance",        "all",            "abundance",
+  "invert_phylum_abundance",  file.path(metric_input_dir, "abundance.rds"),           "abundance",        "invert_phylum",  "abundance",
+  "b20",                      file.path(metric_input_dir, "b20.rds"),                 "b20_kg",           "all",            "B20 biomass",
+  "shannon_diversity",        file.path(metric_input_dir, "shannon_diversity.rds"),   "shannon",          "whole_dataset",  "Shannon diversity",
+  "invert_phylum_shannon",    file.path(metric_input_dir, "shannon_diversity.rds"),   "shannon",          "invert_phylum",  "Shannon diversity"
 )
 
 # -----------------------------------------------------------------
@@ -92,12 +109,38 @@ resolve_status_column <- function(data, source_name) {
   data
 }
 
+# TRUE for the M2 invertebrate phylum-specific version of a metric, e.g.
+# "M2 invertebrate Mollusca species richness" but NOT
+# "M2 invertebrate species richness" (no phylum between the two).
+is_invert_phylum_metric <- function(metric, metric_suffix) {
+
+  metric <- as.character(metric)
+
+  whole_dataset_name <- paste0("M2 invertebrate ", metric_suffix)
+
+  # The abundance file spells its whole-dataset metric as
+  # "M2 invertebrate total abundance", so exclude that form too.
+  whole_dataset_names <- c(
+    whole_dataset_name,
+    paste0("M2 invertebrate total ", metric_suffix)
+  )
+
+  # metric_suffix is plain text ("species richness", "abundance", ...) with
+  # no regular-expression metacharacters, so it can be pasted in directly.
+  stringr::str_detect(
+    metric,
+    paste0("^M2 invertebrate .+ ", metric_suffix, "$")
+  ) &
+    !(metric %in% whole_dataset_names)
+}
+
 # Read one saved metric table and convert it to a common structure.
 load_metric_table <- function(
     metric_group,
     path,
     value_col,
-    filter_type) {
+    filter_type,
+    metric_suffix) {
 
 
   data <- readr::read_rds(path) %>%
@@ -127,18 +170,30 @@ load_metric_table <- function(
     )
   }
 
-  # The full abundance file contains both the three total-abundance metrics
-  # and the M2 invertebrate phylum-specific metrics. Keep only phyla here so
-  # the total M2 invertebrate abundance is not duplicated.
+  # Each saved file holds both the whole-dataset metrics and the M2
+  # invertebrate phylum-specific ones, so keep only the half wanted here.
+  # This stops the phylum metrics being duplicated across two metric_groups
+  # and stops them being mixed in with the whole-dataset ones.
   if (filter_type == "invert_phylum") {
     data <- data %>%
       dplyr::filter(
-        stringr::str_detect(
-          as.character(metric),
-          "^M2 invertebrate .+ abundance$"
-        ),
-        as.character(metric) != "M2 invertebrate total abundance"
+        is_invert_phylum_metric(metric, metric_suffix)
       )
+  } else if (filter_type == "whole_dataset") {
+    data <- data %>%
+      dplyr::filter(
+        !is_invert_phylum_metric(metric, metric_suffix)
+      )
+  } else if (filter_type != "all") {
+    stop("Unknown filter_type: ", filter_type)
+  }
+
+  if (nrow(data) == 0) {
+    warning(
+      "No rows left for metric_group '", metric_group, "' after the '",
+      filter_type, "' filter on ", path,
+      ". Has the metric-creation script been re-run?"
+    )
   }
 
   data %>%
