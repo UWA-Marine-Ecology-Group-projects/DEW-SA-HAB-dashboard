@@ -15,37 +15,27 @@
 #   - each panel is titled with its survey method (Fish / Cryptic fish /
 #     Invertebrates) so the three methods are clearly identified
 #
-# For each location, each plot type is saved separately for:
-#   - M1 fish
-#   - M2 fish
-#   - M2 invertebrates
-#
-# Panel order:
-#   M1 fish:
-#     A. Total abundance
-#     B. Species richness
-#     C. B20 biomass
-#     D. Shannon diversity
-#
-#   M2 fish:
-#     A. Total abundance
-#     B. Species richness
-#     C. B20 biomass
-#     D. Shannon diversity
-#
-#   M2 invertebrates:
-#     A. Total abundance
-#     B. Species richness
-#     C. Shannon diversity
-#     D. Echinodermata abundance
-#     E. Arthropoda abundance
-#     F. Mollusca abundance
-#
-# The Species richness and Shannon diversity figures now follow the same
-# six-panel shape as Total abundance:
+# For each location, each plot type is saved separately for each metric
+# group below. Most groups produce a three-panel figure:
 #
 #     M1 fish | M2 fish | M2 invertebrates
+#
+# for:
+#   - Total abundance
+#   - Species richness
+#   - Shannon diversity
+#   - B20 biomass (M1 fish | M2 fish only, two panels)
+#
+# The M2 invertebrate phylum-level metrics (Echinodermata / Arthropoda /
+# Mollusca) are kept OUT of the figures above. Instead, each metric type
+# gets its own standalone three-panel phylum figure:
+#
 #     Echinodermata | Arthropoda | Mollusca
+#
+# for:
+#   - Invertebrate abundance by phylum
+#   - Invertebrate species richness by phylum
+#   - Invertebrate Shannon diversity by phylum
 #
 # If a model/prediction is missing, a blank framed panel is retained.
 # If the complete location x metric dataset contains >90% zero transects,
@@ -185,20 +175,26 @@ location_metric_zero_summary <- data_availability %>%
 # while the values are the exact metric names in the model outputs.
 
 metric_groups <- list(
-  
+
   total_abundance = c(
     M1 = "M1 fish total abundance",
     M2_fish = "M2 fish total abundance",
-    M2_inverts = "M2 invertebrate total abundance",
+    M2_inverts = "M2 invertebrate total abundance"
+  ),
+
+  invert_phylum_abundance = c(
     Echinodermata = "M2 invertebrate Echinodermata abundance",
     Arthropoda = "M2 invertebrate Arthropoda abundance",
     Mollusca = "M2 invertebrate Mollusca abundance"
   ),
-  
+
   species_richness = c(
     M1 = "M1 fish species richness",
     M2_fish = "M2 fish species richness",
-    M2_inverts = "M2 invertebrate species richness",
+    M2_inverts = "M2 invertebrate species richness"
+  ),
+
+  invert_phylum_richness = c(
     Echinodermata = "M2 invertebrate Echinodermata species richness",
     Arthropoda = "M2 invertebrate Arthropoda species richness",
     Mollusca = "M2 invertebrate Mollusca species richness"
@@ -207,12 +203,15 @@ metric_groups <- list(
   shannon_diversity = c(
     M1 = "M1 fish Shannon diversity",
     M2_fish = "M2 fish Shannon diversity",
-    M2_inverts = "M2 invertebrate Shannon diversity",
+    M2_inverts = "M2 invertebrate Shannon diversity"
+  ),
+
+  invert_phylum_shannon = c(
     Echinodermata = "M2 invertebrate Echinodermata Shannon diversity",
     Arthropoda = "M2 invertebrate Arthropoda Shannon diversity",
     Mollusca = "M2 invertebrate Mollusca Shannon diversity"
   ),
-  
+
   b20_biomass = c(
     M1 = "M1 fish B20 biomass",
     M2_fish = "M2 fish B20 biomass"
@@ -239,17 +238,20 @@ method_titles <- c(
   M1 = "Fish",
   M2_fish = "Cryptic fish",
   M2_inverts = "Invertebrates",
-  Echinodermata = "Invertebrates",
-  Arthropoda = "Invertebrates",
-  Mollusca = "Invertebrates"
+  Echinodermata = "Echinodermata",
+  Arthropoda = "Arthropoda",
+  Mollusca = "Mollusca"
 )
 
 
 # Names used for saved files.
 metric_group_labels <- c(
   total_abundance = "Total abundance",
+  invert_phylum_abundance = "Invertebrate abundance by phylum",
   species_richness = "Species richness",
+  invert_phylum_richness = "Invertebrate species richness by phylum",
   shannon_diversity = "Shannon diversity",
+  invert_phylum_shannon = "Invertebrate Shannon diversity by phylum",
   b20_biomass = "B20 biomass"
 )
 
@@ -818,13 +820,11 @@ make_metric_location_plot <- function(
   
   # Three-column layout works naturally for:
   #
-  # Richness:       M1 | M2 fish | M2 inverts
-  # Shannon:        M1 | M2 fish | M2 inverts
+  # Total abundance, Species richness, Shannon diversity:
+  #     M1 | M2 fish | M2 inverts
   #
-  # Total abundance becomes:
-  #
-  # M1 | M2 fish | M2 inverts
-  # Echinodermata | Arthropoda | Mollusca
+  # Invertebrate phylum figures (abundance / richness / Shannon):
+  #     Echinodermata | Arthropoda | Mollusca
   #
   # B20 has two panels.
   
@@ -891,7 +891,13 @@ make_metric_location_plot <- function(
 get_metric_figure_dimensions <- function(
     n_panels,
     plot_type) {
-  
+
+  # Note: every metric_groups entry is now either 3 panels (M1 | M2 fish |
+  # M2 inverts, or the Echinodermata | Arthropoda | Mollusca phylum
+  # figures) or 2 panels (B20 biomass). The n_panels == 6 branches below
+  # are unused for now but left in place in case a combined 6-panel
+  # figure is wanted again later.
+
   # ----------------------------------------------------------
   # Temporal figures need more horizontal and vertical space
   # because of the date labels.
