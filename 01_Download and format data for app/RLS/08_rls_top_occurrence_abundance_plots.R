@@ -16,8 +16,9 @@
 # Focus-period selection logic:
 #   - Pre-bloom focus selects taxa using Pre-bloom transects only.
 #   - Post-bloom focus selects taxa using all Bloom transects combined.
-#   - Once taxa are selected, bars show Pre-bloom and each separate
-#     Bloom period from `period_split`.
+#   - Once taxa are selected, bars show Pre-bloom and Bloom (`period`).
+#     Set `split_bloom_periods <- TRUE` to show each separate Bloom
+#     period from `period_split` instead.
 #
 # RLS sampling unit:
 #   - Counts are first summed for each taxon within each block.
@@ -86,6 +87,10 @@ max_taxa_per_plot <- 5
 # same genus occurs in the same block. This matches the taxonomic handling
 # used in the species-richness workflow.
 remove_spp_when_identified_present <- TRUE
+
+# Bars are grouped by broad period (Pre-bloom vs Bloom) by default.
+# Change to TRUE to split Bloom into each separate `period_split` period.
+split_bloom_periods <- FALSE
 
 # Plot style.
 show_error_bars <- TRUE
@@ -495,6 +500,11 @@ prepare_rls_dataset <- function(
       ),
       period = as.character(period),
       period_split = as.character(period_split),
+      plot_period = if (isTRUE(split_bloom_periods)) {
+        dplyr::coalesce(period_split, period)
+      } else {
+        period
+      },
       focus_group = dplyr::case_when(
         period == "Pre-bloom" ~ "Pre-bloom",
         !is.na(period) ~ "Post-bloom",
@@ -541,7 +551,7 @@ expand_spatial_levels <- function(sample_metadata) {
           as.character(site_name),
           as.character(site_code)
         ),
-        plot_period = dplyr::coalesce(period_split, period),
+        plot_period,
         focus_group
       ),
     sample_metadata %>%
@@ -552,7 +562,7 @@ expand_spatial_levels <- function(sample_metadata) {
         spatial_level = "location",
         group_id = as.character(location),
         group_name = as.character(location),
-        plot_period = dplyr::coalesce(period_split, period),
+        plot_period,
         focus_group
       ),
     sample_metadata %>%
@@ -563,7 +573,7 @@ expand_spatial_levels <- function(sample_metadata) {
         spatial_level = "region",
         group_id = as.character(region),
         group_name = as.character(region),
-        plot_period = dplyr::coalesce(period_split, period),
+        plot_period,
         focus_group
       )
   ) %>%
@@ -646,8 +656,8 @@ summarise_one_dataset <- function(prepared_data) {
       by = "transect"
     )
 
-  # Values displayed in the plots: Pre-bloom plus each separate Bloom
-  # period from period_split.
+  # Values displayed in the plots: Pre-bloom and Bloom, or Pre-bloom plus
+  # each separate Bloom period when split_bloom_periods is TRUE.
   period_denominators <- sample_groups %>%
     dplyr::filter(!is.na(plot_period)) %>%
     dplyr::group_by(

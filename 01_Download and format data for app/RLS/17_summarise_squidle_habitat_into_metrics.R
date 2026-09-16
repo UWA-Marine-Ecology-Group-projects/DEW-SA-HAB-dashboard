@@ -2,7 +2,7 @@
 ##Written 16/09/2026
 ##
 ##Rolls the point annotations up through the sampling hierarchy:
-##      point  ->  image (photo quadrat)  ->  survey_id (transect)  ->  site x date
+##      point -> image (photo quadrat) -> survey_id (transect) -> site x sampling event
 ##
 ##Two classifications are produced in parallel, from the same function:
 ##   level_1 x level_2            e.g. Biota > Macroalgae        (12 classes)
@@ -18,9 +18,11 @@
 ##    averaging those rows answers "how much cover when it was present", which is
 ##    always higher than "how much cover". tidyr::complete() below fills the zeros.
 ##
-## 2. Site means are per site x DATE, never per site alone. 33 sites were surveyed on
-##    2 dates, 6 on 3, 2 on 4 and 1 on 6 - averaging to site_code by itself would
-##    blend the historical baseline and the post-bloom surveys into one number.
+## 2. The top level is site x SAMPLING EVENT, never site alone. Transects done within
+##    8 weeks of each other are one field trip and average together; averaging to
+##    site_code by itself would blend the baseline and the bloom into one number.
+##    `period` and `period_split` come through from add_sampling_event(), matching the
+##    other RLS scripts.
 ##
 ## 3. Two ways of getting from images to a survey are reported side by side:
 ##      percent_cover        - the mean of the image percentages (every image counts
@@ -46,6 +48,93 @@ library(ggplot2)
 benthos <- read_rds("data/raw/rls_benthos_summarised.rds")
 
 dir.create("data/tidy", recursive = TRUE, showWarnings = FALSE)
+
+# ================================================================
+# Sampling events
+# ================================================================
+# Transects done within 8 weeks of each other are one field trip, not separate visits,
+# so they are grouped into a `sampling_event` and averaged together. Same rule and the
+# same output columns as add_sampling_event() in the other RLS scripts, so the benthos
+# metrics line up with the fish and invertebrate ones.
+#
+# The event is worked out per LOCATION, not per site: a trip to Encounter covering a
+# dozen sites over a few weeks is one event, and every site visited on it carries the
+# same start date. `location` is not in the Squidle export, so it is joined on from the
+# RLS survey metadata by site_code.
+
+site_locations <- read_rds("data/tidy/sa_sites.RDS") %>%
+  dplyr::distinct(site_code, location)
+
+# one location per site, or the join below would duplicate rows
+stopifnot(!any(duplicated(site_locations$site_code)))
+
+benthos <- benthos %>%
+  dplyr::left_join(site_locations, by = "site_code")
+
+stopifnot(!any(is.na(benthos$location)))   # all 53 sites resolve
+
+event_gap_weeks <- 8
+
+add_sampling_event <- function(data) {
+
+  # --- 1. sampling events from the unique LOCATION x DATE combinations ----
+  event_lookup <- data %>%
+    dplyr::distinct(location, date) %>%
+    dplyr::arrange(location, date) %>%
+    dplyr::group_by(location) %>%
+    dplyr::mutate(
+      # a new event starts after a gap of more than 8 weeks at this location
+      sampling_event = cumsum(
+        is.na(dplyr::lag(date)) |
+          date - dplyr::lag(date) > (event_gap_weeks * 7))) %>%
+    dplyr::group_by(location, sampling_event) %>%
+    dplyr::mutate(sampling_event_start_date = min(date, na.rm = TRUE)) %>%
+    dplyr::ungroup()
+
+  # --- 2. join the event back onto every transect ----
+  data %>%
+    dplyr::select(-dplyr::any_of(c("sampling_event", "sampling_event_start_date",
+                                   "period", "start_year_month", "period_split"))) %>%
+    dplyr::left_join(event_lookup, by = c("location", "date")) %>%
+
+    # --- 3. period variables ----
+    dplyr::mutate(
+      period = dplyr::if_else(sampling_event_start_date < as.Date("2025-04-01"),
+                              "Pre-bloom", "Bloom"),
+      start_year_month = format(sampling_event_start_date, "%Y-%m"),
+      period_split = dplyr::case_when(
+        period == "Bloom" ~ paste("Bloom", start_year_month),
+        TRUE              ~ period))
+}
+
+benthos <- add_sampling_event(benthos)
+
+# The three levels everything is grouped by, defined once and used by both the cover
+# roll-up and the richness roll-up so they can never drift apart.
+event_cols  <- c("location", "site_code", "sampling_event_start_date",
+                 "period", "period_split")
+survey_cols <- c(event_cols, "date", "survey_id")
+image_cols  <- c(survey_cols, "point_media_key")
+
+# What the events look like, and how much they actually merge. NOTE the events chain:
+# a run of dates each within 8 weeks of the last links into one event, so an event can
+# span much longer than 8 weeks. Here the 2026 Encounter trip runs 12 Jan to 29 May -
+# 137 days as a single event. If the within-2026 spread matters, shorten
+# `event_gap_weeks` or split that event by hand.
+benthos %>%
+  dplyr::distinct(location, date, sampling_event_start_date, period) %>%
+  dplyr::group_by(location, sampling_event_start_date, period) %>%
+  dplyr::summarise(n_dates = dplyr::n(),
+                   first   = min(date),
+                   last    = max(date),
+                   span_days = as.numeric(max(date) - min(date)),
+                   .groups = "drop") %>%
+  print(n = Inf)
+
+message("Site x date combinations: ",
+        nrow(dplyr::distinct(benthos, site_code, date)),
+        "  ->  site x sampling event: ",
+        nrow(dplyr::distinct(benthos, site_code, sampling_event_start_date)))
 
 # ================================================================
 # Sampling structure - what is being averaged over
@@ -80,8 +169,6 @@ message("Images: ", nrow(points_per_image),
 
 summarise_cover <- function(data, class_cols) {
 
-  image_cols <- c("site_code", "date", "survey_id", "point_media_key")
-
   # every class in the dataset, and every image in the dataset
   classes <- data %>% dplyr::distinct(dplyr::across(dplyr::all_of(class_cols)))
   images  <- data %>% dplyr::distinct(dplyr::across(dplyr::all_of(image_cols)))
@@ -107,8 +194,7 @@ summarise_cover <- function(data, class_cols) {
   # sd/se describe how variable the images were within the transect. They come out NA
   # where a survey has only one image (18 of them do) - that is correct, not a bug.
   per_survey <- per_image %>%
-    dplyr::group_by(dplyr::across(dplyr::all_of(c("site_code", "date", "survey_id",
-                                                  class_cols)))) %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(survey_cols, class_cols)))) %>%
     dplyr::summarise(
       n_images             = dplyr::n(),
       n_points             = sum(n_points_image),
@@ -118,19 +204,21 @@ summarise_cover <- function(data, class_cols) {
       .groups = "drop") %>%
     dplyr::mutate(se_cover = sd_cover / sqrt(n_images))
 
-  # --- 3. average across the surveys at a site on that date ----
-  # site x date, NOT site alone - see note 2 in the header.
-  per_site_date <- per_survey %>%
-    dplyr::group_by(dplyr::across(dplyr::all_of(c("site_code", "date", class_cols)))) %>%
+  # --- 3. average the transects done at a site in one sampling event ----
+  # Transects within 8 weeks are one visit, so they average together here. Never
+  # site_code alone - that would blend the baseline and the bloom into one number.
+  per_site_event <- per_survey %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(event_cols, class_cols)))) %>%
     dplyr::summarise(
       n_surveys     = dplyr::n(),
+      n_dates       = dplyr::n_distinct(date),
       n_images      = sum(n_images),
       sd_cover      = stats::sd(percent_cover),
       percent_cover = mean(percent_cover),
       .groups = "drop") %>%
     dplyr::mutate(se_cover = sd_cover / sqrt(n_surveys))
 
-  list(image = per_image, survey = per_survey, site = per_site_date)
+  list(image = per_image, survey = per_survey, site = per_site_event)
 }
 
 # ================================================================
@@ -197,7 +285,6 @@ cover_l2$survey %>%
 # from 2.84 to 2.87.
 
 non_living_level_2 <- character(0)   # Matrix kept - see note above
-image_cols         <- c("site_code", "date", "survey_id", "point_media_key")
 
 living <- benthos %>%
   dplyr::filter(level_1 == "Biota",
@@ -241,7 +328,7 @@ richness_image <- benthos %>%
 
 # --- 2. average across the images in a survey (transect) ----
 richness_survey <- richness_image %>%
-  dplyr::group_by(site_code, date, survey_id) %>%
+  dplyr::group_by(dplyr::across(dplyr::all_of(survey_cols))) %>%
   dplyr::summarise(
     n_images                = dplyr::n(),
     n_living_points         = sum(n_living_points),
@@ -250,12 +337,12 @@ richness_survey <- richness_image %>%
     .groups = "drop") %>%
   dplyr::mutate(se_richness = sd_richness / sqrt(n_images))
 
-# --- 3. average across the surveys at a site on that date ----
-# Again site x date, not site alone.
-richness_site_date <- richness_survey %>%
-  dplyr::group_by(site_code, date) %>%
+# --- 3. average the transects done at a site in one sampling event ----
+richness_site_event <- richness_survey %>%
+  dplyr::group_by(dplyr::across(dplyr::all_of(event_cols))) %>%
   dplyr::summarise(
     n_surveys               = dplyr::n(),
+    n_dates                 = dplyr::n_distinct(date),
     n_images                = sum(n_images),
     sd_richness             = stats::sd(mean_richness_per_image),
     mean_richness_per_image = mean(mean_richness_per_image),
@@ -268,8 +355,8 @@ message("Correlation between images annotated and mean_richness_per_image: ",
         round(stats::cor(richness_survey$n_images,
                          richness_survey$mean_richness_per_image), 2))
 
-richness_site_date %>%
-  ggplot(aes(x = date, y = mean_richness_per_image)) +
+richness_site_event %>%
+  ggplot(aes(x = sampling_event_start_date, y = mean_richness_per_image)) +
   geom_pointrange(aes(ymin = mean_richness_per_image - se_richness,
                       ymax = mean_richness_per_image + se_richness), alpha = 0.6) +
   labs(x = NULL, y = "morphospecies per image") +
@@ -281,20 +368,21 @@ richness_site_date %>%
 
 write_csv(richness_image,     "data/tidy/richness_per_image.csv")
 write_csv(richness_survey,    "data/tidy/richness_per_survey.csv")
-write_csv(richness_site_date, "data/tidy/richness_per_site_date.csv")
+write_csv(richness_site_event, "data/tidy/richness_per_sampling_event.csv")
 
 write_csv(cover_l2$image,  "data/tidy/cover_level_2_per_image.csv")
 write_csv(cover_l2$survey, "data/tidy/cover_level_2_per_survey.csv")
-write_csv(cover_l2$site,   "data/tidy/cover_level_2_per_site_date.csv")
+write_csv(cover_l2$site,   "data/tidy/cover_level_2_per_sampling_event.csv")
 
 write_csv(cover_l3$image,  "data/tidy/cover_level_3_per_image.csv")
 write_csv(cover_l3$survey, "data/tidy/cover_level_3_per_survey.csv")
-write_csv(cover_l3$site,   "data/tidy/cover_level_3_per_site_date.csv")
+write_csv(cover_l3$site,   "data/tidy/cover_level_3_per_sampling_event.csv")
 
 # Wide, one row per survey - for the multivariate work in script 13 and for modelling
 cover_l3_wide <- cover_l3$survey %>%
   tidyr::unite("class", level_1, level_2, level_3, sep = " > ") %>%
-  dplyr::select(site_code, date, survey_id, class, percent_cover) %>%
+  dplyr::select(site_code, sampling_event_start_date, period, date, survey_id,
+                class, percent_cover) %>%
   tidyr::pivot_wider(names_from = class, values_from = percent_cover, values_fill = 0)
 
 write_csv(cover_l3_wide, "data/tidy/cover_level_3_per_survey_wide.csv")
@@ -305,7 +393,7 @@ write_csv(cover_l3_wide, "data/tidy/cover_level_3_per_survey_wide.csv")
 
 cover_l2$site %>%
   dplyr::filter(percent_cover > 0) %>%
-  ggplot(aes(x = date, y = percent_cover, colour = level_2)) +
+  ggplot(aes(x = sampling_event_start_date, y = percent_cover, colour = level_2)) +
   geom_point(alpha = 0.5) +
   facet_wrap(~ level_2, scales = "free_y") +
   labs(x = NULL, y = "% cover (mean of surveys at a site)") +

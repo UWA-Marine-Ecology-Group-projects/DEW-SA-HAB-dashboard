@@ -1,19 +1,19 @@
-###Prebloom vs post-bloom plots, per site - QUICK MOCK-UP
+###Pre-bloom vs bloom plots, per site - QUICK MOCK-UP
 ##Written 16/09/2026
 ##
 ##Reads the tables written by script 17 and draws three plots:
-##   1. composition - stacked % cover by level_2, Prebloom and Bloom, one panel per site
-##   2. change      - % cover Prebloom -> Bloom, one line per site, one panel per level_2
-##   3. richness    - morphospecies per image Prebloom -> Bloom, one line per site
+##   1. composition - stacked % cover by level_2, Pre-bloom and Bloom, one panel per site
+##   2. change      - % cover Pre-bloom -> Bloom, one line per site, one panel per level_2
+##   3. richness    - morphospecies per image Pre-bloom -> Bloom, one line per site
 ##
 ##THE SPLIT. There is a clean 692-day gap in the survey dates: nothing between
-##2024-02-20 and 2026-01-12, and the bloom sits in it. So "Prebloom" is everything up to
+##2024-02-20 and 2026-01-12, and the bloom sits in it. So "Pre-bloom" is everything up to
 ##2024 and "Bloom" is the 2026 surveys, with no judgement call needed at the boundary.
 ##
 ##WHAT THESE CAN AND CANNOT SHOW. 32 of the 53 sites were surveyed in both periods and
 ##only those appear - 13 sites have baseline data only and 8 are post-bloom only, so
-##nothing can be said about change at those 21. "Prebloom" pools up to six survey dates
-##spread over 2018-2024 at some sites, so a site's Prebloom value is a multi-year average
+##nothing can be said about change at those 21. "Pre-bloom" pools up to six sampling events
+##spread over 2018-2024 at some sites, so a site's Pre-bloom value is a multi-year average
 ##rather than a single baseline. These are mock-ups for looking, not results - the
 ##models in script 11 are where a difference gets tested.
 
@@ -24,40 +24,38 @@ library(ggplot2)
 
 dir.create("plots/hab", recursive = TRUE, showWarnings = FALSE)
 
-bloom_starts <- as.Date("2025-01-01")   # anywhere in the 2024 -> 2026 gap gives the same split
-
-cover_site  <- read_csv("data/tidy/cover_level_2_per_site_date.csv", show_col_types = FALSE) #%>%
+# `period` comes through from add_sampling_event() in script 17 - no date cut is made
+# here, so this and the fish/invertebrate scripts split the timeline the same way.
+cover_site  <- read_csv("data/tidy/cover_level_2_per_sampling_event.csv", show_col_types = FALSE) #%>%
   # dplyr::filter(n_images > 50)
 
 test <- cover_site %>% dplyr::filter(site_code %in% "GSV1")
 
 summary(cover_site)
 
-richness_site <- read_csv("data/tidy/richness_per_site_date.csv",    show_col_types = FALSE)
+richness_site <- read_csv("data/tidy/richness_per_sampling_event.csv", show_col_types = FALSE)
 
-add_period <- function(x) {
-  x %>% dplyr::mutate(period = factor(ifelse(date < bloom_starts, "Prebloom", "Bloom"),
-                                      levels = c("Prebloom", "Bloom")))
+set_period <- function(x) {
+  x %>% dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
 }
 
 # ================================================================
-# Average the site x date values within each period
+# Average the sampling events within each period
 # ================================================================
-# Averaging the DATES, not the surveys - the surveys were already averaged into each
-# date in script 17, so this keeps each survey date counting once however many
-# transects it had.
+# Averaging the EVENTS, not the transects - script 17 already averaged the transects
+# into each sampling event, so a field trip counts once however many transects it ran.
 
 cover_period <- cover_site %>%
-  add_period() %>%
+  set_period() %>%
   dplyr::group_by(site_code, period, level_1, level_2) %>%
-  dplyr::summarise(n_dates       = dplyr::n(),
+  dplyr::summarise(n_events      = dplyr::n(),
                    percent_cover = mean(percent_cover),
                    .groups = "drop")
 
 richness_period <- richness_site %>%
-  add_period() %>%
+  set_period() %>%
   dplyr::group_by(site_code, period) %>%
-  dplyr::summarise(n_dates                 = dplyr::n(),
+  dplyr::summarise(n_events                = dplyr::n(),
                    mean_richness_per_image = mean(mean_richness_per_image),
                    .groups = "drop")
 
@@ -69,7 +67,7 @@ paired_sites <- cover_period %>%
   dplyr::pull(site_code)
 
 message(length(paired_sites), " of ", dplyr::n_distinct(cover_site$site_code),
-        " sites have surveys Prebloom AND Bloom")
+        " sites have surveys in both periods")
 
 cover_paired    <- cover_period    %>% dplyr::filter(site_code %in% paired_sites)
 richness_paired <- richness_period %>% dplyr::filter(site_code %in% paired_sites)
@@ -102,7 +100,7 @@ cover_plot_data <- cover_paired %>%
   dplyr::summarise(percent_cover = sum(percent_cover), .groups = "drop")
 
 # ================================================================
-# Plot 1 - composition Prebloom and Bloom, one panel per site
+# Plot 1 - composition Pre-bloom and Bloom, one panel per site
 # ================================================================
 
 p_composition <- cover_plot_data %>%
@@ -111,8 +109,8 @@ p_composition <- cover_plot_data %>%
   facet_wrap(~ site_code, ncol = 8) +
   scale_fill_manual(values = habitat_cols, name = NULL) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.02))) +
-  labs(#title = "Seafloor composition Prebloom and Bloom the bloom",
-       #subtitle = "% cover by habitat class, mean of survey dates in each period",
+  labs(#title = "Seafloor composition before and during the bloom",
+       #subtitle = "% cover by habitat class, mean of sampling events in each period",
        x = NULL, y = "% cover") +
   theme_bw(base_size = 9) +
   theme(panel.grid.minor = element_blank(),
@@ -128,20 +126,20 @@ ggsave("plots/hab/01_composition_by_site.png", p_composition,
 # ================================================================
 # Plot 2 - change in each habitat class, one line per site
 # ================================================================
-# A slope chart, so each site's own Prebloom -> Bloom is one line. Reading a difference
+# A slope chart, so each site's own Pre-bloom -> Bloom is one line. Reading a difference
 # off two separate bars is much harder than reading the slope of a line, and the line
 # also shows whether sites moved together or in opposite directions.
 
 slope_data <- cover_plot_data %>%
   tidyr::pivot_wider(names_from = period, values_from = percent_cover,
                      values_fill = 0) %>%
-  dplyr::mutate(change = Bloom - Prebloom,
+  dplyr::mutate(change = Bloom - `Pre-bloom`,
                 direction = dplyr::case_when(change < -1 ~ "Decrease",
                                              change >  1 ~ "Increase",
                                              TRUE        ~ "No change")) %>%
-  tidyr::pivot_longer(c(Prebloom, Bloom), names_to = "period",
+  tidyr::pivot_longer(c(`Pre-bloom`, Bloom), names_to = "period",
                       values_to = "percent_cover") %>%
-  dplyr::mutate(period = factor(period, levels = c("Prebloom", "Bloom")))
+  dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
 
 p_change <- slope_data %>%
   ggplot(aes(x = period, y = percent_cover, group = site_code, colour = direction)) +
@@ -168,12 +166,12 @@ ggsave("plots/hab/02_cover_change_by_class.png", p_change,
 
 richness_slope <- richness_paired %>%
   tidyr::pivot_wider(names_from = period, values_from = mean_richness_per_image) %>%
-  dplyr::mutate(change = Bloom - Prebloom,
+  dplyr::mutate(change = Bloom - `Pre-bloom`,
                 direction = dplyr::case_when(change < -0.25 ~ "Decrease",
                                              change >  0.25 ~ "Increase",
                                              TRUE           ~ "No change")) %>%
-  tidyr::pivot_longer(c(Prebloom, Bloom), names_to = "period", values_to = "richness") %>%
-  dplyr::mutate(period = factor(period, levels = c("Prebloom", "Bloom")))
+  tidyr::pivot_longer(c(`Pre-bloom`, Bloom), names_to = "period", values_to = "richness") %>%
+  dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
 
 p_richness <- richness_slope %>%
   ggplot(aes(x = period, y = richness, group = site_code, colour = direction)) +
@@ -185,7 +183,7 @@ p_richness <- richness_slope %>%
     check_overlap = TRUE, show.legend = FALSE) +
   scale_colour_manual(values = direction_cols, name = NULL) +
   scale_x_discrete(expand = expansion(mult = c(0.08, 0.28))) +
-  labs(#title = "Morphospecies richness Prebloom and Bloom the bloom",
+  labs(#title = "Morphospecies richness before and during the bloom",
        #subtitle = "mean living level_3 classes per 20-point image; one line per site",
        x = NULL, y = "morphospecies per image") +
   theme_bw(base_size = 11) +
@@ -210,7 +208,7 @@ change_table <- slope_data %>%
                    by = "site_code") %>%
   dplyr::arrange(site_code)
 
-write_csv(change_table, "data/tidy/change_Prebloom_Bloom_by_site.csv")
+write_csv(change_table, "data/tidy/change_pre_bloom_to_bloom_by_site.csv")
 
 # headline direction, across the paired sites
 slope_data %>%

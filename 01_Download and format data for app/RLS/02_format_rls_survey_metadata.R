@@ -74,7 +74,7 @@ add_sampling_event <- function(data) {
     dplyr::mutate(
       
       # Start a new sampling event when there has been a gap
-      # of more than 21 days since the previous sampling date
+      # of more than 8 weeks since the previous sampling date
       # at this LOCATION.
       sampling_event = cumsum(
         is.na(dplyr::lag(survey_date)) |
