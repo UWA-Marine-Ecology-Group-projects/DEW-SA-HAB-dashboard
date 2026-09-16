@@ -320,9 +320,9 @@ sl_m2 %>%
   count(program, survey_date, survey_id, name = "n_blocks") %>%
   count(program, survey_date < as.Date("2016-01-01"), n_blocks) 
 
-# sl_m3 <- left_join(sl_m3_raw, dates_m3, by = c("location", "survey_date")) %>%
-#   select(all_of(cols_to_keep)) %>%
-#   tidyr::uncount(weights = 2, .id = "block") # TODO check habitat method, if it has two blocks
+sl_m3 <- left_join(sl_m3_raw, sa_sites) %>% 
+  left_join(dates_m3) %>%
+  select(all_of(cols_to_keep))
 
 # # Remove intermediate objects from the environment ----
 # rm(sl_m1_raw, sl_m2_raw, sl_m3_raw, check, dates_m1, dates_m2, dates_m3, sa_sites, survey_list, survey_list_expanded)
@@ -332,7 +332,7 @@ names(sl_m1)
 # Save tidy dataframes ----
 write_rds(sl_m1, "data/tidy/rls_m1_survey_list.rds")
 write_rds(sl_m2, "data/tidy/rls_m2_survey_list.rds")
-# write_rds(sl_m3, "data/tidy/rls_m3_survey_list.rds")
+write_rds(sl_m3, "data/tidy/rls_m3_survey_list.rds")
 
 # Number of transects in each ----
 m1_transects <- sl_m1 %>%
