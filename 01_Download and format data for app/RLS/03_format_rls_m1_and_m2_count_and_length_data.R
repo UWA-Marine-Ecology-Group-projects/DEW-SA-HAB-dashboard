@@ -343,6 +343,8 @@ m2_inverts_clean <- m2_species_inverts %>%
   
   dplyr::mutate(species = if_else(species %in% "tasmaniae", "spp", species)) %>%
   
+  dplyr::mutate(species = if_else(genus %in% "Haliotis", "spp", species)) %>%
+  
   dplyr::mutate(genus = if_else(genus %in% "Flabellina", "Flabellinidae", genus)) %>%
   
   dplyr::mutate(species = if_else(genus %in% "Pagurus", "spp", species)) %>%
