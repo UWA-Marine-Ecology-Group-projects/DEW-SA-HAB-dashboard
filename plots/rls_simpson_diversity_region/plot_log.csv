@@ -1,0 +1,8 @@
+spatial_level,group_id,group_name,status,plots_saved,error
+region,Adelaide Metro,Adelaide Metro,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+region,Eastern Spencer Gulf,Eastern Spencer Gulf,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+region,Fleurieu,Fleurieu,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+region,Kangaroo Island,Kangaroo Island,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+region,South Coast,South Coast,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+region,Southern Yorke,Southern Yorke,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA
+region,Upper Gulf St Vincent,Upper Gulf St Vincent,Saved,"whole/period, whole/period_status, whole/period_split, whole/temporal, invert_phyla/period, invert_phyla/period_status, invert_phyla/period_split, invert_phyla/temporal",NA

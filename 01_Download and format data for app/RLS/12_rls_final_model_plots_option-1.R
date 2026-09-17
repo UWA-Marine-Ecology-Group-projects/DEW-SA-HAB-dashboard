@@ -24,6 +24,7 @@
 #   - Total abundance
 #   - Species richness
 #   - Shannon diversity
+#   - Simpson diversity (inverse Simpson)
 #   - B20 biomass (M1 fish | M2 fish only, two panels)
 #
 # The M2 invertebrate phylum-level metrics (Echinodermata / Arthropoda /
@@ -36,6 +37,7 @@
 #   - Invertebrate abundance by phylum
 #   - Invertebrate species richness by phylum
 #   - Invertebrate Shannon diversity by phylum
+#   - Invertebrate Simpson diversity by phylum
 #
 # If a model/prediction is missing, a blank framed panel is retained.
 # If the complete location x metric dataset contains >90% zero transects,
@@ -212,6 +214,18 @@ metric_groups <- list(
     Mollusca = "M2 invertebrate Mollusca Shannon diversity"
   ),
 
+  simpson_diversity = c(
+    M1 = "M1 fish Simpson diversity",
+    M2_fish = "M2 fish Simpson diversity",
+    M2_inverts = "M2 invertebrate Simpson diversity"
+  ),
+
+  invert_phylum_simpson = c(
+    Echinodermata = "M2 invertebrate Echinodermata Simpson diversity",
+    Arthropoda = "M2 invertebrate Arthropoda Simpson diversity",
+    Mollusca = "M2 invertebrate Mollusca Simpson diversity"
+  ),
+
   b20_biomass = c(
     M1 = "M1 fish B20 biomass",
     M2_fish = "M2 fish B20 biomass"
@@ -252,6 +266,8 @@ metric_group_labels <- c(
   invert_phylum_richness = "Invertebrate species richness by phylum",
   shannon_diversity = "Shannon diversity",
   invert_phylum_shannon = "Invertebrate Shannon diversity by phylum",
+  simpson_diversity = "Simpson diversity",
+  invert_phylum_simpson = "Invertebrate Simpson diversity by phylum",
   b20_biomass = "B20 biomass"
 )
 
@@ -261,15 +277,18 @@ metric_y_lab <- c(
   "M1 fish species richness" = "Avg. species richness\nof  fish",
   "M1 fish B20 biomass" = "Avg. biomass > 20 cm (kg)\nof  fish",
   "M1 fish Shannon diversity" = "Avg. shannon diversity index\nof  fish",
+  "M1 fish Simpson diversity" = "Avg. inverse simpson index\nof  fish",
   
   "M2 fish total abundance" = "Avg. abundance\nof cryptic fish",
   "M2 fish species richness" = "Avg. species richness\nof cryptic fish",
   "M2 fish B20 biomass" = "Avg. biomass > 20 cm (kg)\nof cryptic fish",
   "M2 fish Shannon diversity" = "Avg. shannon diversity index\nof cryptic fish",
+  "M2 fish Simpson diversity" = "Avg. inverse simpson index\nof cryptic fish",
   
   "M2 invertebrate total abundance" = "Avg. abundance\nof  invertebrates",
   "M2 invertebrate species richness" = "Avg. species richness\nof  invertebrates",
   "M2 invertebrate Shannon diversity" = "Avg. shannon diversity index\nof  invertebrates",
+  "M2 invertebrate Simpson diversity" = "Avg. inverse simpson index\nof  invertebrates",
   "M2 invertebrate Echinodermata abundance" = "Avg. Echinodermata\nabundance",
   "M2 invertebrate Arthropoda abundance" = "Avg. Arthropoda\nabundance",
   "M2 invertebrate Mollusca abundance" = "Avg. Mollusca\nabundance",
@@ -280,7 +299,11 @@ metric_y_lab <- c(
 
   "M2 invertebrate Echinodermata Shannon diversity" = "Avg. Echinodermata\nshannon diversity index",
   "M2 invertebrate Arthropoda Shannon diversity" = "Avg. Arthropoda\nshannon diversity index",
-  "M2 invertebrate Mollusca Shannon diversity" = "Avg. Mollusca\nshannon diversity index"
+  "M2 invertebrate Mollusca Shannon diversity" = "Avg. Mollusca\nshannon diversity index",
+
+  "M2 invertebrate Echinodermata Simpson diversity" = "Avg. Echinodermata\ninverse simpson index",
+  "M2 invertebrate Arthropoda Simpson diversity" = "Avg. Arthropoda\ninverse simpson index",
+  "M2 invertebrate Mollusca Simpson diversity" = "Avg. Mollusca\ninverse simpson index"
 )
 
 
@@ -820,10 +843,10 @@ make_metric_location_plot <- function(
   
   # Three-column layout works naturally for:
   #
-  # Total abundance, Species richness, Shannon diversity:
+  # Total abundance, Species richness, Shannon and Simpson diversity:
   #     M1 | M2 fish | M2 inverts
   #
-  # Invertebrate phylum figures (abundance / richness / Shannon):
+  # Invertebrate phylum figures (abundance / richness / Shannon / Simpson):
   #     Echinodermata | Arthropoda | Mollusca
   #
   # B20 has two panels.

@@ -15,6 +15,8 @@
 #   - B20 biomass: M1 fish, M2 fish
 #   - Shannon diversity: M1 fish, M2 fish, M2 invertebrates
 #   - M2 invertebrate Shannon diversity by phylum
+#   - Inverse Simpson diversity: M1 fish, M2 fish, M2 invertebrates
+#   - M2 invertebrate inverse Simpson diversity by phylum
 #
 # Percentage change is:
 #   ((comparison mean / pre-bloom mean) * 100) - 100
@@ -47,7 +49,7 @@ dir.create(
 status_levels <- c("No-take", "Fished")
 
 
-# Scripts 04, 05 and 07 each write ONE file that holds both the
+# Scripts 04, 05, 05b and 07 each write ONE file that holds both the
 # whole-dataset metrics and the M2 invertebrate phylum-specific ones. The
 # phylum metrics are split into their own metric_group here so they are not
 # averaged in with, or displayed alongside, the whole-dataset metrics.
@@ -68,7 +70,9 @@ metric_sources <- tibble::tribble(
   "invert_phylum_abundance",  file.path(metric_input_dir, "abundance.rds"),           "abundance",        "invert_phylum",  "abundance",
   "b20",                      file.path(metric_input_dir, "b20.rds"),                 "b20_kg",           "all",            "B20 biomass",
   "shannon_diversity",        file.path(metric_input_dir, "shannon_diversity.rds"),   "shannon",          "whole_dataset",  "Shannon diversity",
-  "invert_phylum_shannon",    file.path(metric_input_dir, "shannon_diversity.rds"),   "shannon",          "invert_phylum",  "Shannon diversity"
+  "invert_phylum_shannon",    file.path(metric_input_dir, "shannon_diversity.rds"),   "shannon",          "invert_phylum",  "Shannon diversity",
+  "simpson_diversity",        file.path(metric_input_dir, "simpson_diversity.rds"),   "simpson",          "whole_dataset",  "Simpson diversity",
+  "invert_phylum_simpson",    file.path(metric_input_dir, "simpson_diversity.rds"),   "simpson",          "invert_phylum",  "Simpson diversity"
 )
 
 # -----------------------------------------------------------------

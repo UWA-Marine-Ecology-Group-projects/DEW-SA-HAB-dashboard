@@ -29,18 +29,18 @@ M2_cryptic,M2 fish,Southern Yorke,period,10,3,0.11330821361991641,0.985114521286
 M2_cryptic,M2 fish,Sponge Gardens,period,34,5,0.023555343169233287,0.9358333329159261,0.518,0.265
 M2_cryptic,M2 fish,Sponge Gardens,period:status,34,5,0.04395443235742644,1.7462714354849662,0.063,
 M2_cryptic,M2 fish,Upper GSV,period,23,5,0.16092024000573837,5.600375816856813,0.002,0.545
-M2_inverts,M2 invertebrates,Carrickalinga,period,110,14,0.07439246275050793,11.291712925691034,0.001,0.02
-M2_inverts,M2 invertebrates,Carrickalinga,period:status,110,14,0.010430716676078486,1.5832337573028163,0.084,
-M2_inverts,M2 invertebrates,Eastern Spencer Gulf,period,6,3,0.26666367477103775,2.059288296501226,0.25,0.4013888888888889
-M2_inverts,M2 invertebrates,Encounter Bay,period,46,7,0.20591268461337917,18.726807846476202,0.001,0.001
-M2_inverts,M2 invertebrates,Encounter Bay,period:status,46,7,0.017270303865199184,1.5706543894616694,0.043,
-M2_inverts,M2 invertebrates,Metro,period,25,3,0.1323952080651786,4.0634669632228,0.003,0.005
-M2_inverts,M2 invertebrates,Rapid Head,period,117,10,0.09968123904584016,15.678542711634183,0.001,0.132
-M2_inverts,M2 invertebrates,Rapid Head,period:status,117,10,0.005611535765496563,0.8826204812396166,0.628,
-M2_inverts,M2 invertebrates,Southern Fleurieu,period,31,6,0.29215311133827965,15.757762498989225,0.001,0.888
-M2_inverts,M2 invertebrates,Southern Metro,period,90,14,0.08740969959337541,13.744522585684642,0.001,0.001
-M2_inverts,M2 invertebrates,Southern Metro,period:status,90,14,0.010936581149558464,1.719695723924802,0.036,
-M2_inverts,M2 invertebrates,Southern Yorke,period,10,3,0.20078756616450816,2.9092284610586367,0.027,0.74
-M2_inverts,M2 invertebrates,Sponge Gardens,period,34,5,0.22701705468306677,11.853754945839308,0.001,0.482
-M2_inverts,M2 invertebrates,Sponge Gardens,period:status,34,5,0.03436971953297171,1.7946239037848906,0.066,
-M2_inverts,M2 invertebrates,Upper GSV,period,23,5,0.14969093133418365,4.9763963700955305,0.001,0.986
+M2_inverts,M2 invertebrates,Carrickalinga,period,110,14,0.07513389338849076,11.518158683963042,0.001,0.021
+M2_inverts,M2 invertebrates,Carrickalinga,period:status,110,14,0.01024988653569788,1.5713257264646046,0.088,
+M2_inverts,M2 invertebrates,Eastern Spencer Gulf,period,6,3,0.2798966468941761,2.1358144480914385,0.25,0.4013888888888889
+M2_inverts,M2 invertebrates,Encounter Bay,period,46,7,0.20954251554693545,19.438600436315692,0.001,0.002
+M2_inverts,M2 invertebrates,Encounter Bay,period:status,46,7,0.017665486801579897,1.6387716762520377,0.036,
+M2_inverts,M2 invertebrates,Metro,period,25,3,0.14897445757485203,4.9460604073541745,0.003,0.006
+M2_inverts,M2 invertebrates,Rapid Head,period,117,10,0.10332787217216073,16.486643430717702,0.001,0.155
+M2_inverts,M2 invertebrates,Rapid Head,period:status,117,10,0.005866531446743446,0.9360437808726156,0.552,
+M2_inverts,M2 invertebrates,Southern Fleurieu,period,31,6,0.30484653311671445,17.200595476859444,0.001,0.637
+M2_inverts,M2 invertebrates,Southern Metro,period,90,14,0.09217333948396485,15.314583211549062,0.001,0.001
+M2_inverts,M2 invertebrates,Southern Metro,period:status,90,14,0.011696877762905566,1.9434340647546833,0.025,
+M2_inverts,M2 invertebrates,Southern Yorke,period,10,3,0.19887939953333875,2.962466940659617,0.027,0.681
+M2_inverts,M2 invertebrates,Sponge Gardens,period,34,5,0.23630946177626683,12.59067703058526,0.001,0.414
+M2_inverts,M2 invertebrates,Sponge Gardens,period:status,34,5,0.03211650234967908,1.7111820466151715,0.081,
+M2_inverts,M2 invertebrates,Upper GSV,period,23,5,0.18042197455894438,6.520591403603597,0.001,0.951

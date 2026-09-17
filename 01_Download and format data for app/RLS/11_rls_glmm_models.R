@@ -26,6 +26,11 @@
 #     construction, so its Gaussian lower confidence limit can fall below
 #     zero; the plots in script 12 truncate the interval at zero for
 #     display only and do not change the saved estimates.
+#   - Simpson diversity (inverse Simpson, script 05b): Gaussian with
+#     identity link, for the same reasons as Shannon (a mean across blocks,
+#     continuous and non-negative), for both the whole-dataset and the
+#     phylum-specific metrics. The same caveat about lower confidence
+#     limits below zero applies.
 #   - Abundance: Tweedie with log link, with ONE pooled Tweedie power
 #     estimated for each abundance metric and then fixed in all location models.
 #     Arthropoda is fixed at p = 1.001 because its pooled AIC profile ran
@@ -123,8 +128,9 @@ target_invert_phyla <- c(
 
 # Plot order only. This does not change what is modelled.
 #
-# The species richness and Shannon diversity metrics for the three phyla
-# are read automatically out of species_richness.rds / shannon_diversity.rds
+# The species richness, Shannon and Simpson diversity metrics for the three
+# phyla are read automatically out of species_richness.rds /
+# shannon_diversity.rds / simpson_diversity.rds
 # (load_metric_table() below keeps every metric in those files), so they
 # only need to be named here to give them a position in the plot order.
 plot_metric_order <- c(
@@ -136,6 +142,10 @@ plot_metric_order <- c(
   "M2 fish Shannon diversity",
   "M2 invertebrate Shannon diversity",
   paste0("M2 invertebrate ", target_invert_phyla, " Shannon diversity"),
+  "M1 fish Simpson diversity",
+  "M2 fish Simpson diversity",
+  "M2 invertebrate Simpson diversity",
+  paste0("M2 invertebrate ", target_invert_phyla, " Simpson diversity"),
   "M1 fish B20 biomass",
   "M2 fish B20 biomass",
   "M1 fish total abundance",
@@ -300,6 +310,12 @@ shannon_dat <- load_metric_table(
   family_code = "gaussian"
 )
 
+simpson_dat <- load_metric_table(
+  path = file.path(metric_input_dir, "simpson_diversity.rds"),
+  response_col = "simpson",
+  family_code = "gaussian"
+)
+
 b20_dat <- load_metric_table(
   path = file.path(metric_input_dir, "b20.rds"),
   response_col = "b20_kg",
@@ -316,6 +332,7 @@ abundance_dat <- load_metric_table(
 all_dat <- bind_rows(
   richness_dat,
   shannon_dat,
+  simpson_dat,
   b20_dat,
   abundance_dat
 ) %>%
@@ -564,20 +581,22 @@ if (length(missing_abundance_metrics) > 0) {
 }
 
 
-# 4f. Confirm the M2 invertebrate phylum species richness and Shannon
-#     diversity metrics created by scripts 04 and 05 were found. Unlike the
+# 4f. Confirm the M2 invertebrate phylum species richness, Shannon and
+#     Simpson diversity metrics created by scripts 04, 05 and 05b were found. Unlike the
 #     abundance metrics these are not filtered on read, so a missing one
 #     means the metric-creation script has not been re-run.
 expected_phylum_diversity_metrics <- c(
   paste0("M2 invertebrate ", target_invert_phyla, " species richness"),
-  paste0("M2 invertebrate ", target_invert_phyla, " Shannon diversity")
+  paste0("M2 invertebrate ", target_invert_phyla, " Shannon diversity"),
+  paste0("M2 invertebrate ", target_invert_phyla, " Simpson diversity")
 )
 
 missing_phylum_diversity_metrics <- setdiff(
   expected_phylum_diversity_metrics,
   unique(c(
     as.character(richness_dat$metric),
-    as.character(shannon_dat$metric)
+    as.character(shannon_dat$metric),
+    as.character(simpson_dat$metric)
   ))
 )
 
@@ -586,7 +605,7 @@ if (length(missing_phylum_diversity_metrics) > 0) {
     "The following M2 invertebrate phylum richness/diversity metrics were not ",
     "found and will not be modelled: ",
     paste(missing_phylum_diversity_metrics, collapse = ", "),
-    ". Re-run scripts 04 and 05 first."
+    ". Re-run scripts 04, 05 and 05b first."
   )
 } else {
   message(
@@ -931,7 +950,7 @@ build_period_formula <- function(df, family_code) {
   # With a log-link Tweedie, an observed interaction cell containing only
   # zeros can drive its cell mean toward the boundary and destabilise a
   # full interaction. In that case retain Period and Status additively.
-  # For Gaussian Shannon models this boundary issue does not apply.
+  # For Gaussian Shannon and Simpson models this boundary issue does not apply.
   has_all_zero_cell <- family_code == "tweedie" &&
     any(period_status_cells$all_zero %in% TRUE)
   

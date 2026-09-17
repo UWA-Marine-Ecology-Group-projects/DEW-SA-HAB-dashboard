@@ -493,13 +493,7 @@ location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Goniocidaris impressa,0,64
 location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Goniocidaris tubaria,0,64,0
 location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Goniodiscaster seriatus,0,64,0
 location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Guinusia chabrus,54,64,0.84375
-location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Haliotis cyclobates,0.5,64,0.0078125
-location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Haliotis laevigata,0,64,0
-location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Haliotis roei,1,64,0.015625
-location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Haliotis rubra,3,64,0.046875
-location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Haliotis rubra complex,0,64,0
-location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Haliotis scalaris,3,64,0.046875
-location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Haliotis spp,0,64,0
+location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Haliotis spp,7.5,64,0.1171875
 location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Hapalochlaena maculosa,0,64,0
 location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Heliocidaris erythrogramma,8,64,0.125
 location,Carrickalinga,M2 invertebrates,Bloom 2026-01,Herdmania grandis,0,64,0
@@ -660,13 +654,7 @@ location,Carrickalinga,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,378,0
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,4,378,0.010582010582010581
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,378,0
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Guinusia chabrus,65,378,0.17195767195767195
-location,Carrickalinga,M2 invertebrates,Pre-bloom,Haliotis cyclobates,6.5,378,0.017195767195767195
-location,Carrickalinga,M2 invertebrates,Pre-bloom,Haliotis laevigata,1.5,378,0.003968253968253968
-location,Carrickalinga,M2 invertebrates,Pre-bloom,Haliotis roei,0,378,0
-location,Carrickalinga,M2 invertebrates,Pre-bloom,Haliotis rubra,18.5,378,0.04894179894179894
-location,Carrickalinga,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,378,0
-location,Carrickalinga,M2 invertebrates,Pre-bloom,Haliotis scalaris,15,378,0.03968253968253968
-location,Carrickalinga,M2 invertebrates,Pre-bloom,Haliotis spp,17,378,0.04497354497354497
+location,Carrickalinga,M2 invertebrates,Pre-bloom,Haliotis spp,58.5,378,0.15476190476190477
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,378,0
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,33.5,378,0.08862433862433862
 location,Carrickalinga,M2 invertebrates,Pre-bloom,Herdmania grandis,8,378,0.021164021164021163
@@ -1261,13 +1249,7 @@ location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Goniocidaris impres
 location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Goniocidaris tubaria,0.5,12,0.041666666666666664
 location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Goniodiscaster seriatus,0,12,0
 location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Guinusia chabrus,4,12,0.3333333333333333
-location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis cyclobates,2,12,0.16666666666666666
-location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis laevigata,3.5,12,0.2916666666666667
-location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis roei,0,12,0
-location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis rubra,16.5,12,1.375
-location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis rubra complex,0,12,0
-location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis scalaris,0,12,0
-location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis spp,0,12,0
+location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis spp,22,12,1.8333333333333333
 location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Hapalochlaena maculosa,0,12,0
 location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Heliocidaris erythrogramma,0,12,0
 location,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Herdmania grandis,0,12,0
@@ -1428,13 +1410,7 @@ location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0
 location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,4,15,0.26666666666666666
 location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,15,0
 location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Guinusia chabrus,6,15,0.4
-location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,15,0
-location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis laevigata,16,15,1.0666666666666667
-location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis roei,7,15,0.4666666666666667
-location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis rubra,42.5,15,2.8333333333333335
-location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis rubra complex,3,15,0.2
-location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis scalaris,2,15,0.13333333333333333
-location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis spp,0,15,0
+location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis spp,70.5,15,4.7
 location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,15,0
 location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,60.5,15,4.033333333333333
 location,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Herdmania grandis,0,15,0
@@ -2463,13 +2439,7 @@ location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Goniocidaris impressa,0,8,
 location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Goniocidaris tubaria,0,8,0
 location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Goniodiscaster seriatus,0,8,0
 location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Guinusia chabrus,14,8,1.75
-location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Haliotis cyclobates,0,8,0
-location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Haliotis laevigata,0,8,0
-location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Haliotis roei,0,8,0
-location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Haliotis rubra,5,8,0.625
-location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Haliotis rubra complex,0,8,0
-location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Haliotis scalaris,0,8,0
-location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Haliotis spp,0,8,0
+location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Haliotis spp,5,8,0.625
 location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Hapalochlaena maculosa,0,8,0
 location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Heliocidaris erythrogramma,2,8,0.25
 location,Encounter Bay,M2 invertebrates,Bloom 2025-06,Herdmania grandis,0,8,0
@@ -2630,13 +2600,7 @@ location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Goniocidaris impressa,0,16
 location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Goniocidaris tubaria,0,16,0
 location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Goniodiscaster seriatus,0,16,0
 location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Guinusia chabrus,75.5,16,4.71875
-location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Haliotis cyclobates,0,16,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Haliotis laevigata,0,16,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Haliotis roei,0,16,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Haliotis rubra,2.5,16,0.15625
-location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Haliotis rubra complex,0,16,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Haliotis scalaris,0,16,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Haliotis spp,0,16,0
+location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Haliotis spp,2.5,16,0.15625
 location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Hapalochlaena maculosa,0,16,0
 location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Heliocidaris erythrogramma,3.5,16,0.21875
 location,Encounter Bay,M2 invertebrates,Bloom 2026-02,Herdmania grandis,0,16,0
@@ -2797,13 +2761,7 @@ location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Goniocidaris impressa,0,12
 location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Goniocidaris tubaria,0,12,0
 location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Goniodiscaster seriatus,0,12,0
 location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Guinusia chabrus,24,12,2
-location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Haliotis cyclobates,0,12,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Haliotis laevigata,0,12,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Haliotis roei,0,12,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Haliotis rubra,10.5,12,0.875
-location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Haliotis rubra complex,0,12,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Haliotis scalaris,0,12,0
-location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Haliotis spp,0,12,0
+location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Haliotis spp,10.5,12,0.875
 location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Hapalochlaena maculosa,0,12,0
 location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Heliocidaris erythrogramma,0,12,0
 location,Encounter Bay,M2 invertebrates,Bloom 2026-05,Herdmania grandis,0,12,0
@@ -2964,13 +2922,7 @@ location,Encounter Bay,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,141,0
 location,Encounter Bay,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,12.5,141,0.08865248226950355
 location,Encounter Bay,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,141,0
 location,Encounter Bay,M2 invertebrates,Pre-bloom,Guinusia chabrus,289.5,141,2.0531914893617023
-location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,141,0
-location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis laevigata,13,141,0.09219858156028368
-location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis roei,0,141,0
-location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis rubra,213.5,141,1.5141843971631206
-location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis rubra complex,7,141,0.04964539007092199
-location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis scalaris,3,141,0.02127659574468085
-location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis spp,27.5,141,0.1950354609929078
+location,Encounter Bay,M2 invertebrates,Pre-bloom,Haliotis spp,264,141,1.872340425531915
 location,Encounter Bay,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,141,0
 location,Encounter Bay,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,2101.5,141,14.904255319148936
 location,Encounter Bay,M2 invertebrates,Pre-bloom,Herdmania grandis,472.5,141,3.351063829787234
@@ -3782,13 +3734,7 @@ location,Metro,M2 invertebrates,Bloom 2025-11,Goniocidaris impressa,0,4,0
 location,Metro,M2 invertebrates,Bloom 2025-11,Goniocidaris tubaria,0,4,0
 location,Metro,M2 invertebrates,Bloom 2025-11,Goniodiscaster seriatus,0,4,0
 location,Metro,M2 invertebrates,Bloom 2025-11,Guinusia chabrus,0.5,4,0.125
-location,Metro,M2 invertebrates,Bloom 2025-11,Haliotis cyclobates,0,4,0
-location,Metro,M2 invertebrates,Bloom 2025-11,Haliotis laevigata,0,4,0
-location,Metro,M2 invertebrates,Bloom 2025-11,Haliotis roei,0,4,0
-location,Metro,M2 invertebrates,Bloom 2025-11,Haliotis rubra,1.5,4,0.375
-location,Metro,M2 invertebrates,Bloom 2025-11,Haliotis rubra complex,0,4,0
-location,Metro,M2 invertebrates,Bloom 2025-11,Haliotis scalaris,6,4,1.5
-location,Metro,M2 invertebrates,Bloom 2025-11,Haliotis spp,0,4,0
+location,Metro,M2 invertebrates,Bloom 2025-11,Haliotis spp,7.5,4,1.875
 location,Metro,M2 invertebrates,Bloom 2025-11,Hapalochlaena maculosa,0,4,0
 location,Metro,M2 invertebrates,Bloom 2025-11,Heliocidaris erythrogramma,0,4,0
 location,Metro,M2 invertebrates,Bloom 2025-11,Herdmania grandis,0,4,0
@@ -3949,13 +3895,7 @@ location,Metro,M2 invertebrates,Bloom 2026-01,Goniocidaris impressa,0,4,0
 location,Metro,M2 invertebrates,Bloom 2026-01,Goniocidaris tubaria,0,4,0
 location,Metro,M2 invertebrates,Bloom 2026-01,Goniodiscaster seriatus,0,4,0
 location,Metro,M2 invertebrates,Bloom 2026-01,Guinusia chabrus,1,4,0.25
-location,Metro,M2 invertebrates,Bloom 2026-01,Haliotis cyclobates,0,4,0
-location,Metro,M2 invertebrates,Bloom 2026-01,Haliotis laevigata,0,4,0
-location,Metro,M2 invertebrates,Bloom 2026-01,Haliotis roei,0,4,0
-location,Metro,M2 invertebrates,Bloom 2026-01,Haliotis rubra,0,4,0
-location,Metro,M2 invertebrates,Bloom 2026-01,Haliotis rubra complex,0,4,0
-location,Metro,M2 invertebrates,Bloom 2026-01,Haliotis scalaris,0.5,4,0.125
-location,Metro,M2 invertebrates,Bloom 2026-01,Haliotis spp,0,4,0
+location,Metro,M2 invertebrates,Bloom 2026-01,Haliotis spp,0.5,4,0.125
 location,Metro,M2 invertebrates,Bloom 2026-01,Hapalochlaena maculosa,0,4,0
 location,Metro,M2 invertebrates,Bloom 2026-01,Heliocidaris erythrogramma,0,4,0
 location,Metro,M2 invertebrates,Bloom 2026-01,Herdmania grandis,0,4,0
@@ -4116,13 +4056,7 @@ location,Metro,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,60,0
 location,Metro,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,17.5,60,0.2916666666666667
 location,Metro,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,60,0
 location,Metro,M2 invertebrates,Pre-bloom,Guinusia chabrus,16.5,60,0.275
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis cyclobates,1,60,0.016666666666666666
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis laevigata,5,60,0.08333333333333333
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis roei,0,60,0
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis rubra,11,60,0.18333333333333332
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,60,0
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis scalaris,253.5,60,4.225
-location,Metro,M2 invertebrates,Pre-bloom,Haliotis spp,180,60,3
+location,Metro,M2 invertebrates,Pre-bloom,Haliotis spp,450.5,60,7.508333333333334
 location,Metro,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,60,0
 location,Metro,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,7,60,0.11666666666666667
 location,Metro,M2 invertebrates,Pre-bloom,Herdmania grandis,0,60,0
@@ -4934,13 +4868,7 @@ location,Rapid Head,M2 invertebrates,Bloom 2026-01,Goniocidaris impressa,0,40,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-01,Goniocidaris tubaria,0,40,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-01,Goniodiscaster seriatus,0,40,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-01,Guinusia chabrus,46.5,40,1.1625
-location,Rapid Head,M2 invertebrates,Bloom 2026-01,Haliotis cyclobates,0.5,40,0.0125
-location,Rapid Head,M2 invertebrates,Bloom 2026-01,Haliotis laevigata,1.5,40,0.0375
-location,Rapid Head,M2 invertebrates,Bloom 2026-01,Haliotis roei,0,40,0
-location,Rapid Head,M2 invertebrates,Bloom 2026-01,Haliotis rubra,7.5,40,0.1875
-location,Rapid Head,M2 invertebrates,Bloom 2026-01,Haliotis rubra complex,0,40,0
-location,Rapid Head,M2 invertebrates,Bloom 2026-01,Haliotis scalaris,4,40,0.1
-location,Rapid Head,M2 invertebrates,Bloom 2026-01,Haliotis spp,0,40,0
+location,Rapid Head,M2 invertebrates,Bloom 2026-01,Haliotis spp,13.5,40,0.3375
 location,Rapid Head,M2 invertebrates,Bloom 2026-01,Hapalochlaena maculosa,0,40,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-01,Heliocidaris erythrogramma,48,40,1.2
 location,Rapid Head,M2 invertebrates,Bloom 2026-01,Herdmania grandis,0,40,0
@@ -5101,13 +5029,7 @@ location,Rapid Head,M2 invertebrates,Bloom 2026-05,Goniocidaris impressa,0,4,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-05,Goniocidaris tubaria,0,4,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-05,Goniodiscaster seriatus,0,4,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-05,Guinusia chabrus,2,4,0.5
-location,Rapid Head,M2 invertebrates,Bloom 2026-05,Haliotis cyclobates,0,4,0
-location,Rapid Head,M2 invertebrates,Bloom 2026-05,Haliotis laevigata,0.5,4,0.125
-location,Rapid Head,M2 invertebrates,Bloom 2026-05,Haliotis roei,0,4,0
-location,Rapid Head,M2 invertebrates,Bloom 2026-05,Haliotis rubra,0,4,0
-location,Rapid Head,M2 invertebrates,Bloom 2026-05,Haliotis rubra complex,0,4,0
-location,Rapid Head,M2 invertebrates,Bloom 2026-05,Haliotis scalaris,0,4,0
-location,Rapid Head,M2 invertebrates,Bloom 2026-05,Haliotis spp,0,4,0
+location,Rapid Head,M2 invertebrates,Bloom 2026-05,Haliotis spp,0.5,4,0.125
 location,Rapid Head,M2 invertebrates,Bloom 2026-05,Hapalochlaena maculosa,0,4,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-05,Heliocidaris erythrogramma,0,4,0
 location,Rapid Head,M2 invertebrates,Bloom 2026-05,Herdmania grandis,0,4,0
@@ -5268,13 +5190,7 @@ location,Rapid Head,M2 invertebrates,Pre-bloom,Goniocidaris impressa,1.5,425,0.0
 location,Rapid Head,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,21,425,0.04941176470588235
 location,Rapid Head,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,1.5,425,0.0035294117647058825
 location,Rapid Head,M2 invertebrates,Pre-bloom,Guinusia chabrus,88.5,425,0.20823529411764705
-location,Rapid Head,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0.5,425,0.001176470588235294
-location,Rapid Head,M2 invertebrates,Pre-bloom,Haliotis laevigata,10.5,425,0.024705882352941175
-location,Rapid Head,M2 invertebrates,Pre-bloom,Haliotis roei,2.5,425,0.0058823529411764705
-location,Rapid Head,M2 invertebrates,Pre-bloom,Haliotis rubra,375.5,425,0.8835294117647059
-location,Rapid Head,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,425,0
-location,Rapid Head,M2 invertebrates,Pre-bloom,Haliotis scalaris,31,425,0.07294117647058823
-location,Rapid Head,M2 invertebrates,Pre-bloom,Haliotis spp,26,425,0.0611764705882353
+location,Rapid Head,M2 invertebrates,Pre-bloom,Haliotis spp,446,425,1.0494117647058823
 location,Rapid Head,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0.5,425,0.001176470588235294
 location,Rapid Head,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,427.5,425,1.0058823529411764
 location,Rapid Head,M2 invertebrates,Pre-bloom,Herdmania grandis,8,425,0.018823529411764704
@@ -6086,13 +6002,7 @@ location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Goniocidaris impressa,
 location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Goniocidaris tubaria,0,4,0
 location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Goniodiscaster seriatus,0,4,0
 location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Guinusia chabrus,6.5,4,1.625
-location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Haliotis cyclobates,0,4,0
-location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Haliotis laevigata,0,4,0
-location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Haliotis roei,0,4,0
-location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Haliotis rubra,21,4,5.25
-location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Haliotis rubra complex,0,4,0
-location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Haliotis scalaris,0,4,0
-location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Haliotis spp,0,4,0
+location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Haliotis spp,21,4,5.25
 location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Hapalochlaena maculosa,0,4,0
 location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Heliocidaris erythrogramma,3,4,0.75
 location,Southern Fleurieu,M2 invertebrates,Bloom 2025-06,Herdmania grandis,0,4,0
@@ -6253,13 +6163,7 @@ location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Goniocidaris impressa,
 location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Goniocidaris tubaria,0,24,0
 location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Goniodiscaster seriatus,0,24,0
 location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Guinusia chabrus,160.5,24,6.6875
-location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis cyclobates,2.5,24,0.10416666666666667
-location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis laevigata,0.5,24,0.020833333333333332
-location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis roei,0,24,0
-location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis rubra,33,24,1.375
-location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis rubra complex,0,24,0
-location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis scalaris,0,24,0
-location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis spp,0,24,0
+location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis spp,36,24,1.5
 location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Hapalochlaena maculosa,0,24,0
 location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Heliocidaris erythrogramma,12.5,24,0.5208333333333334
 location,Southern Fleurieu,M2 invertebrates,Bloom 2026-05,Herdmania grandis,0,24,0
@@ -6420,13 +6324,7 @@ location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,91
 location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,0,91,0
 location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,91,0
 location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Guinusia chabrus,109.5,91,1.2032967032967032
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,91,0
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis laevigata,5.5,91,0.06043956043956044
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis roei,2.5,91,0.027472527472527472
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis rubra,740,91,8.131868131868131
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis rubra complex,23,91,0.25274725274725274
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis scalaris,0,91,0
-location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis spp,113.5,91,1.2472527472527473
+location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Haliotis spp,884.5,91,9.719780219780219
 location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,91,0
 location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,260,91,2.857142857142857
 location,Southern Fleurieu,M2 invertebrates,Pre-bloom,Herdmania grandis,34,91,0.37362637362637363
@@ -7238,13 +7136,7 @@ location,Southern Metro,M2 invertebrates,Bloom 2025-11,Goniocidaris impressa,0,1
 location,Southern Metro,M2 invertebrates,Bloom 2025-11,Goniocidaris tubaria,0.5,12,0.041666666666666664
 location,Southern Metro,M2 invertebrates,Bloom 2025-11,Goniodiscaster seriatus,0,12,0
 location,Southern Metro,M2 invertebrates,Bloom 2025-11,Guinusia chabrus,1,12,0.08333333333333333
-location,Southern Metro,M2 invertebrates,Bloom 2025-11,Haliotis cyclobates,0,12,0
-location,Southern Metro,M2 invertebrates,Bloom 2025-11,Haliotis laevigata,0,12,0
-location,Southern Metro,M2 invertebrates,Bloom 2025-11,Haliotis roei,0,12,0
-location,Southern Metro,M2 invertebrates,Bloom 2025-11,Haliotis rubra,0,12,0
-location,Southern Metro,M2 invertebrates,Bloom 2025-11,Haliotis rubra complex,0,12,0
-location,Southern Metro,M2 invertebrates,Bloom 2025-11,Haliotis scalaris,1,12,0.08333333333333333
-location,Southern Metro,M2 invertebrates,Bloom 2025-11,Haliotis spp,0,12,0
+location,Southern Metro,M2 invertebrates,Bloom 2025-11,Haliotis spp,1,12,0.08333333333333333
 location,Southern Metro,M2 invertebrates,Bloom 2025-11,Hapalochlaena maculosa,0,12,0
 location,Southern Metro,M2 invertebrates,Bloom 2025-11,Heliocidaris erythrogramma,0,12,0
 location,Southern Metro,M2 invertebrates,Bloom 2025-11,Herdmania grandis,0,12,0
@@ -7405,13 +7297,7 @@ location,Southern Metro,M2 invertebrates,Bloom 2026-01,Goniocidaris impressa,0,3
 location,Southern Metro,M2 invertebrates,Bloom 2026-01,Goniocidaris tubaria,0,32,0
 location,Southern Metro,M2 invertebrates,Bloom 2026-01,Goniodiscaster seriatus,0,32,0
 location,Southern Metro,M2 invertebrates,Bloom 2026-01,Guinusia chabrus,10,32,0.3125
-location,Southern Metro,M2 invertebrates,Bloom 2026-01,Haliotis cyclobates,0,32,0
-location,Southern Metro,M2 invertebrates,Bloom 2026-01,Haliotis laevigata,2,32,0.0625
-location,Southern Metro,M2 invertebrates,Bloom 2026-01,Haliotis roei,0,32,0
-location,Southern Metro,M2 invertebrates,Bloom 2026-01,Haliotis rubra,1.5,32,0.046875
-location,Southern Metro,M2 invertebrates,Bloom 2026-01,Haliotis rubra complex,0,32,0
-location,Southern Metro,M2 invertebrates,Bloom 2026-01,Haliotis scalaris,5,32,0.15625
-location,Southern Metro,M2 invertebrates,Bloom 2026-01,Haliotis spp,0,32,0
+location,Southern Metro,M2 invertebrates,Bloom 2026-01,Haliotis spp,8.5,32,0.265625
 location,Southern Metro,M2 invertebrates,Bloom 2026-01,Hapalochlaena maculosa,0,32,0
 location,Southern Metro,M2 invertebrates,Bloom 2026-01,Heliocidaris erythrogramma,14,32,0.4375
 location,Southern Metro,M2 invertebrates,Bloom 2026-01,Herdmania grandis,0,32,0
@@ -7572,13 +7458,7 @@ location,Southern Metro,M2 invertebrates,Pre-bloom,Goniocidaris impressa,1,222,0
 location,Southern Metro,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,3.5,222,0.015765765765765764
 location,Southern Metro,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,222,0
 location,Southern Metro,M2 invertebrates,Pre-bloom,Guinusia chabrus,173,222,0.7792792792792793
-location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,222,0
-location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis laevigata,0.5,222,0.0022522522522522522
-location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis roei,0,222,0
-location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis rubra,76,222,0.34234234234234234
-location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,222,0
-location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis scalaris,362.5,222,1.632882882882883
-location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis spp,405,222,1.8243243243243243
+location,Southern Metro,M2 invertebrates,Pre-bloom,Haliotis spp,844,222,3.8018018018018016
 location,Southern Metro,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,1.5,222,0.006756756756756757
 location,Southern Metro,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,4362.5,222,19.6509009009009
 location,Southern Metro,M2 invertebrates,Pre-bloom,Herdmania grandis,0,222,0
@@ -8390,13 +8270,7 @@ location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Goniocidaris impressa,0,3
 location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Goniocidaris tubaria,0.5,3,0.16666666666666666
 location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Goniodiscaster seriatus,0,3,0
 location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Guinusia chabrus,1.5,3,0.5
-location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis cyclobates,0,3,0
-location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis laevigata,13,3,4.333333333333333
-location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis roei,1,3,0.3333333333333333
-location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis rubra,2.5,3,0.8333333333333334
-location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis rubra complex,0,3,0
-location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis scalaris,0,3,0
-location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis spp,0,3,0
+location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis spp,16.5,3,5.5
 location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Hapalochlaena maculosa,0,3,0
 location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Heliocidaris erythrogramma,6,3,2
 location,Southern Yorke,M2 invertebrates,Bloom 2025-06,Herdmania grandis,0,3,0
@@ -8557,13 +8431,7 @@ location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Goniocidaris impressa,0,1
 location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Goniocidaris tubaria,0,12,0
 location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Goniodiscaster seriatus,0,12,0
 location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Guinusia chabrus,34.5,12,2.875
-location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis cyclobates,0,12,0
-location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis laevigata,2,12,0.16666666666666666
-location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis roei,0,12,0
-location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis rubra,3,12,0.25
-location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis rubra complex,0,12,0
-location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis scalaris,0.5,12,0.041666666666666664
-location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis spp,0,12,0
+location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis spp,5.5,12,0.4583333333333333
 location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Hapalochlaena maculosa,0,12,0
 location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Heliocidaris erythrogramma,18,12,1.5
 location,Southern Yorke,M2 invertebrates,Bloom 2026-04,Herdmania grandis,0,12,0
@@ -8724,13 +8592,7 @@ location,Southern Yorke,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,20,0
 location,Southern Yorke,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,2,20,0.1
 location,Southern Yorke,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,20,0
 location,Southern Yorke,M2 invertebrates,Pre-bloom,Guinusia chabrus,11,20,0.55
-location,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,20,0
-location,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis laevigata,4,20,0.2
-location,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis roei,0,20,0
-location,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis rubra,3,20,0.15
-location,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis rubra complex,1,20,0.05
-location,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis scalaris,4,20,0.2
-location,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis spp,0,20,0
+location,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis spp,12,20,0.6
 location,Southern Yorke,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,20,0
 location,Southern Yorke,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,262,20,13.1
 location,Southern Yorke,M2 invertebrates,Pre-bloom,Herdmania grandis,0,20,0
@@ -9325,13 +9187,7 @@ location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Goniocidaris impressa,0,2
 location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Goniocidaris tubaria,0,20,0
 location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Goniodiscaster seriatus,0,20,0
 location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Guinusia chabrus,52.5,20,2.625
-location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Haliotis cyclobates,0,20,0
-location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Haliotis laevigata,0,20,0
-location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Haliotis roei,0,20,0
-location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Haliotis rubra,7,20,0.35
-location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Haliotis rubra complex,0,20,0
-location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Haliotis scalaris,3.5,20,0.175
-location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Haliotis spp,0.5,20,0.025
+location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Haliotis spp,11,20,0.55
 location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Hapalochlaena maculosa,0,20,0
 location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Heliocidaris erythrogramma,9.5,20,0.475
 location,Sponge Gardens,M2 invertebrates,Bloom 2026-02,Herdmania grandis,0,20,0
@@ -9492,13 +9348,7 @@ location,Sponge Gardens,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,128,0
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,0.5,128,0.00390625
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,128,0
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Guinusia chabrus,76.5,128,0.59765625
-location,Sponge Gardens,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,128,0
-location,Sponge Gardens,M2 invertebrates,Pre-bloom,Haliotis laevigata,5,128,0.0390625
-location,Sponge Gardens,M2 invertebrates,Pre-bloom,Haliotis roei,0.5,128,0.00390625
-location,Sponge Gardens,M2 invertebrates,Pre-bloom,Haliotis rubra,34,128,0.265625
-location,Sponge Gardens,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,128,0
-location,Sponge Gardens,M2 invertebrates,Pre-bloom,Haliotis scalaris,2,128,0.015625
-location,Sponge Gardens,M2 invertebrates,Pre-bloom,Haliotis spp,2.5,128,0.01953125
+location,Sponge Gardens,M2 invertebrates,Pre-bloom,Haliotis spp,44,128,0.34375
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,128,0
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,227.5,128,1.77734375
 location,Sponge Gardens,M2 invertebrates,Pre-bloom,Herdmania grandis,54,128,0.421875
@@ -10093,13 +9943,7 @@ location,Upper GSV,M2 invertebrates,Bloom 2025-11,Goniocidaris impressa,0,20,0
 location,Upper GSV,M2 invertebrates,Bloom 2025-11,Goniocidaris tubaria,0,20,0
 location,Upper GSV,M2 invertebrates,Bloom 2025-11,Goniodiscaster seriatus,0,20,0
 location,Upper GSV,M2 invertebrates,Bloom 2025-11,Guinusia chabrus,1.5,20,0.075
-location,Upper GSV,M2 invertebrates,Bloom 2025-11,Haliotis cyclobates,12,20,0.6
-location,Upper GSV,M2 invertebrates,Bloom 2025-11,Haliotis laevigata,9.5,20,0.475
-location,Upper GSV,M2 invertebrates,Bloom 2025-11,Haliotis roei,0,20,0
-location,Upper GSV,M2 invertebrates,Bloom 2025-11,Haliotis rubra,0,20,0
-location,Upper GSV,M2 invertebrates,Bloom 2025-11,Haliotis rubra complex,0,20,0
-location,Upper GSV,M2 invertebrates,Bloom 2025-11,Haliotis scalaris,6.5,20,0.325
-location,Upper GSV,M2 invertebrates,Bloom 2025-11,Haliotis spp,0,20,0
+location,Upper GSV,M2 invertebrates,Bloom 2025-11,Haliotis spp,28,20,1.4
 location,Upper GSV,M2 invertebrates,Bloom 2025-11,Hapalochlaena maculosa,0,20,0
 location,Upper GSV,M2 invertebrates,Bloom 2025-11,Heliocidaris erythrogramma,0,20,0
 location,Upper GSV,M2 invertebrates,Bloom 2025-11,Herdmania grandis,0,20,0
@@ -10260,13 +10104,7 @@ location,Upper GSV,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,72,0
 location,Upper GSV,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,25,72,0.3472222222222222
 location,Upper GSV,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,72,0
 location,Upper GSV,M2 invertebrates,Pre-bloom,Guinusia chabrus,0,72,0
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis cyclobates,5,72,0.06944444444444445
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis laevigata,5,72,0.06944444444444445
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis roei,5.5,72,0.0763888888888889
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis rubra,5.5,72,0.0763888888888889
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,72,0
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis scalaris,25,72,0.3472222222222222
-location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis spp,32.5,72,0.4513888888888889
+location,Upper GSV,M2 invertebrates,Pre-bloom,Haliotis spp,78.5,72,1.0902777777777777
 location,Upper GSV,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,72,0
 location,Upper GSV,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,16.5,72,0.22916666666666666
 location,Upper GSV,M2 invertebrates,Pre-bloom,Herdmania grandis,0,72,0
@@ -11078,13 +10916,7 @@ region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Goniocidaris impressa,0,16,
 region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Goniocidaris tubaria,0.5,16,0.03125
 region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Goniodiscaster seriatus,0,16,0
 region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Guinusia chabrus,1.5,16,0.09375
-region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Haliotis cyclobates,0,16,0
-region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Haliotis laevigata,0,16,0
-region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Haliotis roei,0,16,0
-region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Haliotis rubra,1.5,16,0.09375
-region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Haliotis rubra complex,0,16,0
-region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Haliotis scalaris,7,16,0.4375
-region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Haliotis spp,0,16,0
+region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Haliotis spp,8.5,16,0.53125
 region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Hapalochlaena maculosa,0,16,0
 region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Heliocidaris erythrogramma,0,16,0
 region,Adelaide Metro,M2 invertebrates,Bloom 2025-11,Herdmania grandis,0,16,0
@@ -11245,13 +11077,7 @@ region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Goniocidaris impressa,0,36,
 region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Goniocidaris tubaria,0,36,0
 region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Goniodiscaster seriatus,0,36,0
 region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Guinusia chabrus,11,36,0.3055555555555556
-region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Haliotis cyclobates,0,36,0
-region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Haliotis laevigata,2,36,0.05555555555555555
-region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Haliotis roei,0,36,0
-region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Haliotis rubra,1.5,36,0.041666666666666664
-region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Haliotis rubra complex,0,36,0
-region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Haliotis scalaris,5.5,36,0.1527777777777778
-region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Haliotis spp,0,36,0
+region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Haliotis spp,9,36,0.25
 region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Hapalochlaena maculosa,0,36,0
 region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Heliocidaris erythrogramma,14,36,0.3888888888888889
 region,Adelaide Metro,M2 invertebrates,Bloom 2026-01,Herdmania grandis,0,36,0
@@ -11412,13 +11238,7 @@ region,Adelaide Metro,M2 invertebrates,Pre-bloom,Goniocidaris impressa,1,282,0.0
 region,Adelaide Metro,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,21,282,0.07446808510638298
 region,Adelaide Metro,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,282,0
 region,Adelaide Metro,M2 invertebrates,Pre-bloom,Guinusia chabrus,189.5,282,0.6719858156028369
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis cyclobates,1,282,0.0035460992907801418
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis laevigata,5.5,282,0.01950354609929078
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis roei,0,282,0
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis rubra,87,282,0.30851063829787234
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,282,0
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis scalaris,616,282,2.1843971631205674
-region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis spp,585,282,2.074468085106383
+region,Adelaide Metro,M2 invertebrates,Pre-bloom,Haliotis spp,1294.5,282,4.590425531914893
 region,Adelaide Metro,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,1.5,282,0.005319148936170213
 region,Adelaide Metro,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,4369.5,282,15.49468085106383
 region,Adelaide Metro,M2 invertebrates,Pre-bloom,Herdmania grandis,0,282,0
@@ -12013,13 +11833,7 @@ region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Goniocidaris impressa
 region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Goniocidaris tubaria,0.5,12,0.041666666666666664
 region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Goniodiscaster seriatus,0,12,0
 region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Guinusia chabrus,4,12,0.3333333333333333
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis cyclobates,2,12,0.16666666666666666
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis laevigata,3.5,12,0.2916666666666667
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis roei,0,12,0
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis rubra,16.5,12,1.375
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis rubra complex,0,12,0
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis scalaris,0,12,0
-region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis spp,0,12,0
+region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Haliotis spp,22,12,1.8333333333333333
 region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Hapalochlaena maculosa,0,12,0
 region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Heliocidaris erythrogramma,0,12,0
 region,Eastern Spencer Gulf,M2 invertebrates,Bloom 2026-03,Herdmania grandis,0,12,0
@@ -12180,13 +11994,7 @@ region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,1
 region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,4,15,0.26666666666666666
 region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,15,0
 region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Guinusia chabrus,6,15,0.4
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,15,0
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis laevigata,16,15,1.0666666666666667
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis roei,7,15,0.4666666666666667
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis rubra,42.5,15,2.8333333333333335
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis rubra complex,3,15,0.2
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis scalaris,2,15,0.13333333333333333
-region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis spp,0,15,0
+region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Haliotis spp,70.5,15,4.7
 region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,15,0
 region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,60.5,15,4.033333333333333
 region,Eastern Spencer Gulf,M2 invertebrates,Pre-bloom,Herdmania grandis,0,15,0
@@ -12998,13 +12806,7 @@ region,Fleurieu,M2 invertebrates,Bloom 2026-01,Goniocidaris impressa,0,104,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-01,Goniocidaris tubaria,0,104,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-01,Goniodiscaster seriatus,0,104,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-01,Guinusia chabrus,100.5,104,0.9663461538461539
-region,Fleurieu,M2 invertebrates,Bloom 2026-01,Haliotis cyclobates,1,104,0.009615384615384616
-region,Fleurieu,M2 invertebrates,Bloom 2026-01,Haliotis laevigata,1.5,104,0.014423076923076924
-region,Fleurieu,M2 invertebrates,Bloom 2026-01,Haliotis roei,1,104,0.009615384615384616
-region,Fleurieu,M2 invertebrates,Bloom 2026-01,Haliotis rubra,10.5,104,0.10096153846153846
-region,Fleurieu,M2 invertebrates,Bloom 2026-01,Haliotis rubra complex,0,104,0
-region,Fleurieu,M2 invertebrates,Bloom 2026-01,Haliotis scalaris,7,104,0.0673076923076923
-region,Fleurieu,M2 invertebrates,Bloom 2026-01,Haliotis spp,0,104,0
+region,Fleurieu,M2 invertebrates,Bloom 2026-01,Haliotis spp,21,104,0.20192307692307693
 region,Fleurieu,M2 invertebrates,Bloom 2026-01,Hapalochlaena maculosa,0,104,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-01,Heliocidaris erythrogramma,56,104,0.5384615384615384
 region,Fleurieu,M2 invertebrates,Bloom 2026-01,Herdmania grandis,0,104,0
@@ -13165,13 +12967,7 @@ region,Fleurieu,M2 invertebrates,Bloom 2026-05,Goniocidaris impressa,0,4,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-05,Goniocidaris tubaria,0,4,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-05,Goniodiscaster seriatus,0,4,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-05,Guinusia chabrus,2,4,0.5
-region,Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis cyclobates,0,4,0
-region,Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis laevigata,0.5,4,0.125
-region,Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis roei,0,4,0
-region,Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis rubra,0,4,0
-region,Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis rubra complex,0,4,0
-region,Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis scalaris,0,4,0
-region,Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis spp,0,4,0
+region,Fleurieu,M2 invertebrates,Bloom 2026-05,Haliotis spp,0.5,4,0.125
 region,Fleurieu,M2 invertebrates,Bloom 2026-05,Hapalochlaena maculosa,0,4,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-05,Heliocidaris erythrogramma,0,4,0
 region,Fleurieu,M2 invertebrates,Bloom 2026-05,Herdmania grandis,0,4,0
@@ -13332,13 +13128,7 @@ region,Fleurieu,M2 invertebrates,Pre-bloom,Goniocidaris impressa,1.5,803,0.00186
 region,Fleurieu,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,25,803,0.031133250311332503
 region,Fleurieu,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,1.5,803,0.0018679950186799503
 region,Fleurieu,M2 invertebrates,Pre-bloom,Guinusia chabrus,153.5,803,0.19115815691158156
-region,Fleurieu,M2 invertebrates,Pre-bloom,Haliotis cyclobates,7,803,0.008717310087173101
-region,Fleurieu,M2 invertebrates,Pre-bloom,Haliotis laevigata,12,803,0.014943960149439602
-region,Fleurieu,M2 invertebrates,Pre-bloom,Haliotis roei,2.5,803,0.00311332503113325
-region,Fleurieu,M2 invertebrates,Pre-bloom,Haliotis rubra,394,803,0.49066002490660027
-region,Fleurieu,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,803,0
-region,Fleurieu,M2 invertebrates,Pre-bloom,Haliotis scalaris,46,803,0.057285180572851806
-region,Fleurieu,M2 invertebrates,Pre-bloom,Haliotis spp,43,803,0.053549190535491904
+region,Fleurieu,M2 invertebrates,Pre-bloom,Haliotis spp,504.5,803,0.6282689912826899
 region,Fleurieu,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0.5,803,6.226650062266501e-4
 region,Fleurieu,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,461,803,0.5740971357409713
 region,Fleurieu,M2 invertebrates,Pre-bloom,Herdmania grandis,16,803,0.019925280199252802
@@ -13933,13 +13723,7 @@ region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Goniocidaris impressa,0,20
 region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Goniocidaris tubaria,0,20,0
 region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Goniodiscaster seriatus,0,20,0
 region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Guinusia chabrus,52.5,20,2.625
-region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Haliotis cyclobates,0,20,0
-region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Haliotis laevigata,0,20,0
-region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Haliotis roei,0,20,0
-region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Haliotis rubra,7,20,0.35
-region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Haliotis rubra complex,0,20,0
-region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Haliotis scalaris,3.5,20,0.175
-region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Haliotis spp,0.5,20,0.025
+region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Haliotis spp,11,20,0.55
 region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Hapalochlaena maculosa,0,20,0
 region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Heliocidaris erythrogramma,9.5,20,0.475
 region,Kangaroo Island,M2 invertebrates,Bloom 2026-02,Herdmania grandis,0,20,0
@@ -14100,13 +13884,7 @@ region,Kangaroo Island,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,128,0
 region,Kangaroo Island,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,0.5,128,0.00390625
 region,Kangaroo Island,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,128,0
 region,Kangaroo Island,M2 invertebrates,Pre-bloom,Guinusia chabrus,76.5,128,0.59765625
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,128,0
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Haliotis laevigata,5,128,0.0390625
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Haliotis roei,0.5,128,0.00390625
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Haliotis rubra,34,128,0.265625
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,128,0
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Haliotis scalaris,2,128,0.015625
-region,Kangaroo Island,M2 invertebrates,Pre-bloom,Haliotis spp,2.5,128,0.01953125
+region,Kangaroo Island,M2 invertebrates,Pre-bloom,Haliotis spp,44,128,0.34375
 region,Kangaroo Island,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,128,0
 region,Kangaroo Island,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,227.5,128,1.77734375
 region,Kangaroo Island,M2 invertebrates,Pre-bloom,Herdmania grandis,54,128,0.421875
@@ -15135,13 +14913,7 @@ region,South Coast,M2 invertebrates,Bloom 2025-06,Goniocidaris impressa,0,12,0
 region,South Coast,M2 invertebrates,Bloom 2025-06,Goniocidaris tubaria,0,12,0
 region,South Coast,M2 invertebrates,Bloom 2025-06,Goniodiscaster seriatus,0,12,0
 region,South Coast,M2 invertebrates,Bloom 2025-06,Guinusia chabrus,20.5,12,1.7083333333333333
-region,South Coast,M2 invertebrates,Bloom 2025-06,Haliotis cyclobates,0,12,0
-region,South Coast,M2 invertebrates,Bloom 2025-06,Haliotis laevigata,0,12,0
-region,South Coast,M2 invertebrates,Bloom 2025-06,Haliotis roei,0,12,0
-region,South Coast,M2 invertebrates,Bloom 2025-06,Haliotis rubra,26,12,2.1666666666666665
-region,South Coast,M2 invertebrates,Bloom 2025-06,Haliotis rubra complex,0,12,0
-region,South Coast,M2 invertebrates,Bloom 2025-06,Haliotis scalaris,0,12,0
-region,South Coast,M2 invertebrates,Bloom 2025-06,Haliotis spp,0,12,0
+region,South Coast,M2 invertebrates,Bloom 2025-06,Haliotis spp,26,12,2.1666666666666665
 region,South Coast,M2 invertebrates,Bloom 2025-06,Hapalochlaena maculosa,0,12,0
 region,South Coast,M2 invertebrates,Bloom 2025-06,Heliocidaris erythrogramma,5,12,0.4166666666666667
 region,South Coast,M2 invertebrates,Bloom 2025-06,Herdmania grandis,0,12,0
@@ -15302,13 +15074,7 @@ region,South Coast,M2 invertebrates,Bloom 2026-02,Goniocidaris impressa,0,16,0
 region,South Coast,M2 invertebrates,Bloom 2026-02,Goniocidaris tubaria,0,16,0
 region,South Coast,M2 invertebrates,Bloom 2026-02,Goniodiscaster seriatus,0,16,0
 region,South Coast,M2 invertebrates,Bloom 2026-02,Guinusia chabrus,75.5,16,4.71875
-region,South Coast,M2 invertebrates,Bloom 2026-02,Haliotis cyclobates,0,16,0
-region,South Coast,M2 invertebrates,Bloom 2026-02,Haliotis laevigata,0,16,0
-region,South Coast,M2 invertebrates,Bloom 2026-02,Haliotis roei,0,16,0
-region,South Coast,M2 invertebrates,Bloom 2026-02,Haliotis rubra,2.5,16,0.15625
-region,South Coast,M2 invertebrates,Bloom 2026-02,Haliotis rubra complex,0,16,0
-region,South Coast,M2 invertebrates,Bloom 2026-02,Haliotis scalaris,0,16,0
-region,South Coast,M2 invertebrates,Bloom 2026-02,Haliotis spp,0,16,0
+region,South Coast,M2 invertebrates,Bloom 2026-02,Haliotis spp,2.5,16,0.15625
 region,South Coast,M2 invertebrates,Bloom 2026-02,Hapalochlaena maculosa,0,16,0
 region,South Coast,M2 invertebrates,Bloom 2026-02,Heliocidaris erythrogramma,3.5,16,0.21875
 region,South Coast,M2 invertebrates,Bloom 2026-02,Herdmania grandis,0,16,0
@@ -15469,13 +15235,7 @@ region,South Coast,M2 invertebrates,Bloom 2026-05,Goniocidaris impressa,0,36,0
 region,South Coast,M2 invertebrates,Bloom 2026-05,Goniocidaris tubaria,0,36,0
 region,South Coast,M2 invertebrates,Bloom 2026-05,Goniodiscaster seriatus,0,36,0
 region,South Coast,M2 invertebrates,Bloom 2026-05,Guinusia chabrus,184.5,36,5.125
-region,South Coast,M2 invertebrates,Bloom 2026-05,Haliotis cyclobates,2.5,36,0.06944444444444445
-region,South Coast,M2 invertebrates,Bloom 2026-05,Haliotis laevigata,0.5,36,0.013888888888888888
-region,South Coast,M2 invertebrates,Bloom 2026-05,Haliotis roei,0,36,0
-region,South Coast,M2 invertebrates,Bloom 2026-05,Haliotis rubra,43.5,36,1.2083333333333333
-region,South Coast,M2 invertebrates,Bloom 2026-05,Haliotis rubra complex,0,36,0
-region,South Coast,M2 invertebrates,Bloom 2026-05,Haliotis scalaris,0,36,0
-region,South Coast,M2 invertebrates,Bloom 2026-05,Haliotis spp,0,36,0
+region,South Coast,M2 invertebrates,Bloom 2026-05,Haliotis spp,46.5,36,1.2916666666666667
 region,South Coast,M2 invertebrates,Bloom 2026-05,Hapalochlaena maculosa,0,36,0
 region,South Coast,M2 invertebrates,Bloom 2026-05,Heliocidaris erythrogramma,12.5,36,0.3472222222222222
 region,South Coast,M2 invertebrates,Bloom 2026-05,Herdmania grandis,0,36,0
@@ -15636,13 +15396,7 @@ region,South Coast,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,232,0
 region,South Coast,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,12.5,232,0.05387931034482758
 region,South Coast,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,232,0
 region,South Coast,M2 invertebrates,Pre-bloom,Guinusia chabrus,399,232,1.7198275862068966
-region,South Coast,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,232,0
-region,South Coast,M2 invertebrates,Pre-bloom,Haliotis laevigata,18.5,232,0.07974137931034483
-region,South Coast,M2 invertebrates,Pre-bloom,Haliotis roei,2.5,232,0.010775862068965518
-region,South Coast,M2 invertebrates,Pre-bloom,Haliotis rubra,953.5,232,4.109913793103448
-region,South Coast,M2 invertebrates,Pre-bloom,Haliotis rubra complex,30,232,0.12931034482758622
-region,South Coast,M2 invertebrates,Pre-bloom,Haliotis scalaris,3,232,0.01293103448275862
-region,South Coast,M2 invertebrates,Pre-bloom,Haliotis spp,141,232,0.6077586206896551
+region,South Coast,M2 invertebrates,Pre-bloom,Haliotis spp,1148.5,232,4.950431034482759
 region,South Coast,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,232,0
 region,South Coast,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,2361.5,232,10.178879310344827
 region,South Coast,M2 invertebrates,Pre-bloom,Herdmania grandis,506.5,232,2.1831896551724137
@@ -16454,13 +16208,7 @@ region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Goniocidaris impressa,0,3,0
 region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Goniocidaris tubaria,0.5,3,0.16666666666666666
 region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Goniodiscaster seriatus,0,3,0
 region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Guinusia chabrus,1.5,3,0.5
-region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis cyclobates,0,3,0
-region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis laevigata,13,3,4.333333333333333
-region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis roei,1,3,0.3333333333333333
-region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis rubra,2.5,3,0.8333333333333334
-region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis rubra complex,0,3,0
-region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis scalaris,0,3,0
-region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis spp,0,3,0
+region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Haliotis spp,16.5,3,5.5
 region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Hapalochlaena maculosa,0,3,0
 region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Heliocidaris erythrogramma,6,3,2
 region,Southern Yorke,M2 invertebrates,Bloom 2025-06,Herdmania grandis,0,3,0
@@ -16621,13 +16369,7 @@ region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Goniocidaris impressa,0,12,
 region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Goniocidaris tubaria,0,12,0
 region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Goniodiscaster seriatus,0,12,0
 region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Guinusia chabrus,34.5,12,2.875
-region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis cyclobates,0,12,0
-region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis laevigata,2,12,0.16666666666666666
-region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis roei,0,12,0
-region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis rubra,3,12,0.25
-region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis rubra complex,0,12,0
-region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis scalaris,0.5,12,0.041666666666666664
-region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis spp,0,12,0
+region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Haliotis spp,5.5,12,0.4583333333333333
 region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Hapalochlaena maculosa,0,12,0
 region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Heliocidaris erythrogramma,18,12,1.5
 region,Southern Yorke,M2 invertebrates,Bloom 2026-04,Herdmania grandis,0,12,0
@@ -16788,13 +16530,7 @@ region,Southern Yorke,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,20,0
 region,Southern Yorke,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,2,20,0.1
 region,Southern Yorke,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,20,0
 region,Southern Yorke,M2 invertebrates,Pre-bloom,Guinusia chabrus,11,20,0.55
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis cyclobates,0,20,0
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis laevigata,4,20,0.2
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis roei,0,20,0
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis rubra,3,20,0.15
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis rubra complex,1,20,0.05
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis scalaris,4,20,0.2
-region,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis spp,0,20,0
+region,Southern Yorke,M2 invertebrates,Pre-bloom,Haliotis spp,12,20,0.6
 region,Southern Yorke,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,20,0
 region,Southern Yorke,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,262,20,13.1
 region,Southern Yorke,M2 invertebrates,Pre-bloom,Herdmania grandis,0,20,0
@@ -17389,13 +17125,7 @@ region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Goniocidaris impress
 region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Goniocidaris tubaria,0,20,0
 region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Goniodiscaster seriatus,0,20,0
 region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Guinusia chabrus,1.5,20,0.075
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Haliotis cyclobates,12,20,0.6
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Haliotis laevigata,9.5,20,0.475
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Haliotis roei,0,20,0
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Haliotis rubra,0,20,0
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Haliotis rubra complex,0,20,0
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Haliotis scalaris,6.5,20,0.325
-region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Haliotis spp,0,20,0
+region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Haliotis spp,28,20,1.4
 region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Hapalochlaena maculosa,0,20,0
 region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Heliocidaris erythrogramma,0,20,0
 region,Upper Gulf St Vincent,M2 invertebrates,Bloom 2025-11,Herdmania grandis,0,20,0
@@ -17556,13 +17286,7 @@ region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Goniocidaris impressa,0,
 region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Goniocidaris tubaria,25,72,0.3472222222222222
 region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Goniodiscaster seriatus,0,72,0
 region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Guinusia chabrus,0,72,0
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis cyclobates,5,72,0.06944444444444445
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis laevigata,5,72,0.06944444444444445
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis roei,5.5,72,0.0763888888888889
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis rubra,5.5,72,0.0763888888888889
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis rubra complex,0,72,0
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis scalaris,25,72,0.3472222222222222
-region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis spp,32.5,72,0.4513888888888889
+region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Haliotis spp,78.5,72,1.0902777777777777
 region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Hapalochlaena maculosa,0,72,0
 region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Heliocidaris erythrogramma,16.5,72,0.22916666666666666
 region,Upper Gulf St Vincent,M2 invertebrates,Pre-bloom,Herdmania grandis,0,72,0
