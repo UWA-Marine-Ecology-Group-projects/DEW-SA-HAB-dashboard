@@ -167,7 +167,8 @@ indicator_tbl <- tribble(
   "Reef associated species richness",  "Number of reef associated fish species",
   "Fish greater than 200mm abundance", "Count of individuals >200mm long",
   "Shannon diversity index",                 "Measures of species diversity that accounts for richness (number of species) and evenness (relative abundance)",
-  "Overall impact",                    "Average of the above six indicators"
+  "Inverse Simpson diversity index",   "A second diversity measure (effective number of equally common species) that gives more weight to the dominant species and less to the rare ones",
+  "Overall impact",                    "Average of the indicators above, excluding inverse Simpson diversity"
 )
 
 # plot_dummy_time <- function(region) {
@@ -256,6 +257,7 @@ metric_defs <- c(
   large_fish    = "Count of large fish (>200 mm)",
   
   shannon_diversity = "Shannon diversity index",
+  simpson_diversity = "Inverse Simpson diversity index",
   
   # cti           = "Community temperature index",
   # func_groups   = "Abundance by functional group",
@@ -271,6 +273,7 @@ metric_y_lab <- list(
   reef_associated_richness   = "Avg. reef associated\nspecies richness",
   
   shannon_diversity = "Avg. shannon\n diversity index",
+  simpson_diversity = "Avg. inverse simpson\n diversity index",
   
   large_fish    = "Avg. no. of fish > 200 mm",
   trophic       = "Avg. no. of individuals"
@@ -301,7 +304,8 @@ hab_metrics <- c(
   "Shark and ray richness",
   "Reef associated species richness",
   "Fish greater than 200mm abundance",
-  "Shannon diversity index"
+  "Shannon diversity index",
+  "Inverse Simpson diversity index"
 )
 
 # All regions available in the HAB data
@@ -323,7 +327,8 @@ hab_metric_change <- hab_data$impact_data %>%
     impact_metric %in% "reef_associated_richness" ~ "Reef associated species richness",
     impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance",
     impact_metric %in% "thamnaconus_degeni" ~ "Bluefin leatherjacket displacement*",
-    impact_metric %in% "shannon_diversity" ~ "Shannon diversity index"
+    impact_metric %in% "shannon_diversity" ~ "Shannon diversity index",
+    impact_metric %in% "simpson_diversity" ~ "Inverse Simpson diversity index"
   ))
 
 hab_metric_change_location <- hab_data$impact_data_location %>%
@@ -340,7 +345,8 @@ hab_metric_change_location <- hab_data$impact_data_location %>%
     impact_metric %in% "reef_associated_richness" ~ "Reef associated species richness",
     impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance",
     impact_metric %in% "thamnaconus_degeni" ~ "Bluefin leatherjacket displacement*",
-    impact_metric %in% "shannon_diversity" ~ "Shannon diversity index"
+    impact_metric %in% "shannon_diversity" ~ "Shannon diversity index",
+    impact_metric %in% "simpson_diversity" ~ "Inverse Simpson diversity index"
   ))
 
 hab_metric_change_location_split <- hab_data$impact_data_location_split %>%
@@ -357,7 +363,8 @@ hab_metric_change_location_split <- hab_data$impact_data_location_split %>%
     impact_metric %in% "reef_associated_richness" ~ "Reef associated species richness",
     impact_metric %in% "fish_200_abundance" ~ "Fish greater than 200mm abundance",
     impact_metric %in% "thamnaconus_degeni" ~ "Bluefin leatherjacket displacement*",
-    impact_metric %in% "shannon_diversity" ~ "Shannon diversity index"
+    impact_metric %in% "shannon_diversity" ~ "Shannon diversity index",
+    impact_metric %in% "simpson_diversity" ~ "Inverse Simpson diversity index"
   ))
 
 # unique(hab_metric_change$impact_metric)

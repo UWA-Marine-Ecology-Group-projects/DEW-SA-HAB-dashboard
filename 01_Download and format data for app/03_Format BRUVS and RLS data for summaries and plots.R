@@ -1124,7 +1124,7 @@ shannon_diversity_samples <- combined_count %>%
   ) %>%
   full_join(combined_metadata) %>%
   dplyr::filter(method %in% "BRUVs") %>%
-  replace_na(list(n_species_sample = 0)) %>%
+  replace_na(list(shannon = 0)) %>%
   left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date))
 
 shannon_diversity_summary <- shannon_diversity_samples %>%
@@ -1151,6 +1151,69 @@ shannon_diversity_impacts <- shannon_diversity_summary %>%
   )) %>%
   mutate(impact_metric = "shannon_diversity")
 
+# Simpson Diversity ----
+# Inverse (reciprocal) Simpson index, 1 / sum(p^2), i.e. the same index as
+# vegan::diversity(x, index = "invsimpson") and as
+# "RLS/05b_create_rls_simpson_diversity_metrics_formatted.R".
+#
+# It reads as the "effective number of equally common species": 1 when a
+# sample holds a single species, rising to the number of species when they
+# are all equally abundant. Compared with Shannon it gives more weight to
+# the dominant species and less to the rare ones, so the two indices answer
+# slightly different questions and are reported side by side.
+#
+# Every filter and join below is deliberately identical to the Shannon
+# section above, so both indices are built from exactly the same set of
+# samples and any difference between them is the index, not the data. As
+# there, a sample with no fish recorded returns NA from the full_join and is
+# dropped by the na.rm = TRUE summaries; note that, unlike Shannon, a sample
+# holding a single species scores 1 rather than 0.
+simpson_diversity_samples <- combined_count %>%
+  dplyr::filter(count > 0) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  
+  dplyr::filter(!genus %in% "Unknown") %>%
+  dplyr::filter(!species %in% "spp") %>%
+  
+  dplyr::group_by(region, period, campaignid, sample, family, genus, species) %>%
+  
+  dplyr::summarise(n = sum(count), .groups = "drop") %>%
+  
+  dplyr::group_by(region, sample, period) %>%
+  mutate(p = n / sum(n)) %>%
+  dplyr::summarise(
+    simpson = 1 / sum(p^2),
+    .groups = "drop"
+  ) %>%
+  full_join(combined_metadata) %>%
+  dplyr::filter(method %in% "BRUVs") %>%
+  replace_na(list(simpson = 0)) %>%
+  left_join(bruv_metadata %>% dplyr::select(sample, campaignid, date))
+
+simpson_diversity_summary <- simpson_diversity_samples %>%
+  dplyr::group_by(region, period) %>%
+  dplyr::summarise(
+    mean = mean(simpson, na.rm = TRUE),
+    se   = sd(simpson, na.rm = TRUE) /
+      sqrt(sum(!is.na(simpson))),
+    .groups = "drop"
+  ) %>%
+  ungroup()
+
+simpson_diversity_impacts <- simpson_diversity_summary %>%
+  dplyr::select(-se) %>%
+  tidyr::complete(region, period) %>%
+  tidyr::pivot_wider(names_from = period, values_from = mean) %>%
+  clean_names() %>%
+  dplyr::mutate(percentage = bloom/pre_bloom*100) %>%
+  dplyr::mutate(impact = case_when(
+    percentage > 80 ~ "Low",
+    percentage > 50 & percentage < 80 ~ "Medium",
+    percentage < 50 ~ "High",
+    .default = "Surveys incomplete"
+  )) %>%
+  mutate(impact_metric = "simpson_diversity")
+
 # Combine all impacts together -----
 impact_data <- bind_rows(species_richness_impacts, 
                          total_abundance_impacts,
@@ -1158,10 +1221,17 @@ impact_data <- bind_rows(species_richness_impacts,
                          reef_associated_richness_impacts,
                          fish_200_abundance_impacts,
                          degeni_impacts,
-                         shannon_diversity_impacts
+                         shannon_diversity_impacts,
+                         simpson_diversity_impacts
 )
 
+# Inverse Simpson is deliberately left out of the overall-impact rollup.
+# It measures the same thing as Shannon diversity, so including both would
+# weight diversity twice as heavily as every other indicator and would also
+# shift the overall impact values that have already been reported. Drop the
+# filter below if the two diversity indices should both count.
 overall_impact <- impact_data %>%
+  dplyr::filter(!impact_metric %in% "simpson_diversity") %>%
   # dplyr::filter(region %in% "Adelaide Metro") %>%
   dplyr::mutate(percent_change = ((bloom / pre_bloom) - 1) * 100) %>%
   dplyr::mutate(direction = case_when(
@@ -1721,6 +1791,66 @@ shannon_diversity_impacts_location_split <- calc_impacts_split(
   group_col  = reporting_name,
   metric_id  = "shannon_diversity")
 
+# Simpson diversity - location -----
+simpson_diversity_summary_location <- simpson_diversity_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(simpson, na.rm = TRUE),
+    se   = sd(simpson, na.rm = TRUE) / sqrt(sum(!is.na(simpson))),
+    .groups = "drop"
+  )
+
+simpson_diversity_impacts_location <- calc_impacts(
+  summary_df = simpson_diversity_summary_location,
+  group_col  = reporting_name,
+  metric_id  = "simpson_diversity"
+)
+
+# Simpson diversity - location x status -----
+simpson_diversity_summary_location_status <- simpson_diversity_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>%
+  dplyr::group_by(reporting_name, period, status) %>%
+  dplyr::summarise(
+    mean = mean(simpson, na.rm = TRUE),
+    se   = sd(simpson, na.rm = TRUE) / sqrt(sum(!is.na(simpson))),
+    .groups = "drop"
+  )
+
+simpson_diversity_impacts_location_status <- calc_impacts_status(
+  summary_df = simpson_diversity_summary_location_status,
+  group_col  = reporting_name,
+  status_col = status,
+  metric_id  = "simpson_diversity")  %>%
+  dplyr::select(reporting_name, status, impact_metric, percentage_change) %>%
+  tidyr::pivot_wider(
+    names_from  = status,
+    values_from = percentage_change,
+    names_prefix = "change_"
+  ) %>%
+  CheckEM::clean_names() %>%
+  glimpse()
+
+# simpson_diversity - Location x Split bloom ----
+simpson_diversity_summary_location_split <- simpson_diversity_samples %>%
+  dplyr::filter(!is.na(reporting_name)) %>% 
+  dplyr::mutate(period = case_when(
+    period %in% "Bloom" ~ paste(period, start_month),
+    .default = period
+  )) %>%
+  dplyr::group_by(reporting_name, period) %>%
+  dplyr::summarise(
+    mean = mean(simpson, na.rm = TRUE),
+    se   = sd(simpson, na.rm = TRUE) / sqrt(sum(!is.na(simpson))),
+    num  = dplyr::n(),
+    .groups = "drop"
+  )
+
+simpson_diversity_impacts_location_split <- calc_impacts_split(
+  summary_df = simpson_diversity_summary_location_split,
+  group_col  = reporting_name,
+  metric_id  = "simpson_diversity")
+
 # combine all together ----
 impact_data_location <- dplyr::bind_rows(
   species_richness_impacts_location,
@@ -1729,6 +1859,7 @@ impact_data_location <- dplyr::bind_rows(
   reef_associated_richness_impacts_location,
   fish_200_abundance_impacts_location,
   shannon_diversity_impacts_location,
+  simpson_diversity_impacts_location,
   degeni_impacts_location,
 )
 
@@ -1739,11 +1870,14 @@ impact_data_location_split <- dplyr::bind_rows(
   reef_associated_richness_impacts_location_split,
   fish_200_abundance_impacts_location_split,
   shannon_diversity_impacts_location_split,
+  simpson_diversity_impacts_location_split,
   degeni_impacts_location_split,
 )
 
 # overall impact ----
+# Excludes inverse Simpson for the same reason as overall_impact above.
 overall_impact_location <- impact_data_location %>%
+  dplyr::filter(!impact_metric %in% "simpson_diversity") %>%
   dplyr::group_by(reporting_name) %>%
   dplyr::summarise(percentage = mean(percentage, na.rm = TRUE), .groups = "drop") %>%
   dplyr::mutate(
@@ -1764,6 +1898,7 @@ impact_data_location_status <- bind_rows(
   reef_associated_richness_impacts_location_status,
   fish_200_abundance_impacts_location_status,
   shannon_diversity_impacts_location_status,
+  simpson_diversity_impacts_location_status,
   degeni_impacts_location_status
 )
 
@@ -2050,6 +2185,10 @@ hab_data <- structure(
     shannon_diversity_samples = shannon_diversity_samples,
     shannon_diversity_summary = shannon_diversity_summary,
     shannon_diversity_summary_location = shannon_diversity_summary_location,
+    
+    simpson_diversity_samples = simpson_diversity_samples,
+    simpson_diversity_summary = simpson_diversity_summary,
+    simpson_diversity_summary_location = simpson_diversity_summary_location,
     
     trophic_groups_summary = trophic_groups_summary,
     trophic_groups_summary_location = trophic_groups_summary_location,

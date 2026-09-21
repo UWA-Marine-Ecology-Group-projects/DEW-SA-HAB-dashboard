@@ -934,6 +934,20 @@ metric_tab_body_ui <- function(metric_id, prefix = "em") {
           )
         )
       },
+            simpson_diversity = {
+        tagList(
+          h4("Inverse Simpson diversity index"),
+          layout_columns(
+            col_widths = c(6, 6),
+            metric_plot_with_downloads(prefix, data_id, "main"),
+            metric_plot_with_downloads(prefix, data_id, "status")
+          ),
+          layout_columns(
+            col_widths = c(12),
+            metric_plot_with_downloads(prefix, data_id, "year")
+          )
+        )
+      },
       
       fish_200_abundance = {
         tagList(
@@ -4037,6 +4051,282 @@ server <- function(input, output, session) {
     plot_reactive = shannon_diversity_status_plot,
     download_label_reactive = reactive(input$region)
   )
+  
+  # SIMPSON DIVERSITY -------
+  # Inverse Simpson index, built alongside Shannon by the "Simpson
+  # Diversity" section of
+  # "01_Download and format data for app/03_Format BRUVS and RLS data for
+  # summaries and plots.R". Every reactive and plot below mirrors the
+  # Shannon block above, reading hab_data$simpson_diversity_* instead.
+  simpson_diversity_main_raw <- reactive({
+    req(input$region)
+    
+    hab_data$simpson_diversity_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  simpson_diversity_main_results <- reactive({
+    req(input$region)
+    
+    hab_data$simpson_diversity_summary %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  simpson_diversity_status_raw <- reactive({
+    req(input$region)
+    
+    hab_data$simpson_diversity_samples %>%
+      dplyr::filter(region == input$region) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom")))
+  })
+  
+  simpson_diversity_status_results <- reactive({
+    simpson_diversity_status_raw() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(simpson , na.rm = TRUE),
+        se = sd(simpson , na.rm = TRUE) /
+          sqrt(sum(!is.na(simpson ))),
+        n = sum(!is.na(simpson )),
+        .groups = "drop"
+      )
+  })
+  
+  # SIMPSON DIVERSITY: main plot -----
+  simpson_diversity_main_plot <- reactive({
+    
+    req(input$region)
+    
+    show_box <- metric_plot_type(input, "em", "simpson_diversity")
+    
+    if (show_box) {
+      
+      df <- hab_data$simpson_diversity_samples %>%
+        dplyr::filter(region == input$region)
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      mean_se <- hab_data$simpson_diversity_summary %>%
+        dplyr::filter(region == input$region)
+      
+      ggplot(df, aes(x = period, y = simpson, fill = period)) +
+        # boxplot (median + IQR + whiskers)
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        # raw points
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        # mean ± SE
+        geom_pointrange(
+          data = mean_se,
+          aes(
+            x    = period,
+            y    = mean,
+            ymin = mean - se,
+            ymax = mean + se
+          ),
+          inherit.aes = FALSE,
+          colour = "black",
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          #subtitle = input$region
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+      
+    } else {
+      
+      df <- hab_data$simpson_diversity_summary %>%
+        dplyr::filter(region == input$region)
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        # mean bar
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        # # mean ± SE
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          #subtitle = paste0(input$region, ": Average simpson diversity per sample")
+        ) +
+        # facet_wrap(~ zone) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",        # both bars already coloured by period
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+    }
+    
+  })
+  
+  
+  output$em_plot_simpson_diversity_main <- renderPlot({
+    
+    simpson_diversity_main_plot()
+    
+  })  |>
+    bindCache(input$region, input[[metric_plot_type_input_id("em", "simpson_diversity")]]) |>
+    bindEvent(input$region, input[[metric_plot_type_input_id("em", "simpson_diversity")]])
+  
+  # SIMPSON DIVERSITY: status plot -----
+  
+  simpson_diversity_status_plot <- reactive({
+    
+    req(input$region)
+    
+    show_box <- metric_plot_type(input, "em", "simpson_diversity")
+    
+    if (show_box) {
+      df <- hab_data$simpson_diversity_samples %>%
+        dplyr::filter(region == input$region)
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      ggplot(df, aes(x = period, y = simpson, fill = period)) +
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        
+        # ⬇️ Add this
+        geom_point(
+          stat = "summary",
+          fun = "mean",
+          shape = 21,
+          size = 3,
+          fill = "white",
+          colour = "black"
+        ) +
+        
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          #subtitle = paste0(input$region, ": simpson diversity per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+      
+    } else {
+      
+      df <- hab_data$simpson_diversity_samples %>%
+        dplyr::filter(region == input$region) %>%
+        dplyr::group_by(period, status) %>%
+        dplyr::summarise(
+          mean = mean(simpson, na.rm = TRUE),
+          se   = sd(simpson, na.rm = TRUE) /
+            sqrt(sum(!is.na(simpson))),
+          .groups = "drop"
+        )
+      
+      df$period <- factor(df$period, levels = c("Pre-bloom", "Bloom"))
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          #subtitle = paste0(input$region, ": Average simpson diversity per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+    }
+    
+  })
+  
+  output$em_plot_simpson_diversity_status <- renderPlot({
+    
+    simpson_diversity_status_plot()
+    
+  })  |>
+    bindCache(input$region, input[[metric_plot_type_input_id("em", "simpson_diversity")]]) |>
+    bindEvent(input$region, input[[metric_plot_type_input_id("em", "simpson_diversity")]])
+  
+  # Downloads ----
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "simpson_diversity",
+    plot_id = "main",
+    results_reactive = simpson_diversity_main_results,
+    raw_reactive = simpson_diversity_main_raw,
+    plot_reactive = simpson_diversity_main_plot,
+    download_label_reactive = reactive(input$region)
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "em",
+    data_id = "simpson_diversity",
+    plot_id = "status",
+    results_reactive = simpson_diversity_status_results,
+    raw_reactive = simpson_diversity_status_raw,
+    plot_reactive = simpson_diversity_status_plot,
+    download_label_reactive = reactive(input$region)
+  )
+  
   
   # ---------- Trophic Groups  ------------
   
@@ -9024,6 +9314,341 @@ server <- function(input, output, session) {
   }) |>
     bindCache(input$location, input[[metric_plot_type_input_id("loc", "shannon_diversity")]]) |>
     bindEvent(input$location, input[[metric_plot_type_input_id("loc", "shannon_diversity")]])
+  
+  # SIMPSON DIVERSITY -------
+  # Inverse Simpson index, built alongside Shannon by the "Simpson
+  # Diversity" section of
+  # "01_Download and format data for app/03_Format BRUVS and RLS data for
+  # summaries and plots.R". Every reactive and plot below mirrors the
+  # Shannon block above, reading hab_data$simpson_diversity_* instead.
+  simpson_diversity_main_raw_location <- reactive({
+    req(input$location)
+    
+    hab_data$simpson_diversity_samples %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      # group_by(campaignid) %>%
+      # mutate(campaign_date = min(date)) %>%
+      # ungroup() %>%
+      dplyr::mutate(simpson = round(simpson, digits = 3))
+    
+  })
+  
+  simpson_diversity_main_results_location <- reactive({
+    req(input$location)
+    
+    hab_data$simpson_diversity_summary_location %>%
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::mutate(period = factor(period, levels = c("Pre-bloom", "Bloom"))) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
+  })
+  
+  simpson_diversity_status_results_location <- reactive({
+    simpson_diversity_main_raw_location() %>%
+      dplyr::group_by(period, status) %>%
+      dplyr::summarise(
+        mean = mean(simpson , na.rm = TRUE),
+        se = sd(simpson , na.rm = TRUE) /
+          sqrt(sum(!is.na(simpson ))),
+        n = sum(!is.na(simpson )),
+        .groups = "drop"
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
+  })
+  
+  simpson_diversity_summary_year_location <- reactive({
+    hab_data$simpson_diversity_samples %>%
+      dplyr::filter(!is.na(reporting_name)) %>%   # reporting_name exists after your full_join(combined_metadata)
+      dplyr::filter(reporting_name == input$location) %>%
+      dplyr::group_by(reporting_name, start_date, campaignid, period) %>%
+      dplyr::summarise(
+        mean = mean(simpson, na.rm = TRUE),
+        se   = sd(simpson, na.rm = TRUE) / sqrt(sum(!is.na(simpson))),
+        num  = dplyr::n(),
+        .groups = "drop"
+      ) %>%
+      dplyr::mutate(mean = round(mean, digits = 3)) %>%
+      dplyr::mutate(se = round(se, digits = 3))
+  })
+  
+  # SIMPSON DIVERSITY: main plot -----
+  simpson_diversity_main_plot_location <- reactive({
+    
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "simpson_diversity")
+    
+    if (show_box) {
+      
+      df <- simpson_diversity_main_raw_location()
+      
+      mean_se <- simpson_diversity_main_results_location()
+      
+      ggplot(df, aes(x = period, y = simpson, fill = period)) +
+        # boxplot (median + IQR + whiskers)
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        # raw points
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        # mean ± SE
+        geom_pointrange(
+          data = mean_se,
+          aes(
+            x    = period,
+            y    = mean,
+            ymin = mean - se,
+            ymax = mean + se
+          ),
+          inherit.aes = FALSE,
+          colour = "black",
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          # subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+      
+    } else {
+      
+      df <- simpson_diversity_main_results_location()
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        # mean bar
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        # # mean ± SE
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          # subtitle = paste0(input$location, ": Average simpson diversity per sample")
+        ) +
+        # facet_wrap(~ zone) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",        # both bars already coloured by period
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+    }
+    
+  })
+  
+  
+  output$loc_plot_simpson_diversity_main <- renderPlot({
+    
+    simpson_diversity_main_plot_location()
+    
+  })  |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "simpson_diversity")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "simpson_diversity")]])
+  
+  # SIMPSON DIVERSITY: status plot -----
+  
+  simpson_diversity_status_plot_location <- reactive({
+    
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "simpson_diversity")
+    
+    if (show_box) {
+      df <- simpson_diversity_main_raw_location()
+      
+      ggplot(df, aes(x = period, y = simpson, fill = period)) +
+        geom_boxplot(
+          width = 0.6,
+          outlier.shape = NA,
+          alpha = 0.85,
+          colour = "black"
+        ) +
+        
+        # ⬇️ Add this
+        geom_point(
+          stat = "summary",
+          fun = "mean",
+          shape = 21,
+          size = 3,
+          fill = "white",
+          colour = "black"
+        ) +
+        
+        geom_jitter(
+          aes(colour = period),
+          width = 0.15,
+          height = 0,      # <— prevents any vertical jitter
+          alpha = 0.35,
+          size = 1.2
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          # subtitle = paste0(input$location, ": simpson diversity per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+      
+    } else {
+      
+      df <- simpson_diversity_status_results_location()
+      
+      ggplot(df, aes(x = period, y = mean, fill = period)) +
+        geom_col(
+          width  = 0.6,
+          colour = "black",
+          alpha  = 0.85
+        ) +
+        geom_errorbar(
+          aes(ymin = mean - se, ymax = mean + se),
+          width = 0.2,
+          linewidth = 0.6
+        ) +
+        facet_wrap(~ status, nrow = 1) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          # subtitle = paste0(input$location, ": Average simpson diversity per sample by status")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(
+          legend.position  = "none",
+          panel.grid.minor = element_blank(),           panel.grid.major = element_blank()
+        )+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+    }
+    
+  })
+  
+  output$loc_plot_simpson_diversity_status <- renderPlot({
+    
+    simpson_diversity_status_plot_location()
+    
+  })  |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "simpson_diversity")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "simpson_diversity")]])
+  
+  # Downloads ----
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "simpson_diversity",
+    plot_id = "main",
+    results_reactive = simpson_diversity_main_results_location,
+    raw_reactive = simpson_diversity_main_raw_location,
+    plot_reactive = simpson_diversity_main_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
+  
+  add_metric_downloads(
+    output,
+    prefix = "loc",
+    data_id = "simpson_diversity",
+    plot_id = "status",
+    results_reactive = simpson_diversity_status_results_location,
+    raw_reactive = simpson_diversity_main_raw_location,
+    plot_reactive = simpson_diversity_status_plot_location,
+    download_label_reactive = reactive(input$location)
+  )
+  
+  # SIMPSON DIVERSITY: Year plot ---------------
+  simpson_diversity_year_plot_location <- reactive({
+    req(input$location)
+    
+    show_box <- metric_plot_type(input, "loc", "simpson_diversity")
+    
+    if (show_box) {
+      
+      df <- simpson_diversity_main_raw_location()
+      mean_se <- simpson_diversity_summary_year_location()
+      
+      df$start_date <- as.Date(df$start_date)
+      mean_se$start_date <- as.Date(mean_se$start_date)
+      
+      ggplot(df, aes(x = start_date, y = simpson, group = campaignid,  fill = period)) +
+        geom_boxplot(width = 100, outlier.shape = NA, alpha = 0.85, colour = "black") +
+        geom_jitter(aes(colour = period), width = 5, height = 0, alpha = 0.35, size = 2) +
+        scale_fill_manual(values = metric_period_cols) +
+        scale_color_manual(values = metric_period_cols) +
+        scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          # subtitle = input$location
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+      
+    } else {
+      
+      df <- simpson_diversity_summary_year_location() %>%
+        dplyr::mutate(start_date = as.Date(start_date))
+      
+      ggplot(df, aes(x = start_date, y = mean, group = campaignid, fill = period)) +
+        geom_col(width = 100, colour = "black", alpha = 0.85) +
+        geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 30, linewidth = 0.6) +
+        scale_x_date(
+          date_labels = "%Y",
+          date_breaks = "1 year"
+        ) +
+        scale_fill_manual(values = metric_period_cols) +
+        labs(
+          x = NULL,
+          y = metric_y_lab[["simpson_diversity"]]#,
+          # subtitle = paste0(input$location, ": Average reef associated species richness per sample")
+        ) +
+        theme_minimal(base_size = 16) +
+        theme(legend.position = "none", panel.grid.minor = element_blank(),           panel.grid.major = element_blank())+
+        plot_theme + scale_y_continuous(expand = expansion(mult = c(0, 0)))
+    }
+  })
+  
+  
+  output$loc_plot_simpson_diversity_year <- renderPlot({
+    
+    simpson_diversity_year_plot_location()
+    
+  }) |>
+    bindCache(input$location, input[[metric_plot_type_input_id("loc", "simpson_diversity")]]) |>
+    bindEvent(input$location, input[[metric_plot_type_input_id("loc", "simpson_diversity")]])
+  
+  
   
   
   

@@ -1,7 +1,7 @@
 # ============================================================
 # START DATE MODELS + FOUR PLOTS PER LOCATION
 # Count metrics: Poisson first, negative binomial if overdispersed
-# Shannon diversity: Gaussian identity model
+# Shannon and Simpson diversity: Gaussian identity models
 # ============================================================
 
 library(dplyr)
@@ -51,6 +51,7 @@ status_cols <- c(
 
 metric_y_lab <- list(
   shannon_diversity = "Avg. shannon\ndiversity index",
+  simpson_diversity = "Avg. inverse simpson\ndiversity index",
   richness = "Avg. species richness",
   sharks_rays = "Avg. shark and ray\nspecies richness",
   reef_associated_richness = "Avg. reef associated\nspecies richness",
@@ -60,6 +61,7 @@ metric_y_lab <- list(
 
 metric_order <- c(
   "shannon_diversity",
+  "simpson_diversity",
   "richness",
   "sharks_rays",
   "reef_associated_richness",
@@ -69,6 +71,7 @@ metric_order <- c(
 
 metric_lookup <- c(
   "Shannon diversity" = "shannon_diversity",
+  "Simpson diversity" = "simpson_diversity",
   "Species richness" = "richness",
   "Shark and ray richness" = "sharks_rays",
   "Reef associated species richness" = "reef_associated_richness",
@@ -83,7 +86,8 @@ metric_family_assignments <- tribble(
   "Reef associated species richness",  "reef_associated_richness",       "auto_count", "Poisson; nbinom2 if overdispersed",  "log",
   "Total abundance",                   "total_abundance",                "auto_count", "Poisson; nbinom2 if overdispersed",  "log",
   "Abundance > 200 mm",                "large_fish",                     "auto_count", "Poisson; nbinom2 if overdispersed",  "log",
-  "Shannon diversity",                 "shannon_diversity",              "gaussian",   "gaussian (identity link)",            "identity"
+  "Shannon diversity",                 "shannon_diversity",              "gaussian",   "gaussian (identity link)",            "identity",
+  "Simpson diversity",                 "simpson_diversity",              "gaussian",   "gaussian (identity link)",            "identity"
 )
 
 plot_theme <- theme(
@@ -160,6 +164,16 @@ shannon_dat <- prep_metric_data(
   hab_data$shannon_diversity_samples %>%
     left_join(metadata),
   "shannon"
+) %>%
+  sf::st_drop_geometry()
+
+# Inverse Simpson diversity, built by the "Simpson Diversity" section of
+# "03_Format BRUVS and RLS data for summaries and plots.R". Continuous like
+# Shannon, so it takes the same Gaussian identity model.
+simpson_dat <- prep_metric_data(
+  hab_data$simpson_diversity_samples %>%
+    left_join(metadata),
+  "simpson"
 ) %>%
   sf::st_drop_geometry()
 
@@ -260,7 +274,7 @@ get_family_details <- function(family_code) {
         family = gaussian(link = "identity"),
         label = "gaussian (identity link)",
         link = "identity",
-        reason = "gaussian identity model was specified for Shannon diversity"
+        reason = "gaussian identity model was specified for a continuous diversity index"
       )
     )
   }
@@ -453,7 +467,7 @@ fit_selected_family_model <- function(
   requested_family <- get_family_details(family_code)
 
   # ----------------------------------------------------------
-  # Continuous Shannon-diversity response: fixed Gaussian model
+  # Continuous diversity response (Shannon / inverse Simpson): fixed Gaussian model
   # ----------------------------------------------------------
   if (identical(family_code, "gaussian")) {
 
@@ -1739,6 +1753,15 @@ shannon_models <- run_metric_models(
   family_code = "gaussian"
 )
 
+# Inverse Simpson diversity, same treatment as Shannon.
+simpson_models <- run_metric_models(
+  simpson_dat,
+  "simpson",
+  "Simpson diversity",
+  use_site = TRUE,
+  family_code = "gaussian"
+)
+
 # -----------------------------
 # 6. Combine results
 # -----------------------------
@@ -1749,6 +1772,7 @@ period_results <- bind_rows(
   shark_models$period_means,
   reef_models$period_means,
   shannon_models$period_means,
+  simpson_models$period_means,
   fish_200_models$period_means
 ) %>%
   mutate(
@@ -1766,6 +1790,7 @@ period_status_results <- bind_rows(
   shark_models$period_status_means,
   reef_models$period_status_means,
   shannon_models$period_status_means,
+  simpson_models$period_status_means,
   fish_200_models$period_status_means
 ) %>%
   mutate(
@@ -1783,6 +1808,7 @@ start_date_results <- bind_rows(
   shark_models$start_date_means,
   reef_models$start_date_means,
   shannon_models$start_date_means,
+  simpson_models$start_date_means,
   fish_200_models$start_date_means
 ) %>%
   mutate(
@@ -1799,6 +1825,7 @@ start_date_status_results <- bind_rows(
   shark_models$start_date_status_means,
   reef_models$start_date_status_means,
   shannon_models$start_date_status_means,
+  simpson_models$start_date_status_means,
   fish_200_models$start_date_status_means
 ) %>%
   mutate(
@@ -1815,6 +1842,7 @@ zero_summary <- bind_rows(
   shark_models$zero_summary,
   reef_models$zero_summary,
   shannon_models$zero_summary,
+  simpson_models$zero_summary,
   fish_200_models$zero_summary
 )
 
@@ -1824,6 +1852,7 @@ excluded_dates_df <- bind_rows(
   shark_models$excluded_dates,
   reef_models$excluded_dates,
   shannon_models$excluded_dates,
+  simpson_models$excluded_dates,
   fish_200_models$excluded_dates
 ) %>%
   mutate(metric_id = recode(metric, !!!metric_lookup))
@@ -1834,6 +1863,7 @@ model_errors <- bind_rows(
   shark_models$errors,
   reef_models$errors,
   shannon_models$errors,
+  simpson_models$errors,
   fish_200_models$errors
 )
 
@@ -1843,6 +1873,7 @@ period_errors <- bind_rows(
   shark_models$period_errors,
   reef_models$period_errors,
   shannon_models$period_errors,
+  simpson_models$period_errors,
   fish_200_models$period_errors
 )
 
@@ -1852,6 +1883,7 @@ temporal_errors <- bind_rows(
   shark_models$temporal_errors,
   reef_models$temporal_errors,
   shannon_models$temporal_errors,
+  simpson_models$temporal_errors,
   fish_200_models$temporal_errors
 )
 
@@ -1861,6 +1893,7 @@ model_family_summary <- bind_rows(
   shark_models$model_diagnostics,
   reef_models$model_diagnostics,
   shannon_models$model_diagnostics,
+  simpson_models$model_diagnostics,
   fish_200_models$model_diagnostics
 ) %>%
   arrange(metric, reporting_name, model_type)
@@ -1900,6 +1933,89 @@ start_date_status_results <- start_date_status_results %>%
     asymp.LCL = ifelse(is.finite(asymp.LCL), asymp.LCL, NA_real_),
     asymp.UCL = ifelse(is.finite(asymp.UCL), asymp.UCL, NA_real_)
   )
+
+# -----------------------------
+# 6b. Save the fitted model objects
+# -----------------------------
+
+# Mirrors what the RLS pipeline already does in
+# "RLS/11_rls_glmm_models.R", so that "02_extract_glmm_pvalues.R" can pull
+# p-values out of both pipelines without re-fitting anything. The saved
+# object has the same list(index, fits) shape as the RLS one, and each fit
+# holds a $period_model that is NULL where the model was skipped or failed.
+
+# The temporal models roughly double the file size and the p-value script
+# does not use them. Set to TRUE if you want them available for inspection.
+save_temporal_models <- FALSE
+
+bruv_model_sets <- list(
+  "Species richness" = rich_models,
+  "Shark and ray richness" = shark_models,
+  "Reef associated species richness" = reef_models,
+  "Total abundance" = abund_models,
+  "Abundance > 200 mm" = fish_200_models,
+  "Shannon diversity" = shannon_models,
+  "Simpson diversity" = simpson_models
+)
+
+# A region is "usable" only when fit_one_region() ran to completion - an
+# error object or a skipped (>90% zeros) region has no model to save.
+bruv_fits <- purrr::imap(
+  bruv_model_sets,
+  function(model_set, metric_name) {
+    purrr::imap(
+      model_set$outputs,
+      function(one, location_name) {
+
+        usable <- is.list(one) &&
+          !inherits(one, "error") &&
+          !isTRUE(one$skipped)
+
+        list(
+          metric = metric_name,
+          location = location_name,
+          period_model = if (usable) one$period_model else NULL,
+          temporal_model = if (usable && save_temporal_models) {
+            one$temporal_model
+          } else {
+            NULL
+          }
+        )
+      }
+    )
+  }
+) %>%
+  unlist(recursive = FALSE, use.names = FALSE)
+
+bruv_model_index <- purrr::map_dfr(
+  seq_along(bruv_fits),
+  ~ tibble(
+    fit_index = .x,
+    metric = bruv_fits[[.x]]$metric,
+    location = bruv_fits[[.x]]$location
+  )
+)
+
+dir.create(
+  model_output_root,
+  recursive = TRUE,
+  showWarnings = FALSE
+)
+
+saveRDS(
+  list(
+    index = bruv_model_index,
+    fits = bruv_fits
+  ),
+  file.path(model_output_root, "location_model_objects.rds")
+)
+
+message(
+  "Saved ", nrow(bruv_model_index), " metric x location fits (",
+  sum(!purrr::map_lgl(bruv_fits, ~ is.null(.x$period_model))),
+  " with a usable Period model) to ",
+  file.path(model_output_root, "location_model_objects.rds")
+)
 
 # -----------------------------
 # 7. Save model outputs
@@ -2222,11 +2338,12 @@ add_plot_confidence_limits <- function(df) {
   df %>%
     mutate(
       plot_LCL = case_when(
-        metric_id == "shannon_diversity" ~ pmax(asymp.LCL, 0),
+        metric_id %in% c("shannon_diversity", "simpson_diversity") ~
+          pmax(asymp.LCL, 0),
         TRUE ~ asymp.LCL
       ),
       lower_limit_truncated = (
-        metric_id == "shannon_diversity" &
+        metric_id %in% c("shannon_diversity", "simpson_diversity") &
           !is.na(asymp.LCL) &
           asymp.LCL < 0
       )
@@ -2497,7 +2614,12 @@ save_patchwork_plots <- function(
     output_dir,
     suffix,
     title_suffix,
-    width = 8
+    width = 8,
+    # The panel grid is 2 columns wide, so its height has to follow the
+    # number of metrics rather than being fixed. 3.4 in per row reproduces
+    # the previous fixed height of 10 for the six metrics this script had
+    # before inverse Simpson diversity was added.
+    height = 3.4 * ceiling(length(metric_order) / 2)
 ) {
   dir.create(
     output_dir,
@@ -2536,7 +2658,7 @@ save_patchwork_plots <- function(
       ),
       plot = p,
       width = width,
-      height = 10,
+      height = height,
       dpi = 300
     )
   }
@@ -2686,4 +2808,15 @@ shannon_dat %>%
     n_zero = sum(shannon == 0, na.rm = TRUE),
     percent_zero = mean(shannon == 0, na.rm = TRUE) * 100,
     minimum = min(shannon, na.rm = TRUE)
+  )
+
+# The inverse Simpson equivalent. Its floor is 1 (a single-species sample),
+# not 0, so n_zero should be 0 here unless something has gone wrong upstream.
+simpson_dat %>%
+  summarise(
+    n = n(),
+    n_zero = sum(simpson == 0, na.rm = TRUE),
+    n_one = sum(simpson == 1, na.rm = TRUE),
+    percent_one = mean(simpson == 1, na.rm = TRUE) * 100,
+    minimum = min(simpson, na.rm = TRUE)
   )

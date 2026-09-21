@@ -9,8 +9,10 @@
 "Reef associated species richness","Temporal","poisson","Poisson (log link)",TRUE,14
 "Shannon diversity","Period","gaussian","gaussian (identity link)",TRUE,20
 "Shannon diversity","Temporal","gaussian","gaussian (identity link)",TRUE,20
-"Shark and ray richness","Period","poisson","Poisson (log link)",TRUE,18
-"Shark and ray richness","Temporal","poisson","Poisson (log link)",TRUE,18
+"Shark and ray richness","Period","poisson","Poisson (log link)",TRUE,19
+"Shark and ray richness","Temporal","poisson","Poisson (log link)",TRUE,19
+"Simpson diversity","Period","gaussian","gaussian (identity link)",TRUE,20
+"Simpson diversity","Temporal","gaussian","gaussian (identity link)",TRUE,20
 "Species richness","Period","nbinom2","Negative binomial nbinom2 (log link)",TRUE,3
 "Species richness","Period","poisson","Poisson (log link)",TRUE,17
 "Species richness","Temporal","nbinom2","Negative binomial nbinom2 (log link)",TRUE,3

@@ -5,3 +5,4 @@
 "Total abundance","total_abundance","auto_count","Poisson; nbinom2 if overdispersed","log"
 "Abundance > 200 mm","large_fish","auto_count","Poisson; nbinom2 if overdispersed","log"
 "Shannon diversity","shannon_diversity","gaussian","gaussian (identity link)","identity"
+"Simpson diversity","simpson_diversity","gaussian","gaussian (identity link)","identity"
