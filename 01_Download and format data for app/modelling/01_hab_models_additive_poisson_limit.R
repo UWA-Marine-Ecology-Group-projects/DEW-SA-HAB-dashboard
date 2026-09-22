@@ -20,7 +20,7 @@ sf::sf_use_s2()
 # Model-family and output settings
 # -----------------------------
 
-analysis_tag <- "20260730_additive_poisson_limit"
+analysis_tag <- "bruv_glmm_results"
 plot_output_root <- file.path("plots", analysis_tag)
 model_output_root <- file.path("model_results", analysis_tag)
 
@@ -59,8 +59,11 @@ metric_y_lab <- list(
   total_abundance = "Avg. total abundance"
 )
 
+# Panels in the saved patchwork plots, in order. Inverse Simpson replaces
+# Shannon here so the grid stays at six panels; Shannon is still modelled and
+# still written to every results table, it is just not plotted. Add
+# "shannon_diversity" back to this vector to bring its panel back.
 metric_order <- c(
-  "shannon_diversity",
   "simpson_diversity",
   "richness",
   "sharks_rays",
@@ -2398,9 +2401,21 @@ plot_period <- function(df, metric_id, panel_letter) {
   metric_df <- df %>%
     filter(.data$metric_id == !!metric_id) %>%
     add_plot_confidence_limits()
-  
-  # Existing blank-panel code here
-  
+
+  if (nrow(metric_df) == 0) {
+    region <- unique(df$reporting_name)[1]
+    return(
+      blank_panel(
+        panel_letter = panel_letter,
+        label = get_blank_panel_label(
+          region = region,
+          metric_id = metric_id,
+          model_type = "Period"
+        )
+      )
+    )
+  }
+
   ggplot(metric_df, aes(x = Period, y = response, fill = Period)) +
     geom_col(
       width = 0.6,
@@ -2615,11 +2630,10 @@ save_patchwork_plots <- function(
     suffix,
     title_suffix,
     width = 8,
-    # The panel grid is 2 columns wide, so its height has to follow the
-    # number of metrics rather than being fixed. 3.4 in per row reproduces
-    # the previous fixed height of 10 for the six metrics this script had
-    # before inverse Simpson diversity was added.
-    height = 3.4 * ceiling(length(metric_order) / 2)
+    # The panel grid is 2 columns wide, so its height follows the number of
+    # plotted metrics rather than being fixed. 3.33 in per row gives the
+    # original height of 10 for a six-panel (3 row) grid.
+    height = 3.33 * ceiling(length(metric_order) / 2)
 ) {
   dir.create(
     output_dir,
