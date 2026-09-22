@@ -1,0 +1,61 @@
+dataset,dataset_label,location,ordination,available,reason,axis1_label,axis2_label,axis1_percent,axis2_percent,n_events,n_sites,cap_constraint_p
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,pco,TRUE,,PCoA1 (26.3%),PCoA2 (12.1%),26.3,12.1,18,3,
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (13.8%),MDS1 - residual axis (20.3%),13.8,20.3,18,3,0.006
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (14.1%),MDS1 - residual axis (20.8%),14.1,20.8,18,3,
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,pco,TRUE,,PCoA1 (14.8%),PCoA2 (13%),14.8,13,23,6,
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (12.1%),MDS1 - residual axis (13.3%),12.1,13.3,23,6,0.001
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (8.4%),MDS1 - residual axis (14.3%),8.4,14.3,23,6,
+BRUV,BRUVs,Boston Bay,pco,TRUE,,PCoA1 (24.4%),PCoA2 (16.7%),24.4,16.7,18,3,
+BRUV,BRUVs,Boston Bay,cap_period,TRUE,,CAP1 - Bloom axis (10.4%),MDS1 - residual axis (21.6%),10.4,21.6,18,3,0.035
+BRUV,BRUVs,Boston Bay,cap_status,FALSE,"CAP could not be fitted - only one Period/Status present, too few sampling events, or not enough residual degrees of freedom. See the console messages from script 13 for the specific reason.",,,,,,,
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,pco,TRUE,,PCoA1 (26.7%),PCoA2 (19.1%),26.7,19.1,12,6,
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (23.1%),MDS1 - residual axis (19.9%),23.1,19.9,12,6,0.03125
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (9.7%),MDS1 - residual axis (26.5%),9.7,26.5,12,6,
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,pco,TRUE,,PCoA1 (16.7%),PCoA2 (10.6%),16.7,10.6,42,6,
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (6.8%),MDS1 - residual axis (15.9%),6.8,15.9,42,6,0.001
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (5.5%),MDS1 - residual axis (14.6%),5.5,14.6,42,6,
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,pco,TRUE,,PCoA1 (34.5%),PCoA2 (16.2%),34.5,16.2,12,6,
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (11.2%),MDS1 - residual axis (30%),11.2,30,12,6,0.03125
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (4.9%),MDS1 - residual axis (34.4%),4.9,34.4,12,6,
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,pco,TRUE,,PCoA1 (52.5%),PCoA2 (20.2%),52.5,20.2,8,4,
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (47.4%),MDS1 - residual axis (21.1%),47.4,21.1,8,4,0.125
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (9.9%),MDS1 - residual axis (50.7%),9.9,50.7,8,4,
+BRUV,BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,pco,TRUE,,PCoA1 (60%),PCoA2 (16.5%),60,16.5,7,1,
+BRUV,BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (23.7%),MDS1 - residual axis (51.6%),23.7,51.6,7,1,0.237
+BRUV,BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,cap_status,FALSE,"CAP could not be fitted - only one Period/Status present, too few sampling events, or not enough residual degrees of freedom. See the console messages from script 13 for the specific reason.",,,,,,,
+BRUV,BRUVs,Glenelg,pco,TRUE,,PCoA1 (15.9%),PCoA2 (12.5%),15.9,12.5,24,4,
+BRUV,BRUVs,Glenelg,cap_period,TRUE,,CAP1 - Bloom axis (11.1%),MDS1 - residual axis (15.2%),11.1,15.2,24,4,0.001
+BRUV,BRUVs,Glenelg,cap_status,FALSE,"CAP could not be fitted - only one Period/Status present, too few sampling events, or not enough residual degrees of freedom. See the console messages from script 13 for the specific reason.",,,,,,,
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,pco,TRUE,,PCoA1 (35.2%),PCoA2 (16.9%),35.2,16.9,15,5,
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (32.9%),MDS1 - residual axis (16.9%),32.9,16.9,15,5,0.002
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (8.9%),MDS1 - residual axis (35%),8.9,35,15,5,
+BRUV,BRUVs,O'Sullivan,pco,TRUE,,PCoA1 (16.2%),PCoA2 (9.6%),16.2,9.6,28,5,
+BRUV,BRUVs,O'Sullivan,cap_period,TRUE,,CAP1 - Bloom axis (5.1%),MDS1 - residual axis (14.1%),5.1,14.1,28,5,0.002
+BRUV,BRUVs,O'Sullivan,cap_status,FALSE,"CAP could not be fitted - only one Period/Status present, too few sampling events, or not enough residual degrees of freedom. See the console messages from script 13 for the specific reason.",,,,,,,
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,pco,TRUE,,PCoA1 (27.4%),PCoA2 (18.7%),27.4,18.7,13,4,
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (18.3%),MDS1 - residual axis (21.7%),18.3,21.7,13,4,0.009
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (5.9%),MDS1 - residual axis (26.2%),5.9,26.2,13,4,
+BRUV,BRUVs,Orcades Bank - Orcades Bank Sanctuary Zone,pco,FALSE,"Could not build an assemblage for this location - fewer than 3 sampling events, or fewer than 2 non-zero taxa.",,,,,,,
+BRUV,BRUVs,Orcades Bank - Orcades Bank Sanctuary Zone,cap_period,FALSE,"CAP could not be fitted - only one Period/Status present, too few sampling events, or not enough residual degrees of freedom. See the console messages from script 13 for the specific reason.",,,,,,,
+BRUV,BRUVs,Orcades Bank - Orcades Bank Sanctuary Zone,cap_status,FALSE,"CAP could not be fitted - only one Period/Status present, too few sampling events, or not enough residual degrees of freedom. See the console messages from script 13 for the specific reason.",,,,,,,
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,pco,TRUE,,PCoA1 (37.7%),PCoA2 (15.7%),37.7,15.7,12,6,
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (35.1%),MDS1 - residual axis (15.9%),35.1,15.9,12,6,0.03125
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (10.3%),MDS1 - residual axis (37%),10.3,37,12,6,
+BRUV,BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,pco,TRUE,,PCoA1 (47.2%),PCoA2 (19.8%),47.2,19.8,10,1,
+BRUV,BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (10.9%),MDS1 - residual axis (47.2%),10.9,47.2,10,1,0.505
+BRUV,BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,cap_status,FALSE,"CAP could not be fitted - only one Period/Status present, too few sampling events, or not enough residual degrees of freedom. See the console messages from script 13 for the specific reason.",,,,,,,
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,pco,TRUE,,PCoA1 (18%),PCoA2 (9.1%),18,9.1,41,6,
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (4.8%),MDS1 - residual axis (17.3%),4.8,17.3,41,6,0.001
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (6.1%),MDS1 - residual axis (16.7%),6.1,16.7,41,6,
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,pco,TRUE,,PCoA1 (13.3%),PCoA2 (9.9%),13.3,9.9,42,6,
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (6.9%),MDS1 - residual axis (10.5%),6.9,10.5,42,6,0.001
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (5.8%),MDS1 - residual axis (12.5%),5.8,12.5,42,6,
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,pco,TRUE,,PCoA1 (27.3%),PCoA2 (7.3%),27.3,7.3,46,6,
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (5.8%),MDS1 - residual axis (27.2%),5.8,27.2,46,6,0.001
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (2%),MDS1 - residual axis (27.1%),2,27.1,46,6,
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,pco,TRUE,,PCoA1 (36.1%),PCoA2 (14.9%),36.1,14.9,13,4,
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (8%),MDS1 - residual axis (35.9%),8,35.9,13,4,0.066
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (12.8%),MDS1 - residual axis (32.1%),12.8,32.1,13,4,
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,pco,TRUE,,PCoA1 (26.6%),PCoA2 (12.5%),26.6,12.5,21,3,
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_period,TRUE,,CAP1 - Bloom axis (17.7%),MDS1 - residual axis (15.1%),17.7,15.1,21,3,0.008
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_status,TRUE,,CAP1 - Status axis (8.9%),MDS1 - residual axis (24.9%),8.9,24.9,21,3,

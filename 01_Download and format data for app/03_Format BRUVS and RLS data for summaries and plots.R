@@ -176,11 +176,11 @@ test <- left_join(missing, bruv_metadata)
 
 unique(bruv_metadata$location) %>% sort()
 
-rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
-  dplyr::rename(date = survey_date, sample = survey_id) %>%
-  dplyr::mutate(sample = as.character(sample)) %>%
-  dplyr::mutate(date = as.Date(date)) %>%
-  glimpse()
+# rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
+#   dplyr::rename(date = survey_date, sample = survey_id) %>%
+#   dplyr::mutate(sample = as.character(sample)) %>%
+#   dplyr::mutate(date = as.Date(date)) %>%
+#   glimpse()
 
 bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
@@ -190,9 +190,9 @@ bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
   dplyr::mutate(scientific = paste(family, genus, species)) %>%
   semi_join(bruv_metadata)
 
-rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
-  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
-  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) 
+# rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
+#   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+#   dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) 
 
 bruv_length <- readRDS("data/raw/sa_length_bruv.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
@@ -202,9 +202,9 @@ bruv_length <- readRDS("data/raw/sa_length_bruv.RDS") %>%
   dplyr::mutate(scientific = paste(family, genus, species)) %>%
   semi_join(bruv_metadata)
 
-rls_length <- readRDS("data/raw/sa_length_rls.RDS") %>%
-  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
-  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus))
+# rls_length <- readRDS("data/raw/sa_length_rls.RDS") %>%
+#   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+#   dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus))
 
 # Start to format data ----
 # Fix sanctuary locations in the BRUV metadata ----
@@ -219,32 +219,138 @@ bruv_metadata_locs <- st_join(bruv_metadata_sf, state_mp %>% st_cast("POLYGON"))
 
 unique(bruv_metadata_locs$location)
 
+# Check the recorded status against the marine park zoning ----
+#
+# The join above already carries zone_type from sa_state_mp, so the zone each
+# deployment actually sits in is free - no second spatial operation is needed.
+# Sanctuary and Restricted Access zones are the no-take ones (the same mapping
+# used to build `zone` at the top of this script); everything else, including
+# every point outside the marine park network, is fished.
+#
+# This was added after several deployments were found carrying a status that
+# contradicted the zone they sat in. The clearest case was the whole
+# 2025-11_PortGibbon_BRUVS campaign, where 16 of 24 deployments were labelled
+# the opposite way round to the 2017 drops made at the same coordinates, 800 -
+# 2200 m from the nearest sanctuary boundary. None of the disagreements are
+# near a boundary (the closest sits 97 m inside a sanctuary zone), so they are
+# recording errors rather than edge cases, and the zoning layer is taken as
+# the source of truth.
+#
+# Set to FALSE to keep the recorded status and only write the report.
+use_zoning_status <- TRUE
+
+no_take_zone_types <- c("SZ", "RAZ", "RAZ_L", "RAZ_D")
+
+bruv_metadata_locs <- bruv_metadata_locs %>%
+  dplyr::mutate(
+    status_recorded = status,
+    status_zoning = dplyr::if_else(
+      zone_type %in% no_take_zone_types,
+      "No-take",
+      "Fished"
+    )
+  )
+
+# A deployment with no usable position cannot be placed in a zone, so it keeps
+# whatever status was recorded in the field.
+bruv_no_position <- bruv_metadata_locs %>%
+  dplyr::filter(sf::st_is_empty(bruv_metadata_locs))
+
+if (nrow(bruv_no_position) > 0) {
+  message(
+    "NOTE: ", nrow(bruv_no_position),
+    " BRUV deployment(s) have no position and keep their recorded status: ",
+    paste(bruv_no_position$sample, collapse = ", ")
+  )
+}
+
+if (use_zoning_status) {
+  bruv_metadata_locs <- bruv_metadata_locs %>%
+    dplyr::mutate(
+      status = dplyr::if_else(
+        sf::st_is_empty(bruv_metadata_locs),
+        status_recorded,
+        status_zoning
+      )
+    )
+}
+
 
 # Fix sanctuary locations in the BRUV metadata ----
-rls_metadata_sf <- rls_metadata %>%
-  st_as_sf(coords = c("longitude_dd", "latitude_dd"), crs = 4326)
-
-rls_metadata_sf <- st_transform(rls_metadata_sf, st_crs(state_mp))
-rls_metadata_locs <- st_join(rls_metadata_sf, state_mp %>% st_cast("POLYGON")) %>%
-  dplyr::mutate(location = resname) %>%
-  glimpse()
-
-unique(rls_metadata_locs$location)
+# bruv_metadata_sf <- bruv_metadata %>%
+#   st_as_sf(coords = c("longitude_dd", "latitude_dd"), crs = 4326)
+# 
+# bruv_metadata_sf <- st_transform(bruv_metadata_sf, st_crs(state_mp))
+# 
+# # bruv_metadata_locs <- st_join(bruv_metadata_sf, state_mp %>% st_cast("POLYGON")) %>%
+# #   dplyr::mutate(location = resname) %>%
+# #   glimpse()
+# 
+# unique(bruv_metadata_locs$location)
 
 # Add reporting regions to the metadata ----
 reporting_regions <- st_transform(regions_shp, st_crs(state_mp))
 reporting_locations <- st_transform(locations_shp, st_crs(state_mp))
 reporting_sites <- st_transform(sites_shp, st_crs(state_mp))
 
-rls_metadata_with_regions <- st_join(rls_metadata_locs, reporting_regions) %>%
-  st_join(reporting_locations) %>%
-  st_join(reporting_sites) %>%
-  glimpse()
-
 bruv_metadata_with_regions <- st_join(bruv_metadata_locs, reporting_regions) %>%
   st_join(reporting_locations) %>%
   st_join(reporting_sites) %>%
   glimpse()
+
+# Report the status vs zoning comparison ----
+#
+# Written here rather than beside the comparison itself because uwa_site_code
+# and reporting_name only exist after the joins above, and they are what make
+# the report readable.
+bruv_status_vs_zoning <- bruv_metadata_with_regions %>%
+  sf::st_drop_geometry() %>%
+  dplyr::filter(status_recorded != status_zoning) %>%
+  dplyr::select(
+    campaignid, sample, date, reporting_name, location, uwa_site_code,
+    zone_type, zone_name, status_recorded, status_zoning
+  ) %>%
+  dplyr::arrange(reporting_name, uwa_site_code, campaignid, sample)
+
+message(
+  "BRUV status vs zoning: ", nrow(bruv_status_vs_zoning), " of ",
+  nrow(bruv_metadata_with_regions),
+  " deployment(s) disagree with the zoning layer",
+  if (use_zoning_status) " and have been corrected." else " (not corrected)."
+)
+
+if (nrow(bruv_status_vs_zoning) > 0) {
+  bruv_status_vs_zoning %>%
+    dplyr::count(
+      reporting_name, uwa_site_code, campaignid,
+      status_recorded, status_zoning
+    ) %>%
+    as.data.frame() %>%
+    print(row.names = FALSE)
+}
+
+write_csv(bruv_status_vs_zoning, "bruv_status_vs_zoning.csv")
+
+# With status taken from the zoning layer every uwa_site_code should hold
+# exactly one status. The BRUV multivariate script needs that to permute Status
+# among whole sites, so it is worth seeing here rather than discovering
+# downstream.
+bruv_mixed_status_sites <- bruv_metadata_with_regions %>%
+  sf::st_drop_geometry() %>%
+  dplyr::filter(!is.na(uwa_site_code), !is.na(status)) %>%
+  dplyr::distinct(reporting_name, uwa_site_code, status) %>%
+  dplyr::add_count(uwa_site_code, name = "n_statuses") %>%
+  dplyr::filter(n_statuses > 1)
+
+if (nrow(bruv_mixed_status_sites) > 0) {
+  message(
+    "NOTE: ", dplyr::n_distinct(bruv_mixed_status_sites$uwa_site_code),
+    " uwa_site_code(s) still carry more than one status:"
+  )
+  print(as.data.frame(bruv_mixed_status_sites), row.names = FALSE)
+} else {
+  message("Every uwa_site_code now carries exactly one status.")
+}
 
 
 missing <- read_csv("sa_bruvs_missing.csv") %>%
@@ -255,7 +361,7 @@ test <- left_join(missing, bruv_metadata_with_regions) %>%
 
 write_csv(test, "missing_with_lat_lon1.csv")
 
-combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
+combined_metadata <- bind_rows(#rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
                                # bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")
 ) %>%
@@ -345,13 +451,13 @@ hab_number_bruv_deployments <- combined_metadata %>%
   sf::st_drop_geometry() %>%
   dplyr::filter(!is.na(region))
 
-hab_number_rls_deployments <- combined_metadata %>%
-  dplyr::filter(method %in% "UVC") %>%
-  dplyr::group_by(period, region) %>%
-  dplyr::summarise(number = n()) %>%
-  ungroup() %>%
-  sf::st_drop_geometry() %>%
-  dplyr::filter(!is.na(region))
+# hab_number_rls_deployments <- combined_metadata %>%
+#   dplyr::filter(method %in% "UVC") %>%
+#   dplyr::group_by(period, region) %>%
+#   dplyr::summarise(number = n()) %>%
+#   ungroup() %>%
+#   sf::st_drop_geometry() %>%
+#   dplyr::filter(!is.na(region))
 
 # Number of fish -----
 bruv_count_regions <- bruv_count %>%
@@ -362,14 +468,15 @@ bruv_count_regions <- bruv_count %>%
   dplyr::mutate(species = if_else(reporting_name %in% "Glenelg" & genus %in% "Sillago", "bassensis", species)) %>%
   ungroup()
 
-rls_count_regions_pre <- rls_count %>%
-  left_join(combined_metadata) %>%
-  dplyr::select(sample, family, genus, species, region, count, reporting_location, reporting_sanctuary) %>%
-  dplyr::mutate(method = "UVC") %>%
-  dplyr::mutate(period = "Pre-bloom") %>%
-  semi_join(combined_metadata)
+# rls_count_regions_pre <- rls_count %>%
+#   left_join(combined_metadata) %>%
+#   dplyr::select(sample, family, genus, species, region, count, reporting_location, reporting_sanctuary) %>%
+#   dplyr::mutate(method = "UVC") %>%
+#   dplyr::mutate(period = "Pre-bloom") %>%
+#   semi_join(combined_metadata)
 
-combined_count <- bind_rows(bruv_count_regions, rls_count_regions_pre) %>%
+combined_count <- bind_rows(bruv_count_regions#, rls_count_regions_pre
+                            ) %>%
   dplyr::mutate(genus_species = paste(genus, species)) %>%
   dplyr::mutate(genus = if_else(genus %in% "Unknown", family, genus)) %>%
   dplyr::mutate(genus_species = paste(genus, species))
@@ -2138,7 +2245,7 @@ hab_data <- structure(
     hab_number_of_fish = hab_number_of_fish,
     hab_number_of_fish_species = hab_number_of_fish_species,
     hab_number_of_nonfish_species = hab_number_of_nonfish_species,
-    hab_number_rls_deployments = hab_number_rls_deployments,
+    # hab_number_rls_deployments = hab_number_rls_deployments,
     
     # Dataframes
     hab_combined_metadata = combined_metadata,

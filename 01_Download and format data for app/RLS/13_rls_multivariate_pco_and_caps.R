@@ -2810,47 +2810,67 @@ run_dataset_safely <- function(...) {
   )
 }
 
-m1_results <- run_dataset_safely(
-  count_rds_path = "data/tidy/rls_m1_complete_count.rds",
-  meta_rds_path  = "data/tidy/sa_sites.rds",
-  output_dir     = "outputs/multivariate/M1_with_status",
-  dataset_prefix = "M1"
-)
-
-m2_inverts_results <- run_dataset_safely(
-  count_rds_path = "data/tidy/rls_m2_inverts_complete_count.rds",
-  meta_rds_path  = "data/tidy/sa_sites.rds",
-  output_dir     = "outputs/multivariate/M2_inverts_with_status",
-  dataset_prefix = "M2_inverts"
-)
-
-m2_fish_results <- run_dataset_safely(
-  count_rds_path = "data/tidy/rls_m2_fish_complete_count.rds",
-  meta_rds_path  = "data/tidy/sa_sites.rds",
-  output_dir     = "outputs/multivariate/M2_cryptic_with_status",
-  dataset_prefix = "M2_cryptic"
-)
-
-
-# ============================================================
-# WRITE THE DASHBOARD EXPORT
+# ------------------------------------------------------------
+# ENGINE GUARD
 #
-# Binds all three datasets into one set of tidy CSVs in
-# outputs/multivariate/app/, which 15_combine_rls_data_for_app.R
-# reads into `rls_data` for the Shiny app. The per-dataset PNGs and
-# CSVs written above are untouched and remain the versions to use
-# for reports.
+# Everything above this point is definitions only. The block
+# below is what actually runs the three RLS datasets, so another
+# script can source() this file purely as a function library by
+# setting MULTIVARIATE_ENGINE_ONLY <- TRUE first. That is what
+# modelling/03_bruv_multivariate_pco_and_caps.R does, so the BRUV
+# analysis uses these exact PERMANOVA, PCoA and CAP functions
+# rather than a second copy of them that could drift.
 #
-# The datasets are passed in the dashboard's own method order (M1
-# fish, M2 fish, M2 invertebrates) rather than the order they were
-# run in, so the exported tables come out sorted the way the app
-# lists them.
-# ============================================================
+# Running this script normally (source or Run All from the top)
+# is unaffected: MULTIVARIATE_ENGINE_ONLY does not exist, so the
+# guard is FALSE and the datasets run as before.
+# ------------------------------------------------------------
 
-app_multivariate_export <- write_app_multivariate_exports(
-  list(
-    m1_results,
-    m2_fish_results,
-    m2_inverts_results
+if (!(exists("MULTIVARIATE_ENGINE_ONLY") && isTRUE(MULTIVARIATE_ENGINE_ONLY))) {
+
+  m1_results <- run_dataset_safely(
+    count_rds_path = "data/tidy/rls_m1_complete_count.rds",
+    meta_rds_path  = "data/tidy/sa_sites.rds",
+    output_dir     = "outputs/multivariate/M1_with_status",
+    dataset_prefix = "M1"
   )
-)
+
+  m2_inverts_results <- run_dataset_safely(
+    count_rds_path = "data/tidy/rls_m2_inverts_complete_count.rds",
+    meta_rds_path  = "data/tidy/sa_sites.rds",
+    output_dir     = "outputs/multivariate/M2_inverts_with_status",
+    dataset_prefix = "M2_inverts"
+  )
+
+  m2_fish_results <- run_dataset_safely(
+    count_rds_path = "data/tidy/rls_m2_fish_complete_count.rds",
+    meta_rds_path  = "data/tidy/sa_sites.rds",
+    output_dir     = "outputs/multivariate/M2_cryptic_with_status",
+    dataset_prefix = "M2_cryptic"
+  )
+
+
+  # ============================================================
+  # WRITE THE DASHBOARD EXPORT
+  #
+  # Binds all three datasets into one set of tidy CSVs in
+  # outputs/multivariate/app/, which 15_combine_rls_data_for_app.R
+  # reads into `rls_data` for the Shiny app. The per-dataset PNGs and
+  # CSVs written above are untouched and remain the versions to use
+  # for reports.
+  #
+  # The datasets are passed in the dashboard's own method order (M1
+  # fish, M2 fish, M2 invertebrates) rather than the order they were
+  # run in, so the exported tables come out sorted the way the app
+  # lists them.
+  # ============================================================
+
+  app_multivariate_export <- write_app_multivariate_exports(
+    list(
+      m1_results,
+      m2_fish_results,
+      m2_inverts_results
+    )
+  )
+
+}
