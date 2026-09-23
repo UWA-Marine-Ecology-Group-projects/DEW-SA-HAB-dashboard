@@ -176,11 +176,11 @@ test <- left_join(missing, bruv_metadata)
 
 unique(bruv_metadata$location) %>% sort()
 
-# rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
-#   dplyr::rename(date = survey_date, sample = survey_id) %>%
-#   dplyr::mutate(sample = as.character(sample)) %>%
-#   dplyr::mutate(date = as.Date(date)) %>%
-#   glimpse()
+rls_metadata <- readRDS("data/raw/sa_metadata_rls.RDS") %>%
+  dplyr::rename(date = survey_date, sample = survey_id) %>%
+  dplyr::mutate(sample = as.character(sample)) %>%
+  dplyr::mutate(date = as.Date(date)) %>%
+  glimpse()
 
 bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
@@ -190,9 +190,9 @@ bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
   dplyr::mutate(scientific = paste(family, genus, species)) %>%
   semi_join(bruv_metadata)
 
-# rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
-#   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
-#   dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) 
+rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus)) 
 
 bruv_length <- readRDS("data/raw/sa_length_bruv.RDS") %>%
   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus))  %>%
@@ -202,9 +202,9 @@ bruv_length <- readRDS("data/raw/sa_length_bruv.RDS") %>%
   dplyr::mutate(scientific = paste(family, genus, species)) %>%
   semi_join(bruv_metadata)
 
-# rls_length <- readRDS("data/raw/sa_length_rls.RDS") %>%
-#   dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
-#   dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus))
+rls_length <- readRDS("data/raw/sa_length_rls.RDS") %>%
+  dplyr::mutate(genus = if_else(genus %in% "Plagusia", "Guinusia", genus)) %>%
+  dplyr::mutate(genus = if_else(genus %in% "Pelates", "Helotes", genus))
 
 # Start to format data ----
 # Fix sanctuary locations in the BRUV metadata ----
@@ -277,21 +277,25 @@ if (use_zoning_status) {
 
 
 # Fix sanctuary locations in the BRUV metadata ----
-# bruv_metadata_sf <- bruv_metadata %>%
-#   st_as_sf(coords = c("longitude_dd", "latitude_dd"), crs = 4326)
-# 
-# bruv_metadata_sf <- st_transform(bruv_metadata_sf, st_crs(state_mp))
-# 
-# # bruv_metadata_locs <- st_join(bruv_metadata_sf, state_mp %>% st_cast("POLYGON")) %>%
-# #   dplyr::mutate(location = resname) %>%
-# #   glimpse()
-# 
-# unique(bruv_metadata_locs$location)
+rls_metadata_sf <- rls_metadata %>%
+  st_as_sf(coords = c("longitude_dd", "latitude_dd"), crs = 4326)
+
+rls_metadata_sf <- st_transform(rls_metadata_sf, st_crs(state_mp))
+rls_metadata_locs <- st_join(rls_metadata_sf, state_mp %>% st_cast("POLYGON")) %>%
+  dplyr::mutate(location = resname) %>%
+  glimpse()
+
+unique(rls_metadata_locs$location)
 
 # Add reporting regions to the metadata ----
 reporting_regions <- st_transform(regions_shp, st_crs(state_mp))
 reporting_locations <- st_transform(locations_shp, st_crs(state_mp))
 reporting_sites <- st_transform(sites_shp, st_crs(state_mp))
+
+rls_metadata_with_regions <- st_join(rls_metadata_locs, reporting_regions) %>%
+  st_join(reporting_locations) %>%
+  st_join(reporting_sites) %>%
+  glimpse()
 
 bruv_metadata_with_regions <- st_join(bruv_metadata_locs, reporting_regions) %>%
   st_join(reporting_locations) %>%
@@ -361,7 +365,7 @@ test <- left_join(missing, bruv_metadata_with_regions) %>%
 
 write_csv(test, "missing_with_lat_lon1.csv")
 
-combined_metadata <- bind_rows(#rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
+combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,
                                # bloom_temp_campaign %>% dplyr::mutate(method = "BRUVs")
 ) %>%
@@ -451,13 +455,13 @@ hab_number_bruv_deployments <- combined_metadata %>%
   sf::st_drop_geometry() %>%
   dplyr::filter(!is.na(region))
 
-# hab_number_rls_deployments <- combined_metadata %>%
-#   dplyr::filter(method %in% "UVC") %>%
-#   dplyr::group_by(period, region) %>%
-#   dplyr::summarise(number = n()) %>%
-#   ungroup() %>%
-#   sf::st_drop_geometry() %>%
-#   dplyr::filter(!is.na(region))
+hab_number_rls_deployments <- combined_metadata %>%
+  dplyr::filter(method %in% "UVC") %>%
+  dplyr::group_by(period, region) %>%
+  dplyr::summarise(number = n()) %>%
+  ungroup() %>%
+  sf::st_drop_geometry() %>%
+  dplyr::filter(!is.na(region))
 
 # Number of fish -----
 bruv_count_regions <- bruv_count %>%
@@ -468,15 +472,14 @@ bruv_count_regions <- bruv_count %>%
   dplyr::mutate(species = if_else(reporting_name %in% "Glenelg" & genus %in% "Sillago", "bassensis", species)) %>%
   ungroup()
 
-# rls_count_regions_pre <- rls_count %>%
-#   left_join(combined_metadata) %>%
-#   dplyr::select(sample, family, genus, species, region, count, reporting_location, reporting_sanctuary) %>%
-#   dplyr::mutate(method = "UVC") %>%
-#   dplyr::mutate(period = "Pre-bloom") %>%
-#   semi_join(combined_metadata)
+rls_count_regions_pre <- rls_count %>%
+  left_join(combined_metadata) %>%
+  dplyr::select(sample, family, genus, species, region, count, reporting_location, reporting_sanctuary) %>%
+  dplyr::mutate(method = "UVC") %>%
+  dplyr::mutate(period = "Pre-bloom") %>%
+  semi_join(combined_metadata)
 
-combined_count <- bind_rows(bruv_count_regions#, rls_count_regions_pre
-                            ) %>%
+combined_count <- bind_rows(bruv_count_regions, rls_count_regions_pre) %>%
   dplyr::mutate(genus_species = paste(genus, species)) %>%
   dplyr::mutate(genus = if_else(genus %in% "Unknown", family, genus)) %>%
   dplyr::mutate(genus_species = paste(genus, species))
@@ -2245,7 +2248,7 @@ hab_data <- structure(
     hab_number_of_fish = hab_number_of_fish,
     hab_number_of_fish_species = hab_number_of_fish_species,
     hab_number_of_nonfish_species = hab_number_of_nonfish_species,
-    # hab_number_rls_deployments = hab_number_rls_deployments,
+    hab_number_rls_deployments = hab_number_rls_deployments,
     
     # Dataframes
     hab_combined_metadata = combined_metadata,
@@ -2314,6 +2317,62 @@ hab_data <- structure(
     location_species_stacked_split = location_species_stacked_split
     
   ), class = "data")
+
+# Save the BRUV percentage changes to CSV ----
+#
+# These are the numbers behind the dashboard's impact gauges and % change
+# table. Until now they only existed inside hab_data.Rdata, so there was
+# nothing on disk to open, diff between runs, or send to anyone. The RLS side
+# has had this since RLS/10_calculate_rls_metric_percentage_changes.R.
+#
+# Nothing is recalculated here. The tables are written exactly as the app
+# receives them, with one addition: percentage_change (= percentage - 100, so
+# 0 is no change and -40 is a 40% drop) on the tables that do not already
+# carry it, because `percentage` alone reads ambiguously in a spreadsheet.
+# It is only added where pre_bloom and bloom are both present, which keeps it
+# off overall_impact / overall_impact_location - their `percentage` is a mean
+# impact score on a 0-1 scale, not a percentage of the pre-bloom value.
+
+bruv_impact_output_dir <- "data/bruv_metric_percentage_changes"
+
+dir.create(bruv_impact_output_dir, recursive = TRUE, showWarnings = FALSE)
+
+bruv_impact_tables <- list(
+  bruv_impacts_region           = impact_data,
+  bruv_impacts_region_overall   = overall_impact,
+  bruv_impacts_location         = impact_data_location,
+  bruv_impacts_location_split   = impact_data_location_split,
+  bruv_impacts_location_status  = impact_data_location_status,
+  bruv_impacts_location_overall = overall_impact_location
+)
+
+purrr::iwalk(
+  bruv_impact_tables,
+  function(impact_tbl, table_name) {
+
+    if (inherits(impact_tbl, "sf")) {
+      impact_tbl <- sf::st_drop_geometry(impact_tbl)
+    }
+
+    if (
+      all(c("pre_bloom", "bloom", "percentage") %in% names(impact_tbl)) &&
+      !"percentage_change" %in% names(impact_tbl)
+    ) {
+      impact_tbl <- impact_tbl %>%
+        dplyr::mutate(percentage_change = percentage - 100)
+    }
+
+    readr::write_csv(
+      impact_tbl,
+      file.path(bruv_impact_output_dir, paste0(table_name, ".csv"))
+    )
+  }
+)
+
+message(
+  "BRUV percentage changes written to ", bruv_impact_output_dir, ": ",
+  paste(names(bruv_impact_tables), collapse = ", ")
+)
 
 save(hab_data, file = here::here("app_data/hab_data.Rdata"))
 
