@@ -1,91 +1,91 @@
 id,site_name,status,period,sampling_event,survey_date,period_CAP1,status_CAP1
-Aldinga Pinacles_7,Aldinga Pinacles,No-take,Pre-bloom,7,2017-03-06,-0.7395756483211783,-1.0445507508801266
-Aldinga Pinacles_8,Aldinga Pinacles,No-take,Pre-bloom,8,2018-01-20,-1.0513408853969637,-1.1434360220935305
-Aldinga Pinacles_12,Aldinga Pinacles,No-take,Pre-bloom,12,2021-02-03,-0.5722092360075822,-0.9255712105006478
-Aldinga Pinacles_13,Aldinga Pinacles,No-take,Pre-bloom,13,2022-02-13,-0.596927032601995,-1.0410455759967918
-Aldinga Pinacles_18,Aldinga Pinacles,No-take,Bloom,18,2026-01-29,0.8907885153358127,-0.7335033114301858
-Aldinga Reef_1,Aldinga Reef,No-take,Pre-bloom,1,2008-02-08,-0.8915207824551357,-1.059475720403163
-Aldinga Reef_2,Aldinga Reef,No-take,Pre-bloom,2,2011-02-02,-1.1537678812843177,-1.4146679522254766
-Aldinga Reef_3,Aldinga Reef,No-take,Pre-bloom,3,2012-02-02,-0.6973311305755172,-0.8344786497775303
-Aldinga Reef_13,Aldinga Reef,No-take,Pre-bloom,13,2022-02-13,-0.279501855272229,-0.25636689612214464
-Aldinga Reef_18,Aldinga Reef,No-take,Bloom,18,2026-01-29,0.8658246884160662,-0.8351477004606068
-Aldinga SZ1_5,Aldinga SZ1,No-take,Pre-bloom,5,2016-02-17,-0.30567361176754376,-0.8770239905432654
-Aldinga SZ1_18,Aldinga SZ1,No-take,Bloom,18,2026-01-29,0.9455683360385404,-0.6827744949515654
-Aldinga SZ3_5,Aldinga SZ3,No-take,Pre-bloom,5,2016-02-17,-0.3098391161323152,0.1428191143191936
-Aldinga SZ3_18,Aldinga SZ3,No-take,Bloom,18,2026-01-29,1.3337170155829747,0.3258166421373472
-Gull Rock_5,Gull Rock,Fished,Pre-bloom,5,2016-02-17,-0.06150028808470039,0.5160877850531449
-Gull Rock_18,Gull Rock,Fished,Bloom,18,2026-01-29,1.8868030096006445,0.850179623846181
-Horseshoe inner_4,Horseshoe inner,Fished,Pre-bloom,4,2015-08-26,0.900469706696254,1.0968272875982128
-Horseshoe inner_5,Horseshoe inner,Fished,Pre-bloom,5,2016-02-17,0.022493774079905743,-0.009677805251061032
-Horseshoe inner_6,Horseshoe inner,Fished,Pre-bloom,6,2016-11-16,0.6420402660987132,0.4826803179447347
-Horseshoe inner_7,Horseshoe inner,Fished,Pre-bloom,7,2017-03-06,-0.4714149676417806,0.06857314861471138
-Horseshoe inner_8,Horseshoe inner,Fished,Pre-bloom,8,2018-01-20,0.621711593935171,0.38158285440244216
-Horseshoe inner_9,Horseshoe inner,Fished,Pre-bloom,9,2019-03-18,-0.046321972162082815,-0.46786253380684545
-Horseshoe inner_10,Horseshoe inner,Fished,Pre-bloom,10,2019-09-10,0.5343104481534685,0.637456333734497
-Horseshoe inner_11,Horseshoe inner,Fished,Pre-bloom,11,2020-02-07,0.40711860496918106,0.01657198246440025
-Horseshoe inner_12,Horseshoe inner,Fished,Pre-bloom,12,2021-02-03,0.42744687120759334,0.2926860179749462
-Horseshoe inner_13,Horseshoe inner,Fished,Pre-bloom,13,2022-02-13,-0.6178945548140647,-0.23195232663442875
-Horseshoe inner_14,Horseshoe inner,Fished,Pre-bloom,14,2022-08-31,-0.038915854616017015,0.13818834815977424
-Horseshoe inner_16,Horseshoe inner,Fished,Pre-bloom,16,2025-03-06,-0.4518302166377159,0.1620568935468035
-Horseshoe inner_17,Horseshoe inner,Fished,Bloom,17,2025-11-13,2.4535677528717508,1.3553718112080246
-Horseshoe outer_4,Horseshoe outer,Fished,Pre-bloom,4,2015-08-26,0.27151464339659975,1.098907376369712
-Horseshoe outer_5,Horseshoe outer,Fished,Pre-bloom,5,2016-02-17,-0.667262950914342,0.26791401472357756
-Horseshoe outer_6,Horseshoe outer,Fished,Pre-bloom,6,2016-11-16,-0.06990361295517539,0.9546087149869051
-Horseshoe outer_9,Horseshoe outer,Fished,Pre-bloom,9,2019-03-18,-0.5035484048945149,0.43647395300493724
-Horseshoe outer_10,Horseshoe outer,Fished,Pre-bloom,10,2019-09-10,-0.282196042301796,0.7445721560990363
-Horseshoe outer_13,Horseshoe outer,Fished,Pre-bloom,13,2022-02-13,-1.0935988954992184,0.4942044680133952
-Horseshoe outer_14,Horseshoe outer,Fished,Pre-bloom,14,2022-08-31,-0.2610707900172497,1.0469715739030545
-Horseshoe outer_15,Horseshoe outer,Fished,Pre-bloom,15,2023-05-15,-0.4175984906990058,0.2155323531555492
-Horseshoe outer_16,Horseshoe outer,Fished,Pre-bloom,16,2025-03-06,0.4434270689473112,1.3329564889996997
-Horseshoe outer_17,Horseshoe outer,Fished,Bloom,17,2025-11-13,1.9448011699968948,1.5750517079027706
-Moana inside_5,Moana inside,Fished,Pre-bloom,5,2016-02-17,-0.3272600995931774,0.19122376456271534
-Moana inside_6,Moana inside,Fished,Pre-bloom,6,2016-11-16,-0.174092525942213,0.14489893150027552
-Moana inside_9,Moana inside,Fished,Pre-bloom,9,2019-03-18,0.7169964901087198,1.344363604735947
-Moana inside_10,Moana inside,Fished,Pre-bloom,10,2019-09-10,0.5013524228777646,1.2250465739088436
-Moana inside_13,Moana inside,Fished,Pre-bloom,13,2022-02-13,-0.3178683878021211,0.7474519024068551
-Moana inside_14,Moana inside,Fished,Pre-bloom,14,2022-08-31,-0.09290855543891637,1.3866112195857863
-Moana inside_16,Moana inside,Fished,Pre-bloom,16,2025-03-06,0.7537152871904087,1.2294245684107885
-Moana inside_17,Moana inside,Fished,Bloom,17,2025-11-13,1.9182275895454304,1.5227027676207416
-Moana outside_5,Moana outside,Fished,Pre-bloom,5,2016-02-17,-0.7757908116270484,-0.16038188327414343
-Moana outside_6,Moana outside,Fished,Pre-bloom,6,2016-11-16,0.055630866821064565,0.8343452022603572
-Moana outside_7,Moana outside,Fished,Pre-bloom,7,2017-03-06,-1.0292787539538728,-0.2580146658506948
-Moana outside_8,Moana outside,Fished,Pre-bloom,8,2018-01-20,-0.5813836292910375,-0.21967376315245257
-Moana outside_9,Moana outside,Fished,Pre-bloom,9,2019-03-18,-0.42911476130379145,-0.17910264673598647
-Moana outside_10,Moana outside,Fished,Pre-bloom,10,2019-09-10,0.008554038617593109,0.0407765732466827
-Moana outside_11,Moana outside,Fished,Pre-bloom,11,2020-02-07,-0.4377530540703271,0.14061973800412492
-Moana outside_12,Moana outside,Fished,Pre-bloom,12,2021-02-03,-0.7489334405086601,-0.36362072422360886
-Moana outside_13,Moana outside,Fished,Pre-bloom,13,2022-02-13,-0.5346220601768832,0.5402292931699507
-Moana outside_14,Moana outside,Fished,Pre-bloom,14,2022-08-31,0.0216733428888018,1.029933379940889
-Moana outside_16,Moana outside,Fished,Pre-bloom,16,2025-03-06,-0.33869069512809574,-0.42931695169100875
-Moana outside_17,Moana outside,Fished,Bloom,17,2025-11-13,1.3942796858091924,0.5326667000500727
-Noarlunga North Outside_5,Noarlunga North Outside,No-take,Pre-bloom,5,2016-02-17,-1.1417484979690748,-1.44689327604394
-Noarlunga North Outside_6,Noarlunga North Outside,No-take,Pre-bloom,6,2016-11-16,-0.6389954903013686,-0.990357776819523
-Noarlunga North Outside_7,Noarlunga North Outside,No-take,Pre-bloom,7,2017-03-06,-0.7718356437962209,-1.1053040162714614
-Noarlunga North Outside_8,Noarlunga North Outside,No-take,Pre-bloom,8,2018-01-20,-0.94521879611847,-1.2203263109249922
-Noarlunga North Outside_9,Noarlunga North Outside,No-take,Pre-bloom,9,2019-03-18,-0.9842421737856402,-1.4579085945532888
-Noarlunga North Outside_10,Noarlunga North Outside,No-take,Pre-bloom,10,2019-09-10,-0.40399294141635356,-1.0326111950960424
-Noarlunga North Outside_11,Noarlunga North Outside,No-take,Pre-bloom,11,2020-02-07,-0.35750002813246584,-0.8580240670216225
-Noarlunga North Outside_13,Noarlunga North Outside,No-take,Pre-bloom,13,2022-02-13,-1.4479408734692043,-1.1629149201537379
-Noarlunga North Outside_14,Noarlunga North Outside,No-take,Pre-bloom,14,2022-08-31,-0.6066799056979252,-0.6470188299850963
-Noarlunga North Outside_16,Noarlunga North Outside,No-take,Pre-bloom,16,2025-03-06,-1.2489026260489957,-1.7065457842152105
-Noarlunga North Outside_17,Noarlunga North Outside,No-take,Bloom,17,2025-11-13,1.8360746862242954,-0.06039317715338286
-Noarlunga South Outside_7,Noarlunga South Outside,No-take,Pre-bloom,7,2017-03-06,-0.07253649286712727,-0.5894889846303039
-Noarlunga South Outside_8,Noarlunga South Outside,No-take,Pre-bloom,8,2018-01-20,-0.3426814562377196,-1.1592471650819418
-Noarlunga South Outside_11,Noarlunga South Outside,No-take,Pre-bloom,11,2020-02-07,-0.39474128634780115,-1.2428137174225242
-Noarlunga South Outside_18,Noarlunga South Outside,No-take,Bloom,18,2026-01-29,1.787561122325,-0.475933988411415
-Pt Noarlunga inside_5,Pt Noarlunga inside,No-take,Pre-bloom,5,2016-02-17,-1.2725243923148417,-0.9726642540594824
-Pt Noarlunga inside_6,Pt Noarlunga inside,No-take,Pre-bloom,6,2016-11-16,-0.667906377633145,-0.6579199927897844
-Pt Noarlunga inside_9,Pt Noarlunga inside,No-take,Pre-bloom,9,2019-03-18,-1.2225642748601715,-1.47749893632431
-Pt Noarlunga inside_10,Pt Noarlunga inside,No-take,Pre-bloom,10,2019-09-10,0.8749134428254345,0.41799535679925465
-Pt Noarlunga inside_13,Pt Noarlunga inside,No-take,Pre-bloom,13,2022-02-13,-0.8939683067817362,-1.1935117434460547
-Pt Noarlunga inside_14,Pt Noarlunga inside,No-take,Pre-bloom,14,2022-08-31,-0.1642284103278053,-0.6271625378892519
-Pt Noarlunga inside_16,Pt Noarlunga inside,No-take,Pre-bloom,16,2025-03-06,-0.9466285346372014,-1.1754233519404391
-Pt Noarlunga inside_17,Pt Noarlunga inside,No-take,Bloom,17,2025-11-13,1.6903493990994838,0.016099247761048263
-Southport_4,Southport,Fished,Pre-bloom,4,2015-08-26,0.8565495617821085,1.5452514903091985
-Southport_5,Southport,Fished,Pre-bloom,5,2016-02-17,0.5391371795840832,1.0493655363683434
-Southport_7,Southport,Fished,Pre-bloom,7,2017-03-06,0.08420898211276466,0.7356269849256276
-Southport_8,Southport,Fished,Pre-bloom,8,2018-01-20,0.06023363742563677,0.9382765132765551
-Southport_18,Southport,Fished,Bloom,18,2026-01-29,2.0935569416244313,1.1829232149730027
-Willunga_4,Willunga,Fished,Pre-bloom,4,2015-08-26,0.17755551817047552,1.425248355475703
-Willunga_5,Willunga,Fished,Pre-bloom,5,2016-02-17,-0.013597482506642257,0.6090815082122181
-Willunga_18,Willunga,Fished,Bloom,18,2026-01-29,1.9447013267789257,0.9633548005710302
+Aldinga Pinacles_7,Aldinga Pinacles,No-take,Pre-bloom,7,2017-03-06,-0.7395756483211711,-1.0445507508801246
+Aldinga Pinacles_8,Aldinga Pinacles,No-take,Pre-bloom,8,2018-01-20,-1.0513408853969608,-1.1434360220935225
+Aldinga Pinacles_12,Aldinga Pinacles,No-take,Pre-bloom,12,2021-02-03,-0.5722092360075883,-0.9255712105006484
+Aldinga Pinacles_13,Aldinga Pinacles,No-take,Pre-bloom,13,2022-02-13,-0.5969270326019964,-1.0410455759967938
+Aldinga Pinacles_18,Aldinga Pinacles,No-take,Bloom,18,2026-01-29,0.8907885153358046,-0.733503311430193
+Aldinga Reef_1,Aldinga Reef,No-take,Pre-bloom,1,2008-02-08,-0.8915207824551505,-1.0594757204031664
+Aldinga Reef_2,Aldinga Reef,No-take,Pre-bloom,2,2011-02-02,-1.1537678812843155,-1.414667952225474
+Aldinga Reef_3,Aldinga Reef,No-take,Pre-bloom,3,2012-02-02,-0.6973311305755092,-0.8344786497775373
+Aldinga Reef_13,Aldinga Reef,No-take,Pre-bloom,13,2022-02-13,-0.27950185527222626,-0.2563668961221491
+Aldinga Reef_18,Aldinga Reef,No-take,Bloom,18,2026-01-29,0.8658246884160609,-0.8351477004606048
+Aldinga SZ1_5,Aldinga SZ1,No-take,Pre-bloom,5,2016-02-17,-0.305673611767535,-0.8770239905432615
+Aldinga SZ1_18,Aldinga SZ1,No-take,Bloom,18,2026-01-29,0.9455683360385423,-0.6827744949515665
+Aldinga SZ3_5,Aldinga SZ3,No-take,Pre-bloom,5,2016-02-17,-0.3098391161323248,0.14281911431919878
+Aldinga SZ3_18,Aldinga SZ3,No-take,Bloom,18,2026-01-29,1.3337170155829912,0.32581664213735306
+Gull Rock_5,Gull Rock,Fished,Pre-bloom,5,2016-02-17,-0.06150028808471691,0.5160877850531487
+Gull Rock_18,Gull Rock,Fished,Bloom,18,2026-01-29,1.8868030096006325,0.8501796238461825
+Horseshoe inner_4,Horseshoe inner,Fished,Pre-bloom,4,2015-08-26,0.9004697066962422,1.0968272875982086
+Horseshoe inner_5,Horseshoe inner,Fished,Pre-bloom,5,2016-02-17,0.022493774079909625,-0.009677805251062202
+Horseshoe inner_6,Horseshoe inner,Fished,Pre-bloom,6,2016-11-16,0.6420402660987083,0.4826803179447413
+Horseshoe inner_7,Horseshoe inner,Fished,Pre-bloom,7,2017-03-06,-0.47141496764179197,0.06857314861472229
+Horseshoe inner_8,Horseshoe inner,Fished,Pre-bloom,8,2018-01-20,0.6217115939351808,0.38158285440244216
+Horseshoe inner_9,Horseshoe inner,Fished,Pre-bloom,9,2019-03-18,-0.04632197216209448,-0.46786253380683424
+Horseshoe inner_10,Horseshoe inner,Fished,Pre-bloom,10,2019-09-10,0.5343104481534684,0.6374563337344906
+Horseshoe inner_11,Horseshoe inner,Fished,Pre-bloom,11,2020-02-07,0.40711860496917796,0.016571982464398186
+Horseshoe inner_12,Horseshoe inner,Fished,Pre-bloom,12,2021-02-03,0.42744687120759584,0.2926860179749509
+Horseshoe inner_13,Horseshoe inner,Fished,Pre-bloom,13,2022-02-13,-0.6178945548140523,-0.2319523266344257
+Horseshoe inner_14,Horseshoe inner,Fished,Pre-bloom,14,2022-08-31,-0.038915854616020824,0.13818834815976935
+Horseshoe inner_16,Horseshoe inner,Fished,Pre-bloom,16,2025-03-06,-0.4518302166377131,0.16205689354679909
+Horseshoe inner_17,Horseshoe inner,Fished,Bloom,17,2025-11-13,2.4535677528717477,1.3553718112080235
+Horseshoe outer_4,Horseshoe outer,Fished,Pre-bloom,4,2015-08-26,0.2715146433965925,1.0989073763697175
+Horseshoe outer_5,Horseshoe outer,Fished,Pre-bloom,5,2016-02-17,-0.6672629509143505,0.2679140147235881
+Horseshoe outer_6,Horseshoe outer,Fished,Pre-bloom,6,2016-11-16,-0.06990361295517665,0.9546087149869003
+Horseshoe outer_9,Horseshoe outer,Fished,Pre-bloom,9,2019-03-18,-0.5035484048945159,0.43647395300493474
+Horseshoe outer_10,Horseshoe outer,Fished,Pre-bloom,10,2019-09-10,-0.282196042301797,0.7445721560990359
+Horseshoe outer_13,Horseshoe outer,Fished,Pre-bloom,13,2022-02-13,-1.0935988954992257,0.49420446801339407
+Horseshoe outer_14,Horseshoe outer,Fished,Pre-bloom,14,2022-08-31,-0.2610707900172373,1.0469715739030592
+Horseshoe outer_15,Horseshoe outer,Fished,Pre-bloom,15,2023-05-15,-0.4175984906990096,0.21553235315554162
+Horseshoe outer_16,Horseshoe outer,Fished,Pre-bloom,16,2025-03-06,0.44342706894730693,1.3329564889996997
+Horseshoe outer_17,Horseshoe outer,Fished,Bloom,17,2025-11-13,1.9448011699968912,1.575051707902765
+Moana inside_5,Moana inside,Fished,Pre-bloom,5,2016-02-17,-0.3272600995931767,0.19122376456271276
+Moana inside_6,Moana inside,Fished,Pre-bloom,6,2016-11-16,-0.17409252594219865,0.14489893150028085
+Moana inside_9,Moana inside,Fished,Pre-bloom,9,2019-03-18,0.7169964901087135,1.3443636047359537
+Moana inside_10,Moana inside,Fished,Pre-bloom,10,2019-09-10,0.5013524228777737,1.2250465739088445
+Moana inside_13,Moana inside,Fished,Pre-bloom,13,2022-02-13,-0.3178683878021154,0.7474519024068438
+Moana inside_14,Moana inside,Fished,Pre-bloom,14,2022-08-31,-0.09290855543891964,1.3866112195857832
+Moana inside_16,Moana inside,Fished,Pre-bloom,16,2025-03-06,0.7537152871904182,1.2294245684107934
+Moana inside_17,Moana inside,Fished,Bloom,17,2025-11-13,1.9182275895454266,1.5227027676207439
+Moana outside_5,Moana outside,Fished,Pre-bloom,5,2016-02-17,-0.7757908116270531,-0.16038188327415265
+Moana outside_6,Moana outside,Fished,Pre-bloom,6,2016-11-16,0.055630866821070435,0.8343452022603454
+Moana outside_7,Moana outside,Fished,Pre-bloom,7,2017-03-06,-1.0292787539538728,-0.2580146658506983
+Moana outside_8,Moana outside,Fished,Pre-bloom,8,2018-01-20,-0.5813836292910478,-0.21967376315245138
+Moana outside_9,Moana outside,Fished,Pre-bloom,9,2019-03-18,-0.4291147613037897,-0.1791026467359931
+Moana outside_10,Moana outside,Fished,Pre-bloom,10,2019-09-10,0.00855403861759025,0.040776573246673276
+Moana outside_11,Moana outside,Fished,Pre-bloom,11,2020-02-07,-0.4377530540703207,0.1406197380041222
+Moana outside_12,Moana outside,Fished,Pre-bloom,12,2021-02-03,-0.7489334405086455,-0.3636207242235929
+Moana outside_13,Moana outside,Fished,Pre-bloom,13,2022-02-13,-0.5346220601768858,0.5402292931699602
+Moana outside_14,Moana outside,Fished,Pre-bloom,14,2022-08-31,0.02167334288881428,1.0299333799408827
+Moana outside_16,Moana outside,Fished,Pre-bloom,16,2025-03-06,-0.33869069512808425,-0.42931695169101536
+Moana outside_17,Moana outside,Fished,Bloom,17,2025-11-13,1.3942796858091857,0.5326667000500684
+Noarlunga North Outside_5,Noarlunga North Outside,No-take,Pre-bloom,5,2016-02-17,-1.1417484979690904,-1.4468932760439395
+Noarlunga North Outside_6,Noarlunga North Outside,No-take,Pre-bloom,6,2016-11-16,-0.6389954903013733,-0.9903577768195255
+Noarlunga North Outside_7,Noarlunga North Outside,No-take,Pre-bloom,7,2017-03-06,-0.7718356437962085,-1.1053040162714696
+Noarlunga North Outside_8,Noarlunga North Outside,No-take,Pre-bloom,8,2018-01-20,-0.9452187961184714,-1.2203263109249929
+Noarlunga North Outside_9,Noarlunga North Outside,No-take,Pre-bloom,9,2019-03-18,-0.9842421737856233,-1.4579085945532846
+Noarlunga North Outside_10,Noarlunga North Outside,No-take,Pre-bloom,10,2019-09-10,-0.4039929414163554,-1.0326111950960362
+Noarlunga North Outside_11,Noarlunga North Outside,No-take,Pre-bloom,11,2020-02-07,-0.3575000281324644,-0.8580240670216216
+Noarlunga North Outside_13,Noarlunga North Outside,No-take,Pre-bloom,13,2022-02-13,-1.4479408734692027,-1.1629149201537254
+Noarlunga North Outside_14,Noarlunga North Outside,No-take,Pre-bloom,14,2022-08-31,-0.6066799056979323,-0.6470188299850885
+Noarlunga North Outside_16,Noarlunga North Outside,No-take,Pre-bloom,16,2025-03-06,-1.248902626049007,-1.706545784215209
+Noarlunga North Outside_17,Noarlunga North Outside,No-take,Bloom,17,2025-11-13,1.8360746862242932,-0.06039317715337666
+Noarlunga South Outside_7,Noarlunga South Outside,No-take,Pre-bloom,7,2017-03-06,-0.07253649286712696,-0.5894889846302922
+Noarlunga South Outside_8,Noarlunga South Outside,No-take,Pre-bloom,8,2018-01-20,-0.342681456237715,-1.1592471650819385
+Noarlunga South Outside_11,Noarlunga South Outside,No-take,Pre-bloom,11,2020-02-07,-0.39474128634781,-1.242813717422523
+Noarlunga South Outside_18,Noarlunga South Outside,No-take,Bloom,18,2026-01-29,1.7875611223250085,-0.4759339884114215
+Pt Noarlunga inside_5,Pt Noarlunga inside,No-take,Pre-bloom,5,2016-02-17,-1.2725243923148417,-0.9726642540594815
+Pt Noarlunga inside_6,Pt Noarlunga inside,No-take,Pre-bloom,6,2016-11-16,-0.6679063776331515,-0.6579199927897839
+Pt Noarlunga inside_9,Pt Noarlunga inside,No-take,Pre-bloom,9,2019-03-18,-1.2225642748601644,-1.4774989363243105
+Pt Noarlunga inside_10,Pt Noarlunga inside,No-take,Pre-bloom,10,2019-09-10,0.8749134428254397,0.41799535679924815
+Pt Noarlunga inside_13,Pt Noarlunga inside,No-take,Pre-bloom,13,2022-02-13,-0.8939683067817445,-1.1935117434460505
+Pt Noarlunga inside_14,Pt Noarlunga inside,No-take,Pre-bloom,14,2022-08-31,-0.16422841032779695,-0.6271625378892682
+Pt Noarlunga inside_16,Pt Noarlunga inside,No-take,Pre-bloom,16,2025-03-06,-0.9466285346372098,-1.1754233519404509
+Pt Noarlunga inside_17,Pt Noarlunga inside,No-take,Bloom,17,2025-11-13,1.6903493990994842,0.0160992477610629
+Southport_4,Southport,Fished,Pre-bloom,4,2015-08-26,0.8565495617821054,1.5452514903092074
+Southport_5,Southport,Fished,Pre-bloom,5,2016-02-17,0.5391371795840803,1.0493655363683536
+Southport_7,Southport,Fished,Pre-bloom,7,2017-03-06,0.08420898211277329,0.7356269849256167
+Southport_8,Southport,Fished,Pre-bloom,8,2018-01-20,0.06023363742562988,0.9382765132765589
+Southport_18,Southport,Fished,Bloom,18,2026-01-29,2.093556941624438,1.1829232149729954
+Willunga_4,Willunga,Fished,Pre-bloom,4,2015-08-26,0.17755551817047222,1.4252483554757016
+Willunga_5,Willunga,Fished,Pre-bloom,5,2016-02-17,-0.013597482506631203,0.6090815082122043
+Willunga_18,Willunga,Fished,Bloom,18,2026-01-29,1.9447013267789375,0.9633548005710327

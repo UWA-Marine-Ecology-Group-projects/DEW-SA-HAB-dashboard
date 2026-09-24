@@ -186,8 +186,16 @@ m1_clean <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
   dplyr::mutate(genus = if_else(genus %in% "Cochleoceps", "Unknown", genus)) %>%
   dplyr::mutate(genus = if_else(recorded_species_name %in% "Nesogobius spp.", "Unknown", genus)) %>%
   dplyr::mutate(species = if_else(species %in% "gigas", "spp", species)) %>%
-  dplyr::mutate(genus_fam = if_else(genus %in% "Unknown", family, genus)) %>%
+  
   dplyr::mutate(species = if_else(genus %in% "Heteroclinus", "spp", species)) %>%
+  
+  dplyr::mutate(genus = if_else(species %in% "nigripes", "Pseudogoniistius", genus)) %>%
+  
+  
+  
+  dplyr::mutate(genus_fam = if_else(genus %in% "Unknown", family, genus)) %>%
+
+
   dplyr::mutate(portal_name = paste(genus_fam, species)) %>%
   dplyr::rename(rls_recorded_name = recorded_species_name, 
                 rls_reporting_name = reporting_name) %>%
@@ -202,7 +210,8 @@ m1_clean <- dplyr::left_join(m1_species, CheckEM::aus_synonyms) %>%
   
   dplyr::select(-c(genus_fam)) %>% # phylum, class, order, 
   dplyr::mutate(scientific = paste(family, genus, species)) %>%
-  dplyr::filter(!scientific %in% "Monacanthidae Unknown spp")
+  dplyr::filter(!scientific %in% "Monacanthidae Unknown spp") 
+
 # dplyr::filter(!class %in% "Teleostei") # removed species that had multiple classes for Cheilodactylus spectabilis  
 
 unique(m1_clean$phylum)
@@ -370,7 +379,8 @@ m2_inverts_clean <- m2_species_inverts %>%
   dplyr::filter(!family %in% "Unknown") %>%
   dplyr::mutate(
     scientific = paste(family, genus, species)
-  )
+  ) %>%
+  dplyr::filter(!portal_name %in% c("Astralium spp", "Chlorodiloma odontis"))
 
 m2_species_not_observed_inverts <- m2_inverts_clean %>%
   dplyr::distinct(family, genus, species) %>%
@@ -379,6 +389,34 @@ m2_species_not_observed_inverts <- m2_inverts_clean %>%
 unique(m2_inverts_clean$phylum)
 unique(m2_inverts_clean$class)
 unique(m2_inverts_clean$order)
+
+# locations_impacted <- m2_inverts_clean %>%
+#   dplyr::filter(genus %in% c("Astralium", "Chlorodiloma")) %>%
+#   dplyr::filter(species %in% c("spp", "odontis")) %>%
+#   dplyr::group_by(location, portal_name) %>%
+#   dplyr::summarise(sum = sum(total))
+
+locations_impacted_hermits <- m2_inverts_clean %>%
+  dplyr::filter(portal_name %in% c("Paguridae spp", "Paguristes brevirostris", "Paguristes frontalis", "Paguristes spp", "Pagurixus handrecki","Paguroidea spp", "Strigopagurus strigimanus")) %>%
+  dplyr::group_by(location, portal_name) %>%
+  dplyr::summarise(sum = sum(total))
+
+hermits <- locations_impacted_hermits %>%
+  ungroup() %>%
+  distinct(portal_name) %>%
+  dplyr::mutate(family_new = "Paguridae & Diogenidae") %>%
+  dplyr::mutate(genus_new = "Paguridae & Diogenidae") %>%
+  dplyr::mutate(species_new = "spp") %>%
+  dplyr::mutate(scientific_new = paste(family_new, genus_new, species_new))
+ 
+
+m2_inverts_clean <- m2_inverts_clean %>%
+  left_join(hermits) %>%
+  dplyr::mutate(family = if_else(is.na(family_new), family, family_new)) %>%
+  dplyr::mutate(species = if_else(is.na(species_new), species, species_new)) %>%
+  dplyr::mutate(genus = if_else(is.na(genus_new), genus, genus_new)) %>%
+  dplyr::mutate(scientific = if_else(is.na(scientific_new), scientific, scientific_new)) %>%
+  dplyr::mutate(portal_name = if_else(family %in% "Paguridae & Diogenidae", "Paguridae & Diogenidae spp", portal_name))
 
 # Find common species ----
 species_in_m1_m2_fish <- semi_join(m1_clean %>% distinct(family, genus, species, portal_name),
