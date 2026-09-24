@@ -1,157 +1,157 @@
 dataset,dataset_label,location,ordination,site_name,status,axis1,axis2,n_events
-BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_period,57,Fished,1.4681329569734425,-1.1743563149160674,3
-BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_period,58,Fished,0.23167127164957796,-0.7155897128922091,6
-BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_period,7,No-take,-0.6438251667575327,0.8685119135668283,9
-BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_status,57,Fished,-1.9059854391735376,-0.5481352440502181,3
-BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_status,58,Fished,-1.106624740155086,0.27406762202510915,6
-BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_status,7,No-take,1.3730783064945697,-5.630623282441387e-17,9
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,4,No-take,0.03624234230013843,0.3799387207099602,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,82,Fished,0.047693072030021114,-0.27889050750823974,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,83,Fished,-0.15870287801056643,-0.5413431564154645,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,84,Fished,0.018102508455550226,-0.34727061743762005,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,85,No-take,0.035928956098320974,0.5457225336153723,3
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,86,No-take,0.029718238151115767,0.3782736604398346,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,4,No-take,-0.8102832954446498,0.15094268467890481,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,82,Fished,0.43564845064567803,0.13094945992245197,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,83,Fished,0.808068554463983,-0.2820935376042128,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,84,Fished,0.7371775635851414,0.15114407768176072,4
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,85,No-take,-0.8476763611095521,-0.07892851202407161,3
-BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,86,No-take,-0.5348540024179884,-0.09174630066085104,4
-BRUV,BRUVs,Boston Bay,cap_period,19,Fished,-0.0402488364862576,0.09659828754510383,6
-BRUV,BRUVs,Boston Bay,cap_period,21,Fished,0.16976144219915879,-0.22923560567307563,6
-BRUV,BRUVs,Boston Bay,cap_period,22,Fished,-0.12951260571290113,0.13263731812797183,6
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,15,Fished,0.02633293628118233,0.11199553516070102,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,31,Fished,0.05869605057546279,-0.28164815861031045,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,32,Fished,-0.0031296883288195465,-1.3464326199402699,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,33,No-take,0.08251456546144281,-0.6729981076182898,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,34,No-take,0.1284724896248246,1.259793472660426,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,35,No-take,-0.2928863536140933,0.9292898783477435,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,15,Fished,0.08417198485312816,-0.07746708635300686,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,31,Fished,-1.5415964668081457,-0.07853973979465623,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,32,Fished,-1.6079090024523763,0.15600682614766306,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,33,No-take,0.3616683691630091,0.27911696270215763,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,34,No-take,1.7870562575996516,0.19225157565369522,2
-BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,35,No-take,0.9166088576447333,-0.4713685383558525,2
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,59,Fished,0.13156543045208344,-1.744634543808578,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,6,Fished,-0.44333941880686156,0.5045307038987814,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,60,Fished,0.13412799881484977,-0.11690970000414411,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,61,No-take,0.11388167183864732,0.7790052022326353,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,62,No-take,-0.18666030411315832,1.9188686905411712,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,63,No-take,0.25042462181443953,-1.340860352859866,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,59,Fished,-1.9160173431114669,-1.439064996494987,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,6,Fished,-0.6686696296480451,1.0509308998188822,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,60,Fished,-1.3899686427421596,0.3881340966761058,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,61,No-take,1.5950355072065119,0.3337110367158278,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,62,No-take,2.4446219090377856,1.549218967578568,7
-BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,63,No-take,-0.06500180074262552,-1.8829300042943955,7
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,14,Fished,0.138648143956056,-0.11760167666038662,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,36,No-take,1.1234927193567135,-0.9636698638097215,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,37,Fished,-0.4433255130573038,0.20124791399983583,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,38,Fished,-0.03861328480086734,0.10609797227623768,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,39,No-take,0.9667398777800092,-1.2575240678749073,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,40,No-take,-1.7469419432346078,2.0314497220689427,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,14,Fished,-1.3623010370546829,0.18009624325838028,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,36,No-take,1.8715279978436263,0.8649288595623125,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,37,Fished,-2.360954224657226,-0.15099137974023624,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,38,Fished,0.5261223966661136,-0.029104863518144175,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,39,No-take,0.9318831596908917,1.0465430291141875,2
-BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,40,No-take,0.3937217075112774,-1.9114718886765,2
-BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,16,No-take,-0.15017633609736353,0.5196639431477341,2
-BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,28,Fished,0.18376988792542148,-1.6830518676526074,2
-BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,29,Fished,0.2184273080798088,0.37144931484464105,2
-BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,30,No-take,-0.25202085990786655,0.7919386096602321,2
-BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,16,No-take,-1.29310001556141,0.056430303167391394,2
-BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,28,Fished,1.98620613398372,-0.035597128505014064,2
-BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,29,Fished,0.5829946274623523,0.03559712850501395,2
-BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,30,No-take,-1.276100745884662,-0.05643030316739134,2
-BRUV,BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,cap_period,18,No-take,0,-2.7755575615628914e-17,7
-BRUV,BRUVs,Glenelg,cap_period,50,Fished,-0.14681229755207606,-0.600965422527359,6
-BRUV,BRUVs,Glenelg,cap_period,51,Fished,-0.08335535608847948,0.49399542835475196,6
-BRUV,BRUVs,Glenelg,cap_period,52,Fished,0.22015257640501218,0.4939339890771905,6
-BRUV,BRUVs,Glenelg,cap_period,9,Fished,0.010015077235543712,-0.3869639949045835,6
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,10,Fished,0.037628673078650955,0.15583263787670298,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,46,Fished,-0.17895696014364826,0.19323750388860636,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,47,No-take,0.19988379235350265,-1.1491917637020839,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,48,Fished,-0.15262448383086902,1.6438668251921347,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,49,No-take,0.09406897854236385,-0.8437452032553598,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,10,Fished,-0.7911343720910984,0.14053674143540185,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,46,Fished,-0.42375239091559685,-0.08838215380251306,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,47,No-take,1.9434829831451403,0.0386389610794163,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,48,Fished,-2.1442052427388996,-0.052154587632889125,3
-BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,49,No-take,1.4156090226004534,-0.03863896107941608,3
-BRUV,BRUVs,O'Sullivan,cap_period,53,Fished,0.0587242965993914,-0.8349345277752104,6
-BRUV,BRUVs,O'Sullivan,cap_period,54,Fished,-0.08862524907850115,0.5256656520416849,6
-BRUV,BRUVs,O'Sullivan,cap_period,55,Fished,0.5297875631272306,-0.2300946767173717,3
-BRUV,BRUVs,O'Sullivan,cap_period,56,Fished,0.07552323587347953,-0.4303740699802568,7
-BRUV,BRUVs,O'Sullivan,cap_period,8,Fished,-0.3231032709368986,0.9264192957358444,6
-BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,11,No-take,-0.08893917189985626,0.6612594461727912,4
-BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,43,Fished,1.0430450842211223,-0.7235518219672703,2
-BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,44,Fished,0.0015065805268431667,-0.13831902808037766,4
-BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,45,No-take,-0.5787866009833973,-0.2148860094783716,3
-BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,11,No-take,-1.5061747317440017,0.1358749733145792,4
-BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,43,Fished,3.3261762271827577,0.6893159249853603,2
-BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,44,Fished,0.46795823733257813,-0.3446579624926801,4
-BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,45,No-take,-0.833162158906607,-0.18116663108610553,3
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,17,No-take,0.294331377150962,-1.7506329780956829,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,23,Fished,-0.2626635216743462,0.7064954910815506,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,24,Fished,-0.05353082072453219,0.30222599042211495,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,25,Fished,-0.12859749142250254,0.7932209673059963,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,26,No-take,0.04141047549824539,-0.5791851137512704,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,27,No-take,0.10904998117217302,0.5278756430372908,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,17,No-take,-1.8794747907117473,0.198608266431749,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,23,Fished,1.1653547717568402,-0.14392898551490077,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,24,Fished,0.8911455315765344,0.08775724651729655,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,25,Fished,1.356706623817474,0.056171738997604526,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,26,No-take,-1.0022472952107946,-0.11002565430986533,2
-BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,27,No-take,-0.5314848412283076,-0.08858261212188323,2
-BRUV,BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,cap_period,20,No-take,-8.051285332877356e-17,-7.802523303233084e-17,10
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,5,Fished,-0.7816360052435017,-1.3224606921403885,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,64,Fished,1.6480122523384768,2.232052652497232,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,65,Fished,-0.10458324164340077,0.4134474582963201,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,66,No-take,0.3062586726716192,-0.5553176293085749,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,67,No-take,-0.3187647066939084,0.28902999206675956,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,68,No-take,-0.874168133334165,-1.2328770783132401,6
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,5,Fished,-0.06206363993514242,-1.7968315657678888,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,64,Fished,-2.5816518040144105,1.8603694390248113,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,65,Fished,-1.2399976558329224,-0.06353787325692241,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,66,No-take,1.5297547306461952,-0.014929558122321265,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,67,No-take,0.8501050926486525,0.7207211203007433,7
-BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,68,No-take,1.7544954892355662,-0.8234234892081583,6
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,3,No-take,0.10723432233139,0.035138809602934855,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,72,Fished,-0.2412713877454937,1.2159692401344941,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,73,Fished,0.4138515740238283,-0.2824386248072637,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,74,Fished,-0.46399512192503656,1.0912221979203218,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,75,No-take,0.2514112015555112,-0.8192742459988893,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,76,No-take,-0.06723058824019977,-1.2406173768515978,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,3,No-take,-0.7690911847210354,0.09807173250139732,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,72,Fished,1.8723336777612563,0.018727437718376483,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,73,Fished,0.4034323378302437,-0.5015645979971579,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,74,Fished,1.1787323394181426,0.4828371602787813,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,75,No-take,-0.8845780392900032,-0.2063570384520365,7
-BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,76,No-take,-1.800829130998604,0.10828530595063883,7
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,2,No-take,0.06030637725775159,-0.6409797284244579,8
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,69,Fished,-0.23730304908220692,2.0836104466835312,7
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,70,No-take,-0.17057407109780695,1.6722979418684878,7
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,71,Fished,0.14264485172708322,-0.9955684742741524,8
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,80,No-take,0.22662811011929743,-0.6164497835617089,8
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,81,Fished,-0.07268685894662044,-1.0334218537226973,8
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,2,No-take,-0.5289072988717858,-0.7127272795504306,8
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,69,Fished,0.05738917428089809,2.1606256360191582,7
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,70,No-take,-2.6949063649074034,1.6026366429745633,7
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,71,Fished,1.6018386065879333,-0.9274181254274312,8
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,80,No-take,-0.8018182348978792,-0.689579783052312,8
-BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,81,Fished,2.0367144689799237,-0.963129306089332,8
-BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,1,Fished,0.11857436397776623,0.3698043597608708,3
-BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,77,No-take,-0.6536409892834905,0.430238521746154,4
-BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,78,Fished,0.2976666984210784,0.3897698226559503,3
-BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,79,Fished,0.45528025664580923,-1.3332255447450267,3
-BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,1,Fished,0.1222248696324501,-0.5622304567928315,3
-BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,77,No-take,1.1700005068296206,3.122502256758253e-17,4
-BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,78,Fished,-0.2086144128693228,-0.6642019846652559,3
-BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,79,Fished,-1.4736111325359549,1.2264324414580872,3
-BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_period,12,No-take,0.14432720281581368,0.4985114230366887,7
-BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_period,41,Fished,0.004524029904496455,-0.04661237151619632,7
-BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_period,42,Fished,-0.14885123272031023,-0.45189905152049203,7
-BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_status,12,No-take,-0.8897741720537466,-1.6802035953032504e-16,7
-BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_status,41,Fished,0.3144811933068498,0.09867697102985958,7
-BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_status,42,Fished,0.5752929787468969,-0.09867697102985944,7
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_period,Aldinga Reef SZ,No-take,-0.643825166757533,-0.8685119135668284,9
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_period,Aldinga Reef outside North,Fished,1.4681329569734416,1.1743563149160667,3
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_period,Aldinga Reef outside South,Fished,0.23167127164957868,0.7155897128922091,6
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_status,Aldinga Reef SZ,No-take,-1.3730783064945702,-7.095500884377357e-17,9
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_status,Aldinga Reef outside North,Fished,1.905985439173537,-0.5481352440502187,3
+BRUV,BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,cap_status,Aldinga Reef outside South,Fished,1.1066247401550866,0.27406762202510937,6
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,Bay of Shoals SZ East,No-take,0.036242342300138716,0.37993872070996015,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,Bay of Shoals SZ South,No-take,0.035928956098321085,0.5457225336153719,3
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,Bay of Shoals SZ central,No-take,0.029718238151115614,0.3782736604398356,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,Bay of Shoals oustide West,Fished,0.018102508455550045,-0.34727061743762033,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,Bay of Shoals outside East,Fished,0.047693072030021016,-0.2788905075082395,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_period,Bay of Shoals outside central,Fished,-0.15870287801056618,-0.5413431564154645,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,Bay of Shoals SZ East,No-take,-0.8102832954446495,0.15094268467890393,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,Bay of Shoals SZ South,No-take,-0.8476763611095514,-0.07892851202407118,3
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,Bay of Shoals SZ central,No-take,-0.5348540024179891,-0.09174630066085034,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,Bay of Shoals oustide West,Fished,0.737177563585141,0.15114407768176027,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,Bay of Shoals outside East,Fished,0.4356484506456784,0.13094945992245163,4
+BRUV,BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,cap_status,Bay of Shoals outside central,Fished,0.8080685544639826,-0.282093537604212,4
+BRUV,BRUVs,Boston Bay,cap_period,Boston Bay North,Fished,0.16976144219915837,-0.22923560567307516,6
+BRUV,BRUVs,Boston Bay,cap_period,Boston Bay South,Fished,-0.12951260571290057,0.13263731812797117,6
+BRUV,BRUVs,Boston Bay,cap_period,Boston Bay central,Fished,-0.04024883648625761,0.09659828754510402,6
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,Cape Elizabeth SZ North,No-take,0.08251456546144365,-0.6729981076182874,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,Cape Elizabeth SZ South,No-take,-0.29288635361409465,0.9292898783477446,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,Cape Elizabeth SZ central,No-take,0.12847248962482394,1.2597934726604265,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,Cape Elizabeth outside North,Fished,0.05869605057546101,-0.28164815861031756,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,Cape Elizabeth outside South,Fished,0.026332936281183383,0.11199553516070429,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_period,Cape Elizabeth outside central,Fished,-0.0031296883288174926,-1.34643261994027,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,Cape Elizabeth SZ North,No-take,-0.36166836916300527,0.27911696270215913,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,Cape Elizabeth SZ South,No-take,-0.9166088576447358,-0.47136853835585424,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,Cape Elizabeth SZ central,No-take,-1.7870562575996516,0.19225157565369477,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,Cape Elizabeth outside North,Fished,1.541596466808147,-0.07853973979465856,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,Cape Elizabeth outside South,Fished,-0.08417198485313057,-0.07746708635300664,2
+BRUV,BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,cap_status,Cape Elizabeth outside central,Fished,1.6079090024523763,0.15600682614766506,2
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,Carrickalinga Cliffs SZ North,No-take,0.11388167183864685,-0.7790052022326349,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,Carrickalinga Cliffs SZ South,No-take,0.25042462181443464,1.3408603528598653,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,Carrickalinga Cliffs SZ central,No-take,-0.18666030411315598,-1.9188686905411696,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,Carrickalinga outside North,Fished,0.1315654304520788,1.744634543808576,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,Carrickalinga outside South,Fished,0.13412799881485282,0.11690970000414239,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_period,Carrickalinga outside central,Fished,-0.44333941880685707,-0.5045307038987786,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,Carrickalinga Cliffs SZ North,No-take,-1.595035507206512,-0.3337110367158288,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,Carrickalinga Cliffs SZ South,No-take,0.06500180074262651,1.8829300042943964,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,Carrickalinga Cliffs SZ central,No-take,-2.4446219090377896,-1.5492189675785675,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,Carrickalinga outside North,Fished,1.9160173431114678,1.4390649964949884,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,Carrickalinga outside South,Fished,1.3899686427421591,-0.3881340966761094,7
+BRUV,BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,cap_status,Carrickalinga outside central,Fished,0.6686696296480475,-1.0509308998188787,7
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,Chinamans Hat SZ North,No-take,1.123492719356718,-0.9636698638097222,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,Chinamans Hat SZ central,No-take,0.9667398777800104,-1.2575240678749091,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,Chinamans Hat SZ south,No-take,-1.7469419432346072,2.0314497220689427,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,Chinamans Hat outside North,Fished,-0.4433255130573105,0.20124791399983957,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,Chinamans Hat outside South,Fished,0.1386481439560574,-0.11760167666038916,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_period,Chinamans Hat outside central,Fished,-0.0386132848008689,0.10609797227623839,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,Chinamans Hat SZ North,No-take,-1.8715279978436254,-0.8649288595623122,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,Chinamans Hat SZ central,No-take,-0.9318831596908964,-1.046543029114188,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,Chinamans Hat SZ south,No-take,-0.3937217075112733,1.9114718886765003,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,Chinamans Hat outside North,Fished,2.3609542246572315,0.15099137974023893,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,Chinamans Hat outside South,Fished,1.3623010370546802,-0.18009624325838325,2
+BRUV,BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,cap_status,Chinamans Hat outside central,Fished,-0.5261223966661165,0.029104863518144314,2
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,Black Point,No-take,-0.1501763360973637,0.5196639431477359,2
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,Point Lowly,Fished,0.1837698879254216,-1.6830518676526092,2
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,Stony Point,Fished,0.21842730807980903,0.37144931484464233,2
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_period,Third Dip,No-take,-0.25202085990786643,0.7919386096602312,2
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,Black Point,No-take,-1.29310001556141,0.056430303167391116,2
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,Point Lowly,Fished,1.98620613398372,-0.035597128505014175,2
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,Stony Point,Fished,0.5829946274623523,0.035597128505014286,2
+BRUV,BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,cap_status,Third Dip,No-take,-1.276100745884662,-0.05643030316739123,2
+BRUV,BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,cap_period,Dangerous Reef,No-take,-7.868210051751946e-18,8.935955584119368e-18,7
+BRUV,BRUVs,Glenelg,cap_period,Glenelg Shellfish Reef,Fished,0.01001507723554431,0.38696399490458344,6
+BRUV,BRUVs,Glenelg,cap_period,Glenelg rocky reef,Fished,-0.08335535608848015,-0.49399542835475246,6
+BRUV,BRUVs,Glenelg,cap_period,Glenelg sand,Fished,-0.14681229755207567,0.6009654225273584,6
+BRUV,BRUVs,Glenelg,cap_period,Glenelg seagrass,Fished,0.22015257640501165,-0.4939339890771892,6
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,Long spit,Fished,0.037628673078651,0.15583263787670287,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,Middle Spit SZ North,No-take,0.09406897854236392,-0.8437452032553601,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,Middle Spit SZ South,No-take,0.1998837923535032,-1.1491917637020839,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,Middle Spit outside North,Fished,-0.15262448383086955,1.643866825192134,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_period,Middle Spit outside South,Fished,-0.1789569601436479,0.19323750388860708,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,Long spit,Fished,-0.7911343720910988,0.1405367414354024,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,Middle Spit SZ North,No-take,1.4156090226004547,-0.038638961079416466,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,Middle Spit SZ South,No-take,1.9434829831451421,0.038638961079416,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,Middle Spit outside North,Fished,-2.1442052427389,-0.05215458763288942,3
+BRUV,BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,cap_status,Middle Spit outside South,Fished,-0.42375239091559774,-0.0883821538025128,3
+BRUV,BRUVs,O'Sullivan,cap_period,Noarlunga tyre reef,Fished,0.05872429659939133,-0.8349345277752102,6
+BRUV,BRUVs,O'Sullivan,cap_period,O'Sullivan Shellfish Reef,Fished,-0.3231032709368974,0.9264192957358443,6
+BRUV,BRUVs,O'Sullivan,cap_period,O'Sullivan rocky reef,Fished,0.07552323587348157,-0.43037406998025696,7
+BRUV,BRUVs,O'Sullivan,cap_period,O'Sullivan sand,Fished,-0.08862524907850382,0.525665652041685,6
+BRUV,BRUVs,O'Sullivan,cap_period,Whitton Bluff,Fished,0.5297875631272297,-0.23009467671737227,3
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,Offshore Ardrossan SZ,No-take,-0.578786600983398,-0.21488600947837247,3
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,Offshore Ardrossan SZ Zanoni Shipwreck,No-take,-0.08893917189985687,0.6612594461727949,4
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,Offshore Ardrossan outside North,Fished,1.0430450842211216,-0.7235518219672737,2
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_period,Offshore Ardrossan outside South,Fished,0.0015065805268445961,-0.1383190280803788,4
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,Offshore Ardrossan SZ,No-take,-0.8331621589066062,0.18116663108610623,3
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,Offshore Ardrossan SZ Zanoni Shipwreck,No-take,-1.5061747317440006,-0.13587497331457954,4
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,Offshore Ardrossan outside North,Fished,3.3261762271827524,-0.6893159249853579,2
+BRUV,BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,cap_status,Offshore Ardrossan outside South,Fished,0.4679582373325799,0.34465796249267905,4
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,Port Gibbon SZ North,No-take,0.04141047549824406,0.579185113751299,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,Port Gibbon SZ South,No-take,0.2943313771509636,1.750632978095712,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,Port Gibbon SZ central,No-take,0.10904998117217313,-0.5278756430372535,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,Port Gibbon outside North,Fished,-0.26266352167434726,-0.7064954910815496,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,Port Gibbon outside South,Fished,-0.12859749142250204,-0.7932209673060948,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_period,Port Gibbon outside central,Fished,-0.05353082072453208,-0.3022259904221125,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,Port Gibbon SZ North,No-take,-1.002247295210795,-0.11002565430986744,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,Port Gibbon SZ South,No-take,-1.879474790711748,0.1986082664317501,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,Port Gibbon SZ central,No-take,-0.5314848412283104,-0.08858261212188323,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,Port Gibbon outside North,Fished,1.1653547717568424,-0.1439289855149013,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,Port Gibbon outside South,Fished,1.3567066238174754,0.05617173899760497,2
+BRUV,BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,cap_status,Port Gibbon outside central,Fished,0.8911455315765353,0.08775724651729666,2
+BRUV,BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,cap_period,Port Noarlunga Reef SZ,No-take,3.6125616387217007e-17,-1.5299132300174098e-16,10
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,Rapid Head SZ North,No-take,-0.8741681333341632,-1.2328770783132383,6
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,Rapid Head SZ South,No-take,0.3062586726716226,-0.5553176293085741,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,Rapid Head SZ central,No-take,-0.318764706693911,0.28902999206675845,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,Rapid Head outside North,Fished,-0.7816360052434982,-1.3224606921403863,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,Rapid Head outside South,Fished,1.6480122523384715,2.2320526524972295,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_period,Rapid Head outside central,Fished,-0.10458324164340192,0.413447458296319,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,Rapid Head SZ North,No-take,-1.7544954892355662,-0.8234234892081573,6
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,Rapid Head SZ South,No-take,-1.5297547306461945,-0.014929558122320512,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,Rapid Head SZ central,No-take,-0.8501050926486514,0.7207211203007411,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,Rapid Head outside North,Fished,0.06206363993514379,-1.7968315657678864,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,Rapid Head outside South,Fished,2.581651804014409,1.8603694390248091,7
+BRUV,BRUVs,Rapid Head - Rapid Head Sanctuary Zone,cap_status,Rapid Head outside central,Fished,1.2399976558329209,-0.06353787325692287,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,Sponge Gardens SZ East,No-take,0.10723432233139239,0.03513880960293103,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,Sponge Gardens SZ West,No-take,0.2514112015555107,-0.8192742459988895,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,Sponge Gardens SZ central,No-take,-0.06723058824020173,-1.2406173768515971,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,Sponge Gardens outside East,Fished,-0.46399512192503584,1.0912221979203205,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,Sponge Gardens outside West,Fished,-0.24127138774549348,1.2159692401344955,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_period,Sponge Gardens outside central,Fished,0.41385157402382783,-0.28243862480725973,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,Sponge Gardens SZ East,No-take,-0.7690911847210363,0.09807173250139468,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,Sponge Gardens SZ West,No-take,-0.8845780392900044,-0.20635703845203585,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,Sponge Gardens SZ central,No-take,-1.8008291309986013,0.10828530595064094,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,Sponge Gardens outside East,Fished,1.1787323394181421,0.48283716027877993,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,Sponge Gardens outside West,Fished,1.8723336777612547,0.018727437718376067,7
+BRUV,BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,cap_status,Sponge Gardens outside central,Fished,0.4034323378302447,-0.5015645979971561,7
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,The Pages SZ East,No-take,0.060306377257749295,-0.6409797284244587,8
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,The Pages SZ North,No-take,-0.1705740710978065,1.6722979418684878,7
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,The Pages SZ West,No-take,0.22662811011929834,-0.6164497835617085,8
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,The Pages outside East,Fished,0.14264485172708324,-0.9955684742741522,8
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,The Pages outside North,Fished,-0.23730304908220462,2.0836104466835312,7
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_period,The Pages outside West,Fished,-0.07268685894662069,-1.0334218537226973,8
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,The Pages SZ East,No-take,-0.5289072988717856,-0.7127272795504308,8
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,The Pages SZ North,No-take,-2.6949063649074034,1.602636642974563,7
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,The Pages SZ West,No-take,-0.8018182348978824,-0.6895797830523113,8
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,The Pages outside East,Fished,1.6018386065879369,-0.9274181254274311,8
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,The Pages outside North,Fished,0.057389174280894864,2.1606256360191582,7
+BRUV,BRUVs,The Pages - The Pages Sanctuary Zone,cap_status,The Pages outside West,Fished,2.036714468979926,-0.963129306089332,8
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,5 mile reef,Fished,0.2976666984210777,-0.38976982265594895,3
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,Encounter Bay SZ,No-take,-0.6536409892834905,-0.4302385217461538,4
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,West Island North,Fished,0.11857436397776637,-0.36980435976087184,3
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_period,West Island South,Fished,0.4552802566458099,1.333225544745026,3
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,5 mile reef,Fished,-0.20861441286932217,-0.664201984665254,3
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,Encounter Bay SZ,No-take,1.1700005068296204,7.979727989493313e-17,4
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,West Island North,Fished,0.12222486963244981,-0.5622304567928328,3
+BRUV,BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,cap_status,West Island South,Fished,-1.473611132535955,1.2264324414580872,3
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_period,Windara Shellfish Reef,No-take,0.14432720281581365,0.4985114230366879,7
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_period,Windara sand,Fished,0.004524029904496533,-0.046612371516195995,7
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_period,Windara seagrass,Fished,-0.14885123272031023,-0.45189905152049165,7
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_status,Windara Shellfish Reef,No-take,-0.8897741720537461,-1.0557031439515997e-16,7
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_status,Windara sand,Fished,0.3144811933068497,0.09867697102985966,7
+BRUV,BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,cap_status,Windara seagrass,Fished,0.5752929787468967,-0.09867697102985949,7

@@ -1,32 +1,32 @@
 location,term,n,n_sites,R2,F_value,p_value,dispersion_p
-Aldinga - Aldinga Reef Sanctuary Zone,period,18,3,0.11888049990428498,2.4495226585083554,0.006,0.272
-Aldinga - Aldinga Reef Sanctuary Zone,period:status,18,3,0.03074396973793469,0.6334768994595368,0.898,
-Bay of Shoals - Bay of Shoals Sanctuary Zone,period,23,6,0.13658118859883245,3.631393589891258,0.001,0.003
-Bay of Shoals - Bay of Shoals Sanctuary Zone,period:status,23,6,0.04601232953697463,1.2233667040876979,0.217,
-Boston Bay,period,18,3,0.10385513805838012,1.8706962302558967,0.035,0.007
-Cape Elizabeth - Cape Elizabeth Sanctuary Zone,period,12,6,0.23106669132905916,3.4404713247380743,0.03125,0.502
-Cape Elizabeth - Cape Elizabeth Sanctuary Zone,period:status,12,6,0.03928964310286381,0.5850037912305376,0.78125,
-Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,period,42,6,0.08741355821283876,5.312420233475752,0.001,0.313
-Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,period:status,42,6,0.01648301489428828,1.001729063812875,0.421,
-Chinamans Hat - Chinamans Hat Sanctuary Zone,period,12,6,0.1116423220111059,2.4381250054498476,0.03125,0.879
-Chinamans Hat - Chinamans Hat Sanctuary Zone,period:status,12,6,0.04948571579418054,1.080704511666945,0.3125,
+Aldinga - Aldinga Reef Sanctuary Zone,period,18,3,0.11888049990428495,2.449522658508355,0.006,0.277
+Aldinga - Aldinga Reef Sanctuary Zone,period:status,18,3,0.030743969737934848,0.6334768994595401,0.898,
+Bay of Shoals - Bay of Shoals Sanctuary Zone,period,23,6,0.13658118859883256,3.6313935898912617,0.001,0.006
+Bay of Shoals - Bay of Shoals Sanctuary Zone,period:status,23,6,0.0460123295369747,1.2233667040876999,0.217,
+Boston Bay,period,18,3,0.10385513805838013,1.8706962302558965,0.035,0.008
+Cape Elizabeth - Cape Elizabeth Sanctuary Zone,period,12,6,0.23106669132905922,3.4404713247380756,0.03125,0.494
+Cape Elizabeth - Cape Elizabeth Sanctuary Zone,period:status,12,6,0.03928964310286393,0.5850037912305395,0.78125,
+Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,period,42,6,0.08741355821283911,5.312420233475772,0.001,0.289
+Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,period:status,42,6,0.016483014894288356,1.0017290638128797,0.413,
+Chinamans Hat - Chinamans Hat Sanctuary Zone,period,12,6,0.1116423220111059,2.438125005449848,0.03125,0.862
+Chinamans Hat - Chinamans Hat Sanctuary Zone,period:status,12,6,0.04948571579418054,1.0807045116669454,0.3125,
 Cuttlefish Coast - Fairway Bank Sanctuary Zone,period,8,4,0.47409502546703247,6.156072520697625,0.125,0.055
 Cuttlefish Coast - Fairway Bank Sanctuary Zone,period:status,8,4,0.12122970769170908,1.5741546148432046,0.25,
-Glenelg,period,24,4,0.15461594664568615,4.417863418784684,0.001,0.525
-Middle/Long Spit - Middle Spit Sanctuary Zone,period,15,5,0.3287023863768868,6.534719338878888,0.002,0.927
-Middle/Long Spit - Middle Spit Sanctuary Zone,period:status,15,5,0.048506053407891964,0.9643174445767644,0.384,
-O'Sullivan,period,28,5,0.0668885970218031,2.63188255234875,0.004,0.392
-Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,period,13,4,0.1850067964729949,2.554129421680719,0.023,0.053
-Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,period:status,13,4,0.05431945454175073,0.7499125419156444,0.752,
-Port Gibbon - Port Gibbon Sanctuary Zone,period,12,6,0.3505267558812632,6.070839828584182,0.03125,0.334
-Port Gibbon - Port Gibbon Sanctuary Zone,period:status,12,6,0.1051800692722315,1.8216337069784234,0.1875,
-Rapid Head - Rapid Head Sanctuary Zone,period,41,6,0.05411461266385685,3.0505442465736077,0.001,0.669
-Rapid Head - Rapid Head Sanctuary Zone,period:status,41,6,0.02092538314383289,1.1796038817330825,0.23,
-Sponge Gardens - Sponge Gardens Sanctuary Zone,period,42,6,0.08732838289166034,4.728633764957101,0.001,0.197
-Sponge Gardens - Sponge Gardens Sanctuary Zone,period:status,42,6,0.02592626522885712,1.4038484293531401,0.111,
-The Pages - The Pages Sanctuary Zone,period,46,6,0.0721267853091771,5.357823785636957,0.001,0.393
-The Pages - The Pages Sanctuary Zone,period:status,46,6,0.009208162367238504,0.6840137286268365,0.862,
-Victor Harbor - Encounter Bay Sanctuary Zone,period,13,4,0.07061364970019873,1.4000594734827307,0.083,0.099
-Victor Harbor - Encounter Bay Sanctuary Zone,period:status,13,4,0.05020319778100837,0.9953806799513175,0.64,
+Glenelg,period,24,4,0.1546159466456862,4.417863418784686,0.001,0.488
+Middle/Long Spit - Middle Spit Sanctuary Zone,period,15,5,0.32870238637688687,6.5347193388788885,0.002,0.918
+Middle/Long Spit - Middle Spit Sanctuary Zone,period:status,15,5,0.048506053407892026,0.9643174445767656,0.388,
+O'Sullivan,period,28,5,0.0668885970218031,2.631882552348749,0.006,0.423
+Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,period,13,4,0.18500679647299495,2.554129421680719,0.018,0.04
+Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,period:status,13,4,0.05431945454175073,0.7499125419156443,0.753,
+Port Gibbon - Port Gibbon Sanctuary Zone,period,12,6,0.3505267558812635,6.0708398285841865,0.03125,0.316
+Port Gibbon - Port Gibbon Sanctuary Zone,period:status,12,6,0.1051800692722315,1.821633706978423,0.1875,
+Rapid Head - Rapid Head Sanctuary Zone,period,41,6,0.05411461266385672,3.050544246573601,0.001,0.667
+Rapid Head - Rapid Head Sanctuary Zone,period:status,41,6,0.020925383143833087,1.1796038817330938,0.263,
+Sponge Gardens - Sponge Gardens Sanctuary Zone,period,42,6,0.08732838289166021,4.7286337649570935,0.001,0.176
+Sponge Gardens - Sponge Gardens Sanctuary Zone,period:status,42,6,0.025926265228857055,1.4038484293531368,0.116,
+The Pages - The Pages Sanctuary Zone,period,46,6,0.07212678530917702,5.357823785636951,0.001,0.421
+The Pages - The Pages Sanctuary Zone,period:status,46,6,0.009208162367238504,0.6840137286268365,0.859,
+Victor Harbor - Encounter Bay Sanctuary Zone,period,13,4,0.07061364970019873,1.4000594734827307,0.085,0.104
+Victor Harbor - Encounter Bay Sanctuary Zone,period:status,13,4,0.05020319778100825,0.9953806799513152,0.638,
 Windara Reef - Windara Shell fish Reef Sanctuary Zone,period,21,3,0.21703965545851753,5.768084720988476,0.008,0.001
-Windara Reef - Windara Shell fish Reef Sanctuary Zone,period:status,21,3,0.022820967025814383,0.6064941033088797,0.769,
+Windara Reef - Windara Shell fish Reef Sanctuary Zone,period:status,21,3,0.022820967025814314,0.6064941033088779,0.771,

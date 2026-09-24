@@ -53,8 +53,9 @@ sites_shp <- st_read("data/spatial/Groupings_15_05_26.shp") %>%
   # dplyr::rename(reporting_location = LocationNa, reporting_sanctuary = SanctuaryZ) %>%
   # dplyr::mutate(reporting_name = paste(reporting_location, "-", reporting_sanctuary, "Sanctuary Zone", sep = " ")) |>
   # dplyr::mutate(reporting_name = str_replace_all(reporting_name, " - NA Sanctuary Zone", "")) %>%
-  dplyr::mutate(uwa_site_code = row_number()) %>%
-  dplyr::select(uwa_site_code) %>%
+  clean_names() %>%
+  dplyr::mutate(uwa_site_code = site_name) %>%
+  # dplyr::select(uwa_site_code, site_name) %>%
   glimpse()
 
 # plot(sites_shp)
@@ -188,6 +189,9 @@ bruv_count <- readRDS("data/raw/sa_count_bruv.RDS") %>%
   dplyr::mutate(species = if_else((species %in% "georgianus" & genus %in% "Pseudocaranx"), "spp", species)) %>%
   dplyr::mutate(genus_species = paste(genus, species)) %>%
   dplyr::mutate(scientific = paste(family, genus, species)) %>%
+  
+  dplyr::mutate(genus = if_else(species %in% "nigripes", "Pseudogoniistius", genus)) %>%
+  
   semi_join(bruv_metadata)
 
 rls_count <- readRDS("data/raw/sa_count_rls.RDS") %>%

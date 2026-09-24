@@ -3,10 +3,10 @@
 "Abundance > 200 mm","Period","poisson","Poisson (log link)",TRUE,2
 "Abundance > 200 mm","Temporal","nbinom2","Negative binomial nbinom2 (log link)",TRUE,16
 "Abundance > 200 mm","Temporal","poisson","Poisson (log link)",TRUE,2
-"Reef associated species richness","Period","nbinom2","Negative binomial nbinom2 (log link)",TRUE,6
-"Reef associated species richness","Period","poisson","Poisson (log link)",TRUE,14
-"Reef associated species richness","Temporal","nbinom2","Negative binomial nbinom2 (log link)",TRUE,6
-"Reef associated species richness","Temporal","poisson","Poisson (log link)",TRUE,14
+"Reef associated species richness","Period","nbinom2","Negative binomial nbinom2 (log link)",TRUE,8
+"Reef associated species richness","Period","poisson","Poisson (log link)",TRUE,12
+"Reef associated species richness","Temporal","nbinom2","Negative binomial nbinom2 (log link)",TRUE,8
+"Reef associated species richness","Temporal","poisson","Poisson (log link)",TRUE,12
 "Shannon diversity","Period","gaussian","gaussian (identity link)",TRUE,20
 "Shannon diversity","Temporal","gaussian","gaussian (identity link)",TRUE,20
 "Shark and ray richness","Period","poisson","Poisson (log link)",TRUE,19

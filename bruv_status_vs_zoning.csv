@@ -1,63 +1,63 @@
 campaignid,sample,date,reporting_name,location,uwa_site_code,zone_type,zone_name,status_recorded,status_zoning
-2016-02_GSVsummer.BRUVS_MonoBRUVS,AI_R6_16,2016-02-12,Aldinga - Aldinga Reef Sanctuary Zone,Encounter,58,HPZ,NA,No-take,Fished
-2025-10_OffshoreArdrossan_BRUVS,OASO04_2510,2025-10-13,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,NA,44,NA,NA,No-take,Fished
-2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R1_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R2_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R3_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R4_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R5_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R6_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R1_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R2_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R3_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R4_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R5_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R6_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2025-10_OffshoreArdrossan_BRUVS,OASI07_2510,2025-10-13,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,45,SZ,Offshore Ardrossan,Fished,No-take
-2025-11_PortGibbon_BRUVS,PGWI01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,17,SZ,Port Gibbon,Fished,No-take
-2025-11_PortGibbon_BRUVS,PGWI02_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,17,SZ,Port Gibbon,Fished,No-take
-2025-11_PortGibbon_BRUVS,PGWI03_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,17,SZ,Port Gibbon,Fished,No-take
-2025-11_PortGibbon_BRUVS,PGWI04_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,17,SZ,Port Gibbon,Fished,No-take
-2025-11_PortGibbon_BRUVS,PGEO01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,23,HPZ,NA,No-take,Fished
-2025-11_PortGibbon_BRUVS,PGCO01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,24,HPZ,NA,No-take,Fished
-2025-11_PortGibbon_BRUVS,PGCO03_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,24,HPZ,NA,No-take,Fished
-2025-11_PortGibbon_BRUVS,PGCO04_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,24,HPZ,NA,No-take,Fished
-2025-11_PortGibbon_BRUVS,PGWO01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,25,HPZ,NA,No-take,Fished
-2025-11_PortGibbon_BRUVS,PGWO02_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,25,HPZ,NA,No-take,Fished
-2025-11_PortGibbon_BRUVS,PGWO03_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,25,HPZ,NA,No-take,Fished
-2025-11_PortGibbon_BRUVS,PGWO04_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,25,HPZ,NA,No-take,Fished
-2025-11_PortGibbon_BRUVS,PGCI01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,27,SZ,Port Gibbon,Fished,No-take
-2025-11_PortGibbon_BRUVS,PGCI02_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,27,SZ,Port Gibbon,Fished,No-take
-2025-11_PortGibbon_BRUVS,PGCI03_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,27,SZ,Port Gibbon,Fished,No-take
-2025-11_PortGibbon_BRUVS,PGCI04_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,27,SZ,Port Gibbon,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T01_1704,2017-04-12,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T01_1711,2017-11-23,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T01_1804,2018-04-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T01_1811,2018-11-29,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T02_1704,2017-04-12,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T02_1711,2017-11-23,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T02_1804,2018-04-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T02_1811,2018-11-29,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T03_1704,2017-04-13,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T03_1711,2017-11-23,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T03_1804,2018-04-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T03_1811,2018-11-29,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T04_1704,2017-04-13,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T04_1711,2017-11-23,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T04_1804,2018-04-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T04_1811,2018-11-29,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-201910_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T01_1910,2019-10-22,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-201910_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T02_1910,2019-10-22,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-201910_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T03_1910,2019-10-22,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-201910_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T04_1910,2019-10-22,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-202010-202010_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T01_2010,2020-10-28,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-202010-202010_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T02_2010,2020-10-28,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-202010-202010_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T03_2010,2020-10-28,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-202010-202010_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T04_2010,2020-10-28,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2025-10_Windara_BRUVS,WIT01_2510,2025-10-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2025-10_Windara_BRUVS,WIT02_2510,2025-10-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2025-10_Windara_BRUVS,WIT03_2510,2025-10-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
-2025-10_Windara_BRUVS,WIT04_2510,2025-10-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,12,SZ,Windara Shell fish Reef,Fished,No-take
+2016-02_GSVsummer.BRUVS_MonoBRUVS,AI_R6_16,2016-02-12,Aldinga - Aldinga Reef Sanctuary Zone,Encounter,Aldinga Reef outside South,HPZ,NA,No-take,Fished
+2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R1_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R2_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R3_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R4_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R5_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2014-09_GSVwinter.BRUVS_monoBRUVS,ZO_R6_14,2014-09-05,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R1_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R2_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R3_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R4_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R5_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2016-02_GSVsummer.BRUVS_MonoBRUVS,ZO_R6_16,2016-03-16,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2025-10_OffshoreArdrossan_BRUVS,OASI07_2510,2025-10-13,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,Upper Gulf St Vincent,Offshore Ardrossan SZ,SZ,Offshore Ardrossan,Fished,No-take
+2025-10_OffshoreArdrossan_BRUVS,OASO04_2510,2025-10-13,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,NA,Offshore Ardrossan outside South,NA,NA,No-take,Fished
+2025-11_PortGibbon_BRUVS,PGWI01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon SZ South,SZ,Port Gibbon,Fished,No-take
+2025-11_PortGibbon_BRUVS,PGWI02_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon SZ South,SZ,Port Gibbon,Fished,No-take
+2025-11_PortGibbon_BRUVS,PGWI03_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon SZ South,SZ,Port Gibbon,Fished,No-take
+2025-11_PortGibbon_BRUVS,PGWI04_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon SZ South,SZ,Port Gibbon,Fished,No-take
+2025-11_PortGibbon_BRUVS,PGCI01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon SZ central,SZ,Port Gibbon,Fished,No-take
+2025-11_PortGibbon_BRUVS,PGCI02_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon SZ central,SZ,Port Gibbon,Fished,No-take
+2025-11_PortGibbon_BRUVS,PGCI03_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon SZ central,SZ,Port Gibbon,Fished,No-take
+2025-11_PortGibbon_BRUVS,PGCI04_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon SZ central,SZ,Port Gibbon,Fished,No-take
+2025-11_PortGibbon_BRUVS,PGEO01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon outside North,HPZ,NA,No-take,Fished
+2025-11_PortGibbon_BRUVS,PGWO01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon outside South,HPZ,NA,No-take,Fished
+2025-11_PortGibbon_BRUVS,PGWO02_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon outside South,HPZ,NA,No-take,Fished
+2025-11_PortGibbon_BRUVS,PGWO03_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon outside South,HPZ,NA,No-take,Fished
+2025-11_PortGibbon_BRUVS,PGWO04_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon outside South,HPZ,NA,No-take,Fished
+2025-11_PortGibbon_BRUVS,PGCO01_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon outside central,HPZ,NA,No-take,Fished
+2025-11_PortGibbon_BRUVS,PGCO03_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon outside central,HPZ,NA,No-take,Fished
+2025-11_PortGibbon_BRUVS,PGCO04_2511,2025-11-14,Port Gibbon - Port Gibbon Sanctuary Zone,Franklin Harbor,Port Gibbon outside central,HPZ,NA,No-take,Fished
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T01_1704,2017-04-12,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T01_1711,2017-11-23,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T01_1804,2018-04-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T01_1811,2018-11-29,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T02_1704,2017-04-12,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T02_1711,2017-11-23,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T02_1804,2018-04-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T02_1811,2018-11-29,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T03_1704,2017-04-13,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T03_1711,2017-11-23,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T03_1804,2018-04-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T03_1811,2018-11-29,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T04_1704,2017-04-13,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T04_1711,2017-11-23,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T04_1804,2018-04-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2017-18_SA_Shellfish Reefs_StereoBruvs,WI_T04_1811,2018-11-29,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+201910_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T01_1910,2019-10-22,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+201910_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T02_1910,2019-10-22,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+201910_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T03_1910,2019-10-22,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+201910_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T04_1910,2019-10-22,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+202010-202010_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T01_2010,2020-10-28,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+202010-202010_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T02_2010,2020-10-28,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+202010-202010_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T03_2010,2020-10-28,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+202010-202010_SA_Shellfish Reef Monitoring_StereoBruvs,WI_T04_2010,2020-10-28,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2025-10_Windara_BRUVS,WIT01_2510,2025-10-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2025-10_Windara_BRUVS,WIT02_2510,2025-10-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2025-10_Windara_BRUVS,WIT03_2510,2025-10-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
+2025-10_Windara_BRUVS,WIT04_2510,2025-10-24,Windara Reef - Windara Shell fish Reef Sanctuary Zone,Upper Gulf St Vincent,Windara Shellfish Reef,SZ,Windara Shell fish Reef,Fished,No-take
 2015-04_Desal.BRUVS_monoBRUVS,ADP_R1_A,2015-04-28,NA,NA,NA,NA,NA,No-take,Fished
 2015-04_Desal.BRUVS_monoBRUVS,ADP_R2_A,2015-04-28,NA,NA,NA,NA,NA,No-take,Fished
 2015-04_Desal.BRUVS_monoBRUVS,ADP_R3_A,2015-04-28,NA,NA,NA,NA,NA,No-take,Fished
