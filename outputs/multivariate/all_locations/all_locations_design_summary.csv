@@ -1,0 +1,51 @@
+dataset,location,n_points,n_dates,statuses,n_pre_bloom,n_bloom,max_sites_per_point,min_replicates_per_point,max_replicates_per_point
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,15,9,"Fished, No-take",13,2,2,3,12
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,8,4,"Fished, No-take",6,2,3,12,12
+BRUVs,Boston Bay,6,6,Fished,4,2,3,22,48
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,4,2,"Fished, No-take",2,2,3,12,12
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,15,8,"Fished, No-take",13,2,3,4,12
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,4,2,"Fished, No-take",2,2,3,11,12
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,4,2,"Fished, No-take",2,2,2,8,12
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,7,7,No-take,5,2,1,6,24
+BRUVs,Glenelg,6,6,Fished,4,2,4,14,19
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,8,5,"Fished, No-take",6,2,3,6,16
+BRUVs,O'Sullivan,9,9,Fished,7,2,5,5,17
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,8,4,"Fished, No-take",6,2,2,3,12
+BRUVs,Orcades Bank - Orcades Bank Sanctuary Zone,1,1,No-take,1,0,1,12,12
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,4,2,"Fished, No-take",2,2,3,12,12
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,8,8,No-take,7,1,1,4,12
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,14,7,"Fished, No-take",12,2,3,10,12
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,16,8,"Fished, No-take",12,4,3,4,12
+BRUVs,The Pages - The Pages Sanctuary Zone,16,8,"Fished, No-take",10,6,3,8,12
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,8,5,"Fished, No-take",4,4,3,4,16
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,14,7,"Fished, No-take",12,2,2,4,8
+M1 fish,Carrickalinga,31,19,"Fished, No-take",29,2,10,2,44
+M1 fish,Eastern Spencer Gulf,3,3,Fished,2,1,3,3,12
+M1 fish,Encounter Bay,19,13,"Fished, No-take",14,5,5,2,20
+M1 fish,Metro,15,15,Fished,13,2,3,4,8
+M1 fish,Rapid Head,41,22,"Fished, No-take",38,3,6,3,26
+M1 fish,Southern Fleurieu,9,9,Fished,7,2,6,4,24
+M1 fish,Southern Metro,31,18,"Fished, No-take",27,4,7,2,28
+M1 fish,Southern Yorke,3,3,Fished,1,2,3,2,12
+M1 fish,Sponge Gardens,16,10,"Fished, No-take",14,2,3,4,12
+M1 fish,Upper GSV,9,9,Fished,8,1,5,4,20
+M2 fish,Carrickalinga,31,19,"Fished, No-take",29,2,10,2,44
+M2 fish,Eastern Spencer Gulf,4,4,Fished,3,1,3,3,12
+M2 fish,Encounter Bay,21,14,"Fished, No-take",16,5,5,4,20
+M2 fish,Metro,15,15,Fished,13,2,3,4,8
+M2 fish,Rapid Head,41,22,"Fished, No-take",38,3,6,2,26
+M2 fish,Southern Fleurieu,9,9,Fished,7,2,6,4,24
+M2 fish,Southern Metro,31,18,"Fished, No-take",27,4,7,2,28
+M2 fish,Southern Yorke,4,4,Fished,2,2,3,3,12
+M2 fish,Sponge Gardens,16,10,"Fished, No-take",14,2,3,4,12
+M2 fish,Upper GSV,9,9,Fished,8,1,5,4,20
+M2 invertebrates,Carrickalinga,31,19,"Fished, No-take",29,2,10,2,44
+M2 invertebrates,Eastern Spencer Gulf,4,4,Fished,3,1,3,3,12
+M2 invertebrates,Encounter Bay,21,14,"Fished, No-take",16,5,5,4,20
+M2 invertebrates,Metro,15,15,Fished,13,2,3,4,8
+M2 invertebrates,Rapid Head,41,22,"Fished, No-take",38,3,6,2,26
+M2 invertebrates,Southern Fleurieu,9,9,Fished,7,2,6,4,24
+M2 invertebrates,Southern Metro,31,18,"Fished, No-take",27,4,7,2,28
+M2 invertebrates,Southern Yorke,4,4,Fished,2,2,3,3,12
+M2 invertebrates,Sponge Gardens,16,10,"Fished, No-take",14,2,3,4,12
+M2 invertebrates,Upper GSV,9,9,Fished,8,1,5,4,20

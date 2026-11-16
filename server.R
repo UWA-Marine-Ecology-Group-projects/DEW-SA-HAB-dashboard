@@ -215,11 +215,27 @@ rls_mv_species_label_layer <- function(vectors) {
   }
 }
 
-rls_mv_has_data <- function() {
-  !is.null(rls_data) &&
-    !is.null(rls_data$multivariate_meta) &&
-    is.data.frame(rls_data$multivariate_meta) &&
-    nrow(rls_data$multivariate_meta) > 0
+# The multivariate tables come from one of two places, picked by the
+# dataset_label being asked for: "BRUVs" reads bruv_mv_data (built by
+# "modelling/04_combine_bruv_multivariate_for_app.R"), anything else
+# ("M1 fish", "M2 fish", "M2 invertebrates") reads rls_data (script 15).
+# Both carry identically named and identically shaped multivariate_* tables,
+# because both come from the same script 13 export code, so every helper
+# and plot below works unchanged for either.
+mv_source <- function(this_method = NULL) {
+  if (identical(this_method, "BRUVs")) {
+    if (exists("bruv_mv_data")) bruv_mv_data else NULL
+  } else {
+    rls_data
+  }
+}
+
+rls_mv_has_data <- function(this_method = NULL) {
+  src <- mv_source(this_method)
+  !is.null(src) &&
+    !is.null(src$multivariate_meta) &&
+    is.data.frame(src$multivariate_meta) &&
+    nrow(src$multivariate_meta) > 0
 }
 
 # All of the lookups below use .data[[...]] and differently-named
@@ -229,9 +245,9 @@ rls_mv_has_data <- function() {
 # class of silent-collision bug that cost us two debugging rounds on the
 # percentage-change tables.
 rls_mv_meta_row <- function(this_location, this_method, this_ordination) {
-  if (!rls_mv_has_data()) return(NULL)
+  if (!rls_mv_has_data(this_method)) return(NULL)
 
-  row <- rls_data$multivariate_meta %>%
+  row <- mv_source(this_method)$multivariate_meta %>%
     dplyr::filter(
       .data$location      == this_location,
       .data$dataset_label == this_method,
@@ -243,9 +259,9 @@ rls_mv_meta_row <- function(this_location, this_method, this_ordination) {
 }
 
 rls_mv_scores <- function(this_location, this_method, this_ordination) {
-  if (!rls_mv_has_data() || nrow(rls_data$multivariate_scores) == 0) return(NULL)
+  if (!rls_mv_has_data(this_method) || nrow(mv_source(this_method)$multivariate_scores) == 0) return(NULL)
 
-  out <- rls_data$multivariate_scores %>%
+  out <- mv_source(this_method)$multivariate_scores %>%
     dplyr::filter(
       .data$location      == this_location,
       .data$dataset_label == this_method,
@@ -262,9 +278,9 @@ rls_mv_scores <- function(this_location, this_method, this_ordination) {
 }
 
 rls_mv_vectors <- function(this_location, this_method, this_ordination) {
-  if (!rls_mv_has_data() || nrow(rls_data$multivariate_vectors) == 0) return(NULL)
+  if (!rls_mv_has_data(this_method) || nrow(mv_source(this_method)$multivariate_vectors) == 0) return(NULL)
 
-  out <- rls_data$multivariate_vectors %>%
+  out <- mv_source(this_method)$multivariate_vectors %>%
     dplyr::filter(
       .data$location      == this_location,
       .data$dataset_label == this_method,
@@ -275,9 +291,9 @@ rls_mv_vectors <- function(this_location, this_method, this_ordination) {
 }
 
 rls_mv_period_status_scores <- function(this_location, this_method) {
-  if (!rls_mv_has_data() || nrow(rls_data$multivariate_period_status) == 0) return(NULL)
+  if (!rls_mv_has_data(this_method) || nrow(mv_source(this_method)$multivariate_period_status) == 0) return(NULL)
 
-  out <- rls_data$multivariate_period_status %>%
+  out <- mv_source(this_method)$multivariate_period_status %>%
     dplyr::filter(
       .data$location      == this_location,
       .data$dataset_label == this_method
@@ -306,9 +322,9 @@ rls_mv_fmt_r2 <- function(r2) {
 }
 
 rls_mv_period_stats <- function(this_location, this_method, term_wanted = "period") {
-  if (!rls_mv_has_data() || nrow(rls_data$multivariate_permanova_period) == 0) return(NULL)
+  if (!rls_mv_has_data(this_method) || nrow(mv_source(this_method)$multivariate_permanova_period) == 0) return(NULL)
 
-  row <- rls_data$multivariate_permanova_period %>%
+  row <- mv_source(this_method)$multivariate_permanova_period %>%
     dplyr::filter(
       .data$location      == this_location,
       .data$dataset_label == this_method,
@@ -320,9 +336,9 @@ rls_mv_period_stats <- function(this_location, this_method, term_wanted = "perio
 }
 
 rls_mv_status_stats <- function(this_location, this_method) {
-  if (!rls_mv_has_data() || nrow(rls_data$multivariate_permanova_status) == 0) return(NULL)
+  if (!rls_mv_has_data(this_method) || nrow(mv_source(this_method)$multivariate_permanova_status) == 0) return(NULL)
 
-  row <- rls_data$multivariate_permanova_status %>%
+  row <- mv_source(this_method)$multivariate_permanova_status %>%
     dplyr::filter(
       .data$location      == this_location,
       .data$dataset_label == this_method
@@ -765,7 +781,11 @@ make_overall_impact_gauge <- function(region_name) {
   
   message(region_name)
   
-  p1 <- get_metric_plot("shannon_diversity",        "Shannon diversity index",          chosen_region = region_name)
+  # The headline "overall impact" gauge is the inverse Simpson diversity
+  # index (it replaced Shannon). It is a re-display of that one indicator,
+  # not the multi-indicator rollup in hab_data$overall_impact, which is only
+  # used to colour the region polygons on the map.
+  p1 <- get_metric_plot("simpson_diversity",        "Inverse Simpson diversity index",  chosen_region = region_name)
   p1
 }
 
@@ -5686,7 +5706,9 @@ server <- function(input, output, session) {
     
     message(location_name)
     
-    p1 <- get_metric_plot_location("shannon_diversity",        "Shannon diversity index",          chosen_location = location_name)
+    # Inverse Simpson replaces Shannon as the headline gauge (see
+    # make_overall_impact_gauge() for the region version).
+    p1 <- get_metric_plot_location("simpson_diversity",        "Inverse Simpson diversity index",  chosen_location = location_name)
     p1
   }
   
@@ -6885,12 +6907,15 @@ server <- function(input, output, session) {
   })
 
   # ==========================================================================
-  # RLS (Dive) multivariate community composition section
+  # Multivariate community composition section (Dive AND BRUVS)
   #
-  # Sits below the "Explore indicators" tabset on the Location Summary tab and
-  # renders only for Dive. Everything plotted here was computed by
-  # "13_rls_multivariate_pco_and)_caps.R" and loaded by script 15 - see the
-  # rls_mv_* helpers near the top of this file.
+  # Sits below the "Explore indicators" tabset on the Location Summary tab.
+  # Everything plotted here was computed by
+  # "13_rls_multivariate_pco_and)_caps.R" - for Dive via script 15
+  # (rls_data), for BRUVS via "modelling/03_bruv_multivariate_pco_and_caps.R"
+  # (which runs the same script 13 code on the BRUV data) and
+  # "modelling/04_combine_bruv_multivariate_for_app.R" (bruv_mv_data). See
+  # the rls_mv_* / mv_source() helpers near the top of this file.
   #
   # The card is rebuilt only when the BRUVS/Dive switch changes, deliberately
   # NOT when the location changes: that keeps the method selector from
@@ -6925,9 +6950,48 @@ server <- function(input, output, session) {
     )
   }
 
+  # Which dataset_label the card shows: "BRUVs" on BRUVS (one dataset, so
+  # no selector), otherwise the Dive survey-method buttons on the card.
+  mv_method <- reactive({
+    if (identical(input$app_method, "Dive")) input$rls_mv_method else "BRUVs"
+  })
+
   output$location_multivariate <- renderUI({
 
-    if (!identical(input$app_method, "Dive")) return(NULL)
+    is_dive <- identical(input$app_method, "Dive")
+
+    if (!is_dive) {
+      if (!rls_mv_has_data("BRUVs")) return(NULL)
+
+      return(
+        bslib::card(
+          fill = FALSE,
+          bslib::card_header("Community composition"),
+          tags$p(
+            class = "text-muted",
+            style = "font-size: 0.9em; margin-bottom: 0.75rem;",
+            HTML(
+              "Each point is one site on one sampling event, with MaxN averaged ",
+              "across the deployments made at that site in that event. Composition ",
+              "is compared using modified Gower distance on log<sub>2</sub> MaxN, so ",
+              "one unit of distance is a doubling in abundance. Point shape shows ",
+              "management status, fill shows period, and arrows show the ten taxa ",
+              "most associated with the ordination axes."
+            )
+          ),
+          bslib::navset_card_tab(
+            # Same tabs, ids and outputs as Dive - only the data differ.
+            bslib::nav_panel("Composition (PCO)",      rls_mv_plot_with_downloads("pco")),
+            bslib::nav_panel("Bloom effect (CAP)",     rls_mv_plot_with_downloads("cap_period")),
+            bslib::nav_panel("Bloom through time",     rls_mv_plot_with_downloads("cap_period_time")),
+            bslib::nav_panel("Protection effect (CAP)", rls_mv_plot_with_downloads("cap_status")),
+            bslib::nav_panel("Bloom vs protection",    rls_mv_plot_with_downloads("period_status")),
+            bslib::nav_panel("PERMANOVA results",      spinnerUiOutput("rls_mv_permanova"))
+          )
+        )
+      )
+    }
+
     if (!rls_mv_has_data()) return(NULL)
 
     available_methods <- unique(rls_data$multivariate_meta$dataset_label)
@@ -6992,11 +7056,11 @@ server <- function(input, output, session) {
 
   rls_mv_bundle <- function(ordination) {
     reactive({
-      req(input$location, input$rls_mv_method)
+      req(input$location, mv_method())
       list(
-        meta    = rls_mv_meta_row(input$location, input$rls_mv_method, ordination),
-        scores  = rls_mv_scores(input$location, input$rls_mv_method, ordination),
-        vectors = rls_mv_vectors(input$location, input$rls_mv_method, ordination)
+        meta    = rls_mv_meta_row(input$location, mv_method(), ordination),
+        scores  = rls_mv_scores(input$location, mv_method(), ordination),
+        vectors = rls_mv_vectors(input$location, mv_method(), ordination)
       )
     })
   }
@@ -7025,7 +7089,7 @@ server <- function(input, output, session) {
 
     rls_mv_ordination_plot(
       d$scores, d$vectors, d$meta,
-      subtitle = rls_mv_period_subtitle(input$location, input$rls_mv_method)
+      subtitle = rls_mv_period_subtitle(input$location, mv_method())
     )
   })
 
@@ -7035,7 +7099,7 @@ server <- function(input, output, session) {
 
     rls_mv_ordination_plot(
       d$scores, d$vectors, d$meta,
-      subtitle = rls_mv_period_subtitle(input$location, input$rls_mv_method)
+      subtitle = rls_mv_period_subtitle(input$location, mv_method())
     )
   })
 
@@ -7045,7 +7109,7 @@ server <- function(input, output, session) {
 
     rls_mv_time_plot(
       d$scores, d$meta,
-      subtitle = rls_mv_period_subtitle(input$location, input$rls_mv_method)
+      subtitle = rls_mv_period_subtitle(input$location, mv_method())
     )
   })
 
@@ -7055,13 +7119,13 @@ server <- function(input, output, session) {
 
     rls_mv_ordination_plot(
       d$scores, d$vectors, d$meta,
-      subtitle = rls_mv_status_subtitle(input$location, input$rls_mv_method)
+      subtitle = rls_mv_status_subtitle(input$location, mv_method())
     )
   })
 
   rls_mv_period_status_tbl <- reactive({
-    req(input$location, input$rls_mv_method)
-    rls_mv_period_status_scores(input$location, input$rls_mv_method)
+    req(input$location, mv_method())
+    rls_mv_period_status_scores(input$location, mv_method())
   })
 
   rls_mv_period_status_plot_r <- reactive({
@@ -7081,8 +7145,8 @@ server <- function(input, output, session) {
     rls_mv_period_status_plot(
       tbl,
       subtitle = paste(
-        rls_mv_period_subtitle(input$location, input$rls_mv_method),
-        rls_mv_status_subtitle(input$location, input$rls_mv_method),
+        rls_mv_period_subtitle(input$location, mv_method()),
+        rls_mv_status_subtitle(input$location, mv_method()),
         sep = "\n"
       )
     )
@@ -7113,7 +7177,7 @@ server <- function(input, output, session) {
       filename = function() {
         paste0(
           "multivariate_", which, "_",
-          rls_mv_clean_label(paste(input$location, input$rls_mv_method)),
+          rls_mv_clean_label(paste(input$location, mv_method())),
           "_", Sys.Date(), ".csv"
         )
       },
@@ -7128,7 +7192,7 @@ server <- function(input, output, session) {
       filename = function() {
         paste0(
           "multivariate_", which, "_",
-          rls_mv_clean_label(paste(input$location, input$rls_mv_method)),
+          rls_mv_clean_label(paste(input$location, mv_method())),
           "_", Sys.Date(), ".png"
         )
       },
@@ -7183,19 +7247,19 @@ server <- function(input, output, session) {
   # table would invite reading them as comparable rows of one model.
 
   output$rls_mv_permanova <- renderUI({
-    req(input$location, input$rls_mv_method)
+    req(input$location, mv_method())
 
-    if (!rls_mv_has_data()) {
+    if (!rls_mv_has_data(mv_method())) {
       return(tags$em("No multivariate results available."))
     }
 
-    period_rows <- rls_data$multivariate_permanova_period %>%
+    period_rows <- mv_source(mv_method())$multivariate_permanova_period %>%
       dplyr::filter(
         .data$location      == input$location,
-        .data$dataset_label == input$rls_mv_method
+        .data$dataset_label == mv_method()
       )
 
-    status_row <- rls_mv_status_stats(input$location, input$rls_mv_method)
+    status_row <- rls_mv_status_stats(input$location, mv_method())
 
     if (nrow(period_rows) == 0 && is.null(status_row)) {
       return(tags$em("No PERMANOVA results available for this location and method."))
@@ -7252,7 +7316,19 @@ server <- function(input, output, session) {
         tags$tr(
           tags$td("Status"),
           tags$td(
-            tags$em("Not tested - only one management status is present at this location.")
+            tags$em(
+              # Use the reason script 13 recorded where there is one (e.g. too
+              # few sites), rather than assuming it was always a single status.
+              {
+                status_meta <- rls_mv_meta_row(input$location, mv_method(), "cap_status")
+                reason_txt  <- if (!is.null(status_meta)) status_meta$reason else NA_character_
+                if (length(reason_txt) == 1 && !is.na(reason_txt) && nzchar(reason_txt)) {
+                  paste("Not tested -", reason_txt)
+                } else {
+                  "Not tested - only one management status is present at this location."
+                }
+              }
+            )
           ),
           tags$td(colspan = 7, "")
         )
@@ -9995,7 +10071,7 @@ server <- function(input, output, session) {
       axis.line.x = element_line(color = "black", linewidth = 0.5),
       axis.line.y = element_line(color = "black", linewidth = 0.5))
     
-    p1 <- shannon_diversity_main_plot_location() +
+    p1 <- simpson_diversity_main_plot_location() +
       theme(axis.text.x = element_blank())+ plot_theme +  scale_y_continuous(expand = expansion(mult = c(0, 0))) + theme(legend.title = element_blank())
     p2 <- richness_main_plot_location() +
       theme(axis.text.x = element_blank()) +plot_theme +  scale_y_continuous(expand = expansion(mult = c(0, 0)))+ theme(legend.title = element_blank())
@@ -10036,8 +10112,8 @@ server <- function(input, output, session) {
     prefix = "loc",
     data_id = "combined",
     plot_id = "main",
-    results_reactive = shannon_diversity_main_results_location,
-    raw_reactive = shannon_diversity_main_raw_location,
+    results_reactive = simpson_diversity_main_results_location,
+    raw_reactive = simpson_diversity_main_raw_location,
     plot_reactive = loc_plot_combined_main,
     download_label_reactive = reactive(input$location),
     height = 10
@@ -10051,7 +10127,7 @@ server <- function(input, output, session) {
       axis.line.y = element_line(color = "black", linewidth = 0.5),
       axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
     
-    p1 <- shannon_diversity_year_plot_location() +
+    p1 <- simpson_diversity_year_plot_location() +
       # theme(axis.text.x = element_blank())+
       plot_theme +
       # scale_y_continuous(expand = expansion(mult = c(0, 0))) +
@@ -10114,8 +10190,8 @@ server <- function(input, output, session) {
     prefix = "loc",
     data_id = "combined",
     plot_id = "year",
-    results_reactive = shannon_diversity_main_results_location,
-    raw_reactive = shannon_diversity_main_raw_location,
+    results_reactive = simpson_diversity_main_results_location,
+    raw_reactive = simpson_diversity_main_raw_location,
     plot_reactive = loc_plot_combined_year,
     download_label_reactive = reactive(input$location),
     height = 10

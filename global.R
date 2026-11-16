@@ -53,6 +53,21 @@ if (file.exists("app_data/rls_data.Rdata")) {
   rls_data <- NULL
 }
 
+# BRUV multivariate (community composition) results, built by
+# "01_Download and format data for app/modelling/04_combine_bruv_multivariate_for_app.R".
+# Optional in the same way: without it the BRUVS "Community composition"
+# card simply doesn't appear.
+if (file.exists("app_data/bruv_multivariate_data.Rdata")) {
+  load("app_data/bruv_multivariate_data.Rdata")
+} else {
+  warning(
+    "app_data/bruv_multivariate_data.Rdata not found - run ",
+    "'01_Download and format data for app/modelling/04_combine_bruv_multivariate_for_app.R' ",
+    "to generate it. The BRUVS community composition card will not show until then."
+  )
+  bruv_mv_data <- NULL
+}
+
 species_colours <- c(
   "#4F7CC9", # 1 Blue
   "#D98C3F", # 2 Orange
@@ -166,9 +181,9 @@ indicator_tbl <- tribble(
   "Shark and ray richness",            "Number of shark and ray species",
   "Reef associated species richness",  "Number of reef associated fish species",
   "Fish greater than 200mm abundance", "Count of individuals >200mm long",
-  "Shannon diversity index",                 "Measures of species diversity that accounts for richness (number of species) and evenness (relative abundance)",
-  "Inverse Simpson diversity index",   "A second diversity measure (effective number of equally common species) that gives more weight to the dominant species and less to the rare ones",
-  "Overall impact",                    "Average of the indicators above, excluding inverse Simpson diversity"
+  # Shannon diversity is no longer shown in the BRUV pages - inverse Simpson replaces it.
+  "Inverse Simpson diversity index",   "Species diversity as the effective number of equally common species, accounting for richness (number of species) and evenness (relative abundance)",
+  "Overall impact",                    "Headline gauge: the inverse Simpson diversity index. Map colours: average change across the indicators above"
 )
 
 # plot_dummy_time <- function(region) {
@@ -256,7 +271,7 @@ metric_defs <- c(
   
   large_fish    = "Count of large fish (>200 mm)",
   
-  shannon_diversity = "Shannon diversity index",
+  # shannon_diversity = "Shannon diversity index",  # replaced by inverse Simpson
   simpson_diversity = "Inverse Simpson diversity index",
   
   # cti           = "Community temperature index",
@@ -304,7 +319,6 @@ hab_metrics <- c(
   "Shark and ray richness",
   "Reef associated species richness",
   "Fish greater than 200mm abundance",
-  "Shannon diversity index",
   "Inverse Simpson diversity index"
 )
 
@@ -315,6 +329,8 @@ hab_regions <- sort(unique(hab_data$regions_summaries$region))
 set.seed(2025)
 
 hab_metric_change <- hab_data$impact_data %>%
+  # Shannon is replaced by inverse Simpson in the app
+  dplyr::filter(!impact_metric %in% "shannon_diversity") %>%
   mutate(
     percentage = (bloom / pre_bloom) * 100,
     percentage_change = (bloom - pre_bloom) / pre_bloom * 100
@@ -332,6 +348,8 @@ hab_metric_change <- hab_data$impact_data %>%
   ))
 
 hab_metric_change_location <- hab_data$impact_data_location %>%
+  # Shannon is replaced by inverse Simpson in the app
+  dplyr::filter(!impact_metric %in% "shannon_diversity") %>%
   mutate(
     percentage = (bloom / pre_bloom) * 100,
     percentage_change = (bloom - pre_bloom) / pre_bloom * 100
@@ -350,6 +368,8 @@ hab_metric_change_location <- hab_data$impact_data_location %>%
   ))
 
 hab_metric_change_location_split <- hab_data$impact_data_location_split %>%
+  # Shannon is replaced by inverse Simpson in the app
+  dplyr::filter(!impact_metric %in% "shannon_diversity") %>%
   mutate(
     percentage = (bloom / pre_bloom) * 100,
     percentage_change = (bloom - pre_bloom) / pre_bloom * 100

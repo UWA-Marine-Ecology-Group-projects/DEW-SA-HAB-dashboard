@@ -1026,9 +1026,8 @@ nav_panel(
       uiOutput("location_tabset"),
 
       # Multivariate community composition (PCO / CAP ordinations and the
-      # PERMANOVA results). Rendered entirely server-side and returns NULL
-      # unless the method switch is on Dive, so BRUVS is unaffected - see
-      # output$location_multivariate in server.R.
+      # PERMANOVA results), for both BRUVS and Dive. Rendered entirely
+      # server-side - see output$location_multivariate in server.R.
       uiOutput("location_multivariate")
     )
   )

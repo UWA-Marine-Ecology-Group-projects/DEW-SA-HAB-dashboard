@@ -1280,9 +1280,11 @@ shannon_diversity_impacts <- shannon_diversity_summary %>%
 # Every filter and join below is deliberately identical to the Shannon
 # section above, so both indices are built from exactly the same set of
 # samples and any difference between them is the index, not the data. As
-# there, a sample with no fish recorded returns NA from the full_join and is
-# dropped by the na.rm = TRUE summaries; note that, unlike Shannon, a sample
-# holding a single species scores 1 rather than 0.
+# there, a deployment with no fish identified to species comes back NA from
+# the full_join and is set to 0 by replace_na(), matching the RLS convention
+# (RLS/05b keeps empty blocks as zero). Note that, unlike Shannon, a sample
+# holding a single species scores 1 rather than 0, so inverse Simpson has a
+# gap between 0 (no fish) and 1 (one species).
 simpson_diversity_samples <- combined_count %>%
   dplyr::filter(count > 0) %>%
   dplyr::filter(method %in% "BRUVs") %>%
@@ -1340,13 +1342,11 @@ impact_data <- bind_rows(species_richness_impacts,
                          simpson_diversity_impacts
 )
 
-# Inverse Simpson is deliberately left out of the overall-impact rollup.
-# It measures the same thing as Shannon diversity, so including both would
-# weight diversity twice as heavily as every other indicator and would also
-# shift the overall impact values that have already been reported. Drop the
-# filter below if the two diversity indices should both count.
+# Shannon diversity is left out of the overall-impact rollup. Inverse Simpson
+# replaces it as the app's diversity indicator, and counting both would
+# weight diversity twice as heavily as every other indicator.
 overall_impact <- impact_data %>%
-  dplyr::filter(!impact_metric %in% "simpson_diversity") %>%
+  dplyr::filter(!impact_metric %in% "shannon_diversity") %>%
   # dplyr::filter(region %in% "Adelaide Metro") %>%
   dplyr::mutate(percent_change = ((bloom / pre_bloom) - 1) * 100) %>%
   dplyr::mutate(direction = case_when(
@@ -1990,9 +1990,9 @@ impact_data_location_split <- dplyr::bind_rows(
 )
 
 # overall impact ----
-# Excludes inverse Simpson for the same reason as overall_impact above.
+# Excludes Shannon for the same reason as overall_impact above.
 overall_impact_location <- impact_data_location %>%
-  dplyr::filter(!impact_metric %in% "simpson_diversity") %>%
+  dplyr::filter(!impact_metric %in% "shannon_diversity") %>%
   dplyr::group_by(reporting_name) %>%
   dplyr::summarise(percentage = mean(percentage, na.rm = TRUE), .groups = "drop") %>%
   dplyr::mutate(

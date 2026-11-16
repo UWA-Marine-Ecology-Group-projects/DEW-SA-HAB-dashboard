@@ -1,0 +1,182 @@
+dataset,location,status,period,survey_date,n_sites,n_sites_total,complete,sites,missing_sites
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2005-03-08,2,10,FALSE,"Carrickalinga (toilet), Haycock Point","Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2006-02-23,2,10,FALSE,"Carrickalinga (toilet), Haycock Point","Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2007-02-22,2,10,FALSE,"Carrickalinga (toilet), Haycock Point","Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2008-02-05,1,10,FALSE,Carrickalinga (toilet),"Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Haycock Point, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2011-02-02,1,10,FALSE,Haycock Point,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2012-02-01,1,10,FALSE,Haycock Point,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2012-11-23,2,10,FALSE,"Carrickalinga (toilet), Normanville Beach","Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Haycock Point, Lady Bay, Myponga, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2013-02-28,5,10,FALSE,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Normanville Beach","Haycock Point, Lady Bay, Myponga, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2014-01-18,2,10,FALSE,"Carrickalinga (toilet), Haycock Point","Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2016-02-09,4,10,FALSE,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth","Haycock Point, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2017-02-14,9,10,FALSE,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth",Haycock Point
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2018-02-06,9,10,FALSE,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth",Haycock Point
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2019-02-19,4,10,FALSE,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth","Haycock Point, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2020-02-09,5,10,FALSE,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Myponga","Haycock Point, Lady Bay, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2021-03-10,4,10,FALSE,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth","Haycock Point, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Pre-bloom,2024-02-18,1,10,FALSE,Carrickalinga North Site 2,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga Nth, Haycock Point, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth"
+M2 invertebrates,Carrickalinga,Fished,Bloom,2026-01-13,10,10,TRUE,"Carrickalinga (toilet), Carrickalinga North Site, Carrickalinga North Site 2, Carrickalinga Nth, Haycock Point, Lady Bay, Myponga, Normanville Beach, South Shores, Yankalilla Mouth",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2005-03-08,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2006-02-23,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2007-02-22,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2012-02-01,3,4,FALSE,"Carrickalinga Head, Dodd's Beach, Myponga South",Ripple Rock
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2016-02-09,3,4,FALSE,"Dodd's Beach, Myponga South, Ripple Rock",Carrickalinga Head
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2017-02-14,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2018-02-06,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2019-02-19,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2020-02-09,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2021-03-10,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2023-02-20,2,4,FALSE,"Carrickalinga Head, Ripple Rock","Dodd's Beach, Myponga South"
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2023-12-21,1,4,FALSE,Carrickalinga Head,"Dodd's Beach, Myponga South, Ripple Rock"
+M2 invertebrates,Carrickalinga,No-take,Pre-bloom,2024-02-18,1,4,FALSE,Carrickalinga Head,"Dodd's Beach, Myponga South, Ripple Rock"
+M2 invertebrates,Carrickalinga,No-take,Bloom,2026-01-13,4,4,TRUE,"Carrickalinga Head, Dodd's Beach, Myponga South, Ripple Rock",
+M2 invertebrates,Eastern Spencer Gulf,Fished,Pre-bloom,2004-02-10,1,3,FALSE,Corny Point Outside,"Point Souttar, Point Turton"
+M2 invertebrates,Eastern Spencer Gulf,Fished,Pre-bloom,2005-04-14,1,3,FALSE,Point Souttar,"Corny Point Outside, Point Turton"
+M2 invertebrates,Eastern Spencer Gulf,Fished,Pre-bloom,2008-10-04,1,3,FALSE,Point Turton,"Corny Point Outside, Point Souttar"
+M2 invertebrates,Eastern Spencer Gulf,Fished,Bloom,2026-03-18,3,3,TRUE,"Corny Point Outside, Point Souttar, Point Turton",
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2005-03-12,2,5,FALSE,"Outside Granite island, The Bluff","Encounter Deep, Olivers Reef, Whalebone Reef"
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2006-02-24,2,5,FALSE,"Outside Granite island, The Bluff","Encounter Deep, Olivers Reef, Whalebone Reef"
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2007-02-20,2,5,FALSE,"Outside Granite island, The Bluff","Encounter Deep, Olivers Reef, Whalebone Reef"
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2007-09-24,3,5,FALSE,"Outside Granite island, The Bluff, Whalebone Reef","Encounter Deep, Olivers Reef"
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2012-02-08,1,5,FALSE,Whalebone Reef,"Encounter Deep, Olivers Reef, Outside Granite island, The Bluff"
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2013-03-04,3,5,FALSE,"Olivers Reef, The Bluff, Whalebone Reef","Encounter Deep, Outside Granite island"
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2013-11-01,3,5,FALSE,"Olivers Reef, The Bluff, Whalebone Reef","Encounter Deep, Outside Granite island"
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2017-04-14,5,5,TRUE,"Encounter Deep, Olivers Reef, Outside Granite island, The Bluff, Whalebone Reef",
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2018-01-27,5,5,TRUE,"Encounter Deep, Olivers Reef, Outside Granite island, The Bluff, Whalebone Reef",
+M2 invertebrates,Encounter Bay,Fished,Pre-bloom,2020-01-31,3,5,FALSE,"Encounter Deep, The Bluff, Whalebone Reef","Olivers Reef, Outside Granite island"
+M2 invertebrates,Encounter Bay,Fished,Bloom,2025-06-20,4,5,FALSE,"Olivers Reef, Outside Granite island, The Bluff, Whalebone Reef",Encounter Deep
+M2 invertebrates,Encounter Bay,Fished,Bloom,2026-02-16,3,5,FALSE,"Olivers Reef, The Bluff, Whalebone Reef","Encounter Deep, Outside Granite island"
+M2 invertebrates,Encounter Bay,Fished,Bloom,2026-05-29,2,5,FALSE,"Encounter Deep, Outside Granite island","Olivers Reef, The Bluff, Whalebone Reef"
+M2 invertebrates,Encounter Bay,No-take,Pre-bloom,2012-10-29,1,2,FALSE,Pullen Island,Port Elliot Deep
+M2 invertebrates,Encounter Bay,No-take,Pre-bloom,2013-03-04,1,2,FALSE,Pullen Island,Port Elliot Deep
+M2 invertebrates,Encounter Bay,No-take,Pre-bloom,2013-11-01,1,2,FALSE,Pullen Island,Port Elliot Deep
+M2 invertebrates,Encounter Bay,No-take,Pre-bloom,2017-04-14,1,2,FALSE,Port Elliot Deep,Pullen Island
+M2 invertebrates,Encounter Bay,No-take,Pre-bloom,2018-01-27,1,2,FALSE,Port Elliot Deep,Pullen Island
+M2 invertebrates,Encounter Bay,No-take,Pre-bloom,2020-01-31,1,2,FALSE,Pullen Island,Port Elliot Deep
+M2 invertebrates,Encounter Bay,No-take,Bloom,2026-02-16,1,2,FALSE,Port Elliot Deep,Pullen Island
+M2 invertebrates,Encounter Bay,No-take,Bloom,2026-05-29,1,2,FALSE,Pullen Island,Port Elliot Deep
+M2 invertebrates,Metro,Fished,Pre-bloom,2015-08-27,1,3,FALSE,Broken Bottom,"Hallett Cove, Marino Rocks"
+M2 invertebrates,Metro,Fished,Pre-bloom,2016-02-18,3,3,TRUE,"Broken Bottom, Hallett Cove, Marino Rocks",
+M2 invertebrates,Metro,Fished,Pre-bloom,2016-11-16,2,3,FALSE,"Hallett Cove, Marino Rocks",Broken Bottom
+M2 invertebrates,Metro,Fished,Pre-bloom,2017-02-16,1,3,FALSE,Broken Bottom,"Hallett Cove, Marino Rocks"
+M2 invertebrates,Metro,Fished,Pre-bloom,2018-01-25,1,3,FALSE,Broken Bottom,"Hallett Cove, Marino Rocks"
+M2 invertebrates,Metro,Fished,Pre-bloom,2019-03-15,2,3,FALSE,"Hallett Cove, Marino Rocks",Broken Bottom
+M2 invertebrates,Metro,Fished,Pre-bloom,2019-09-10,2,3,FALSE,"Hallett Cove, Marino Rocks",Broken Bottom
+M2 invertebrates,Metro,Fished,Pre-bloom,2020-02-13,1,3,FALSE,Broken Bottom,"Hallett Cove, Marino Rocks"
+M2 invertebrates,Metro,Fished,Pre-bloom,2021-03-01,1,3,FALSE,Broken Bottom,"Hallett Cove, Marino Rocks"
+M2 invertebrates,Metro,Fished,Pre-bloom,2022-03-23,3,3,TRUE,"Broken Bottom, Hallett Cove, Marino Rocks",
+M2 invertebrates,Metro,Fished,Pre-bloom,2022-08-31,2,3,FALSE,"Hallett Cove, Marino Rocks",Broken Bottom
+M2 invertebrates,Metro,Fished,Pre-bloom,2023-04-21,1,3,FALSE,Broken Bottom,"Hallett Cove, Marino Rocks"
+M2 invertebrates,Metro,Fished,Pre-bloom,2025-03-06,2,3,FALSE,"Hallett Cove, Marino Rocks",Broken Bottom
+M2 invertebrates,Metro,Fished,Bloom,2025-11-14,2,3,FALSE,"Hallett Cove, Marino Rocks",Broken Bottom
+M2 invertebrates,Metro,Fished,Bloom,2026-01-23,1,3,FALSE,Broken Bottom,"Hallett Cove, Marino Rocks"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2005-03-09,2,6,FALSE,"2nd Valley Boat Shed, Morgans","Cape Jervis South, Lasseters Reef, Nev's Windmills, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2006-02-28,2,6,FALSE,"2nd Valley Boat Shed, Morgans","Cape Jervis South, Lasseters Reef, Nev's Windmills, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2007-02-19,3,6,FALSE,"2nd Valley Boat Shed, Morgans, Nev's Windmills","Cape Jervis South, Lasseters Reef, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2008-02-05,2,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef","Cape Jervis South, Morgans, Nev's Windmills, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2011-01-31,2,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef","Cape Jervis South, Morgans, Nev's Windmills, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2012-01-31,2,6,FALSE,"Lasseters Reef, Nev's Windmills","2nd Valley Boat Shed, Cape Jervis South, Morgans, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2012-11-02,1,6,FALSE,2nd Valley Boat Shed,"Cape Jervis South, Lasseters Reef, Morgans, Nev's Windmills, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2013-02-24,2,6,FALSE,"2nd Valley Boat Shed, Rapid Head East","Cape Jervis South, Lasseters Reef, Morgans, Nev's Windmills"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2014-01-22,2,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef","Cape Jervis South, Morgans, Nev's Windmills, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2016-02-09,4,6,FALSE,"2nd Valley Boat Shed, Morgans, Nev's Windmills, Rapid Head East","Cape Jervis South, Lasseters Reef"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2017-02-20,5,6,FALSE,"2nd Valley Boat Shed, Cape Jervis South, Morgans, Nev's Windmills, Rapid Head East",Lasseters Reef
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2018-02-13,4,6,FALSE,"2nd Valley Boat Shed, Cape Jervis South, Morgans, Nev's Windmills","Lasseters Reef, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2018-05-16,1,6,FALSE,Rapid Head East,"2nd Valley Boat Shed, Cape Jervis South, Lasseters Reef, Morgans, Nev's Windmills"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2019-02-16,5,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef, Morgans, Nev's Windmills, Rapid Head East",Cape Jervis South
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2020-02-06,6,6,TRUE,"2nd Valley Boat Shed, Cape Jervis South, Lasseters Reef, Morgans, Nev's Windmills, Rapid Head East",
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2020-12-13,5,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef, Morgans, Nev's Windmills, Rapid Head East",Cape Jervis South
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2021-12-12,5,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef, Morgans, Nev's Windmills, Rapid Head East",Cape Jervis South
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2022-12-03,5,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef, Morgans, Nev's Windmills, Rapid Head East",Cape Jervis South
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2023-12-20,2,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef","Cape Jervis South, Morgans, Nev's Windmills, Rapid Head East"
+M2 invertebrates,Rapid Head,Fished,Pre-bloom,2024-02-17,4,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef, Nev's Windmills, Rapid Head East","Cape Jervis South, Morgans"
+M2 invertebrates,Rapid Head,Fished,Bloom,2026-01-12,5,6,FALSE,"2nd Valley Boat Shed, Lasseters Reef, Morgans, Nev's Windmills, Rapid Head East",Cape Jervis South
+M2 invertebrates,Rapid Head,Fished,Bloom,2026-05-14,1,6,FALSE,Cape Jervis South,"2nd Valley Boat Shed, Lasseters Reef, Morgans, Nev's Windmills, Rapid Head East"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2005-03-09,2,4,FALSE,"Rapid Head, Rapid Head South","Rapid Head SZ, Rapid Head SZ Site2"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2006-02-28,1,4,FALSE,Rapid Head,"Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2007-02-19,1,4,FALSE,Rapid Head,"Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2008-02-05,1,4,FALSE,Rapid Head,"Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2011-01-31,1,4,FALSE,Rapid Head,"Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2012-01-31,2,4,FALSE,"Rapid Head, Rapid Head SZ","Rapid Head South, Rapid Head SZ Site2"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2013-02-24,2,4,FALSE,"Rapid Head SZ, Rapid Head SZ Site2","Rapid Head, Rapid Head South"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2014-01-22,1,4,FALSE,Rapid Head,"Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2016-02-09,3,4,FALSE,"Rapid Head, Rapid Head South, Rapid Head SZ Site2",Rapid Head SZ
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2017-02-20,4,4,TRUE,"Rapid Head, Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2",
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2018-02-13,3,4,FALSE,"Rapid Head, Rapid Head South, Rapid Head SZ",Rapid Head SZ Site2
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2018-05-16,1,4,FALSE,Rapid Head SZ Site2,"Rapid Head, Rapid Head South, Rapid Head SZ"
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2019-02-16,4,4,TRUE,"Rapid Head, Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2",
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2020-02-06,3,4,FALSE,"Rapid Head, Rapid Head South, Rapid Head SZ",Rapid Head SZ Site2
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2020-12-13,4,4,TRUE,"Rapid Head, Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2",
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2021-12-12,4,4,TRUE,"Rapid Head, Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2",
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2022-12-03,4,4,TRUE,"Rapid Head, Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2",
+M2 invertebrates,Rapid Head,No-take,Pre-bloom,2024-02-17,2,4,FALSE,"Rapid Head SZ, Rapid Head SZ Site2","Rapid Head, Rapid Head South"
+M2 invertebrates,Rapid Head,No-take,Bloom,2026-01-12,4,4,TRUE,"Rapid Head, Rapid Head South, Rapid Head SZ, Rapid Head SZ Site2",
+M2 invertebrates,Southern Fleurieu,Fished,Pre-bloom,2005-03-13,2,6,FALSE,"Flat Irons, Newland Head","Backstairs Deep, Deep Creek, Fishery Beach, Porpoise Head"
+M2 invertebrates,Southern Fleurieu,Fished,Pre-bloom,2007-02-23,3,6,FALSE,"Fishery Beach, Flat Irons, Porpoise Head","Backstairs Deep, Deep Creek, Newland Head"
+M2 invertebrates,Southern Fleurieu,Fished,Pre-bloom,2007-11-09,2,6,FALSE,"Flat Irons, Newland Head","Backstairs Deep, Deep Creek, Fishery Beach, Porpoise Head"
+M2 invertebrates,Southern Fleurieu,Fished,Pre-bloom,2012-02-08,1,6,FALSE,Flat Irons,"Backstairs Deep, Deep Creek, Fishery Beach, Newland Head, Porpoise Head"
+M2 invertebrates,Southern Fleurieu,Fished,Pre-bloom,2017-04-06,6,6,TRUE,"Backstairs Deep, Deep Creek, Fishery Beach, Flat Irons, Newland Head, Porpoise Head",
+M2 invertebrates,Southern Fleurieu,Fished,Pre-bloom,2018-01-28,6,6,TRUE,"Backstairs Deep, Deep Creek, Fishery Beach, Flat Irons, Newland Head, Porpoise Head",
+M2 invertebrates,Southern Fleurieu,Fished,Pre-bloom,2020-03-18,3,6,FALSE,"Backstairs Deep, Deep Creek, Flat Irons","Fishery Beach, Newland Head, Porpoise Head"
+M2 invertebrates,Southern Fleurieu,Fished,Bloom,2025-06-20,2,6,FALSE,"Flat Irons, Newland Head","Backstairs Deep, Deep Creek, Fishery Beach, Porpoise Head"
+M2 invertebrates,Southern Fleurieu,Fished,Bloom,2026-05-11,6,6,TRUE,"Backstairs Deep, Deep Creek, Fishery Beach, Flat Irons, Newland Head, Porpoise Head",
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2015-08-26,4,7,FALSE,"Horseshoe inner, Horseshoe outer, Southport, Willunga","Gull Rock, Moana inside, Moana outside"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2016-02-17,7,7,TRUE,"Gull Rock, Horseshoe inner, Horseshoe outer, Moana inside, Moana outside, Southport, Willunga",
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2016-11-16,4,7,FALSE,"Horseshoe inner, Horseshoe outer, Moana inside, Moana outside","Gull Rock, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2017-03-06,3,7,FALSE,"Horseshoe inner, Moana outside, Southport","Gull Rock, Horseshoe outer, Moana inside, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2018-01-20,3,7,FALSE,"Horseshoe inner, Moana outside, Southport","Gull Rock, Horseshoe outer, Moana inside, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2019-03-18,4,7,FALSE,"Horseshoe inner, Horseshoe outer, Moana inside, Moana outside","Gull Rock, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2019-09-10,4,7,FALSE,"Horseshoe inner, Horseshoe outer, Moana inside, Moana outside","Gull Rock, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2020-02-07,2,7,FALSE,"Horseshoe inner, Moana outside","Gull Rock, Horseshoe outer, Moana inside, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2021-02-03,2,7,FALSE,"Horseshoe inner, Moana outside","Gull Rock, Horseshoe outer, Moana inside, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2022-02-13,4,7,FALSE,"Horseshoe inner, Horseshoe outer, Moana inside, Moana outside","Gull Rock, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2022-08-31,4,7,FALSE,"Horseshoe inner, Horseshoe outer, Moana inside, Moana outside","Gull Rock, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2023-05-15,1,7,FALSE,Horseshoe outer,"Gull Rock, Horseshoe inner, Moana inside, Moana outside, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Pre-bloom,2025-03-06,4,7,FALSE,"Horseshoe inner, Horseshoe outer, Moana inside, Moana outside","Gull Rock, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Bloom,2025-11-13,4,7,FALSE,"Horseshoe inner, Horseshoe outer, Moana inside, Moana outside","Gull Rock, Southport, Willunga"
+M2 invertebrates,Southern Metro,Fished,Bloom,2026-01-29,3,7,FALSE,"Gull Rock, Southport, Willunga","Horseshoe inner, Horseshoe outer, Moana inside, Moana outside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2008-02-08,1,7,FALSE,Aldinga Reef,"Aldinga Pinacles, Aldinga SZ1, Aldinga SZ3, Noarlunga North Outside, Noarlunga South Outside, Pt Noarlunga inside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2011-02-02,1,7,FALSE,Aldinga Reef,"Aldinga Pinacles, Aldinga SZ1, Aldinga SZ3, Noarlunga North Outside, Noarlunga South Outside, Pt Noarlunga inside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2012-02-02,1,7,FALSE,Aldinga Reef,"Aldinga Pinacles, Aldinga SZ1, Aldinga SZ3, Noarlunga North Outside, Noarlunga South Outside, Pt Noarlunga inside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2016-02-17,4,7,FALSE,"Aldinga SZ1, Aldinga SZ3, Noarlunga North Outside, Pt Noarlunga inside","Aldinga Pinacles, Aldinga Reef, Noarlunga South Outside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2016-11-16,2,7,FALSE,"Noarlunga North Outside, Pt Noarlunga inside","Aldinga Pinacles, Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Noarlunga South Outside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2017-03-06,3,7,FALSE,"Aldinga Pinacles, Noarlunga North Outside, Noarlunga South Outside","Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Pt Noarlunga inside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2018-01-20,3,7,FALSE,"Aldinga Pinacles, Noarlunga North Outside, Noarlunga South Outside","Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Pt Noarlunga inside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2019-03-18,2,7,FALSE,"Noarlunga North Outside, Pt Noarlunga inside","Aldinga Pinacles, Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Noarlunga South Outside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2019-09-10,2,7,FALSE,"Noarlunga North Outside, Pt Noarlunga inside","Aldinga Pinacles, Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Noarlunga South Outside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2020-02-07,2,7,FALSE,"Noarlunga North Outside, Noarlunga South Outside","Aldinga Pinacles, Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Pt Noarlunga inside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2021-02-03,1,7,FALSE,Aldinga Pinacles,"Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Noarlunga North Outside, Noarlunga South Outside, Pt Noarlunga inside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2022-02-13,4,7,FALSE,"Aldinga Pinacles, Aldinga Reef, Noarlunga North Outside, Pt Noarlunga inside","Aldinga SZ1, Aldinga SZ3, Noarlunga South Outside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2022-08-31,2,7,FALSE,"Noarlunga North Outside, Pt Noarlunga inside","Aldinga Pinacles, Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Noarlunga South Outside"
+M2 invertebrates,Southern Metro,No-take,Pre-bloom,2025-03-06,2,7,FALSE,"Noarlunga North Outside, Pt Noarlunga inside","Aldinga Pinacles, Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Noarlunga South Outside"
+M2 invertebrates,Southern Metro,No-take,Bloom,2025-11-13,2,7,FALSE,"Noarlunga North Outside, Pt Noarlunga inside","Aldinga Pinacles, Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Noarlunga South Outside"
+M2 invertebrates,Southern Metro,No-take,Bloom,2026-01-29,5,7,FALSE,"Aldinga Pinacles, Aldinga Reef, Aldinga SZ1, Aldinga SZ3, Noarlunga South Outside","Noarlunga North Outside, Pt Noarlunga inside"
+M2 invertebrates,Southern Yorke,Fished,Pre-bloom,2005-04-11,2,3,FALSE,"Edithburgh, Troubridge Point",Troubridge Lighthouse
+M2 invertebrates,Southern Yorke,Fished,Pre-bloom,2006-04-05,3,3,TRUE,"Edithburgh, Troubridge Lighthouse, Troubridge Point",
+M2 invertebrates,Southern Yorke,Fished,Bloom,2025-06-17,2,3,FALSE,"Edithburgh, Troubridge Point",Troubridge Lighthouse
+M2 invertebrates,Southern Yorke,Fished,Bloom,2026-04-08,3,3,TRUE,"Edithburgh, Troubridge Lighthouse, Troubridge Point",
+M2 invertebrates,Sponge Gardens,Fished,Pre-bloom,2016-03-16,3,3,TRUE,"Grassy Knoll, Penneshaw Pub, Puzzle Rock",
+M2 invertebrates,Sponge Gardens,Fished,Pre-bloom,2017-03-08,3,3,TRUE,"Grassy Knoll, Penneshaw Pub, Puzzle Rock",
+M2 invertebrates,Sponge Gardens,Fished,Pre-bloom,2018-02-11,3,3,TRUE,"Grassy Knoll, Penneshaw Pub, Puzzle Rock",
+M2 invertebrates,Sponge Gardens,Fished,Pre-bloom,2019-02-14,3,3,TRUE,"Grassy Knoll, Penneshaw Pub, Puzzle Rock",
+M2 invertebrates,Sponge Gardens,Fished,Pre-bloom,2021-02-22,3,3,TRUE,"Grassy Knoll, Penneshaw Pub, Puzzle Rock",
+M2 invertebrates,Sponge Gardens,Fished,Bloom,2026-02-10,3,3,TRUE,"Grassy Knoll, Penneshaw Pub, Puzzle Rock",
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2005-03-15,1,2,FALSE,Cable Hut,Pancake Rock
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2006-03-07,1,2,FALSE,Cable Hut,Pancake Rock
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2007-02-26,1,2,FALSE,Cable Hut,Pancake Rock
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2012-02-07,1,2,FALSE,Cable Hut,Pancake Rock
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2016-03-16,2,2,TRUE,"Cable Hut, Pancake Rock",
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2017-03-08,2,2,TRUE,"Cable Hut, Pancake Rock",
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2018-02-11,2,2,TRUE,"Cable Hut, Pancake Rock",
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2019-02-14,2,2,TRUE,"Cable Hut, Pancake Rock",
+M2 invertebrates,Sponge Gardens,No-take,Pre-bloom,2021-02-22,2,2,TRUE,"Cable Hut, Pancake Rock",
+M2 invertebrates,Sponge Gardens,No-take,Bloom,2026-02-10,2,2,TRUE,"Cable Hut, Pancake Rock",
+M2 invertebrates,Upper GSV,Fished,Pre-bloom,2006-04-20,1,5,FALSE,Port Julia,"Outer Harbor breakwater south inside, Port Gawler, Port Parham, Semaphore"
+M2 invertebrates,Upper GSV,Fished,Pre-bloom,2015-08-31,1,5,FALSE,Semaphore,"Outer Harbor breakwater south inside, Port Gawler, Port Julia, Port Parham"
+M2 invertebrates,Upper GSV,Fished,Pre-bloom,2015-10-30,2,5,FALSE,"Outer Harbor breakwater south inside, Port Parham","Port Gawler, Port Julia, Semaphore"
+M2 invertebrates,Upper GSV,Fished,Pre-bloom,2016-02-19,2,5,FALSE,"Port Parham, Semaphore","Outer Harbor breakwater south inside, Port Gawler, Port Julia"
+M2 invertebrates,Upper GSV,Fished,Pre-bloom,2017-02-16,3,5,FALSE,"Port Gawler, Port Parham, Semaphore","Outer Harbor breakwater south inside, Port Julia"
+M2 invertebrates,Upper GSV,Fished,Pre-bloom,2018-01-25,3,5,FALSE,"Port Gawler, Port Parham, Semaphore","Outer Harbor breakwater south inside, Port Julia"
+M2 invertebrates,Upper GSV,Fished,Pre-bloom,2020-02-13,3,5,FALSE,"Port Gawler, Port Parham, Semaphore","Outer Harbor breakwater south inside, Port Julia"
+M2 invertebrates,Upper GSV,Fished,Pre-bloom,2021-03-01,3,5,FALSE,"Port Gawler, Port Parham, Semaphore","Outer Harbor breakwater south inside, Port Julia"
+M2 invertebrates,Upper GSV,Fished,Bloom,2025-11-26,5,5,TRUE,"Outer Harbor breakwater south inside, Port Gawler, Port Julia, Port Parham, Semaphore",

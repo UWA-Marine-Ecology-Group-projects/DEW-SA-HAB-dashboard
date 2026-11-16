@@ -198,15 +198,9 @@ build_bruv_raw_data <- function(
       campaignid = as.character(campaignid),
       sample     = as.character(sample)
     ) %>%
-    # The same two status corrections the GLMM script applies in
-    # prep_metric_data(), so the multivariate and the models
-    # disagree about no deployment.
-    dplyr::mutate(
-      status = dplyr::if_else(sample %in% "OASO04_2510", "Fished", status),
-      status = dplyr::if_else(
-        as.character(uwa_site_code) %in% "45", "No-take", status
-      )
-    ) %>%
+    # Status is taken as-is from sa_bruv_metadata.csv: script 03 derives
+    # it from the marine park zoning layer, so the GLMMs and the
+    # multivariate use the same, uncorrected-by-hand values.
     # A deployment with no reporting_name sits outside every
     # reporting unit, and one with no uwa_site_code cannot be
     # placed in a site, so neither can contribute a site x event.
@@ -586,7 +580,16 @@ run_bruv_pipeline <- function(
 
 # ============================================================
 # RUN
+#
+# Wrapped in a guard, the same way script 13 is, so another script
+# can source this file just for build_bruv_raw_data() by setting
+# BRUV_ENGINE_ONLY <- TRUE first (e.g.
+# modelling/05_all_locations_status_date_pco_cap.R). Running this
+# script on its own is unchanged: the flag does not exist, so
+# everything below runs.
 # ============================================================
+
+if (!(exists("BRUV_ENGINE_ONLY") && isTRUE(BRUV_ENGINE_ONLY))) {
 
 bruv_raw_data <- build_bruv_raw_data()
 
@@ -655,3 +658,5 @@ if (!is.null(bruv_results)) {
     as.data.frame() %>%
     print(row.names = FALSE)
 }
+
+} # end of BRUV_ENGINE_ONLY guard

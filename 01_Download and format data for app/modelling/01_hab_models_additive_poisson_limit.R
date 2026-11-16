@@ -103,12 +103,10 @@ plot_theme <- theme(
 # 1. Prepare data
 # -----------------------------
 
+# Status comes straight from script 03, which derives it from the marine
+# park zoning layer, so no manual status corrections are needed here.
 prep_metric_data <- function(df, response_col) {
   df %>%
-    dplyr::mutate(
-      status = if_else(sample %in% "OASO04_2510", "Fished", status),
-      status = if_else(uwa_site_code %in% "45", "No-take", status)
-    ) %>%
     filter(
       !is.na(.data[[response_col]]),
       !is.na(period),
@@ -131,11 +129,7 @@ load("app_data/hab_data.Rdata")
 
 metadata <- hab_data$hab_combined_metadata %>%
   sf::st_drop_geometry() %>%
-  filter(method == "BRUVs") %>%
-  dplyr::mutate(
-    status = if_else(sample %in% "OASO04_2510", "Fished", status),
-    status = if_else(uwa_site_code %in% "45", "No-take", status)
-  )
+  filter(method == "BRUVs")
 
 abund_dat <- prep_metric_data(
   hab_data$total_abundance_samples,
@@ -2396,6 +2390,14 @@ add_plot_confidence_limits <- function(df) {
 #     theme(legend.position = "none")
 # }
 
+# Zero floor for every GLMM plot. None of the modelled metrics can be
+# negative, but a lower 95% confidence limit can be. coord_cartesian() only
+# zooms, so an error bar that dips below zero is drawn clipped at the axis
+# rather than dropped (which is what scale limits / ylim() would do). The NA
+# upper limit lets each panel keep its own top. Same approach as the RLS
+# GLMM plots in the dashboard.
+glmm_zero_floor <- coord_cartesian(ylim = c(0, NA))
+
 plot_period <- function(df, metric_id, panel_letter) {
   
   metric_df <- df %>%
@@ -2442,6 +2444,7 @@ plot_period <- function(df, metric_id, panel_letter) {
     ) +
     theme_minimal(base_size = 16) +
     plot_theme +
+    glmm_zero_floor +
     theme(legend.position = "none")
 }
 
@@ -2486,6 +2489,7 @@ plot_period_status <- function(df, metric_id, panel_letter) {
     ) +
     theme_minimal(base_size = 16) +
     plot_theme +
+    glmm_zero_floor +
     theme(legend.position = "bottom")
 }
 
@@ -2561,6 +2565,7 @@ plot_start_date <- function(df, metric_id, panel_letter) {
     ) +
     theme_minimal(base_size = 16) +
     plot_theme +
+    glmm_zero_floor +
     theme(
       axis.text.x = element_text(angle = 90, hjust = 1),
       legend.position = "bottom"
@@ -2613,6 +2618,7 @@ plot_start_date_status <- function(df, metric_id, panel_letter) {
     ) +
     theme_minimal(base_size = 16) +
     plot_theme +
+    glmm_zero_floor +
     theme(
       axis.text.x = element_text(angle = 90, hjust = 1),
       legend.position = "bottom"
@@ -2824,8 +2830,10 @@ shannon_dat %>%
     minimum = min(shannon, na.rm = TRUE)
   )
 
-# The inverse Simpson equivalent. Its floor is 1 (a single-species sample),
-# not 0, so n_zero should be 0 here unless something has gone wrong upstream.
+# The inverse Simpson equivalent. A deployment with fish scores at least 1
+# (a single-species sample); a deployment with no fish identified to species
+# is a genuine 0 (matching the RLS convention), so n_zero here should equal
+# the number of empty deployments, and nothing should sit between 0 and 1.
 simpson_dat %>%
   summarise(
     n = n(),

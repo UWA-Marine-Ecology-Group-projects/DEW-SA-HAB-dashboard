@@ -1,0 +1,5 @@
+dataset,model,n_points,n_locations,F_value,p_value,cap1_pct
+BRUVs,period + Condition(location),175,20,1.643647178332666,0.001,1.1
+M1 fish,period + Condition(location),177,10,2.185976354134605,0.001,1.3
+M2 fish,period + Condition(location),181,10,1.131175748950223,0.001,0.7
+M2 invertebrates,period + Condition(location),181,10,2.0733054419271078,0.001,1.2
