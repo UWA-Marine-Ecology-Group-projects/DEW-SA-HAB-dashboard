@@ -28,15 +28,10 @@ library(DT)
 # library(colorspace)
 
 source("R/helpers.R")          # defines filter_by_park(), ensure_sf_ll(), base_map(), etc.
-source("R/mod_park_summary.R") # defines mod_park_summary_ui/server (contains session$onFlushed INSIDE)
 source("R/half_donut_with_dial.R")
 
 # Load data
-load("app_data/values.Rdata")
-load("app_data/dataframes.Rdata")
-load("app_data/plots.Rdata")
 load("app_data/hab_data.Rdata")
-# load("app_data/downloads.Rdata")
 
 # RLS (Dive) data, built by
 # "01_Download and format data for app/RLS/15_combine_rls_data_for_app.R".
@@ -103,11 +98,6 @@ uvc_completed  <- sum(hab_data$survey_plan$complete_number_transects)
 percent_completed   <- round((sites_completed/sites_planned*100),1)
 vb_col <- "secondary"
 
-# Suppose the park names live in dataframes$parks$park (adjust as needed)
-all_deployments <- bind_rows(dataframes$deployment_locations, dataframes$deployment_locations_rls) %>% 
-  distinct(location)
-
-# parks <- sort(unique(all_deployments$location))  # or your parks df
 parks <- c("Encounter", "Sir Joseph Banks Group", "Southern Spencer Gulf", "Eastern Spencer Gulf", "Upper Gulf St Vincent", "Upper Spencer Gulf", "Lower Yorke Peninsula", "Franklin Harbor")
 
 # Spatial files for maps ----
