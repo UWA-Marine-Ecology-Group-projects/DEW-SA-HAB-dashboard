@@ -64,6 +64,20 @@
 #   <dataset>_all_locations_PCO.png / _CAP_Period.png / _CAP_Period_time.png
 #     / _CAP_Bloom_vs_Status.png
 #   all_methods_all_locations_<PCO|CAP_Period|CAP_Period_time|CAP_Bloom_vs_Status>.png
+#   all_methods_all_locations_CAP_Period_time_impact_score.png    (coloured by
+#   all_methods_all_locations_CAP_Period_time_impact_category.png  location impact,
+#                                        see section 4c)
+#   all_methods_all_locations_CAP_Period_time_simpson_score.png     (coloured by
+#   all_methods_all_locations_CAP_Period_time_simpson_category.png   inverse Simpson
+#                                        change only)
+#   cap_time_by_indicator/all_methods/ the four methods together: overall +
+#                                       richness, abundance, Simpson, Shannon
+#   cap_time_by_indicator/<method>/   one Bloom CAP-through-time figure per
+#                                       indicator (plus 00_overall_impact),
+#                                       markers filled by Low/Medium/High
+#   location_indicator_impacts.csv      (impact category per indicator)
+#   location_impact_scores.csv / location_simpson_scores.csv
+#                                       (the scores behind those colours)
 #                                       (the four methods in one figure)
 #   ...and the same set again in all_locations/complete_sites_only/,
 #   using only dates where every site of a location x status was sampled
@@ -569,6 +583,465 @@ plot_bloom_vs_status <- function(cap, cap_status, subtitle = NULL) {
 
 
 # ------------------------------------------------------------
+# 4c. Location impact scores, for colouring the CAP-through-time plot
+#
+# The score is the dashboard's own "% of pre-bloom" figure for each
+# indicator (mean during the bloom / mean pre-bloom x 100), averaged
+# across indicators for each location - the same calculation as
+# overall_impact_location in script 03. 100 = no change, below 100 =
+# decline. Read from the app data, so it is exactly what the dashboard
+# shows:
+#   BRUVs: hab_data$impact_data_location           (script 03)
+#   RLS:   rls_data$pct_change_location, Pre-bloom vs Bloom,
+#          both statuses pooled                    (scripts 10 + 15)
+#
+# Each RLS panel is coloured using that method's own indicators only
+# (e.g. the M1 fish panel uses the M1 fish indicators), so a colour
+# describes the data in the panel it sits in.
+#
+# Categories use the dashboard thresholds: 80% or more of pre-bloom =
+# Low, 50-80% = Medium, below 50% = High.
+# ------------------------------------------------------------
+
+IMPACT_EXCLUDE_METRICS <- c(
+  # Thamnaconus degeni - left out of the score on request.
+  "thamnaconus_degeni",
+  # BRUV Shannon diversity: inverse Simpson replaced it in the app, so
+  # counting both would weight diversity twice. (RLS Shannon is kept -
+  # it is RLS's only diversity indicator.) Delete this line to include it.
+  "shannon_diversity"
+)
+
+IMPACT_COLOURS <- c(Low = "#3B7EA1", Medium = "#F2C94C", High = "#EB5757")  # = dashboard gauges
+
+classify_impact <- function(pct) {
+  factor(
+    dplyr::case_when(
+      is.na(pct)  ~ NA_character_,
+      pct >= 80   ~ "Low",
+      pct >= 50   ~ "Medium",
+      TRUE        ~ "High"
+    ),
+    levels = names(IMPACT_COLOURS)
+  )
+}
+
+load_location_impacts <- function() {
+
+  app_env <- new.env()
+  parts   <- list()
+
+  if (file.exists("app_data/hab_data.Rdata")) {
+    load("app_data/hab_data.Rdata", envir = app_env)
+    parts$bruv <- tibble::as_tibble(app_env$hab_data$impact_data_location) %>%
+      transmute(
+        dataset    = "BRUVs",
+        location   = reporting_name,
+        metric     = impact_metric,
+        percentage = percentage
+      )
+  } else {
+    warning("app_data/hab_data.Rdata not found - no BRUV impact scores.")
+  }
+
+  if (file.exists("app_data/rls_data.Rdata")) {
+    load("app_data/rls_data.Rdata", envir = app_env)
+    rd <- app_env$rls_data
+    parts$rls <- tibble::as_tibble(rd$pct_change_location) %>%
+      filter(comparison_type == "period", comparison_scope == "overall") %>%
+      left_join(distinct(rd$metric_lookup, metric_id, dataset), by = "metric_id") %>%
+      transmute(
+        dataset,
+        location   = spatial_group,
+        metric     = metric_id,
+        percentage = percentage
+      )
+  } else {
+    warning("app_data/rls_data.Rdata not found - no RLS impact scores.")
+  }
+
+  bind_rows(parts) %>%
+    # Drop excluded indicators, and comparisons with no defined
+    # percentage (e.g. a pre-bloom mean of zero).
+    filter(!metric %in% IMPACT_EXCLUDE_METRICS, is.finite(percentage)) %>%
+    group_by(dataset, location) %>%
+    summarise(
+      impact_score = mean(percentage),
+      n_indicators = n(),
+      indicators   = paste(sort(metric), collapse = ", "),
+      .groups = "drop"
+    ) %>%
+    mutate(impact = classify_impact(impact_score))
+}
+
+location_impacts <- load_location_impacts()
+safe_write_csv(location_impacts, file.path(OUTPUT_DIR, "location_impact_scores.csv"))
+
+# Inverse Simpson only: the same "% of pre-bloom" figure, but for each
+# method's whole-dataset inverse Simpson diversity alone (no averaging
+# across indicators), with the same Low / Medium / High cut-offs.
+#   BRUVs: hab_data$impact_data_location, simpson_diversity (script 03)
+#   RLS:   script 10's location CSV. Read directly, because script 15
+#          drops the RLS Simpson metrics before they reach rls_data.
+# The phylum-level invertebrate Simpson metrics are not used.
+RLS_SIMPSON_METRICS <- c(
+  "M1 fish Simpson diversity"         = "M1 fish",
+  "M2 fish Simpson diversity"         = "M2 fish",
+  "M2 invertebrate Simpson diversity" = "M2 invertebrates"
+)
+
+load_simpson_impacts <- function() {
+
+  parts <- list()
+
+  if (file.exists("app_data/hab_data.Rdata")) {
+    app_env <- new.env()
+    load("app_data/hab_data.Rdata", envir = app_env)
+    parts$bruv <- tibble::as_tibble(app_env$hab_data$impact_data_location) %>%
+      filter(impact_metric == "simpson_diversity") %>%
+      transmute(dataset = "BRUVs", location = reporting_name, percentage)
+  }
+
+  rls_csv <- file.path("outputs", "rls_metric_percentage_changes",
+                       "rls_metric_percentage_changes_location.csv")
+  if (file.exists(rls_csv)) {
+    parts$rls <- readr::read_csv(rls_csv, show_col_types = FALSE) %>%
+      filter(
+        comparison_type == "period", comparison_scope == "overall",
+        metric %in% names(RLS_SIMPSON_METRICS)
+      ) %>%
+      transmute(
+        dataset  = unname(RLS_SIMPSON_METRICS[metric]),
+        location = spatial_group,
+        percentage
+      )
+  } else {
+    warning("Missing ", rls_csv, " - re-run RLS/10. No RLS Simpson scores.")
+  }
+
+  bind_rows(parts) %>%
+    filter(is.finite(percentage)) %>%
+    transmute(dataset, location, impact_score = percentage, impact = classify_impact(percentage))
+}
+
+simpson_impacts <- load_simpson_impacts()
+safe_write_csv(simpson_impacts, file.path(OUTPUT_DIR, "location_simpson_scores.csv"))
+
+# Bloom CAP1 through time, with lines and point outlines coloured by the
+# location's impact score instead of by location. colour_by is
+# "continuous" (the score itself) or "category" (Low / Medium / High).
+# Each line is labelled with its location at its last date, since colour
+# no longer identifies the location.
+#
+# score_tbl is location_impacts (all indicators) or simpson_impacts
+# (inverse Simpson only); score_name is the legend wording for it.
+plot_cap_time_by_impact <- function(cap_scores, dataset_label,
+                                    colour_by  = c("continuous", "category"),
+                                    score_tbl  = location_impacts,
+                                    score_name = "Overall impact",
+                                    y_lab      = "Bloom CAP1") {
+
+  colour_by <- match.arg(colour_by)
+
+  scores <- cap_scores %>%
+    left_join(
+      filter(score_tbl, dataset == dataset_label) %>%
+        select(location, impact_score, impact),
+      by = "location"
+    ) %>%
+    arrange(location, status, survey_date)
+
+  unmatched <- setdiff(unique(scores$location), score_tbl$location[score_tbl$dataset == dataset_label])
+  if (length(unmatched) > 0) {
+    message("  ", dataset_label, ": no impact score for ", paste(unmatched, collapse = "; "),
+            " - drawn in grey.")
+  }
+
+  end_labels <- scores %>%
+    group_by(location) %>%
+    slice_max(survey_date, n = 1, with_ties = FALSE) %>%
+    ungroup()
+
+  colour_var <- if (colour_by == "continuous") "impact_score" else "impact"
+
+  # For the categories, give locations with no score their own
+  # "Not assessed" level, so every panel has the same four legend keys
+  # and patchwork merges them into one legend.
+  if (colour_by == "category") {
+    scores <- scores %>%
+      mutate(impact = factor(
+        tidyr::replace_na(as.character(impact), "Not assessed"),
+        levels = c(names(IMPACT_COLOURS), "Not assessed")
+      ))
+    end_labels <- end_labels %>%
+      select(-impact) %>%
+      left_join(distinct(scores, location, impact), by = "location")
+  }
+
+  pre_bloom <- filter(scores, period == "Pre-bloom")
+  bloom     <- filter(scores, period == "Bloom")
+
+  # Pre-bloom points are open (outline in the impact colour); bloom points
+  # are FILLED with the impact colour, larger, with a thin black outline so
+  # amber still shows against the white background. Period is therefore
+  # shown by open vs filled, rather than by a separate fill legend.
+  p <- ggplot(scores, aes(
+    x = survey_date, y = axis1,
+    group = interaction(location, status),
+    colour = .data[[colour_var]]
+  )) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.4, colour = "grey60") +
+    # show.legend = TRUE so every panel draws every key and the four
+    # panels' legends match (and so merge) - see plot_cap_time_impact_fill().
+    geom_line(aes(linetype = status), linewidth = 0.7, alpha = 0.85, show.legend = TRUE) +
+    geom_point(
+      data = pre_bloom, aes(shape = status),
+      fill = "white", size = 2.4, stroke = 0.9,
+      show.legend = FALSE
+    ) +
+    geom_point(
+      data = bloom, aes(shape = status, fill = .data[[colour_var]]),
+      colour = "black", size = 3.8, stroke = 0.5,
+      show.legend = TRUE
+    ) +
+    ggrepel::geom_text_repel(
+      data = end_labels, aes(label = location),
+      size = 2.6, nudge_x = 60, direction = "y", hjust = 0,
+      segment.size = 0.2, min.segment.length = 0, show.legend = FALSE
+    ) +
+    scale_shape_manual(values = c("Fished" = 21, "No-take" = 24)) +
+    scale_linetype_manual(values = c("Fished" = "dashed", "No-take" = "solid")) +
+    scale_x_date(
+      date_breaks = "2 years", date_labels = "%Y",
+      expand = expansion(mult = c(0.02, 0.18))   # room for the labels
+    ) +
+    labs(
+      x = "Sampling date", y = y_lab,
+      shape = "Status", linetype = "Status",
+      caption = "Open symbols = pre-bloom; filled symbols = bloom, filled with the location's impact colour"
+    ) +
+    theme_classic(base_size = 13) +
+    theme(
+      axis.text.x  = element_text(angle = 45, hjust = 1),
+      legend.text  = element_text(size = 9),
+      plot.caption = element_text(size = 10, colour = "grey30", hjust = 0)
+    )
+
+  if (colour_by == "continuous") {
+    # Same colours as the categories, blended: red at 0%, amber at 50%,
+    # blue from 80% up, darker blue for increases. Scores above 150% are
+    # drawn at the 150% colour. One scale drives both the line/outline
+    # colour and the bloom-point fill.
+    p + scale_colour_gradientn(
+      aesthetics = c("colour", "fill"),
+      colours = c("#EB5757", "#F2C94C", "#3B7EA1", "#1F4E6B"),
+      values  = scales::rescale(c(0, 50, 80, 150), from = c(0, 150)),
+      limits  = c(0, 150),
+      oob     = scales::squish,
+      breaks  = c(0, 50, 80, 100, 150),
+      labels  = c("0%", "50%", "80%", "100%", "150%+"),
+      na.value = "grey70",
+      name    = paste0(score_name, "\n(% of pre-bloom)")
+    ) +
+      guides(
+        colour = guide_colourbar(barheight = unit(6, "cm")),
+        shape  = guide_legend(override.aes = list(fill = "grey50", colour = "black"))
+      )
+  } else {
+    p + scale_colour_manual(
+      aesthetics = c("colour", "fill"),
+      values   = c(IMPACT_COLOURS, "Not assessed" = "grey70"),
+      limits   = c(names(IMPACT_COLOURS), "Not assessed"),
+      drop     = FALSE,
+      name     = score_name,
+      labels   = c(Low = "Low (\u226580%)", Medium = "Medium (50-80%)",
+                   High = "High (<50%)", "Not assessed" = "Not assessed")
+    ) +
+      guides(
+        colour = guide_legend(override.aes = list(shape = 21, linetype = 0, size = 4)),
+        shape  = guide_legend(override.aes = list(fill = "grey50", colour = "black"))
+      )
+  }
+}
+
+
+# ------------------------------------------------------------
+# 4d. Impact category for EACH indicator, and a CAP-through-time plot
+#     with every marker filled by the impact category
+#
+# One row per method x location x indicator: the dashboard's "% of
+# pre-bloom" for that indicator alone, put into Low / Medium / High with
+# the same cut-offs as above.
+#   BRUVs: every indicator in hab_data$impact_data_location (all of them,
+#          T. degeni and Shannon included - each gets its own figure).
+#   RLS:   every indicator the dashboard shows (rls_data$pct_change_location)
+#          plus each method's whole-dataset inverse Simpson from script 10.
+#
+# Note for T. degeni: the same cut-offs are applied, so an INCREASE in
+# T. degeni reads as "Low impact" here, as it does for every indicator.
+# ------------------------------------------------------------
+
+# e.g. "shark_ray_richness" -> "Shark ray richness"
+tidy_indicator_label <- function(x) {
+  x %>%
+    stringr::str_replace_all("_", " ") %>%
+    stringr::str_replace("200mm", ">200 mm") %>%
+    stringr::str_to_sentence()
+}
+
+# File- and folder-safe name, e.g. "M2 invertebrates" -> "m2_invertebrates"
+slug <- function(x) {
+  x %>%
+    stringr::str_to_lower() %>%
+    stringr::str_replace_all("[^a-z0-9]+", "_") %>%
+    stringr::str_remove_all("^_|_$")
+}
+
+load_indicator_impacts <- function() {
+
+  app_env <- new.env()
+  parts   <- list()
+
+  if (file.exists("app_data/hab_data.Rdata")) {
+    load("app_data/hab_data.Rdata", envir = app_env)
+    parts$bruv <- tibble::as_tibble(app_env$hab_data$impact_data_location) %>%
+      transmute(
+        dataset         = "BRUVs",
+        location        = reporting_name,
+        indicator_id    = impact_metric,
+        indicator_group = impact_metric,
+        indicator_label = tidy_indicator_label(impact_metric),
+        percentage
+      )
+  }
+
+  if (file.exists("app_data/rls_data.Rdata")) {
+    load("app_data/rls_data.Rdata", envir = app_env)
+    rd <- app_env$rls_data
+    parts$rls <- tibble::as_tibble(rd$pct_change_location) %>%
+      filter(comparison_type == "period", comparison_scope == "overall") %>%
+      left_join(distinct(rd$metric_lookup, metric_id, dataset), by = "metric_id") %>%
+      transmute(
+        dataset,
+        location        = spatial_group,
+        indicator_id    = metric_id,
+        indicator_group = metric_group,
+        indicator_label = as.character(metric),
+        percentage
+      )
+  }
+
+  rls_csv <- file.path("outputs", "rls_metric_percentage_changes",
+                       "rls_metric_percentage_changes_location.csv")
+  if (file.exists(rls_csv)) {
+    parts$rls_simpson <- readr::read_csv(rls_csv, show_col_types = FALSE) %>%
+      filter(
+        comparison_type == "period", comparison_scope == "overall",
+        metric %in% names(RLS_SIMPSON_METRICS)
+      ) %>%
+      transmute(
+        dataset         = unname(RLS_SIMPSON_METRICS[metric]),
+        location        = spatial_group,
+        indicator_id    = slug(metric),
+        indicator_group = "simpson_diversity",
+        indicator_label = metric,
+        percentage
+      )
+  }
+
+  bind_rows(parts) %>%
+    filter(is.finite(percentage), !is.na(dataset)) %>%
+    mutate(impact = classify_impact(percentage))
+}
+
+indicator_impacts <- load_indicator_impacts()
+safe_write_csv(indicator_impacts, file.path(OUTPUT_DIR, "location_indicator_impacts.csv"))
+
+# Bloom CAP1 through time with EVERY marker filled by the location's
+# impact category for one indicator (or the overall score). Lines use the
+# same colour. Pre-bloom markers are smaller and faded; bloom markers are
+# larger, fully opaque, with a black outline - so the bloom points stand
+# out while every point still shows its category.
+plot_cap_time_impact_fill <- function(cap_scores, impact_tbl, title = NULL, subtitle = NULL,
+                                      y_lab = "Bloom CAP1") {
+
+  levels_all <- c(names(IMPACT_COLOURS), "Not assessed")
+
+  scores <- cap_scores %>%
+    left_join(select(impact_tbl, location, impact), by = "location") %>%
+    mutate(impact = factor(
+      tidyr::replace_na(as.character(impact), "Not assessed"),
+      levels = levels_all
+    )) %>%
+    arrange(location, status, survey_date)
+
+  end_labels <- scores %>%
+    group_by(location) %>%
+    slice_max(survey_date, n = 1, with_ties = FALSE) %>%
+    ungroup()
+
+  ggplot(scores, aes(x = survey_date, y = axis1, group = interaction(location, status))) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.4, colour = "grey60") +
+    # show.legend = TRUE: draw a legend key for every impact level and
+    # status even when this panel has none of it (ggplot2 3.5+ otherwise
+    # leaves those keys blank). That keeps the four panels' legends
+    # identical, so patchwork merges them into one. The faded pre-bloom
+    # layer is kept out of the legend so the keys show the solid colour.
+    geom_line(aes(colour = impact, linetype = status), linewidth = 0.6, alpha = 0.6,
+              show.legend = TRUE) +
+    geom_point(
+      data = filter(scores, period == "Pre-bloom"),
+      aes(shape = status, fill = impact),
+      colour = "grey35", size = 2.4, stroke = 0.4, alpha = 0.55,
+      show.legend = FALSE
+    ) +
+    geom_point(
+      data = filter(scores, period == "Bloom"),
+      aes(shape = status, fill = impact),
+      colour = "black", size = 3.8, stroke = 0.7,
+      show.legend = TRUE
+    ) +
+    ggrepel::geom_text_repel(
+      data = end_labels, aes(label = location, colour = impact),
+      size = 2.6, nudge_x = 60, direction = "y", hjust = 0,
+      segment.size = 0.2, min.segment.length = 0, show.legend = FALSE
+    ) +
+    scale_shape_manual(values = c("Fished" = 21, "No-take" = 24)) +
+    scale_linetype_manual(values = c("Fished" = "dashed", "No-take" = "solid")) +
+    scale_fill_manual(
+      aesthetics = c("fill", "colour"),
+      values = c(IMPACT_COLOURS, "Not assessed" = "grey70"),
+      limits = levels_all, drop = FALSE,
+      labels = c(Low = "Low (\u226580%)", Medium = "Medium (50-80%)",
+                 High = "High (<50%)", "Not assessed" = "Not assessed"),
+      name = "Impact"
+    ) +
+    guides(
+      fill  = guide_legend(override.aes = list(shape = 21, size = 4, colour = "black", alpha = 1, linetype = 0)),
+      shape = guide_legend(override.aes = list(fill = "grey50", colour = "black", alpha = 1))
+    ) +
+    scale_x_date(
+      date_breaks = "2 years", date_labels = "%Y",
+      expand = expansion(mult = c(0.02, 0.18))
+    ) +
+    labs(
+      x = "Sampling date", y = y_lab,
+      shape = "Status", linetype = "Status",
+      title = title, subtitle = subtitle,
+      caption = "Marker fill = impact category. Small faded markers = pre-bloom; large outlined markers = bloom."
+    ) +
+    theme_classic(base_size = 13) +
+    theme(
+      axis.text.x   = element_text(angle = 45, hjust = 1),
+      plot.title    = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(size = 10, colour = "grey25"),
+      plot.caption  = element_text(size = 10, colour = "grey30", hjust = 0),
+      legend.text   = element_text(size = 9)
+    )
+}
+
+
+# ------------------------------------------------------------
 # 5. Run every dataset for one site set
 #    (writes the per-method figures, scores, site checks, CAP tests
 #    and the combined four-method figures into output_dir)
@@ -584,6 +1057,10 @@ run_all_datasets <- function(site_set, output_dir) {
   cap_tests      <- list()
 
   # Each dataset's three plots, kept for the combined four-method figures.
+  # Bloom CAP scores per method, for the impact-coloured versions.
+  cap_scores_by_method     <- list()
+  cap_axis_label_by_method <- list()
+
   combined_plots <- list(
     PCO = list(), CAP_Period = list(), CAP_Period_time = list(), CAP_Bloom_vs_Status = list()
   )
@@ -653,6 +1130,8 @@ run_all_datasets <- function(site_set, output_dir) {
         cap_time_plot <- plot_cap_time_all_locations(cap, cap_subtitle)
         combined_plots$CAP_Period[[label]]      <- cap_plot
         combined_plots$CAP_Period_time[[label]] <- cap_time_plot
+        cap_scores_by_method[[label]]           <- cap$scores
+        cap_axis_label_by_method[[label]]       <- cap$x_lab   # "CAP1 - Bloom effect (x% of ...)"
 
         save_plot(
           cap_plot,
@@ -743,6 +1222,139 @@ run_all_datasets <- function(site_set, output_dir) {
       file.path(output_dir, paste0("all_methods_all_locations_", plot_type, ".png")),
       width  = combined_sizes[[plot_type]][["width"]],
       height = combined_sizes[[plot_type]][["height"]]
+    )
+  }
+
+  # Four more versions of the combined CAP-over-time figure, coloured by
+  # each location's impact rather than by location: the mean across
+  # indicators, and inverse Simpson alone - each as a continuous score
+  # and as Low / Medium / High.
+  colour_versions <- tribble(
+    ~score,     ~colour_by,    ~file_suffix,         ~score_name,
+    "overall",  "continuous",  "impact_score",       "Mean of indicators",
+    "overall",  "category",    "impact_category",    "Overall impact",
+    "simpson",  "continuous",  "simpson_score",      "Inverse Simpson",
+    "simpson",  "category",    "simpson_category",   "Inverse Simpson impact"
+  )
+
+  for (i in seq_len(nrow(colour_versions))) {
+
+    colour_by   <- colour_versions$colour_by[i]
+    file_suffix <- colour_versions$file_suffix[i]
+    score_tbl   <- if (colour_versions$score[i] == "simpson") simpson_impacts else location_impacts
+
+    labels_present <- intersect(method_order, names(cap_scores_by_method))
+    if (length(labels_present) == 0) next
+
+    panels <- map(labels_present, function(lbl) {
+      plot_cap_time_by_impact(
+        cap_scores_by_method[[lbl]], lbl, colour_by,
+        score_tbl = score_tbl, score_name = colour_versions$score_name[i],
+        y_lab = cap_axis_label_by_method[[lbl]]
+      ) +
+        labs(title = lbl) +
+        theme(plot.title = element_text(face = "bold", size = 15))
+    })
+
+    save_plot(
+      # One shared colour legend: the scale is identical in every panel.
+      wrap_plots(panels, ncol = 2) + plot_layout(guides = "collect"),
+      file.path(output_dir, paste0("all_methods_all_locations_CAP_Period_time_", file_suffix, ".png")),
+      width = 28, height = 20
+    )
+  }
+
+  # ---- Folder: one CAP-through-time figure per method x indicator ----
+  # cap_time_by_indicator/<method>/00_overall_impact.png is the combined
+  # score (mean across indicators, as above); the rest are one indicator
+  # each. Every marker is filled with that location's impact category.
+  indicator_dir <- file.path(output_dir, "cap_time_by_indicator")
+
+  for (lbl in intersect(method_order, names(cap_scores_by_method))) {
+
+    method_dir <- file.path(indicator_dir, slug(lbl))
+    dir.create(method_dir, recursive = TRUE, showWarnings = FALSE)
+
+    cap_scores <- cap_scores_by_method[[lbl]]
+
+    # Combined score first.
+    overall_tbl <- filter(location_impacts, dataset == lbl)
+    save_plot(
+      plot_cap_time_impact_fill(
+        cap_scores, overall_tbl,
+        y_lab    = cap_axis_label_by_method[[lbl]]
+      ),
+      file.path(method_dir, "00_overall_impact.png"),
+      width = 14, height = 9
+    )
+
+    method_indicators <- indicator_impacts %>%
+      filter(dataset == lbl) %>%
+      distinct(indicator_id, indicator_label) %>%
+      arrange(indicator_label)
+
+    for (j in seq_len(nrow(method_indicators))) {
+      ind_id <- method_indicators$indicator_id[j]
+      ind_tbl <- filter(indicator_impacts, dataset == lbl, indicator_id == ind_id)
+
+      save_plot(
+        plot_cap_time_impact_fill(
+          cap_scores, ind_tbl,
+          y_lab    = cap_axis_label_by_method[[lbl]]
+        ),
+        file.path(method_dir, sprintf("%02d_%s.png", j, slug(ind_id))),
+        width = 14, height = 9
+      )
+    }
+
+    message("  ", lbl, ": ", nrow(method_indicators) + 1, " figures in ", method_dir)
+  }
+
+  # ---- The four methods together, same style ----
+  # cap_time_by_indicator/all_methods/: the overall score, and each
+  # indicator that all four methods measure (indicator_group is the shared
+  # key: BRUV impact_metric / RLS metric_group). Indicators only one method
+  # has (e.g. B20, sharks and rays, phylum metrics) are in the method
+  # folders only.
+  shared_groups <- tribble(
+    ~group,               ~label,
+    "overall",            "Overall impact",
+    "species_richness",   "Species richness",
+    "total_abundance",    "Total abundance",
+    "simpson_diversity",  "Inverse Simpson diversity",
+    "shannon_diversity",  "Shannon diversity"
+  )
+
+  all_methods_dir <- file.path(indicator_dir, "all_methods")
+  dir.create(all_methods_dir, recursive = TRUE, showWarnings = FALSE)
+  labels_present <- intersect(method_order, names(cap_scores_by_method))
+
+  for (g in seq_len(nrow(shared_groups))) {
+
+    grp <- shared_groups$group[g]
+
+    panels <- map(labels_present, function(lbl) {
+      impact_tbl <- if (grp == "overall") {
+        filter(location_impacts, dataset == lbl)
+      } else {
+        filter(indicator_impacts, dataset == lbl, indicator_group == grp)
+      }
+      plot_cap_time_impact_fill(
+        cap_scores_by_method[[lbl]], impact_tbl, title = lbl,
+        y_lab = cap_axis_label_by_method[[lbl]]
+      ) +
+        theme(plot.caption = element_blank())
+    })
+
+    save_plot(
+      wrap_plots(panels, ncol = 2) +
+        plot_layout(guides = "collect") +
+        plot_annotation(
+          caption = "Marker fill = impact category. Small faded markers = pre-bloom; large outlined markers = bloom.",
+          theme   = theme(plot.caption = element_text(size = 12, colour = "grey30", hjust = 0))
+        ),
+      file.path(all_methods_dir, sprintf("%02d_%s.png", g - 1, grp)),
+      width = 28, height = 20
     )
   }
 

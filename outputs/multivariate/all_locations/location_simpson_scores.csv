@@ -1,0 +1,50 @@
+dataset,location,impact_score,impact
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,63.56198055291986,Medium
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,116.50900049122211,Low
+BRUVs,Boston Bay,103.02029167881226,Low
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,92.71918432330803,Low
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,97.93225763157912,Low
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,93.109801097491,Low
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,112.14449925072768,Low
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,110.80343892773845,Low
+BRUVs,Glenelg,46.26473753408733,High
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,51.46792590368655,Medium
+BRUVs,O'Sullivan,79.95627880253191,Medium
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,65.58238628589747,Medium
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,106.48706887568056,Low
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,133.43395390608495,Low
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,81.44820727640946,Low
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,101.58581453952476,Low
+BRUVs,The Pages - The Pages Sanctuary Zone,74.11284582065105,Medium
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,111.81309291441126,Low
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,32.59773120535032,High
+M1 fish,Carrickalinga,95.04887632226414,Low
+M2 fish,Carrickalinga,36.391217195013915,High
+M2 invertebrates,Carrickalinga,90.39230320119144,Low
+M1 fish,Eastern Spencer Gulf,59.77815956954888,Medium
+M2 fish,Eastern Spencer Gulf,156.00553454837785,Low
+M2 invertebrates,Eastern Spencer Gulf,91.90701600766523,Low
+M1 fish,Encounter Bay,47.85809784472989,High
+M2 fish,Encounter Bay,48.80146380872724,High
+M2 invertebrates,Encounter Bay,75.55018881581269,Medium
+M1 fish,Metro,36.05304540037631,High
+M2 fish,Metro,7.606082314879722,High
+M2 invertebrates,Metro,44.69805825619736,High
+M1 fish,Rapid Head,86.63822416133084,Low
+M2 fish,Rapid Head,66.74899577167493,Medium
+M2 invertebrates,Rapid Head,85.43330754815518,Low
+M1 fish,Southern Fleurieu,80.25522852736687,Low
+M2 fish,Southern Fleurieu,24.0759570046258,High
+M2 invertebrates,Southern Fleurieu,63.59738348975055,Medium
+M1 fish,Southern Metro,101.8389622210558,Low
+M2 fish,Southern Metro,36.651471745289335,High
+M2 invertebrates,Southern Metro,63.56075482768435,Medium
+M1 fish,Southern Yorke,87.20941677599787,Low
+M2 fish,Southern Yorke,175.16068600884714,Low
+M2 invertebrates,Southern Yorke,114.18449288566106,Low
+M1 fish,Sponge Gardens,74.92988817413257,Medium
+M2 fish,Sponge Gardens,93.85954620793623,Low
+M2 invertebrates,Sponge Gardens,139.7282783414657,Low
+M1 fish,Upper GSV,39.64220513413301,High
+M2 fish,Upper GSV,28.267932129936863,High
+M2 invertebrates,Upper GSV,33.71686925120612,High

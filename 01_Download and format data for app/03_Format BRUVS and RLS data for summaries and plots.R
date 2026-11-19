@@ -168,10 +168,10 @@ bruv_metadata <- readRDS("data/raw/sa_metadata_bruv.RDS") %>%
 
 summary(bruv_metadata)
 
-missing <- read_csv("sa_bruvs_missing.csv") %>%
-  dplyr::select(project, campaignid, sample)
+# missing <- read_csv("sa_bruvs_missing.csv") %>%
+#   dplyr::select(project, campaignid, sample)
 
-test <- left_join(missing, bruv_metadata)
+# test <- left_join(missing, bruv_metadata)
 
 # unique(bruv_metadata$year) %>% sort()
 
@@ -361,14 +361,14 @@ if (nrow(bruv_mixed_status_sites) > 0) {
   message("Every uwa_site_code now carries exactly one status.")
 }
 
+# 
+# missing <- read_csv("sa_bruvs_missing.csv") %>%
+#   dplyr::select(project, campaignid, sample)
 
-missing <- read_csv("sa_bruvs_missing.csv") %>%
-  dplyr::select(project, campaignid, sample)
-
-test <- left_join(missing, bruv_metadata_with_regions) %>%
-  left_join(bruv_metadata %>% select(campaignid, sample, latitude_dd, longitude_dd))
-
-write_csv(test, "missing_with_lat_lon1.csv")
+# test <- left_join(missing, bruv_metadata_with_regions) %>%
+#   left_join(bruv_metadata %>% select(campaignid, sample, latitude_dd, longitude_dd))
+# 
+# write_csv(test, "missing_with_lat_lon1.csv")
 
 combined_metadata <- bind_rows(rls_metadata_with_regions %>% dplyr::mutate(method = "UVC"), 
                                bruv_metadata_with_regions %>% dplyr::mutate(method = "BRUVs")#,

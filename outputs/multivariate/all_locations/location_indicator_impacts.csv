@@ -1,0 +1,314 @@
+dataset,location,indicator_id,indicator_group,indicator_label,percentage,impact
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,species_richness,species_richness,Species richness,72.45115995115995,Medium
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,species_richness,species_richness,Species richness,94.26605504587155,Low
+BRUVs,Boston Bay,species_richness,species_richness,Species richness,95.9030977690588,Low
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,species_richness,species_richness,Species richness,82.27272727272728,Low
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,species_richness,species_richness,Species richness,116.4904163912756,Low
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,species_richness,species_richness,Species richness,86.74698795180723,Low
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,species_richness,species_richness,Species richness,96.43835616438356,Low
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,species_richness,species_richness,Species richness,142.4716756112105,Low
+BRUVs,Glenelg,species_richness,species_richness,Species richness,51.67949406360002,Medium
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,species_richness,species_richness,Species richness,89.0817064352856,Low
+BRUVs,O'Sullivan,species_richness,species_richness,Species richness,57.59887572776551,Medium
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,species_richness,species_richness,Species richness,52.254098360655746,Medium
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,species_richness,species_richness,Species richness,120,Low
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,species_richness,species_richness,Species richness,102.6685393258427,Low
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,species_richness,species_richness,Species richness,92.08272148800785,Low
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,species_richness,species_richness,Species richness,110.11605750909406,Low
+BRUVs,The Pages - The Pages Sanctuary Zone,species_richness,species_richness,Species richness,88.23870668316832,Low
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,species_richness,species_richness,Species richness,136.1290322580645,Low
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,species_richness,species_richness,Species richness,57.25190839694657,Medium
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,total_abundance,total_abundance,Total abundance,84.6914521977536,Low
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,total_abundance,total_abundance,Total abundance,51.01636093207734,Medium
+BRUVs,Boston Bay,total_abundance,total_abundance,Total abundance,58.17905682548833,Medium
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,total_abundance,total_abundance,Total abundance,84.3891402714932,Low
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,total_abundance,total_abundance,Total abundance,172.11736665807783,Low
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,total_abundance,total_abundance,Total abundance,99.56066238594119,Low
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,total_abundance,total_abundance,Total abundance,89.5583449558345,Low
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,total_abundance,total_abundance,Total abundance,124.2261818533005,Low
+BRUVs,Glenelg,total_abundance,total_abundance,Total abundance,84.18509133043814,Low
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,total_abundance,total_abundance,Total abundance,411.3830181683353,Low
+BRUVs,O'Sullivan,total_abundance,total_abundance,Total abundance,81.48444081604295,Low
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,total_abundance,total_abundance,Total abundance,148.01110083256245,Low
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,total_abundance,total_abundance,Total abundance,192.56900212314224,Low
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,total_abundance,total_abundance,Total abundance,51.21212121212121,Medium
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,total_abundance,total_abundance,Total abundance,82.26330160135784,Low
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,total_abundance,total_abundance,Total abundance,117.37226462673685,Low
+BRUVs,The Pages - The Pages Sanctuary Zone,total_abundance,total_abundance,Total abundance,181.82508680555557,Low
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,total_abundance,total_abundance,Total abundance,123.79032258064515,Low
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,total_abundance,total_abundance,Total abundance,179.31954636424285,Low
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,66.01307189542483,Medium
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,70,Medium
+BRUVs,Boston Bay,shark_ray_richness,shark_ray_richness,Shark ray richness,71.73913043478262,Medium
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,11.11111111111111,High
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,54.39814814814815,Medium
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,109.09090909090911,Low
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,560,Low
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,211.1111111111111,Low
+BRUVs,Glenelg,shark_ray_richness,shark_ray_richness,Shark ray richness,9.697933227344993,High
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,32.08333333333333,High
+BRUVs,O'Sullivan,shark_ray_richness,shark_ray_richness,Shark ray richness,6.386554621848739,High
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,0,High
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,28.57142857142857,High
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,0,High
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,54.6875,Medium
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,508.695652173913,Low
+BRUVs,The Pages - The Pages Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,80.10884831460675,Low
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,53.333333333333336,Medium
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,shark_ray_richness,shark_ray_richness,Shark ray richness,0,High
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,48.3927704997574,High
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,64.28571428571428,Medium
+BRUVs,Boston Bay,reef_associated_richness,reef_associated_richness,Reef associated richness,65.44622425629291,Medium
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,73.52941176470588,Medium
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,97.72277227722772,Low
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,76.42526964560862,Medium
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,293.33333333333337,Low
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,280.12820512820514,Low
+BRUVs,Glenelg,reef_associated_richness,reef_associated_richness,Reef associated richness,28.893842295904154,High
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,38.888888888888886,High
+BRUVs,O'Sullivan,reef_associated_richness,reef_associated_richness,Reef associated richness,34.56640388114008,High
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,30.405405405405407,High
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,53.846153846153854,Medium
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,89.58333333333333,Low
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,94.23521638586058,Low
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,99.10399529964748,Low
+BRUVs,The Pages - The Pages Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,84.24730419977298,Low
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,134.97206703910615,Low
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,reef_associated_richness,reef_associated_richness,Reef associated richness,186.20689655172413,Low
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,136.5053322395406,Low
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,114.75988700564972,Low
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,148.14814814814815,Low
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,98.53277695517568,Low
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,90.74371321562332,Low
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,770.334928229665,Low
+BRUVs,Glenelg,fish_200_abundance,fish_200_abundance,Fish 200 abundance,16.5572114170245,High
+BRUVs,O'Sullivan,fish_200_abundance,fish_200_abundance,Fish 200 abundance,85.19736842105263,Low
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,14.583333333333334,High
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,182.6086956521739,Low
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,57.851239669421496,Medium
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,70.01693958215697,Medium
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,127.84146209581486,Low
+BRUVs,The Pages - The Pages Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,81.288383218049,Low
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,fish_200_abundance,fish_200_abundance,Fish 200 abundance,23.91304347826087,High
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,86.00756950608178,Low
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,105.76535875201574,Low
+BRUVs,Boston Bay,shannon_diversity,shannon_diversity,Shannon diversity,108.12411415501117,Low
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,93.7424506246999,Low
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,100.68920368288832,Low
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,93.53797371401508,Low
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,112.80504578056937,Low
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,119.58248030305442,Low
+BRUVs,Glenelg,shannon_diversity,shannon_diversity,Shannon diversity,50.40957715831907,Medium
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,66.80601598750417,Medium
+BRUVs,O'Sullivan,shannon_diversity,shannon_diversity,Shannon diversity,80.60726543265504,Low
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,22.656953661003886,High
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,105.74903518863967,Low
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,121.59093237117486,Low
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,91.33189414037463,Low
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,101.45364821935696,Low
+BRUVs,The Pages - The Pages Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,75.79851621878441,Medium
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,116.2254153915513,Low
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,shannon_diversity,shannon_diversity,Shannon diversity,28.90590247082141,High
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,63.56198055291986,Medium
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,116.50900049122211,Low
+BRUVs,Boston Bay,simpson_diversity,simpson_diversity,Simpson diversity,103.02029167881226,Low
+BRUVs,Cape Elizabeth - Cape Elizabeth Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,92.71918432330803,Low
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,97.93225763157912,Low
+BRUVs,Chinamans Hat - Chinamans Hat Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,93.109801097491,Low
+BRUVs,Cuttlefish Coast - Fairway Bank Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,112.14449925072768,Low
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,110.80343892773845,Low
+BRUVs,Glenelg,simpson_diversity,simpson_diversity,Simpson diversity,46.26473753408733,High
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,51.46792590368655,Medium
+BRUVs,O'Sullivan,simpson_diversity,simpson_diversity,Simpson diversity,79.95627880253191,Medium
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,65.58238628589747,Medium
+BRUVs,Port Gibbon - Port Gibbon Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,106.48706887568056,Low
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,133.43395390608495,Low
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,81.44820727640946,Low
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,101.58581453952476,Low
+BRUVs,The Pages - The Pages Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,74.11284582065105,Medium
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,111.81309291441126,Low
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,simpson_diversity,simpson_diversity,Simpson diversity,32.59773120535032,High
+BRUVs,Aldinga - Aldinga Reef Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,16.38850254983774,High
+BRUVs,Bay of Shoals - Bay of Shoals Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,30.000000000000004,High
+BRUVs,Boston Bay,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,1.4408786336843167,High
+BRUVs,Carrickalinga - Carrickalinga Cliffs Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,6549.5370370370365,Low
+BRUVs,Dangerous Reef - Dangerous Reef Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,0,High
+BRUVs,Glenelg,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,14178.378378378378,Low
+BRUVs,Middle/Long Spit - Middle Spit Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,33110,Low
+BRUVs,O'Sullivan,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,94.40659480743899,Low
+BRUVs,Offshore Ardrossan - Offshore Ardrossan Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,193.33964646464648,Low
+BRUVs,Port Noarlunga - Port Noarlunga Reef Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,11.025641025641026,High
+BRUVs,Rapid Head - Rapid Head Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,1750,Low
+BRUVs,Sponge Gardens - Sponge Gardens Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,0,High
+BRUVs,The Pages - The Pages Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,3524.5024441340784,Low
+BRUVs,Victor Harbor - Encounter Bay Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,10960,Low
+BRUVs,Windara Reef - Windara Shell fish Reef Sanctuary Zone,thamnaconus_degeni,thamnaconus_degeni,Thamnaconus degeni,731.5068493150685,Low
+M1 fish,Carrickalinga,m1_fish_richness,species_richness,M1 fish species richness,52.05028553299492,Medium
+M1 fish,Eastern Spencer Gulf,m1_fish_richness,species_richness,M1 fish species richness,45.83333333333333,High
+M1 fish,Encounter Bay,m1_fish_richness,species_richness,M1 fish species richness,41.874201787994885,High
+M1 fish,Metro,m1_fish_richness,species_richness,M1 fish species richness,13.93188854489164,High
+M1 fish,Rapid Head,m1_fish_richness,species_richness,M1 fish species richness,70.14023480705029,Medium
+M1 fish,Southern Fleurieu,m1_fish_richness,species_richness,M1 fish species richness,101.9949066213922,Low
+M1 fish,Southern Metro,m1_fish_richness,species_richness,M1 fish species richness,62.96462158531124,Medium
+M1 fish,Southern Yorke,m1_fish_richness,species_richness,M1 fish species richness,78.01749271137027,Medium
+M1 fish,Sponge Gardens,m1_fish_richness,species_richness,M1 fish species richness,76.29518972213923,Medium
+M1 fish,Upper GSV,m1_fish_richness,species_richness,M1 fish species richness,30.550458715596335,High
+M2 fish,Carrickalinga,m2_fish_richness,species_richness,M2 fish species richness,30.153199491178583,High
+M2 fish,Eastern Spencer Gulf,m2_fish_richness,species_richness,M2 fish species richness,143.51851851851853,Low
+M2 fish,Encounter Bay,m2_fish_richness,species_richness,M2 fish species richness,42.883211678832126,High
+M2 fish,Metro,m2_fish_richness,species_richness,M2 fish species richness,5.7915057915057915,High
+M2 fish,Rapid Head,m2_fish_richness,species_richness,M2 fish species richness,64.10123966942149,Medium
+M2 fish,Southern Fleurieu,m2_fish_richness,species_richness,M2 fish species richness,23.78048780487805,High
+M2 fish,Southern Metro,m2_fish_richness,species_richness,M2 fish species richness,30.343007915567284,High
+M2 fish,Southern Yorke,m2_fish_richness,species_richness,M2 fish species richness,180.95238095238096,Low
+M2 fish,Sponge Gardens,m2_fish_richness,species_richness,M2 fish species richness,95.71847507331378,Low
+M2 fish,Upper GSV,m2_fish_richness,species_richness,M2 fish species richness,23.478260869565215,High
+M2 invertebrates,Carrickalinga,m2_invert_richness,species_richness,M2 invertebrate species richness,86.21460382876894,Low
+M2 invertebrates,Eastern Spencer Gulf,m2_invert_richness,species_richness,M2 invertebrate species richness,40.19607843137255,High
+M2 invertebrates,Encounter Bay,m2_invert_richness,species_richness,M2 invertebrate species richness,43.24257117990799,High
+M2 invertebrates,Metro,m2_invert_richness,species_richness,M2 invertebrate species richness,39.1173520561685,High
+M2 invertebrates,Rapid Head,m2_invert_richness,species_richness,M2 invertebrate species richness,106.73876271221404,Low
+M2 invertebrates,Southern Fleurieu,m2_invert_richness,species_richness,M2 invertebrate species richness,53.84922749067661,Medium
+M2 invertebrates,Southern Metro,m2_invert_richness,species_richness,M2 invertebrate species richness,39.20130399348004,High
+M2 invertebrates,Southern Yorke,m2_invert_richness,species_richness,M2 invertebrate species richness,66.33825944170772,Medium
+M2 invertebrates,Sponge Gardens,m2_invert_richness,species_richness,M2 invertebrate species richness,116.40791476407917,Low
+M2 invertebrates,Upper GSV,m2_invert_richness,species_richness,M2 invertebrate species richness,41.25511596180082,High
+M1 fish,Carrickalinga,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,89.87685707464158,Low
+M1 fish,Eastern Spencer Gulf,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,56.51343492416445,Medium
+M1 fish,Encounter Bay,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,42.95793802602666,High
+M1 fish,Metro,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,11.914880856426048,High
+M1 fish,Rapid Head,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,92.45424547285964,Low
+M1 fish,Southern Fleurieu,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,87.97040089796289,Low
+M1 fish,Southern Metro,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,96.26814502457684,Low
+M1 fish,Southern Yorke,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,85.38716237918554,Low
+M1 fish,Sponge Gardens,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,86.44053555983919,Low
+M1 fish,Upper GSV,m1_fish_shannon,shannon_diversity,M1 fish Shannon diversity,29.631553048703147,High
+M2 fish,Carrickalinga,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,22.386182535643513,High
+M2 fish,Eastern Spencer Gulf,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,185.0213650705145,Low
+M2 fish,Encounter Bay,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,11.754047730191044,High
+M2 fish,Metro,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,0,High
+M2 fish,Rapid Head,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,51.954339893017256,Medium
+M2 fish,Southern Fleurieu,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,0,High
+M2 fish,Southern Metro,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,27.426141222116897,High
+M2 fish,Southern Yorke,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,220.34176154774136,Low
+M2 fish,Sponge Gardens,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,97.13597984682528,Low
+M2 fish,Upper GSV,m2_fish_shannon,shannon_diversity,M2 fish Shannon diversity,0,High
+M2 invertebrates,Carrickalinga,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,101.3405887248298,Low
+M2 invertebrates,Eastern Spencer Gulf,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,71.42974376306518,Medium
+M2 invertebrates,Encounter Bay,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,70.04664309132878,Medium
+M2 invertebrates,Metro,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,57.29097373526236,Medium
+M2 invertebrates,Rapid Head,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,102.12262438077042,Low
+M2 invertebrates,Southern Fleurieu,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,70.56029271537881,Medium
+M2 invertebrates,Southern Metro,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,66.25721537447131,Medium
+M2 invertebrates,Southern Yorke,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,102.6293867243368,Low
+M2 invertebrates,Sponge Gardens,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,131.49917737098087,Low
+M2 invertebrates,Upper GSV,m2_invert_shannon,shannon_diversity,M2 invertebrate Shannon diversity,36.70678857502421,High
+M1 fish,Carrickalinga,m1_fish_b20,b20,M1 fish B20 biomass,72.0894744198295,Medium
+M1 fish,Eastern Spencer Gulf,m1_fish_b20,b20,M1 fish B20 biomass,36.68237925687038,High
+M1 fish,Encounter Bay,m1_fish_b20,b20,M1 fish B20 biomass,52.05565266727427,Medium
+M1 fish,Metro,m1_fish_b20,b20,M1 fish B20 biomass,1.3086016737034432,High
+M1 fish,Rapid Head,m1_fish_b20,b20,M1 fish B20 biomass,69.23130258462436,Medium
+M1 fish,Southern Fleurieu,m1_fish_b20,b20,M1 fish B20 biomass,137.24558820196805,Low
+M1 fish,Southern Metro,m1_fish_b20,b20,M1 fish B20 biomass,140.99257169633603,Low
+M1 fish,Southern Yorke,m1_fish_b20,b20,M1 fish B20 biomass,130.16446505036637,Low
+M1 fish,Sponge Gardens,m1_fish_b20,b20,M1 fish B20 biomass,100.37165125384688,Low
+M1 fish,Upper GSV,m1_fish_b20,b20,M1 fish B20 biomass,981.1681552733992,Low
+M2 fish,Carrickalinga,m2_fish_b20,b20,M2 fish B20 biomass,20.17742486024447,High
+M2 fish,Eastern Spencer Gulf,m2_fish_b20,b20,M2 fish B20 biomass,0,High
+M2 fish,Encounter Bay,m2_fish_b20,b20,M2 fish B20 biomass,0,High
+M2 fish,Metro,m2_fish_b20,b20,M2 fish B20 biomass,0,High
+M2 fish,Rapid Head,m2_fish_b20,b20,M2 fish B20 biomass,47.41631195425828,High
+M2 fish,Southern Fleurieu,m2_fish_b20,b20,M2 fish B20 biomass,0,High
+M2 fish,Southern Metro,m2_fish_b20,b20,M2 fish B20 biomass,1.7215460774025022,High
+M2 fish,Sponge Gardens,m2_fish_b20,b20,M2 fish B20 biomass,47.914954568605715,High
+M2 fish,Upper GSV,m2_fish_b20,b20,M2 fish B20 biomass,0,High
+M1 fish,Carrickalinga,m1_fish_total_abundance,total_abundance,M1 fish total abundance,17.04375665706734,High
+M1 fish,Eastern Spencer Gulf,m1_fish_total_abundance,total_abundance,M1 fish total abundance,43.43077956989247,High
+M1 fish,Encounter Bay,m1_fish_total_abundance,total_abundance,M1 fish total abundance,64.42148074369189,Medium
+M1 fish,Metro,m1_fish_total_abundance,total_abundance,M1 fish total abundance,0.8495145631067961,High
+M1 fish,Rapid Head,m1_fish_total_abundance,total_abundance,M1 fish total abundance,28.766752245093382,High
+M1 fish,Southern Fleurieu,m1_fish_total_abundance,total_abundance,M1 fish total abundance,151.33341867212835,Low
+M1 fish,Southern Metro,m1_fish_total_abundance,total_abundance,M1 fish total abundance,32.59329259997858,High
+M1 fish,Southern Yorke,m1_fish_total_abundance,total_abundance,M1 fish total abundance,64.41318100273817,Medium
+M1 fish,Sponge Gardens,m1_fish_total_abundance,total_abundance,M1 fish total abundance,71.21307714367651,Medium
+M1 fish,Upper GSV,m1_fish_total_abundance,total_abundance,M1 fish total abundance,14.734149460990317,High
+M2 fish,Carrickalinga,m2_fish_total_abundance,total_abundance,M2 fish total abundance,9.858011529653322,High
+M2 fish,Eastern Spencer Gulf,m2_fish_total_abundance,total_abundance,M2 fish total abundance,129.4642857142857,Low
+M2 fish,Encounter Bay,m2_fish_total_abundance,total_abundance,M2 fish total abundance,14.58721291123526,High
+M2 fish,Metro,m2_fish_total_abundance,total_abundance,M2 fish total abundance,2.9673590504451037,High
+M2 fish,Rapid Head,m2_fish_total_abundance,total_abundance,M2 fish total abundance,40.092348939973185,High
+M2 fish,Southern Fleurieu,m2_fish_total_abundance,total_abundance,M2 fish total abundance,10.781990521327014,High
+M2 fish,Southern Metro,m2_fish_total_abundance,total_abundance,M2 fish total abundance,9.687419271506071,High
+M2 fish,Southern Yorke,m2_fish_total_abundance,total_abundance,M2 fish total abundance,307.9310344827586,Low
+M2 fish,Sponge Gardens,m2_fish_total_abundance,total_abundance,M2 fish total abundance,47.513184584178504,High
+M2 fish,Upper GSV,m2_fish_total_abundance,total_abundance,M2 fish total abundance,14.474708171206224,High
+M2 invertebrates,Carrickalinga,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,46.957656612529,High
+M2 invertebrates,Eastern Spencer Gulf,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,14.98703823720026,High
+M2 invertebrates,Encounter Bay,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,20.034037261844546,High
+M2 invertebrates,Metro,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,22.48475609756098,High
+M2 invertebrates,Rapid Head,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,146.14624505928856,Low
+M2 invertebrates,Southern Fleurieu,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,68.2964009518144,Medium
+M2 invertebrates,Southern Metro,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,8.667551014648192,High
+M2 invertebrates,Southern Yorke,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,39.96478873239437,High
+M2 invertebrates,Sponge Gardens,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,80.88343558282209,Low
+M2 invertebrates,Upper GSV,m2_invert_total_abundance,total_abundance,M2 invertebrate total abundance,49.987546699875466,High
+M2 invertebrates,Carrickalinga,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,369.58988336714,Low
+M2 invertebrates,Eastern Spencer Gulf,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,500,Low
+M2 invertebrates,Encounter Bay,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,114.75344220300993,Low
+M2 invertebrates,Metro,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,87.3134328358209,Low
+M2 invertebrates,Rapid Head,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,677.8541226215644,Low
+M2 invertebrates,Southern Fleurieu,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,444.3150684931507,Low
+M2 invertebrates,Southern Metro,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,123.43619683069224,Low
+M2 invertebrates,Southern Yorke,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,230.63063063063063,Low
+M2 invertebrates,Sponge Gardens,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,426.6666666666667,Low
+M2 invertebrates,Upper GSV,m2_invert_arthropoda,invert_phylum_abundance,M2 invertebrate Arthropoda abundance,71.2958435207824,Medium
+M2 invertebrates,Carrickalinga,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,18.92293689320389,High
+M2 invertebrates,Eastern Spencer Gulf,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,0.4952456418383518,High
+M2 invertebrates,Encounter Bay,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,6.677491374061296,High
+M2 invertebrates,Metro,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,5.305039787798408,High
+M2 invertebrates,Rapid Head,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,46.94653817701981,High
+M2 invertebrates,Southern Fleurieu,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,15.365514501390544,High
+M2 invertebrates,Southern Metro,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,3.360317531506481,High
+M2 invertebrates,Southern Yorke,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,23.784167554135603,High
+M2 invertebrates,Sponge Gardens,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,17.65747006767309,High
+M2 invertebrates,Upper GSV,m2_invert_echinodermata,invert_phylum_abundance,M2 invertebrate Echinodermata abundance,0.6896551724137931,High
+M2 invertebrates,Carrickalinga,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,32.814798921039724,High
+M2 invertebrates,Eastern Spencer Gulf,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,40.856031128404666,High
+M2 invertebrates,Encounter Bay,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,35.328859060402685,High
+M2 invertebrates,Metro,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,11.241217798594846,High
+M2 invertebrates,Rapid Head,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,160.6613692179667,Low
+M2 invertebrates,Southern Fleurieu,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,70.51719432314411,Medium
+M2 invertebrates,Southern Metro,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,5.269665801415931,High
+M2 invertebrates,Southern Yorke,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,90.83333333333331,Low
+M2 invertebrates,Sponge Gardens,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,297.46478873239437,Low
+M2 invertebrates,Upper GSV,m2_invert_mollusca,invert_phylum_abundance,M2 invertebrate Mollusca abundance,75.9880239520958,Medium
+M1 fish,Carrickalinga,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,95.04887632226414,Low
+M2 fish,Carrickalinga,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,36.391217195013915,High
+M2 invertebrates,Carrickalinga,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,90.39230320119144,Low
+M1 fish,Eastern Spencer Gulf,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,59.77815956954888,Medium
+M2 fish,Eastern Spencer Gulf,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,156.00553454837785,Low
+M2 invertebrates,Eastern Spencer Gulf,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,91.90701600766523,Low
+M1 fish,Encounter Bay,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,47.85809784472989,High
+M2 fish,Encounter Bay,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,48.80146380872724,High
+M2 invertebrates,Encounter Bay,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,75.55018881581269,Medium
+M1 fish,Metro,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,36.05304540037631,High
+M2 fish,Metro,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,7.606082314879722,High
+M2 invertebrates,Metro,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,44.69805825619736,High
+M1 fish,Rapid Head,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,86.63822416133084,Low
+M2 fish,Rapid Head,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,66.74899577167493,Medium
+M2 invertebrates,Rapid Head,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,85.43330754815518,Low
+M1 fish,Southern Fleurieu,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,80.25522852736687,Low
+M2 fish,Southern Fleurieu,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,24.0759570046258,High
+M2 invertebrates,Southern Fleurieu,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,63.59738348975055,Medium
+M1 fish,Southern Metro,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,101.8389622210558,Low
+M2 fish,Southern Metro,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,36.651471745289335,High
+M2 invertebrates,Southern Metro,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,63.56075482768435,Medium
+M1 fish,Southern Yorke,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,87.20941677599787,Low
+M2 fish,Southern Yorke,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,175.16068600884714,Low
+M2 invertebrates,Southern Yorke,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,114.18449288566106,Low
+M1 fish,Sponge Gardens,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,74.92988817413257,Medium
+M2 fish,Sponge Gardens,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,93.85954620793623,Low
+M2 invertebrates,Sponge Gardens,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,139.7282783414657,Low
+M1 fish,Upper GSV,m1_fish_simpson_diversity,simpson_diversity,M1 fish Simpson diversity,39.64220513413301,High
+M2 fish,Upper GSV,m2_fish_simpson_diversity,simpson_diversity,M2 fish Simpson diversity,28.267932129936863,High
+M2 invertebrates,Upper GSV,m2_invertebrate_simpson_diversity,simpson_diversity,M2 invertebrate Simpson diversity,33.71686925120612,High
